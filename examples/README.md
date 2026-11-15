@@ -26,6 +26,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.null_insertion_crossing` | Finite-part and delta-derivative terms where an external null edge crosses the insertion pole |
 | `PYTHONPATH=src python -m examples.null_endpoint` | A bound on the endpoint energy density and the normalized shrinking-ball coefficient with and without a scaled regulator |
 | `PYTHONPATH=src python -m examples.lower_null_endpoint` | The fourth external endpoint on a lower energy branch, including two terms of the normalized shrinking-ball expansion |
+| `PYTHONPATH=src python -m examples.mixed_null_endpoints` | The first and third external endpoints, where a timelike pinch surface adds an imaginary part to each shrinking-ball coefficient |
 
 ## Finite-cutoff continuation
 
@@ -218,6 +219,25 @@ zero-regulator expansion starts with `R**2 + (1699/150)*R**3`.
 The example checks both coefficients, the scaled regulator
 `eps=0.1*R**2`, and the clockwise sign against the upper residue sum
 at a finite-regulator point.
+
+## Null-edge endpoints on timelike pinch surfaces
+
+The first and third external endpoints also lie on the timelike
+`D2`–`D4` pinch surface. Translate to the vertex and reverse both
+energy and the axial coordinate for the third endpoint. In these local
+coordinates `a=r*mu`, the soft upper pole yields a `1/r` term after
+reflection averaging. At the upper pole of the future neighbor, the
+past neighbor supplies the factor `4*a-3*delta`, with `delta` the
+shift of the future pole away from its axial energy. The common Feynman
+regulator places this axial pole below the contour, allowing deformation
+of the `mu` interval into the upper half-plane. At leading order its
+angular integral is the boundary value of `1/(mu+i0)`, giving
+`-i*pi` on the symmetric interval.
+
+The normalized ball integrals divided by `R**2` approach
+`16-8*pi*i` at the first endpoint and `1-pi*i/2` at the third. The
+example compares both coefficients to the energy-residue quadrature
+and checks regulator convergence at a fixed ball radius.
 
 ## Scope of the checks
 
