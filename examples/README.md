@@ -32,6 +32,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.full_finite_frame` | The complete normalized finite-frame integral via energy residues plus the Wick-rotated exterior, compared with an independent Feynman-parameter calculation and its regulator limit |
 | `PYTHONPATH=src python -m examples.finite_cross_ratio` | Symbolic reduction for positive cross-ratios at fixed rho, plus full-domain numerical comparisons at `z=1/2, 3/2, 2` |
 | `PYTHONPATH=src python -m examples.complex_cross_ratio` | Continuation of the transported projective integral off the positive axis, and a cut jump from both the logarithm and the moving pole |
+| `PYTHONPATH=src python -m examples.cusp_regulator_scaling` | Three regulator paths toward the cusp in a fixed affine frame and the limiting kernel at fixed `eps/rho**2` |
 
 ## Finite-cutoff continuation
 
@@ -367,6 +368,35 @@ both jump calculations and runs the four-parameter quadrature at
 complex points off the cut. The construction continues the
 zero-regulator projective integral at fixed `rho`. A global loop
 contour in weighted twistor space remains to be constructed.
+
+## Regulator scaling in the cusp limit
+
+For real `z>0`, vary the insertion line through `a=-1`, `b=-rho` and
+`d=2*rho**2/(1+z)` while keeping the external affine frame fixed.
+Its signed separations `p1,p2` vanish as `rho**2`, with `p3,-p4`
+remaining positive. Set `a3=rho**2*b3` and `a4=rho**2*b4`.
+The numerator and Jacobian supply `rho**6`, which cancels the same
+power from the cubed denominator. The common fixed-frame shift in
+that denominator is now `-i*eta*P**2`, where `eta=eps/rho**2` and
+`P=1+a1+a2+rho**2*(b3+b4)`.
+
+Use the same rotated `b4` ray and parameter map as at finite `rho`.
+On the ray `b4=exp(i*pi/4)*A*k/B`, the denominator divided by `A`
+has real part at least `1-k/sqrt(2)` and imaginary part at most
+`-k/sqrt(2)`. This bounds its modulus below by
+`(1+k/sqrt(2))/3` uniformly in the nonnegative regulator. The remaining
+weight is proportional to the integrable positive-`z` kernel in
+`x,y`. Thus the pointwise regulator limits also hold after integration.
+
+At fixed positive `eps`, `eta` grows without bound and the integral
+tends to zero. If `eta` tends to zero, the limit is
+`pi**2+log(z)**2`. If `eta` tends to a finite positive value, the
+limit retains the shift `-i*eta*(1+a1+a2)**2`. The example tests
+these paths at `z=3/2`, using `eps=0.001`, `eps=0.02*rho**2`, and
+`eps=rho**4`. This is an order-of-limits result for the common
+regulator in the fixed affine frame. The twistor transport example
+uses a moving infinity frame and compares the prescribed bracket
+shifts under that transport.
 
 ## Scope of the checks
 

@@ -41,6 +41,15 @@ def frame_parameters(z):
 
 def parameter_integral(z, parameters, eps, power, seed):
     """Regulated projective integral with a4 rotated into the upper quadrant."""
+    return scaled_parameter_integral(z, parameters, eps, 1., power, seed)
+
+
+def scaled_parameter_integral(z, parameters, eta, projective_scale, power, seed):
+    """Use p1,p2 divided by the scale, and eta=eps/projective_scale.
+
+    The mapped a3 and a4 are divided by the same scale. Zero scale
+    evaluates the limiting kernel with eta held fixed.
+    """
     p1, p2, p3, p4, S, T = map(float, parameters)
     u, v, w, h = qmc.Sobol(4, scramble=True, seed=seed).random_base2(power).T
     s = -2*np.log(u)
@@ -63,8 +72,8 @@ def parameter_integral(z, parameters, eps, power, seed):
         A = C/(1-w)
         a3 = w*A/(p3+S*a1)
         a4 = ROTATION*A*k/(-p4+T*a2)
-        P = 1+a1+a2+a3+a4
-        denominator = 1-ROTATION*k-1j*eps*P**2/A
+        P = 1+a1+a2+projective_scale*(a3+a4)
+        denominator = 1-ROTATION*k-1j*eta*P**2/A
         total += np.mean(-ROTATION*weight*((1+k)/denominator)**3)
     return total
 

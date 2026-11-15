@@ -10,10 +10,11 @@ from scipy.integrate import quad
 from .geometry import EXTERNAL, affine, lorentzian_line
 
 
-def finite_frame(cross_ratio=1):
-    """Return the rho=1/2 frame with the requested cross-ratio."""
+def finite_frame(cross_ratio=1, rho=sp.Rational(1, 2)):
+    """Return the four external centers and the insertion at (rho, z)."""
     z = sp.sympify(cross_ratio)
-    ab = lorentzian_line(-1, 1/(2*(1+z)), -sp.Rational(1, 2))
+    rho = sp.sympify(rho)
+    ab = lorentzian_line(-1, 2*rho**2/(1+z), -rho)
     matrices = [affine(line)[1] for line in (*EXTERNAL, ab)]
     return [
         ((X[0, 0]+X[1, 1])/2, sp.re(X[0, 1]), -sp.im(X[0, 1]),
