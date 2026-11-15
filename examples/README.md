@@ -1589,6 +1589,35 @@ this slice calculation. Establishing the oriented global
 boundary and its match to the Lorentzian prescription
 remains open.
 
+## Integrated single-meridian patch in the lower regulator layer
+
+Work with `lambda=x/(eps*A)=tau**2` and take the compact box
+`455<=lambda<=485`, `.999<=y/x<=1.001`, `.25<=A<=.35`,
+`.268<=s<=.272`. For `0<eps<=1e-5` exactly one regulated
+root lies inside the base rim on every point of the box.
+To check clearance, take `t=1`, `s=.27`, `eps=0` as the
+reference. On circles of radius `.025` around the two
+reference `u` roots, use `abs(J+1)<=abs(t-1)*abs(K)`
+and bound the perturbation of `N=H*J+i*(u+h*P0)**2`.
+Rouché's theorem leaves one simple root in each circle.
+The two disks map inside and outside the base rim,
+respectively, throughout the box. The disks avoid the
+real frame and base punctures.
+
+At fixed `A`, the oriented change from `x` to `lambda`
+contributes `eps*A`. The remaining period is analytic in
+`eps` near zero when evaluated on the fixed reference
+circle. The counterclockwise patch integral is consequently
+`eps*C+O(eps**2)`. Product quadrature gives
+`C=-1.0881216705e-5+3.4311234906e-7*i`. The example compares
+two quadrature orders and both a fixed and a moving
+circle, then checks the finite-regulator convergence.
+The same meridian contributes the opposite sign when
+oriented as an inner boundary of a punctured cap.
+This is a local patch coefficient. Integrating the full
+one-meridian region, combining it with the other faces,
+and matching the Lorentzian contour remain open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

@@ -22,6 +22,7 @@ from .cd_regulated_frame_face import check_cd_regulated_frame_face
 from .cd_regulated_joint_frame import check_cd_regulated_joint_frame
 from .cd_frame_feynman_overlap import check_cd_frame_feynman_overlap
 from .cd_remote_meridian_period import check_cd_remote_meridian_period
+from .cd_single_meridian_layer import check_cd_single_meridian_layer
 from .cd_swept_cap import check_cd_swept_cap
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
@@ -114,6 +115,7 @@ def main():
         ("Joint zero-regulator limit of the homogeneous frame map", check_cd_regulated_joint_frame),
         ("Local Feynman ray overlap in the transverse frame chart", check_cd_frame_feynman_overlap),
         ("Paired regulated meridian period at the transverse pole scale", check_cd_remote_meridian_period),
+        ("Integrated single-meridian patch in the lower regulator layer", check_cd_single_meridian_layer),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
