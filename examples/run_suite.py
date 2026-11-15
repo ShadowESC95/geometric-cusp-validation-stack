@@ -4,6 +4,7 @@ from .cd_integral import check_cd_benchmark, check_continuation, check_contour_a
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .complex_cross_ratio import check_complex_cross_ratio
+from .critical_regulator_kernel import check_critical_regulator_kernel
 from .cusp_regulator_scaling import check_cusp_regulator_scaling
 from .energy_contour import check_energy_contour
 from .finite_cross_ratio import check_finite_cross_ratio
@@ -50,6 +51,7 @@ def main():
         ("Full finite-frame integral at non-unit cross-ratios", check_finite_cross_ratio),
         ("Complex cross-ratio and the principal cut", check_complex_cross_ratio),
         ("Regulator scaling in the cusp limit", check_cusp_regulator_scaling),
+        ("Reduced critical regulator kernel", check_critical_regulator_kernel),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -33,6 +33,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.finite_cross_ratio` | Symbolic reduction for positive cross-ratios at fixed rho, plus full-domain numerical comparisons at `z=1/2, 3/2, 2` |
 | `PYTHONPATH=src python -m examples.complex_cross_ratio` | Continuation of the transported projective integral off the positive axis, and a cut jump from both the logarithm and the moving pole |
 | `PYTHONPATH=src python -m examples.cusp_regulator_scaling` | Three regulator paths toward the cusp in a fixed affine frame and the limiting kernel at fixed `eps/rho**2` |
+| `PYTHONPATH=src python -m examples.critical_regulator_kernel` | One-dimensional quadrature of the fixed-ratio kernel and its leading logarithmic regulator corrections |
 
 ## Finite-cutoff continuation
 
@@ -397,6 +398,39 @@ these paths at `z=3/2`, using `eps=0.001`, `eps=0.02*rho**2`, and
 regulator in the fixed affine frame. The twistor transport example
 uses a moving infinity frame and compares the prescribed bracket
 shifts under that transport.
+
+## Reduced critical regulator kernel
+
+At fixed `eta=eps/rho**2`, after taking `rho` to zero, the regulator
+depends only on `a1,a2`. The rotated `b4` and positive `b3` integrals
+can therefore both be done analytically. With `x=2*a1`, `y=2*a2`, the
+remaining kernel is
+
+```text
+2*(1+z) / ((1+x)*(1+y)*(z*x+y-i*eta*(1+z)*(1+(x+y)/2)**2))
+```
+
+It is invariant after integration under `z -> 1/z` by exchange of
+`x,y`. Set `t=1/(x+y+2)` and `q=t+(1-2*t)*x/(x+y)`.
+Then `q` runs from `t` to `1-t`, and its integrand has denominator
+`q*(1-q)*(1-(1+z)*t+(z-1)*q-i*eta*(1+z)/(4*t))`.
+Partial fractions give the two logarithms used in the one-dimensional
+quadrature.
+
+For fixed positive `z`, write `L=log(1/eta)` and
+`C=(1+z)**2*(1+1/z**2)/4`. The leading imaginary correction is
+`C*eta*L**2` and the leading real deficit is `pi*C*eta*L`.
+To see the coefficients, set `a=eta*(1+z)/4`. Near `t=0` the two
+angular endpoints give `log(1/t)` times the difference
+`1/(g-i*a/t)-1/g`, with `g=1,z`, multiplied by `2*(1+z)`.
+On `a<t<<1` the imaginary part integrates
+`a*log(1/t)/(g**2*t)`, giving the squared logarithm. For the real
+deficit, setting `t=a*h/g` gives the integral of `1/(1+h**2)` on
+the positive axis, which supplies `pi/2`. The difference between
+the angular weight and its endpoint logarithms contributes at most
+`O(eta*L)` to the imaginary part and `O(eta)` to the real deficit.
+The example checks the slow approach of both scaled ratios, as well
+as agreement with the four-parameter quadrature at fixed `eta=0.02`.
 
 ## Scope of the checks
 
