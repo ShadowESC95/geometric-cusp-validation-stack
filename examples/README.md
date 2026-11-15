@@ -1266,6 +1266,40 @@ This estimate uses the sector at real `z=1`. The base-cap
 continuation to complex `z` and its finite-regulator matching
 to the original Lorentzian chain require additional analysis.
 
+## Regulated poles on the diagonal complex base cap
+
+On the diagonal `y=x`, continue the same finite-frame
+projective coefficients and keep the auxiliary triangle fixed.
+With `A,s,Q,G,H` as above, the normalized regulated denominator is
+`D=H-i*eps*U**2/(4*x*A)`, where
+`U=A*((5*z+3)/(1+z)+4*x)+x*(G-A)/(1+x)`.
+In the cap chart `z=-1+R/k`, this is quadratic in `k`
+because `(5*z+3)/(1+z)=5-2*k/R`. The two base punctures
+are at `0,R`. The affine frame is singular at `5*R/2`.
+
+Set `x=eps*chi` with `chi>0` fixed. Then `D` tends to
+`H-i*A*(5-2*k/R)**2/(4*chi)`. The exact zeros are
+`(R/2)*(5+4*x+x*(G-A)/(A*(1+x))) +/- (R/2)*sqrt(-4*i*chi*H/A)`.
+For `R=.06`, `A=.5`, `s=.25`, and `chi=.25` there are two
+simple zeros strictly inside the unit disk. They stay away
+from the three punctures in the tested range and as
+`eps` tends to zero. The example checks the zeros in the
+original regulated polynomial before normalization, up to
+the finite nonzero factor `A/C0`. It also counts index `+1`
+at each zero, zero around each original puncture, and
+total winding `+2` on the disk rim. The computation stays
+in the punctured frame and uses the polynomial continuation
+of the normalized denominator to count the winding.
+
+These are intersections with the finite-regulator polar
+divisor of the fixed-triangle product lift. The diagonal
+pullback of the top form may vanish by rank, as in the
+unregulated cap. The intersections still obstruct using
+this lift as a chain in the divisor complement. The
+calculation does not settle a lift with modified auxiliary
+contours or extra meridian boundaries, or their matching
+to the Lorentzian prescription.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

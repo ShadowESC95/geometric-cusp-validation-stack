@@ -13,6 +13,7 @@ from .cd_projective_intersections import check_cd_projective_intersections
 from .cd_projective_period import check_cd_projective_period
 from .cd_resolved_seam import check_cd_resolved_seam
 from .cd_regulated_auxiliary import check_cd_regulated_auxiliary
+from .cd_regulated_base_cap import check_cd_regulated_base_cap
 from .cd_swept_cap import check_cd_swept_cap
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
@@ -96,6 +97,7 @@ def main():
         ("Reduced principal contour and the shared CD meridian", check_cd_principal_seam),
         ("Unreduced CD auxiliary faces and diagonal-cap corners", check_cd_auxiliary_faces),
         ("Regulated auxiliary infinity edge at z=1", check_cd_regulated_auxiliary),
+        ("Regulated poles on the diagonal complex base cap", check_cd_regulated_base_cap),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
