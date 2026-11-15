@@ -44,6 +44,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.regulator_interior_cusp` | The square-root correction at the interior spectral cusp, approached along complex rays and both lips of the cut |
 | `PYTHONPATH=src python -m examples.weighted_boundary_cycle` | An explicit capped cycle on the complex weighted divisor, its chart orientations, and its scalar pushforward to the benchmark contour |
 | `PYTHONPATH=src python -m examples.cd_cycle_seam` | The CD contour difference at the capped-cycle seam and the meridian retained by resolving the moving pole |
+| `PYTHONPATH=src python -m examples.cd_cycle_monodromy` | A winding obstruction for periodic CD paths in the fixed positive-x chart and the period of the continued branch |
 
 ## Finite-cutoff continuation
 
@@ -757,14 +758,14 @@ lower bypass is one clockwise meridian. The other pole
 The jump after dividing out `1+z` is
 `-4*pi*i*integral_0^infinity dx/((1+x)*(1+a*x))`.
 The integral is `log(a)/(a-1)` with value one at `a=1`.
-Thus the scalar jump vanishes at `z=-1), while the winding is
+Thus the scalar jump vanishes at `z=-1`, while the winding is
 still minus one and the limiting jump after division is
 `-4*pi*i`. The numerical check integrates the two detours with
 their orientations and compares their difference with the residue.
 
 To track the pole as the outer cycle enters the cap, write
 `s=z+1` and `t=1+s*v`. This chart keeps the pole at `v=-1`.
-Meridians of size `O(abs(s))` in the original `t) coordinate
+Meridians of size `O(abs(s))` in the original `t` coordinate
 retain a full winding in the resolved coordinate. The pulled-back
 relative form is
 `2*s*dx^dv/((1+x)*(1+x*(1+s*v))*(1+v))`.
@@ -773,6 +774,43 @@ It has zero scalar period in the cap limit, with limiting coefficient
 meridian that must be accounted for when gluing the projective
 CD parameter chains. A global chain in the original loop variables
 remains open.
+
+## CD contour winding obstruction and monodromy
+
+Fix `x>0` and transport the `t` path from zero to infinity as
+`z` goes counterclockwise around zero. A periodic family of paths
+avoiding `t=-z` and `t=-1/x` would make
+`(t+z)/(t+1/x)` a homotopy of loops in the punctured plane.
+At `t=0` the loop is `x*z` and winds once. At infinity it is
+constant and has winding zero. The ratio extends at infinity, so
+this discrepancy rules out such a periodic family. At a collision
+of the two poles the ratio is taken on their common complement.
+The obstruction applies to the fixed positive-`x` path ansatz.
+
+Across the seam the continued branch carries the clockwise
+meridian of the moving pole. On the lower semicircle its scalar
+period is
+
+```text
+-4*pi*i*(1+z)*integral_0^infinity dx/((1+x)*(1-z*x))
+  = 4*pi*i*Log(-z).
+```
+
+The principal value of `Log(-z)` in this formula has argument
+`arg(z)+pi` on the lower semicircle. Adding this period to the
+principal-sheet integral gives the branch where `Log(z)` has
+increased by `2*pi*i`. Approaching the starting point `z=1` from
+below gives a one-turn shift of `-4*pi**2`. The pole collision at
+`x=1,z=1` is treated by this lateral limit.
+
+The principal-sheet contour mean is `2*pi**2/3`. If one starts at
+`z=1`, continues counterclockwise through the seam, and keeps the
+returned sheet on the lower semicircle, the meridian contributes
+`-pi**2` to the mean, giving `-pi**2/3` for that continued path.
+This distinguishes the two prescriptions even though the seam
+values agree. Any identification with a Lorentzian cycle must
+explain the branch reset or supply compensating chains. CD chains in
+which the `x` contour also moves remain open.
 
 ## Scope of the checks
 
