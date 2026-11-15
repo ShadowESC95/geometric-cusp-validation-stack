@@ -1403,6 +1403,36 @@ product cap. Tracking regulated meridians in the finite
 `x` region and near the frame puncture, and identifying
 the remaining Lorentzian boundary data, remain open.
 
+## Finite-x confinement of regulated diagonal-cap poles
+
+For the same cap `R=.06`, write `B=L(x)-2*k/R`, where
+`L(x)=5+4*x-x/(1+x)`. Expanding the regulator square gives
+`D=H-i*eps*x*G**2/(4*A*(1+x)**2)-i*eps*E`, where
+`E=B*G/(2*(1+x))+A*B**2/(4*x)`. After the rotation
+`exp(-i*pi/8)`, the first two terms together have imaginary
+part at most `-sin(pi/8)`, since `arg(G)` is in `[0,pi/4]`.
+This retains the singular `eps/A` contribution in the bound.
+
+For `abs(k)<=1`, put `M=5+2/R`. Then `abs(B)<=M+4*x`.
+Using `A<=1` and `abs(G)<=1`, for `x<=14` one obtains
+`abs(E)<=M**2/(4*x)+5*M/2+56`. If `eps<=1e-4` and
+`x>=2500*eps`, the correction is at most `0.162128`
+in modulus. The normalized cap denominator therefore has
+a gap of at least `0.22055`, uniformly over `A>0` and the
+whole disk. Together with the upper-region estimate, this
+confines any regulated roots inside the disk to
+`x<2500*eps`. The constants are sufficient bounds.
+
+At fixed `x>0`, the auxiliary limit `A=eps*a` for `a>0`
+leaves `H-i*x*G**2/(4*a*(1+x)**2)`. It is independent of
+`k` and obeys the same projected gap as the dominant term.
+The example verifies refinement for this limit, zero rim
+winding outside the lower layer, and a control slice with
+two roots inside the lower layer. Confinement localizes the
+regulated obstruction for the diagonal product cap. It does
+not match the remaining frame-puncture and Lorentzian
+boundary data.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
