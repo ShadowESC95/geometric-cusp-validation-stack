@@ -45,6 +45,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.weighted_boundary_cycle` | An explicit capped cycle on the complex weighted divisor, its chart orientations, and its scalar pushforward to the benchmark contour |
 | `PYTHONPATH=src python -m examples.cd_cycle_seam` | The CD contour difference at the capped-cycle seam and the meridian retained by resolving the moving pole |
 | `PYTHONPATH=src python -m examples.cd_cycle_monodromy` | A winding obstruction for periodic CD paths in the fixed positive-x chart and the period of the continued branch |
+| `PYTHONPATH=src python -m examples.cd_moving_contour` | A fixed-corner obstruction for moving CD parameters and the period of the nested meridian at chart infinity |
 
 ## Finite-cutoff continuation
 
@@ -811,6 +812,40 @@ This distinguishes the two prescriptions even though the seam
 values agree. Any identification with a Lorentzian cycle must
 explain the branch reset or supply compensating chains. CD chains in
 which the `x` contour also moves remain open.
+
+## Moving CD square and nested meridian
+
+Put `X=x/(1+x)`, `Y=y/(1+y)`. The two-parameter form is
+`2*(1+z)*dX^dY/D` with `D=z*X*(1-Y)+Y*(1-X)`. This sends the
+positive quadrant to the unit square. Its opposite corners
+`(1,0)` and `(0,1)` have `D=z` and `D=1`, respectively.
+Suppose the square moves continuously and periodically with `z`
+in this affine chart, keeps these corners fixed, and avoids
+`D=0` on its interior, which includes a connecting arc between
+the two corners. Remove the two other corners if the original
+corner singularities are treated as relative boundaries.
+The image under `D` of a connecting arc would give a homotopy
+of the corner loops in the punctured complex plane. Their
+windings are one and zero. This rules out the periodic affine
+square with these corners even when both parameters move.
+
+The moving divisor is `Y=-z*X/(1-(1+z)*X)`. For `z` off the
+seam, it reaches `Y=infinity` at `X=1/(1+z)`. In `U=1/Y`
+the form has a logarithmic factor `dU/U` at chart infinity.
+The `Y` residue of the moving divisor is
+`-2*dX/(X-1/(1+z))`. A positive `X) meridian about that pole
+with a clockwise `Y` meridian about the moving divisor therefore
+has period `-8*pi**2`, with the orientation `(X,Y)`.
+The example checks this by nested contour quadrature at three
+points of the lower semicircle and two radii. It is the constant
+shift obtained by adding `2*pi*i` to `Log(-z)` in the
+moving-pole period. A fixed integer number of these nested
+meridians leaves the angle dependence of that period intact.
+
+A general relative chain can change the boundary construction
+or involve contributions at infinity. Accounting for those
+contributions and relating the result to the Lorentzian contour
+remain open.
 
 ## Scope of the checks
 
