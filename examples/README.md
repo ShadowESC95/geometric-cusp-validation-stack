@@ -1143,6 +1143,49 @@ removed. The lifted faces are relative boundary data
 on the resolved space; their matching to the endpoint
 and base boundary of the Lorentzian chain remains open.
 
+## Reduced principal contour and the shared CD meridian
+
+Take the positive-parameter representative of the reduced
+principal contour, with `x,y>0` and `z=exp(i*phi)`. On any
+retained arc `abs(phi)<=pi-delta`, deform `y` to `exp(i*s*phi)*y`
+for `0<=s<=1`. The two relevant factors are `1+y*exp(i*s*phi)`
+and `z*(x+y*exp(-i*(1-s)*phi))`. The bound
+`abs(a+b*exp(i*alpha))>=sin(delta/2)*(a+b)` for positive `a,b`
+and `abs(alpha)<=pi-delta` keeps both factors nonzero. This
+gives a deformation over the retained arcs, with side faces
+over their endpoints.
+
+In the positive-parameter representative, write `u=y/x` and
+`h=u+z`. Its seam is `u=1, z=-1`; the Jacobian from
+`(Re h, Im h)` to `(u,phi)` is negative. A positively oriented
+normal circle is therefore `h=R*exp(-i*theta)`. On the
+first cap collar take `z_s=(1-s)*z-s`, `y_s=x*(h-z_s)`.
+This keeps the moving factor equal to `x*h`, and `Re(y_s)>0`
+for the small radii used here. At `s=1` one obtains `z=-1`,
+`y=x*(1+h)`. This is the same clockwise moving meridian
+used by the rotated cap with fixed transferred radius `R`.
+The shared transfer collar and punctured base disk give the
+same two base-pole tubes in these reduced representatives.
+
+The two normal-disk periods agree exactly. In the rotated
+representative use coordinates `(x_rot,u_rot,z_rot)` with
+`y_rot=z_rot*u_rot`. Under `x_rot=1/x`, `u_rot=u`, `z_rot=1/z`,
+the normalized three-form pulls back to the positive-parameter
+form in `(x,u,z)`. The two inversions preserve the product
+orientation, and the rotated normal coordinate is `f=h/z`.
+Since `abs(z)=1`, the map takes the `h` disk to the `f` disk
+with the same radius. It interchanges the two `x` endpoints.
+The example checks this identity symbolically and compares
+independent quadratures of the two disks and the principal
+cap collar. The collar equals the removed principal disk by
+the same punctured-disk Stokes argument as for the rotated cap.
+
+This comparison is in the reduced CD parameter space. The
+projective reduction of the scalar integrals gives these
+forms. Lifting the matching to the unreduced Feynman chain,
+including the auxiliary parameter boundaries and both resolved
+endpoint faces, remains a separate step.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

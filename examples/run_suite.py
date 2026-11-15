@@ -6,6 +6,7 @@ from .cd_compactified_cap import check_cd_compactified_cap
 from .cd_cycle_seam import check_cd_cycle_seam
 from .cd_cycle_monodromy import check_cd_cycle_monodromy
 from .cd_moving_contour import check_cd_moving_contour
+from .cd_principal_seam import check_cd_principal_seam
 from .cd_projective_infinity import check_cd_projective_infinity
 from .cd_projective_intersections import check_cd_projective_intersections
 from .cd_projective_period import check_cd_projective_period
@@ -90,6 +91,7 @@ def main():
         ("Compactified CD seam and the two base poles", check_cd_compactified_cap),
         ("Swept CD cap and relative boundary terms", check_cd_swept_cap),
         ("Resolved endpoint faces of the swept CD cap", check_cd_cap_endpoints),
+        ("Reduced principal contour and the shared CD meridian", check_cd_principal_seam),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
