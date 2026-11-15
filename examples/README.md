@@ -24,6 +24,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.spatial_tail` | Wick rotation outside a large sphere, a uniform bound for the exterior integral, and its first two asymptotic coefficients |
 | `PYTHONPATH=src python -m examples.null_pinch` | Local integrability and the leading transverse area term over a segment shared by two projected external null edges |
 | `PYTHONPATH=src python -m examples.null_insertion_crossing` | Finite-part and delta-derivative terms where an external null edge crosses the insertion pole |
+| `PYTHONPATH=src python -m examples.null_endpoint` | A bound on the endpoint energy density and the normalized shrinking-ball coefficient with and without a scaled regulator |
 
 ## Finite-cutoff continuation
 
@@ -180,6 +181,25 @@ delta derivative contributes `15*pi*i/2` and the full coefficient is
 approximately `-154.611276292+23.561944902i`. The example takes the
 regulator to zero at fixed radius and then tests the coefficient as the
 radius shrinks. Its axial interval is centered at one crossing.
+
+## External null-edge endpoint
+
+Consider a spatial ball of radius `R` centered at the second external
+propagator, `(p_x,p_y,p_z)=(0,0,-1)`. The two incident null edges meet
+at `E=1`. At the upper `D2` pole their combined factor is
+`D1*D3=2*(p_perp**2-i*eps)`, with the same positive regulator used in all
+propagators. Reflection averaging supplies `p_x**2` in the numerator.
+The resulting energy density has an integrable `O(1/r)` bound, where
+`r` is distance from the ball center. The projected `D1`–`D4` pinch
+at a separate energy has bounded density after reflection averaging.
+The remaining poles are integrated in groups on fixed energy contours.
+
+At zero regulator the leading density is
+`(16/pi)*cos(phi)**2/r`, giving `16*R**2` for the leading normalized
+ball integral. The example also checks the finite-regulator scaling
+`eps=eta*R**2` at fixed `eta=0.1` against the rescaled endpoint
+kernel, and decreases `eta` at fixed ball radius as a separate
+check. This calculation covers the endpoint at the second propagator.
 
 ## Scope of the checks
 
