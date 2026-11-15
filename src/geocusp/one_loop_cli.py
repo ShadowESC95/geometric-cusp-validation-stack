@@ -7,7 +7,12 @@ from pathlib import Path
 import numpy as np
 
 from .cusp_audit import run_audit
-from .residue import blowup_intersection_yw, strict_cusp_blowup_zero_residue, chart_transition_source_to_U12
+from .residue import (
+    blowup_intersection_yw,
+    chart_transition_source_to_U12,
+    strict_cusp_blowup_zero_residue,
+    strict_cusp_weighted_blowup,
+)
 from .visualization import residue_map_plot, linking_plot, contour_integrand_plot, alpha_z_path_plot
 from .contours import contour_points, winding_number, benchmark_F1
 
@@ -22,6 +27,7 @@ def main() -> None:
 
     res, chi = blowup_intersection_yw()
     pull, zero = strict_cusp_blowup_zero_residue()
+    weighted_residue, weighted_cross_ratio = strict_cusp_weighted_blowup()
     mapping, inverse, J = chart_transition_source_to_U12()
 
     eta = np.exp(2j*np.pi*np.arange(a.contour_points)/a.contour_points)
@@ -39,9 +45,16 @@ def main() -> None:
     report={
       'source_chart_form':'dlog(x) wedge dlog(y) wedge dlog(z0) wedge dlog(w)',
       'exceptional_residue':str(res),
+      'residue_convention':'radial differential last',
       'exceptional_cross_ratio':str(chi),
       'strict_cusp_blowup_pullback_coefficient':str(pull),
       'strict_cusp_radial_residue':str(zero),
+      'strict_cusp_weighted_blowup':{
+        'chart':'b=-rho, c=rho*C, d=rho^2*D',
+        'coordinates':['a', 'z', 'D'],
+        'radial_residue':str(weighted_residue),
+        'cross_ratio':str(weighted_cross_ratio),
+      },
       'source_to_U12_mapping':{str(k):str(v) for k,v in mapping.items()},
       'U12_to_source_inverse':{str(k):str(v) for k,v in inverse.items()},
       'source_to_U12_log_jacobian':str(J),
@@ -49,6 +62,7 @@ def main() -> None:
       'z_linking_winding_nearest_integer':int(round(audit.linking_winding)),
       'status':{
         'simple_radial_residue_on_strict_cusp_chart':'ZERO',
+        'strict_cusp_radial_residue_scope':'homogeneous blow-up',
         'exceptional_divisor_residue_on_adjacent_propagator_intersection':'NONZERO',
         'exceptional_eta_to_cross_ratio':'z=(z0/x)*eta',
         'literal_alpha_equals_z':'NOT_ESTABLISHED',

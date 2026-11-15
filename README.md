@@ -182,7 +182,7 @@ Z_A=Z_i,
 Z_B=Z_{i-1}+\alpha Z_{i+1}.
 \]
 
-The code separately blows up the strict line and computes the radial residue. In the chosen chart the simple radial residue is zero; this is a useful **falsification result**, because it shows that one cannot simply identify the strict cusp line itself with a codimension-one logarithmic divisor.
+The homogeneous blow-up of the strict line gives zero radial residue at a generic point. The weighted chart `b=-rho, c=rho*C, d=rho^2*D` gives a nonzero residue and a variable cross-ratio `z=-1-C/(a*D)`. The one-loop audit reports both results and uses the radial-last orientation. These are local statements about the blow-ups. The physical integration cycle remains to be specified.
 
 ### 1.6 Two-loop negative geometry
 

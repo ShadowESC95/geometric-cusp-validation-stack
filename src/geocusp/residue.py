@@ -25,16 +25,12 @@ def source_chart_brackets():
 
 
 def blowup_intersection_yw():
-    """Blow up the two adjacent massless corners y=w=0 using y=rho*eta,w=rho."""
+    """Return the residue with the radial differential last, and the cross-ratio."""
     x,z0,rho,eta = sp.symbols("x z_0 rho eta", nonzero=True)
     y = rho*eta
     w = rho
-    # dlog form. Use symbolic wedge bookkeeping via coordinates (x,rho,eta,z0).
-    # dlog x ∧ dlog y ∧ dlog z0 ∧ dlog w
-    # = dlog x ∧ (dlog rho + dlog eta) ∧ dlog z0 ∧ dlog rho
-    # = - dlog x ∧ dlog eta ∧ dlog z0 ∧ dlog rho.
-    # Reorder to dlog rho first: 3 swaps -> sign flips, yielding + dlog rho∧dlog x∧dlog eta∧dlog z0.
-    residue = 1/(x*eta*z0)
+    jacobian = sp.Matrix([x, y, z0, w]).jacobian([x, eta, z0, rho]).det()
+    residue = rho * jacobian / (x * y * z0 * w)
     chi = sp.simplify((y*z0)/(w*x))
     return sp.factor(residue), sp.factor(chi)
 
@@ -43,17 +39,32 @@ def strict_cusp_blowup_zero_residue():
     """Use U_12 gauge near strict line b=c=d=0,a=alpha.
 
     The source one-loop form in this chart is da∧db∧dc∧dd/[a*d*(a*d-b*c)].
-    Blowing up b,c,d simultaneously yields a vanishing coefficient of d rho/rho:
-    the strict collinear line is not itself a simple log divisor of this chart.
+    The homogeneous scaling of b,c,d yields a vanishing coefficient of
+    d rho/rho at a generic point of this exceptional divisor.
     """
     a,b,c,d,rho,B,C,D = sp.symbols("a b c d rho B C D")
     form_coeff = 1/(a*d*(a*d-b*c))
     sub = {b:rho*B, c:rho*C, d:rho*D}
-    # Jacobian for (b,c,d) wrt (rho,B,C,D) wedge, choosing d rho ∧ dB ∧ dC ∧ dD.
-    # Determinant of 3x3 derivatives after treating rho as radial coordinate is rho^2.
+    # The radial Jacobian has degree two on an affine chart of the blow-up.
     pull = sp.simplify(form_coeff.subs(sub) * rho**2)
     residue = sp.simplify(sp.limit(rho * pull, rho, 0))
     return sp.factor(pull), sp.factor(residue)
+
+
+def strict_cusp_weighted_blowup():
+    """Use b=-rho, c=rho*C, d=rho^2*D in the U_12 chart.
+
+    Express the residue in the radial-last order (a, z, D, rho), where
+    z is the cross-ratio. This is a local form on the weighted divisor.
+    """
+    a, rho, C, D, z = sp.symbols("a rho C D z", nonzero=True)
+    b, c, d = -rho, rho * C, rho**2 * D
+    cross_ratio = sp.factor((b * c - a * d) / (a * d))
+    chart = sp.Matrix([a, b, -rho * a * D * (z + 1), d])
+    jacobian = chart.jacobian([a, z, D, rho]).det()
+    a_chart, b_chart, c_chart, d_chart = chart
+    coefficient = jacobian / (a_chart * d_chart * (a_chart * d_chart - b_chart * c_chart))
+    return sp.factor(sp.residue(coefficient, rho, 0)), cross_ratio
 
 
 def chart_transition_source_to_U12():

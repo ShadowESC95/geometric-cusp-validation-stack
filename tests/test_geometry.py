@@ -1,5 +1,10 @@
 import sympy as sp
-from geocusp.residue import blowup_intersection_yw, strict_cusp_blowup_zero_residue, chart_transition_source_to_U12
+from geocusp.residue import (
+    blowup_intersection_yw,
+    chart_transition_source_to_U12,
+    strict_cusp_blowup_zero_residue,
+    strict_cusp_weighted_blowup,
+)
 from geocusp.negative_geometry import symbolic_two_loop_integrand, collective_scaling
 
 
@@ -7,12 +12,19 @@ def test_exceptional_cross_ratio():
     res, chi = blowup_intersection_yw()
     x,z0,rho,eta = sp.symbols('x z_0 rho eta', nonzero=True)
     assert sp.simplify(chi-eta*z0/x)==0
-    assert res!=0
+    assert res == 1 / (x * eta * z0)
 
 
 def test_strict_cusp_not_simple_radial_divisor():
     pull, residue = strict_cusp_blowup_zero_residue()
     assert sp.simplify(residue)==0
+
+
+def test_strict_cusp_weighted_blowup():
+    a, C, D, z = sp.symbols("a C D z", nonzero=True)
+    residue, cross_ratio = strict_cusp_weighted_blowup()
+    assert sp.simplify(residue + 1 / (a * z * D)) == 0
+    assert sp.simplify(cross_ratio + 1 + C / (a * D)) == 0
 
 
 def test_chart_transition_jacobian_nonzero():

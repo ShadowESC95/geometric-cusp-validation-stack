@@ -32,7 +32,7 @@ z=\frac{z_0}{x}\eta,
 
 so the projective normal coordinate and the established contour variable are related by an exact multiplicative map.
 
-For the strict one-dimensional collinear line, the simple radial residue in the chosen chart is zero. This is a concrete warning against treating the strict line itself as a codimension-one logarithmic divisor.
+For the homogeneous blow-up of the strict collinear line, the radial residue is zero at a generic point. The weighted blow-up with weights (1, 1, 2) in (b, c, d) yields a nonzero radial residue and preserves a variable cross-ratio. The one-loop CLI reports both checks.
 
 ## Two-loop finding
 

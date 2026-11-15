@@ -38,7 +38,19 @@ def contour_I_Fbar(g, func, radius=1.0, n=8192):
 def contour_I_insertion(func, radius=1.0, n=8192):
     """Equivalent contour action on the insertion-normalized object with the explicit g^2 removed."""
     avg,phi,vals=contour_mean(func,radius,n)
-    return -avg, phi, vals
+    return avg, phi, vals
+
+
+def cusp_coefficient_from_mean(loop_order: int, mean: complex) -> complex:
+    """Convert the unit-circle mean of Fbar^(L-1) to the g^(2L) coefficient.
+
+    Dixon et al., arXiv:2605.28926, Eqs. (2.30)–(2.31), (6.2)–(6.5).
+    The contour contributes -g^2 times the mean. The coupling derivative
+    multiplies the g^(2L) coefficient by 2L.
+    """
+    if loop_order < 1:
+        raise ValueError("loop_order must be positive")
+    return -4 * mean / loop_order
 
 
 def weak_cusp(g):
