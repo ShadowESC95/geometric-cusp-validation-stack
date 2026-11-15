@@ -1227,6 +1227,45 @@ of the diagonal cap in the zero-regulator parameter map.
 The other cap pieces and comparison with the original
 finite-regulator Lorentzian chain remain open.
 
+## Regulated auxiliary infinity edge at z=1
+
+On the real diagonal `y=x>0` at `z=1`, set
+`v=x/(1+x)**2`, `G=1+(Q-1)*s`, and `H=1-(1+Q)*s`.
+In the triangle variables of the preceding example,
+the finite-regulator density is `-2*Q/D**3`, where
+`D=H-4*i*eps*(A+v*(G-A)/4)**2/(v*A)`.
+This follows from inserting the original Feynman regulator
+`-i*eps*(1+a1+a2+a3+a4)**2` before projective normalization.
+
+The argument of `A+v*(G-A)/4` lies in `[0,pi/4]`, since
+it is `A*(1-v/4)+(v/4)*((1-s)+Q*s)`. The regulator shift
+therefore lies in the sector `[-pi/2,0]`. Multiplication by
+`exp(-i*pi/8)` gives `H` the constant imaginary part
+`-sin(pi/8)` and gives the shift a nonpositive imaginary
+part. This proves the same denominator gap for all
+positive `eps`, all `x>0`, and the triangle interior.
+
+In the joint corner `A=v*b`, for fixed positive `b`, the
+regulated denominator tends to `H-4*i*eps*(b+G/4)**2/b`
+at either `x` endpoint. At fixed interior `x`, the shift instead
+grows like `eps/A` near the triangle edge. The zero-regulator
+expansion of the integrated fiber begins with
+`1+(i*v/2)*eps*log(1/eps)+O_x(eps)`.
+For the coefficient, the edge multiplier is `v*G**2/(4*A)`.
+Expanding the inverse cube gives `-6*i*Q/H**4` times
+that multiplier, and the integral of `G**2/H**4` over `s`
+is `-1/(3*Q)`. To bound the remainder, the strip `A<eps`
+has area at most `eps` and the density is bounded by the gap.
+Above that strip, the quadratic remainder is
+`O_x(eps**2/A**2)` and integrates to `O_x(eps)`. The
+`log(1-s)` from the upper edge is integrable. The example
+checks the logarithmic coefficient with divided differences
+in `log(1/eps)` to remove the order-`eps` constant term.
+
+This estimate uses the sector at real `z=1`. The base-cap
+continuation to complex `z` and its finite-regulator matching
+to the original Lorentzian chain require additional analysis.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
