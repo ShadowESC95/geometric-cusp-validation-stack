@@ -21,6 +21,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.pinch_intersection` | A local intersection of two timelike pinch surfaces, including the principal values and the contribution supported where both surfaces meet |
 | `PYTHONPATH=src python -m examples.closed_pinch_curve` | Integration along the full closed intersection and regulator convergence of the lower `D4` residue over a tube around it |
 | `PYTHONPATH=src python -m examples.tube_energy_sum` | All five energy residues over that tube, including a group contour through same-side pole coincidences |
+| `PYTHONPATH=src python -m examples.spatial_tail` | Wick rotation outside a large sphere, a uniform bound for the exterior integral, and its first two asymptotic coefficients |
 
 ## Finite-cutoff continuation
 
@@ -114,6 +115,28 @@ the bounded spatial tube. The example also checks the closure sign and
 normalization against direct energy quadrature at two spatial points.
 The values use the raw integrand before the overall `1/(i*pi**2)` loop
 normalization.
+
+## Large spatial momentum tail
+
+For `r=|p| >= 6` in the finite frame, the spatial centers have norm
+at most `3/2` and the energy centers have magnitude at most `1`.
+The energy poles therefore lie outside the first and third quadrants,
+allowing the energy contour to rotate without crossing a pole.
+
+After rotation to `E=i*t`, write the propagators as `-A_j`. The four
+external factors are even in `p_x`. The insertion has its spatial
+center at `p_x=-1/2`, so averaging over `p_x` and `-p_x` gives
+`-4*p_x**2/(pi**2*prod(A_j)*A_insertion_reflected)` with the loop
+normalization included. Each of the six factors has real part at
+least `(r**2+t**2)/2`; this gives the integrated bound `14/R**6`
+for the region `r>R>=6`, uniformly in the nonnegative regulator.
+
+At zero regulator the large-`R` expansion starts with
+`-7/(32*R**6) - 50809/(40960*R**8)`. The expansion uses scaled energy
+`t/r` and `1/r`. Reversing the spatial direction and scaled energy
+cancels odd powers of `1/r` after integration. The example compares the
+coefficients to quadrature at four radii. The ball `r<=R` contains the
+finite-momentum pinch regions.
 
 ## Scope of the checks
 
