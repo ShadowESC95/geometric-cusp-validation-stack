@@ -38,16 +38,20 @@ def finite_numerator(loop, centers):
 
 
 def energy_poles(spatial, centers, eps):
-    squared_momenta = np.sum((np.asarray(spatial) - centers[:, 1:])**2, axis=1)
+    squared_momenta = np.sum((np.asarray(spatial)[..., None, :] - centers[:, 1:])**2, axis=-1)
     omega = np.sqrt(squared_momenta - 1j*eps)
     return centers[:, 0]-omega, centers[:, 0]+omega
 
 
 def upper_residues(spatial, centers, eps):
+    spatial = np.asarray(spatial)
+    centers = np.asarray(centers)
     upper, lower = energy_poles(spatial, centers, eps)
-    differences = upper[:, None]-upper
-    np.fill_diagonal(differences, 1)
-    return -4*spatial[0]/np.prod(differences*(upper[:, None]-lower), axis=1)
+    differences = upper[..., :, None]-upper[..., None, :]
+    indices = np.arange(len(centers))
+    differences[..., indices, indices] = 1
+    factors = differences*(upper[..., :, None]-lower[..., None, :])
+    return -4*spatial[..., :1]/np.prod(factors, axis=-1)
 
 
 def direct_energy_integral(spatial, centers, eps):

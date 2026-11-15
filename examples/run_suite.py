@@ -4,6 +4,7 @@ from .cd_integral import check_cd_benchmark, check_continuation, check_contour_a
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .energy_contour import check_energy_contour
+from .full_finite_frame import check_full_finite_frame
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
 from .lower_null_endpoint import check_lower_null_endpoint
 from .mixed_null_endpoints import check_mixed_null_endpoints
@@ -42,6 +43,7 @@ def main():
         ("Null-edge endpoints on timelike pinch surfaces", check_mixed_null_endpoints),
         ("Finite momentum pinch inventory and insertion center", check_pinch_inventory),
         ("Insertion crossing on the D3-D4 null edge", check_second_null_insertion_crossing),
+        ("Full regulated finite-frame integral", check_full_finite_frame),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -29,6 +29,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.mixed_null_endpoints` | The first and third external endpoints, where a timelike pinch surface adds an imaginary part to each shrinking-ball coefficient |
 | `PYTHONPATH=src python -m examples.pinch_inventory` | A pairwise inventory of the finite-frame pinch sets and the small-ball expansion at the isolated insertion center |
 | `PYTHONPATH=src python -m examples.second_null_insertion_crossing` | The second insertion crossing, with a real leading cylinder coefficient from an even axial weight |
+| `PYTHONPATH=src python -m examples.full_finite_frame` | The complete normalized finite-frame integral via energy residues plus the Wick-rotated exterior, compared with an independent Feynman-parameter calculation and its regulator limit |
 
 ## Finite-cutoff continuation
 
@@ -278,6 +279,39 @@ part and the other null pair give a normalized cylinder coefficient
 of approximately `-63.874350325` after division by the transverse
 radius squared. The example takes the regulator to zero at fixed
 radius and checks the shrinking-cylinder coefficient separately.
+
+## Full regulated finite-frame integral
+
+Use the common `+i*eps` regulator in all five momentum-space propagators
+at `rho=1/2`, `z=1`. Inside `|p|<=3`, integrate the upper energy
+residue sum using scrambled Sobol points. Outside this sphere, all
+spatial distances to the propagator centers exceed their respective
+absolute energy offsets. This allows the exterior Wick rotation. The
+two pieces cover the full spatial domain at positive regulator.
+
+Independently, combine the five propagators, shift the energy and spatial
+loop variables by their parameter-weighted centroid, and set the insertion
+parameter to one. The normalized parameter integrand on this projective
+patch is `-4/(A-B*a4-i*eps*P**2)**3`, where
+`A=(a1+a2)/4+(1+2*a1)*a3`, `B=1+2*a2`, and
+`P=1+a1+a2+a3+a4`. This expression includes the affine numerator
+evaluated at the centroid. Rotate `a4` through `+pi/4`. In the swept
+sector the denominator has strictly negative imaginary part at
+positive regulator. On the final ray, writing `a4=c+i*c`, the real
+part is at least `A-B*c`, and the magnitude of the imaginary part is
+at least `B*c`. Splitting at `B*c=A/2` bounds the modulus below by
+`(A+B*c)/3` for all nonnegative regulators. The resulting integrable
+majorant permits the zero-regulator limit on this ray.
+
+At zero regulator the `a4` and `a3` integrals reduce analytically, and
+the last two coordinates give
+`4*dx*dy/((1+x)*(1+y)*(x+y))` on the positive quadrant. Integrating
+over `x` and folding the `y>1` part by inversion leaves
+`8*integral_0^1[-log(y)/(1-y**2)]dy=pi**2`. The full-domain spatial
+and parametric quadratures are compared at `eps=0.3` and `0.16`.
+The smaller-regulator convergence is checked in parameter space.
+Scramble spreads describe variation across the chosen deterministic
+seeds.
 
 ## Scope of the checks
 
