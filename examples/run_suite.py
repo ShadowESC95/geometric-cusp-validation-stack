@@ -29,6 +29,7 @@ from .second_null_insertion_crossing import check_second_null_insertion_crossing
 from .spatial_pinch import check_spatial_pinch
 from .spatial_tail import check_spatial_tail
 from .tube_energy_sum import check_tube_energy_sum
+from .weighted_boundary_cycle import check_cycle_and_period
 
 
 def main():
@@ -68,6 +69,7 @@ def main():
         ("High-order moments across the merging spectral edges", check_regulator_moment_crossover),
         ("Complex regulator cut and endpoint singularity", check_complex_regulator),
         ("Interior spectral cusp on the complex-regulator cut", check_regulator_interior_cusp),
+        ("Capped weighted-divisor cycle and scalar pushforward", check_cycle_and_period),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -42,6 +42,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.regulator_moment_crossover` | The high-order moment crossover and its first finite-order correction as the edge locations merge |
 | `PYTHONPATH=src python -m examples.complex_regulator` | The regulator-plane cut, its two boundary values, and the complex singularity at the upper endpoint |
 | `PYTHONPATH=src python -m examples.regulator_interior_cusp` | The square-root correction at the interior spectral cusp, approached along complex rays and both lips of the cut |
+| `PYTHONPATH=src python -m examples.weighted_boundary_cycle` | An explicit capped cycle on the complex weighted divisor, its chart orientations, and its scalar pushforward to the benchmark contour |
 
 ## Finite-cutoff continuation
 
@@ -699,11 +700,53 @@ on the right lip and purely imaginary with opposite signs on the
 two left lips. The example verifies these phases and coefficients
 with four complex rays and direct boundary-value quadrature.
 
+## Capped weighted-divisor cycle and scalar pushforward
+
+In the weighted blow-up of `(b,c,d)` with weights `(1,1,2)`, the
+`d` chart has the cover `b=r*u, c=r*v, d=r**2` with residual
+`(u,v)->(-u,-v)` on the exceptional divisor. The cross-ratio is
+`z=u*v/a-1`. In radial-last convention the residue on the cover is
+`2*da^du^dv/(a*(a-u*v))`. The code checks it against the `b=-rho`
+chart using `D=1/u**2`, including the Jacobian sign. It also checks
+the canonical form under the change to columns `(3,2)`. The new
+weight-two coordinate is `-z*r**2`, so the weighted chart stays
+valid along the chosen contour.
+
+Choose `a=R*exp(i*alpha)` with `R>0` and
+`z=exp(i*phi)` with `-pi<=phi<=pi`. For `z!=-1`, take
+`u=sqrt(abs(a*(z+1)))*exp(i*theta)` and `v=a*(z+1)/u`.
+One turn downstairs uses `0<=theta<=pi`. Both ends in `phi`
+send the whole theta circle to `u=v=0` at each `a`. This defines
+a closed cycle as the image of the `a` circle times the suspension
+of the theta circle. The caps lie on the quotient locus. The
+form on the cover is regular there for `a!=0`, and the construction
+avoids the polar set `a*(a-u*v)=0`.
+
+With orientation `(alpha,phi,theta)), the pullback on the open
+cylinder is `2*da/a^dz/z^du/u`. The factor two cancels the half
+turn in the cover. Integrating the two oriented fiber circles with
+normalization `(2*pi*i)**(-2)` pushes the cycle to `dz/z`.
+The pullback is bounded in angle coordinates, so the caps add no
+separate term when integrating by a limit of truncated cylinders.
+The principal-sheet CD weight has matching limits at `z=-1`.
+The example integrates it using the reduced projective quadrature
+and obtains the normalized period `2*pi**2/3`. The conversion to
+the two-loop coefficient uses the published contour normalization
+in Eqs. (6.2)–(6.6) of Multi-Loop Negative Geometries.
+
+This is an explicit complex cycle for the local weighted residue
+and an externally supplied CD scalar weight. On the Lorentzian
+real slice `c=-2*conj(b)` with `a,d` real, the cross-ratio is real.
+The calculation supplies no deformation of that prescription to
+the capped cycle, no transport of the CD integration class along
+the cycle, and no accounting of additional chains in such a
+deformation.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
 The chart checks establish local matching with a transported prescription at
 finite regulator. The parameter tail is an estimate in the reduced integral.
-Constructing the global cycle on the weighted twistor divisor and controlling
-its remaining chart-edge contributions are open steps in the geometric-period
-proposal.
+The capped cycle realizes the benchmark scalar contour on the complex
+weighted divisor. Identifying it with the Lorentzian contour class, including
+the CD cycle and any additional chart-edge contributions, remains open.
