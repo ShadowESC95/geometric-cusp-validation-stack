@@ -5,6 +5,7 @@ from .chart_transport import check_chart_matching, check_edge_residue, check_tra
 from .closed_pinch_curve import check_closed_pinch_curve
 from .energy_contour import check_energy_contour
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
+from .lower_null_endpoint import check_lower_null_endpoint
 from .null_endpoint import check_null_endpoint
 from .null_insertion_crossing import check_null_insertion_crossing
 from .null_pinch import check_null_pinch
@@ -34,6 +35,7 @@ def main():
         ("External null-edge cylinder", check_null_pinch),
         ("External null edge crossing the insertion pole", check_null_insertion_crossing),
         ("External null-edge endpoint", check_null_endpoint),
+        ("Lower-branch null-edge endpoint", check_lower_null_endpoint),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

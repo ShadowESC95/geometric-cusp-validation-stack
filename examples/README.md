@@ -25,6 +25,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.null_pinch` | Local integrability and the leading transverse area term over a segment shared by two projected external null edges |
 | `PYTHONPATH=src python -m examples.null_insertion_crossing` | Finite-part and delta-derivative terms where an external null edge crosses the insertion pole |
 | `PYTHONPATH=src python -m examples.null_endpoint` | A bound on the endpoint energy density and the normalized shrinking-ball coefficient with and without a scaled regulator |
+| `PYTHONPATH=src python -m examples.lower_null_endpoint` | The fourth external endpoint on a lower energy branch, including two terms of the normalized shrinking-ball expansion |
 
 ## Finite-cutoff continuation
 
@@ -200,6 +201,23 @@ ball integral. The example also checks the finite-regulator scaling
 `eps=eta*R**2` at fixed `eta=0.1` against the rescaled endpoint
 kernel, and decreases `eta` at fixed ball radius as a separate
 check. This calculation covers the endpoint at the second propagator.
+
+## Lower-branch null-edge endpoint
+
+At the fourth external propagator, the two incident null edges meet at
+`E=p_z=-1/2` and `p_x=p_y=0`. At the lower `D4` pole the product of
+the two regulated null factors is again `2*(p_perp**2-i*eps)`. The
+remaining factors at the center are `D2=2` and `D_insertion=1`.
+With clockwise energy closure, the reflection-averaged density has
+leading term `cos(phi)**2/(pi*r)`. Its ball integral starts at `R**2`.
+
+The `D2`–`D3` pinch projects to the same ball at a different energy.
+Its bounded reflection-averaged density contributes to the next term,
+alongside the first-order expansion of the lower `D4` residue. The
+zero-regulator expansion starts with `R**2 + (1699/150)*R**3`.
+The example checks both coefficients, the scaled regulator
+`eps=0.1*R**2`, and the clockwise sign against the upper residue sum
+at a finite-regulator point.
 
 ## Scope of the checks
 

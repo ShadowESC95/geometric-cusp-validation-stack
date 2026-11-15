@@ -52,13 +52,13 @@ def endpoint_energy(r, mu, cos_phi, eps, centers):
     return soft + second_pair - 8/pi*x_sq*regular/len(CONTOUR_OFFSETS)
 
 
-def integrate_ball(radius, eta, centers, order):
+def integrate_ball(radius, eta, centers, order, energy_density=endpoint_energy):
     """Integrate over a spatial ball with eps=eta*radius^2."""
     nodes, weights = np.polynomial.legendre.leggauss(order)
     t = (nodes[:, None, None]+1)/2
     mu = nodes[None, :, None]
     phi = (pi/4)*(nodes[None, None, :]+1)
-    density = endpoint_energy(radius*t, mu, np.cos(phi), eta*radius**2, centers)
+    density = energy_density(radius*t, mu, np.cos(phi), eta*radius**2, centers)
     return pi*radius**3/2*np.einsum("i,j,k,ijk->", weights, weights, weights, t*t*density)
 
 
