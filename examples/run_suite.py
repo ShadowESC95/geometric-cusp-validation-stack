@@ -5,6 +5,7 @@ from .chart_transport import check_chart_matching, check_edge_residue, check_tra
 from .closed_pinch_curve import check_closed_pinch_curve
 from .energy_contour import check_energy_contour
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
+from .null_insertion_crossing import check_null_insertion_crossing
 from .null_pinch import check_null_pinch
 from .pinch_intersection import check_pinch_intersection
 from .spatial_pinch import check_spatial_pinch
@@ -30,6 +31,7 @@ def main():
         ("Complete energy contour over the closed-pinch tube", check_tube_energy_sum),
         ("Large spatial momentum tail", check_spatial_tail),
         ("External null-edge cylinder", check_null_pinch),
+        ("External null edge crossing the insertion pole", check_null_insertion_crossing),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

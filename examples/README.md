@@ -23,6 +23,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.tube_energy_sum` | All five energy residues over that tube, including a group contour through same-side pole coincidences |
 | `PYTHONPATH=src python -m examples.spatial_tail` | Wick rotation outside a large sphere, a uniform bound for the exterior integral, and its first two asymptotic coefficients |
 | `PYTHONPATH=src python -m examples.null_pinch` | Local integrability and the leading transverse area term over a segment shared by two projected external null edges |
+| `PYTHONPATH=src python -m examples.null_insertion_crossing` | Finite-part and delta-derivative terms where an external null edge crosses the insertion pole |
 
 ## Finite-cutoff continuation
 
@@ -160,6 +161,25 @@ disk radius squared is approximately `1.990891125602` in the
 normalized convention. The example checks the shrinking-disk limit
 and the regulator limit at fixed radius. The axial interval avoids
 the null-edge endpoints and intersections with the insertion.
+
+## External null edge crossing the insertion pole
+
+Take `p_z=lambda-3/2` and `u=(5*lambda-1)/4` with `abs(u)<=1/32`.
+The `D1`–`D4` null pinch crosses the insertion pole at `u=0`,
+`E=3/10`. The `D1`–`D2` null pinch also projects into this cylinder
+at a different energy. Closing the energy contour below isolates the
+lower `D4` and `D1` poles, and a fixed contour groups the remaining lower
+poles. The axial integration can then deform into the upper half-plane
+for transverse radii up to `1/64`.
+
+After reflection averaging, the two insertion factors approach
+`1/(u+i0)**2` in the shrinking-cylinder coefficient. Differentiating the
+Sokhotski–Plemelj identity gives the Hadamard finite part and an
+`i*pi*delta'(u)` term. With the loop normalization included, the
+delta derivative contributes `15*pi*i/2` and the full coefficient is
+approximately `-154.611276292+23.561944902i`. The example takes the
+regulator to zero at fixed radius and then tests the coefficient as the
+radius shrinks. Its axial interval is centered at one crossing.
 
 ## Scope of the checks
 
