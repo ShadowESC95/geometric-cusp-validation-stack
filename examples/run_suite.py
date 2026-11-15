@@ -2,6 +2,7 @@
 
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
+from .energy_contour import check_energy_contour
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
 
 
@@ -16,6 +17,7 @@ def main():
         ("Weighted twistor and regulator transport", check_transport),
         ("External pole at the chart edge", check_edge_residue),
         ("Oriented chart matching and integrated patch residue", check_chart_matching),
+        ("Five-propagator energy integral and transverse pinch", check_energy_contour),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

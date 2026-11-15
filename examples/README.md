@@ -16,6 +16,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.geometry` | One-loop signed periods and winding, homogeneous and weighted residues, two-loop radial scaling and residue orders, complex-ray pole tracking and bypass jump, Lorentzian pole collision and partial mutual-pole integrals, finite-frame propagator signs and an interior Feynman-denominator zero |
 | `PYTHONPATH=src python -m examples.cd_integral` | Finite CD integral on the positive axis, near-region recovery at fixed cross-ratio, complex contour extraction of the two-loop reference coefficient, uniform parameter-tail bound, and continuation with two finite cutoff paths |
 | `PYTHONPATH=src python -m examples.chart_transport` | Exact transport of the weighted rational form and all five Feynman prescriptions, a family leaving the original affine chart, the external residue in the adjacent chart, and matching that residue across charts at a point and over a transverse patch |
+| `PYTHONPATH=src python -m examples.energy_contour` | Real-energy quadrature versus the sum of five upper-half-plane residues, and the integrated weight of an isolated Feynman pinch in one spatial direction |
 
 ## Finite-cutoff continuation
 
@@ -33,6 +34,18 @@ plus its tail reproduces the full value.
 References for the finite CD kernel and the cusp contour normalization are
 [Arkani-Hamed, Henn and Trnka, Eq. (2.30)](https://arxiv.org/abs/2112.06956)
 and [Dixon et al., Eqs. (6.2)–(6.6)](https://arxiv.org/abs/2605.28926).
+
+## Energy contour and spatial pinch
+
+The energy example uses a finite Lorentzian frame at `rho=1/2` and the
+combined numerator from Eq. (2.30). At positive regulator it compares direct
+quadrature along the real energy axis with the sum of all five upper-half-plane
+residues. With `p_x=p_y=3/10`, the `D2` upper pole and `D4` lower pole
+meet at `p_z=-3/20`, `E=1/20` as the regulator vanishes. Integrating the
+real part of the raw energy integral across this isolated pinch gives the
+limiting weight `-250*pi**2/147`. The raw integral omits the overall
+`1/(i*pi**2)` loop normalization. The transverse momenta are held fixed
+throughout this check.
 
 ## Scope of the checks
 
