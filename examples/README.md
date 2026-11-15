@@ -1618,6 +1618,40 @@ This is a local patch coefficient. Integrating the full
 one-meridian region, combining it with the other faces,
 and matching the Lorentzian contour remain open.
 
+## Full lower one-meridian band per unit transverse coordinate on the diagonal
+
+At `t=y/x=1`, integrate between the two limiting rim
+thresholds `lambda_+(s)` and `lambda_-(s)` at every auxiliary
+triangle point. The branch with the larger threshold remains
+inside the base rim between the crossings. At their coincidence
+the interval length is zero. Split the `s` integral there to
+handle the branch switch. The threshold region is compact in
+`lambda`, bounded away from zero. Throughout the limiting
+band the two simple roots remain separated and avoid the
+real punctures, since the imaginary part of `m(s)` is strictly
+negative on `0<=s<=1`. Compactness gives uniformly small
+residue circles. The outward derivatives at the rim are
+strictly positive, so the crossing locations and the residues
+vary smoothly under a sufficiently small regulator perturbation.
+Sorting the thresholds and multiplying by the interval width
+keeps the band integral Lipschitz at the branch switch.
+
+Integrate the counterclockwise residue coefficient with
+`dx=eps*A*d(lambda)` and `0<=A<=1-s`. At zero regulator
+in this scaled chart, the residues are independent of `A`,
+so the `A` weight integrates exactly to `(1-s)**2/2`.
+This gives the diagonal band integral per unit `t` as
+`eps*C+O(eps**2)`, where quadrature yields
+`C=-11.2420175678-7.4161239685*i`. It is the coefficient of
+`dt`, since restricting the full five-form to `t=1` itself
+would give zero. At finite regulator, locate the nearby rim
+crossings branch by branch, split at the displaced switch,
+and run the full triangle quadrature. The example also
+checks the surviving root on each quadrature slice.
+As an inner boundary of the cap the meridian carries the
+opposite sign. Integrating the transverse coordinate and
+matching the complete Lorentzian boundary remain open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
