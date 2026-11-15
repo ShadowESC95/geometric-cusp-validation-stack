@@ -27,6 +27,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.null_endpoint` | A bound on the endpoint energy density and the normalized shrinking-ball coefficient with and without a scaled regulator |
 | `PYTHONPATH=src python -m examples.lower_null_endpoint` | The fourth external endpoint on a lower energy branch, including two terms of the normalized shrinking-ball expansion |
 | `PYTHONPATH=src python -m examples.mixed_null_endpoints` | The first and third external endpoints, where a timelike pinch surface adds an imaginary part to each shrinking-ball coefficient |
+| `PYTHONPATH=src python -m examples.pinch_inventory` | A pairwise inventory of the finite-frame pinch sets and the small-ball expansion at the isolated insertion center |
 
 ## Finite-cutoff continuation
 
@@ -238,6 +239,27 @@ The normalized ball integrals divided by `R**2` approach
 `16-8*pi*i` at the first endpoint and `1-pi*i/2` at the third. The
 example compares both coefficients to the energy-residue quadrature
 and checks regulator convergence at a fixed ball radius.
+
+## Finite momentum pinch inventory and insertion center
+
+The opposing branches of distinct propagators can meet where the sum of
+the distances to their spatial centers equals their energy separation.
+The triangle inequality gives four null segments and two timelike
+ellipsoids, all inside `|p|<=9/4`. The ellipsoids are from `D2`–`D4`
+and `D4`–`D_insertion`. They meet the null axis at `(-3/2,0)` and
+`(-13/10,-1/4)` in `p_z`, respectively. At `p_z=-13/10` the
+insertion crosses the interior of the `D1`–`D4` null edge. The
+`p_z=-1/4` crossing on `D3`–`D4` has yet to be integrated.
+
+The opposite branches of a single propagator meet at its own spatial
+center. At the insertion center, the four external factors are
+`-1/4,-1/4,-1,1`, and the normalized upper insertion residue starts at
+`32/(pi*r)`. For a ball centered there, the leading term is `64*R**2`.
+The grouped external residues give a cubic coefficient of about
+`-401.838813876`. Their linear variation averages to zero, so the
+quartic coefficient comes entirely from the insertion residue and
+equals `726`. The example also checks the rescaled soft kernel at
+`eps=0.1*R**2`.
 
 ## Scope of the checks
 
