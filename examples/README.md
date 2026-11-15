@@ -1043,6 +1043,59 @@ a compactified cap at each finite positive `x`. A relative
 three-chain with prescribed base-pole and `x` endpoint data
 and its Lorentzian identification require further work.
 
+## Swept CD cap and relative boundary terms
+
+For a closed interval `I=[a,b]` strictly inside the positive
+`x` axis, sweep the cap of the preceding example over `I`.
+Use `f=R*exp(i*theta)` and `base=(f-1)/abs(f-1)` for its
+seam boundary. The disk in `k` is punctured at `k=0` and
+`k=delta(x)`, where `delta(x)=R/(1+x)`. Remove disks of radii
+less than `delta(x)/3`. Their positive normal circles are
+`L_infinity` and `L_zero`. The three collar joins cancel with
+the disk junction. For the resulting oriented cap `C_x`,
+`d C_x = seam - L_zero - L_infinity`. With `x` first, the
+swept boundary is `C_b-C_a-I x seam+I x L_zero+I x L_infinity`.
+Thus the cap supplies the seam face with the opposite sign
+to the excised sweep, and leaves two pole tubes and two end caps.
+
+Only the first collar contributes to the normalized period.
+On the second collar `z=-1`, so `dz` pulls back to zero.
+On the third, `y=x+(1-s)*q` and `z=-1+s*q/x`. In the
+coordinate order `(x,q,s)`, the Jacobian is `q/x`, which
+cancels the moving pole. The remaining coefficient is analytic
+in the entire small `q` disk for every `x>0`; its circle
+integral vanishes. The punctured disk has `y=x`, hence
+`dx^dy=0`, including in the reciprocal base chart.
+The form has identically zero pullback to the punctured disk,
+and the corresponding residue pullbacks along the base-pole
+intersection curves vanish as well. The tubes remain in the
+oriented boundary.
+
+The first collar uses `y=f-1`, `z=(1-s)*base-s` in the
+order `(x,theta,s)`. Deform the filled normal disk from
+`s=0` to `s=1`. Across `f=0` its pullback is locally bounded,
+since `1+z=O(abs(f))` and `dy` supplies the polar Jacobian.
+For Stokes' theorem, first remove an inner circle. Its
+collar integral tends to zero quadratically. The deformed
+disk at `s=1` and the two constant-`x` faces have zero
+pullback. This gives equality of the first collar period
+and the original normal disk period on every finite `I`.
+The example also compares independent quadratures of the two.
+
+In the coordinate `t=x/(1+x)`, the first collar density is
+`-(1-s)*(1+base)**2/(pi*z*(z*t+(f-1)*(1-t)))`. For `R<=.2`,
+`abs(1+base)<=2*R/(1-R)` and the real parts of `z` and
+`f-1` are at most `-.5` and `-.8`, respectively. This
+bounds the density by `25*(1-s)*R**2/pi`, uniformly to
+both ends of the `t` interval. The full scalar cap limit
+therefore exists, with period `R**2/2+o(R**2)` as `R`
+shrinks. The endpoint chain requires its own treatment.
+On the last disk the homogeneous moving section is
+`delta*t*(1-t)`, so its closure meets the moving divisor
+at the endpoints. The scalar bound does not resolve
+those faces or identify this relative chain with the
+Lorentzian contour.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
