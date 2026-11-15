@@ -12,6 +12,7 @@ from .full_finite_frame import check_full_finite_frame
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
 from .large_regulator_ratio import check_large_regulator_ratio
 from .lower_null_endpoint import check_lower_null_endpoint
+from .matched_regulator_limit import check_matched_regulator_limit
 from .mixed_null_endpoints import check_mixed_null_endpoints
 from .null_endpoint import check_null_endpoint
 from .null_insertion_crossing import check_null_insertion_crossing
@@ -54,6 +55,7 @@ def main():
         ("Regulator scaling in the cusp limit", check_cusp_regulator_scaling),
         ("Reduced critical regulator kernel", check_critical_regulator_kernel),
         ("Large regulator ratio and the fixed-regulator path", check_large_regulator_ratio),
+        ("Matched small-regulator and large-ratio limits", check_matched_regulator_limit),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

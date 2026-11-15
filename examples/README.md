@@ -35,6 +35,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cusp_regulator_scaling` | Three regulator paths toward the cusp in a fixed affine frame and the limiting kernel at fixed `eps/rho**2` |
 | `PYTHONPATH=src python -m examples.critical_regulator_kernel` | One-dimensional quadrature of the fixed-ratio kernel and its leading logarithmic regulator corrections |
 | `PYTHONPATH=src python -m examples.large_regulator_ratio` | Uniform large-ratio expansion of the critical kernel and the independent fixed-regulator cusp coefficient |
+| `PYTHONPATH=src python -m examples.matched_regulator_limit` | A common rescaling for the two regulator limits and a proof of their matching coefficient |
 
 ## Finite-cutoff continuation
 
@@ -468,6 +469,40 @@ quadrature spread reported by the example. Substitution of
 `5.1506i` at the same regulator. Both describe a contribution of
 order `rho**2`, with different coefficients for the two limiting
 procedures.
+
+## Matched small-regulator and large-ratio limits
+
+Set `lambda=rho**2/eps=1/eta`, `P0=1+a1+a2`,
+`U=p3+2*a1` and `V=-p4+2*a2`. Use
+`a3=eps*P0**2*alpha/U` and `a4=eps*P0**2*beta/V`.
+Rotate `alpha` through `-pi/4` and `beta` through `+pi/4`.
+The denominator divided by `eps*P0**2` is
+
+```text
+lambda*(z*x+y)/(D*P0**2) + alpha - beta
+    - i*(1+eps*P0*(alpha/U+beta/V))**2
+```
+
+Here `x=2*a1`, `y=2*a2` and `D=1+z+rho**2*(z-1)`.
+Throughout the ray rotations the real part of the squared factor
+is at least one. This excludes poles in both deformations. On the
+final rays the magnitude of the imaginary part of the denominator
+is at least `1+(abs(alpha)+abs(beta))/sqrt(2)`. Its inverse cube is
+integrable over the two ray radii. The remaining weight for `eta*F`
+is bounded by a constant times
+`1/((1+x)*(1+y)*P0**2)` for fixed positive `z` near the joint limit.
+
+The same bound permits both iterated limits and the joint limit
+`(eps,lambda)->(0,0)` under the integral. At `eps=0` the two ray
+integrals of the inverse cube equal `-1/(2*(source-i))`, where
+`source=lambda*(z*x+y)/((1+z)*P0**2)` and the ray differentials are
+included. At `lambda=0` the remaining integral gives
+`i*(8*log(2)-4)`. Thus `eps*F/rho**2` approaches this coefficient
+when both `eps` and `rho**2/eps` vanish. This also matches the
+small-`eps` limit of `eps` times the fixed-regulator coefficient.
+The example compares the new coordinates with the compactified
+integral at positive regulator and checks both boundary paths and
+a path with `rho=eps`.
 
 ## Scope of the checks
 
