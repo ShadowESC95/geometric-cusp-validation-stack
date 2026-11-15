@@ -330,6 +330,11 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
+Reproduce the cusp validation examples with `make examples`. The suite
+covers the residue, finite CD quadrature, Lorentzian continuation, and chart
+matching checks. The [example guide](examples/README.md) lists the individual
+commands and the scope of each calculation.
+
 Dedicated amplituhedron experiment:
 
 ```bash

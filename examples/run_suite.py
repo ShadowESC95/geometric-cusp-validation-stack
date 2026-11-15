@@ -1,0 +1,27 @@
+"""Run the complete set of cusp validation examples from the repository root."""
+
+from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
+from .chart_transport import check_chart_matching, check_edge_residue, check_transport
+from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
+
+
+def main():
+    checks = (
+        ("Local residues, winding and two-loop scaling", check_local_geometry),
+        ("Finite CD integral and fixed-z scaling region", check_cd_benchmark),
+        ("Complex z contour and uniform parameter-tail bound", check_contour_and_tail),
+        ("Complex-ray poles and bypass jump", check_complex_ray),
+        ("Lorentzian poles, partial residue and propagator signs", check_lorentzian_poles),
+        ("Finite-cutoff Lorentzian continuation", check_continuation),
+        ("Weighted twistor and regulator transport", check_transport),
+        ("External pole at the chart edge", check_edge_residue),
+        ("Oriented chart matching and integrated patch residue", check_chart_matching),
+    )
+    for index, (name, check) in enumerate(checks, start=1):
+        print(f"\n[{index}/{len(checks)}] {name}", flush=True)
+        check()
+    print(f"\nPASS: all {len(checks)} example groups")
+
+
+if __name__ == "__main__":
+    main()

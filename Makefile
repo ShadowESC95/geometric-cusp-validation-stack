@@ -1,4 +1,4 @@
-.PHONY: install fast full test amp gallery manifest backends clean
+.PHONY: install fast full test examples amp gallery manifest backends clean
 install:
 	python -m pip install -e '.[all,test]'
 fast:
@@ -17,5 +17,7 @@ backends:
 
 test:
 	PYTHONPATH=src pytest -q
+examples:
+	PYTHONPATH=src python -m examples.run_suite
 clean:
 	find . -type d -name '__pycache__' -prune -exec rm -rf {} +
