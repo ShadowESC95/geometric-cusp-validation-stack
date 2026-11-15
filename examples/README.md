@@ -34,6 +34,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.complex_cross_ratio` | Continuation of the transported projective integral off the positive axis, and a cut jump from both the logarithm and the moving pole |
 | `PYTHONPATH=src python -m examples.cusp_regulator_scaling` | Three regulator paths toward the cusp in a fixed affine frame and the limiting kernel at fixed `eps/rho**2` |
 | `PYTHONPATH=src python -m examples.critical_regulator_kernel` | One-dimensional quadrature of the fixed-ratio kernel and its leading logarithmic regulator corrections |
+| `PYTHONPATH=src python -m examples.large_regulator_ratio` | Uniform large-ratio expansion of the critical kernel and the independent fixed-regulator cusp coefficient |
 
 ## Finite-cutoff continuation
 
@@ -431,6 +432,42 @@ the angular weight and its endpoint logarithms contributes at most
 `O(eta*L)` to the imaginary part and `O(eta)` to the real deficit.
 The example checks the slow approach of both scaled ratios, as well
 as agreement with the four-parameter quadrature at fixed `eta=0.02`.
+
+## Large regulator ratio and the fixed-regulator path
+
+In the folded critical kernel write the non-angular denominator as
+`g-i*A`, with `g=1-(1+z)*t+(z-1)*q` and
+`A=eta*(1+z)/(4*t)`. For `t<=q<=1-t`, the two endpoint values of
+`g` are `1-2*t` and `z*(1-2*t)`. Hence
+`0<=g/A<=1/(2*eta)` across the full region, and for `eta>=1` the
+inverse has a uniformly convergent geometric series. Its first terms give
+
+```text
+i*(8*log(2)-4)/eta + (4-(16/3)*log(2))/eta**2 - i*C3(z)/eta**3
+```
+
+The first two coefficients are independent of `z`. The program derives
+the third from the angular moment of `g**2` and checks the real and
+imaginary remainders using the bound on `g/A`.
+
+For the separate limit with `eps>0` held fixed, do the projective
+integration before taking `rho` to zero. Compactify `a1,a2,a3`
+with `a_j=b_j/b0`, `b0=1-b1-b2-b3`, and set
+`a4=s/b0` on the rotated ray. The Jacobian is `b0**(-5)`.
+After dividing by `rho**2`, the resulting kernel is
+`-16*p3**2*b0/(A-B*s-i*eps*(1+s)**2)**3`, with
+`A=b0*(p1*b1+p2*b2)+(p3*b0+2*b1)*b3` and
+`B=-p4*b0+2*b2`. On `s=c+i*c`, the magnitude of the imaginary
+part is at least `eps*(1+2*c)`, an integrable majorant for the
+inverse cube at any fixed positive regulator. At `rho=0`,
+`p1=p2=0` and `p3=-p4=1`, so the coefficient is independent of `z`.
+
+At `eps=0.3` this coefficient is approximately `2.4111i`, with the
+quadrature spread reported by the example. Substitution of
+`eta=eps/rho**2` into the reduced critical kernel would give
+`5.1506i` at the same regulator. Both describe a contribution of
+order `rho**2`, with different coefficients for the two limiting
+procedures.
 
 ## Scope of the checks
 
