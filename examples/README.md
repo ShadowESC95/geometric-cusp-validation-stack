@@ -17,6 +17,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_integral` | Finite CD integral on the positive axis, near-region recovery at fixed cross-ratio, complex contour extraction of the two-loop reference coefficient, uniform parameter-tail bound, and continuation with two finite cutoff paths |
 | `PYTHONPATH=src python -m examples.chart_transport` | Exact transport of the weighted rational form and all five Feynman prescriptions, a family leaving the original affine chart, the external residue in the adjacent chart, and matching that residue across charts at a point and over a transverse patch |
 | `PYTHONPATH=src python -m examples.energy_contour` | Real-energy quadrature versus the sum of five upper-half-plane residues, and the integrated weight of an isolated Feynman pinch in one spatial direction |
+| `PYTHONPATH=src python -m examples.spatial_pinch` | Regulator scaling at a merger of spatial pinch roots and convergence of a finite three-dimensional spatial patch to the on-shell surface integral |
 
 ## Finite-cutoff continuation
 
@@ -46,6 +47,21 @@ real part of the raw energy integral across this isolated pinch gives the
 limiting weight `-250*pi**2/147`. The raw integral omits the overall
 `1/(i*pi**2)` loop normalization. The transverse momenta are held fixed
 throughout this check.
+
+## Merging spatial roots
+
+In the same Lorentzian frame, set `lambda=p_x**2+p_y**2-1/2` and
+`q=p_z+3/4`. The opposite-energy poles of `D2` and `D4` coincide on
+`lambda=-8*q**2/9` at `E=1/4-q/3`. At fixed `lambda=0`, the roots
+merge, and the integral over `q` at `p_y=p_x>0`, multiplied by
+`sqrt(eps)`, approaches `-8*pi**2/9`.
+
+The surface is smooth in the coordinates `(q,lambda)`. Over a local patch
+in those coordinates and `p_y/p_x`, the real part of the raw, regulated
+energy integral has a finite spatial integral as the regulator tends to
+zero. The example compares that convergence with the surface density
+obtained from the two propagators on shell, including the Jacobian from
+`(p_x,p_y)` to `(lambda,p_y/p_x)`.
 
 ## Scope of the checks
 
