@@ -28,6 +28,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.lower_null_endpoint` | The fourth external endpoint on a lower energy branch, including two terms of the normalized shrinking-ball expansion |
 | `PYTHONPATH=src python -m examples.mixed_null_endpoints` | The first and third external endpoints, where a timelike pinch surface adds an imaginary part to each shrinking-ball coefficient |
 | `PYTHONPATH=src python -m examples.pinch_inventory` | A pairwise inventory of the finite-frame pinch sets and the small-ball expansion at the isolated insertion center |
+| `PYTHONPATH=src python -m examples.second_null_insertion_crossing` | The second insertion crossing, with a real leading cylinder coefficient from an even axial weight |
 
 ## Finite-cutoff continuation
 
@@ -248,8 +249,8 @@ The triangle inequality gives four null segments and two timelike
 ellipsoids, all inside `|p|<=9/4`. The ellipsoids are from `D2`–`D4`
 and `D4`–`D_insertion`. They meet the null axis at `(-3/2,0)` and
 `(-13/10,-1/4)` in `p_z`, respectively. At `p_z=-13/10` the
-insertion crosses the interior of the `D1`–`D4` null edge. The
-`p_z=-1/4` crossing on `D3`–`D4` has yet to be integrated.
+insertion crosses the interior of the `D1`–`D4` null edge. At
+`p_z=-1/4` it crosses the interior of the `D3`–`D4` edge.
 
 The opposite branches of a single propagator meet at its own spatial
 center. At the insertion center, the four external factors are
@@ -260,6 +261,23 @@ The grouped external residues give a cubic coefficient of about
 quartic coefficient comes entirely from the insertion residue and
 equals `726`. The example also checks the rescaled soft kernel at
 `eps=0.1*R**2`.
+
+## Insertion crossing on the D3–D4 null edge
+
+Set `u=-4*p_z-1` on `abs(u)<=1/32`. The lower `D4` pole meets the
+upper `D3` and insertion poles at `E=p_z=-1/4`. At the same spatial
+point the lower `D3` pole also meets upper `D2` at `E=1/4`.
+The calculation isolates both lower residues and encloses the other
+three in one contour. The regulated axial integral deforms onto an
+upper semicircle in `u`, including the absolute axial Jacobian `1/4`.
+
+The leading double-pole weight on the first pinch is proportional to
+`1/(u**2-1)`. Its derivative vanishes at the crossing, so the
+delta-derivative term in the leading coefficient is zero. The finite
+part and the other null pair give a normalized cylinder coefficient
+of approximately `-63.874350325` after division by the transverse
+radius squared. The example takes the regulator to zero at fixed
+radius and checks the shrinking-cylinder coefficient separately.
 
 ## Scope of the checks
 

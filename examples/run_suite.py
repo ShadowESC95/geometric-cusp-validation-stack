@@ -12,6 +12,7 @@ from .null_insertion_crossing import check_null_insertion_crossing
 from .null_pinch import check_null_pinch
 from .pinch_intersection import check_pinch_intersection
 from .pinch_inventory import check_pinch_inventory
+from .second_null_insertion_crossing import check_second_null_insertion_crossing
 from .spatial_pinch import check_spatial_pinch
 from .spatial_tail import check_spatial_tail
 from .tube_energy_sum import check_tube_energy_sum
@@ -40,6 +41,7 @@ def main():
         ("Lower-branch null-edge endpoint", check_lower_null_endpoint),
         ("Null-edge endpoints on timelike pinch surfaces", check_mixed_null_endpoints),
         ("Finite momentum pinch inventory and insertion center", check_pinch_inventory),
+        ("Insertion crossing on the D3-D4 null edge", check_second_null_insertion_crossing),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

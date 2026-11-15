@@ -47,24 +47,41 @@ def regular_lower_residues(u, r, x, eps, centers):
 
 
 def integrate_cylinder(radius, eps, centers, n):
+    def density(u, r, x):
+        return (lower_pinch_residues(u, r, x, eps, centers)
+                + regular_lower_residues(u, r, x, eps, centers))
+
+    return integrate_deformed_cylinder(radius, eps, n, density, 4/5)
+
+
+def integrate_deformed_cylinder(radius, eps, n, density, axial_jacobian):
+    """Integrate the reflected density with u on the upper semicircle."""
     nodes, weights = np.polynomial.legendre.leggauss(n)
     phi = pi*(1+nodes)/4
     angles, axial_weights = np.polynomial.legendre.leggauss(32)
     # Upper semicircle oriented from -WIDTH to WIDTH.
     u = WIDTH*np.exp(1j*pi*(1-angles)/2)
-    axial_weights = axial_weights*(-1j*pi/2)*u*(4/5)
+    axial_weights = axial_weights*(-1j*pi/2)*u*axial_jacobian
     cutoff = sqrt(eps)
     knots = sorted({0, min(cutoff, radius), min(4*cutoff, radius), radius})
     total = 0j
     for a, b in zip(knots, knots[1:]):
         r = ((a+b)/2+(b-a)*nodes/2)[:, None, None]
         x = r*np.cos(phi)[None, :, None]
-        values = lower_pinch_residues(u, r, x, eps, centers)
-        values += regular_lower_residues(u, r, x, eps, centers)
+        values = density(u, r, x)
         total += np.einsum("i,j,k,ijk->", weights*r[:, 0, 0], weights,
                            axial_weights, values)*(b-a)/2
     # Four quadrants after averaging across p_x=0.
     return pi*total
+
+
+def double_pole_integral(f, u):
+    """Integrate f(u)/(u+i0)^2 on the symmetric axial interval."""
+    derivative = sp.diff(f, u).subs(u, 0)
+    remainder = sp.cancel((f-f.subs(u, 0)-u*derivative)/u**2)
+    finite_part = (quad(sp.lambdify(u, remainder, "numpy"), -WIDTH, WIDTH)[0]
+                   - 2*float(f.subs(u, 0))/WIDTH)
+    return finite_part - 1j*pi*float(derivative)
 
 
 def certify_deformation(centers, eps):
@@ -119,16 +136,13 @@ def shrinking_cylinder_coefficient(exact_centers):
     # For the D4 pole the coefficient is -2 times the boundary integral
     # of f(u)/(u+i0)^2. Subtract its constant and linear Taylor terms.
     derivative = sp.diff(f, u).subs(u, 0)
-    remainder = sp.cancel((f-f.subs(u, 0)-u*derivative)/u**2)
-    finite_part = (quad(sp.lambdify(u, remainder, "numpy"), -WIDTH, WIDTH)[0]
-                   - 2*float(f.subs(u, 0))/WIDTH)
     delta_derivative = 2*sp.pi*derivative
     assert delta_derivative == 15*sp.pi/2
     # The second null pair, isolated at the lower D1 pole, is smooth in u.
     second = -4/(high[2]*high[3]*high[4]**2)
     second_integral = quad(sp.lambdify(lam, second, "numpy"),
                            (1-4*WIDTH)/5, (1+4*WIDTH)/5)[0]
-    return second_integral - 2*finite_part + 1j*float(delta_derivative)
+    return second_integral - 2*double_pole_integral(f, u)
 
 
 def check_null_insertion_crossing():
