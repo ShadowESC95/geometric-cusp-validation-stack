@@ -1,0 +1,4 @@
+ring r=0,(p12,p23,p34,p14,p13,p24),dp;
+ideal I=p12,p23;
+I;
+vdim(std(I));

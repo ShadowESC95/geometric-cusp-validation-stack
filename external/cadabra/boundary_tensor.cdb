@@ -1,0 +1,3 @@
+{# Define a schematic effective boundary action for Cadabra 2.
+# The actual tensor model must be supplied by the geometry-to-field dictionary.
+ex := \int{\sqrt{|g|}} (R - \frac{1}{4} F_{\mu\nu} F^{\mu\nu} + \frac{1}{2} m^2 (A_\mu - \nabla_\mu\theta/m)(A^\mu - \nabla^\mu\theta/m)) d^4x;
