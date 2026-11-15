@@ -47,6 +47,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_cycle_monodromy` | A winding obstruction for periodic CD paths in the fixed positive-x chart and the period of the continued branch |
 | `PYTHONPATH=src python -m examples.cd_moving_contour` | A fixed-corner obstruction for moving CD parameters and the period of the nested meridian at chart infinity |
 | `PYTHONPATH=src python -m examples.cd_projective_infinity` | A periodic projective family, its signed infinity crossing, and a residue calculation of the lateral jump |
+| `PYTHONPATH=src python -m examples.cd_projective_intersections` | A chart-independent signed crossing count, tested by routing the winding through either infinity divisor |
 
 ## Finite-cutoff continuation
 
@@ -834,7 +835,7 @@ The moving divisor is `Y=-z*X/(1-(1+z)*X)`. For `z` off the
 seam, it reaches `Y=infinity` at `X=1/(1+z)`. In `U=1/Y`
 the form has a logarithmic factor `dU/U` at chart infinity.
 The `Y` residue of the moving divisor is
-`-2*dX/(X-1/(1+z))`. A positive `X) meridian about that pole
+`-2*dX/(X-1/(1+z))`. A positive `X` meridian about that pole
 with a clockwise `Y` meridian about the moving divisor therefore
 has period `-8*pi**2`, with the orientation `(X,Y)`.
 The example checks this by nested contour quadrature at three
@@ -853,7 +854,7 @@ remain open.
 Take `x,u>0` and `y=z*u`, and use projective coordinates at
 the ends. This family is periodic as `z` winds and has
 `zx+y=z*(x+u)` on its interior. It reaches the polar divisor
-`y=-1`, or `Y=infinity`, at `z=-1,u=1) on the unit circle.
+`y=-1`, or `Y=infinity`, at `z=-1,u=1` on the unit circle.
 On the diagonal connecting the fixed opposite corners use
 `x=(1-v)/v` and `u=v/(1-v)`. The affine divisor function
 is then `D=z*((1-v)**2+v**2)/(1-v+z*v)`.
@@ -868,7 +869,7 @@ After integrating over `x`, its coefficient in `du` is
 `2*(1+z)*log(u)/((u-1)*(1+z*u))`, with a continuous
 logarithmic quotient at `u=1`. This integral agrees off the
 cut with the principal-sheet CD parameter value. For `z=-a`
-the pole at `u=1/a) approaches from above when `Im(z)>0`.
+the pole at `u=1/a` approaches from above when `Im(z)>0`.
 With `x` fixed, its residue is
 `-2*(1-a)/((1+x)*(1+a*x))`. Integrating the residue with
 the positive orientation gives the lateral jump
@@ -878,6 +879,47 @@ scalar jump at `a=1`; the chart index is still nonzero.
 The periodic geometric family crosses the polar locus.
 Turning it into a pole-avoiding relative cycle at the seam
 and identifying its Lorentzian class remain open.
+
+## Projective CD intersection balance
+
+In homogeneous coordinates `X=X1/X0`, `Y=Y1/Y0`, write the
+moving divisor as the zero set of the section
+`B=z*X1*(Y0-Y1)+Y1*(X0-X1)`. The ratio
+`D=B/(X0*Y0)` is a globally defined meromorphic function.
+The three divisors in this balance are `B=0`, `X0=0`,
+and `Y0=0`.
+
+Take a periodic family of connecting arcs oriented from `(1,0)`
+to `(0,1)`, with `z=exp(i*phi)` and cylinder orientation
+`(arc parameter,phi)`. For transverse isolated crossings away
+from divisor intersections, let `I_B,I_X,I_Y` count the signed
+crossings of the three divisors. Excise a small disk at each
+crossing. On the resulting punctured cylinder, `D` is nonzero
+and finite. The two boundary windings are `+1` and `0`,
+and a small positively oriented circle about a crossing measures
+its zero index for `B` or minus its index for either infinity
+divisor. Summing the boundary windings gives
+`I_B-I_X-I_Y=-1`. With all three divisors avoided, the
+boundary loops would be homotopic through nonzero finite values
+of `D`, which is impossible with the fixed endpoints.
+This also covers a periodically deformed square if it contains
+such a connecting arc.
+
+For examples use `x=2*z**m*(1-v)/v`,
+`y=3*z**n*v/(1-v)`, with `0<v<1` and integer `m,n`.
+The signed counts are `(n-m-1,-m,n)`. The moving divisor
+crosses where the magnitudes of `z*x` and `y` coincide;
+factoring out `z**n` leaves relative phase `z**(m+1-n)`.
+As `v` increases the magnitude of the first term decreases
+relative to the second, giving the minus sign in its index count.
+The `x` magnitude decreases and the `y` magnitude increases,
+giving the signs of the two infinity counts. The program measures
+each index on a small loop and checks their balance for six
+families, including routing the crossing exclusively through
+either infinity divisor. These indices constrain relative
+deformations with the fixed endpoints. A changed boundary or
+the original Lorentzian loop cycle still requires a separate
+construction.
 
 ## Scope of the checks
 
