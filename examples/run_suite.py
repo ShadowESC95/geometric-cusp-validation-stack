@@ -18,6 +18,7 @@ from .cd_regulated_cap_meridians import check_cd_regulated_cap_meridians
 from .cd_regulated_meridian_sweep import check_cd_regulated_meridian_sweep
 from .cd_regulated_upper_cap import check_cd_regulated_upper_cap
 from .cd_regulated_finite_cap import check_cd_regulated_finite_cap
+from .cd_regulated_frame_face import check_cd_regulated_frame_face
 from .cd_swept_cap import check_cd_swept_cap
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
@@ -106,6 +107,7 @@ def main():
         ("Regulated meridian sweep over the auxiliary triangle", check_cd_regulated_meridian_sweep),
         ("Regulated diagonal cap at the upper endpoint", check_cd_regulated_upper_cap),
         ("Finite-x confinement of regulated diagonal-cap poles", check_cd_regulated_finite_cap),
+        ("Resolved frame puncture and regulated meridian balance", check_cd_regulated_frame_face),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -1433,6 +1433,48 @@ regulated obstruction for the diagonal product cap. It does
 not match the remaining frame-puncture and Lorentzian
 boundary data.
 
+## Resolved frame puncture and regulated meridian balance
+
+Set `tau=sqrt(x/(eps*A))` and `k=R*(5/2+tau*u)`. This
+zooms into the frame puncture at `k=5*R/2`. For fixed
+positive `eps` and `A>0`, the normalized denominator
+in this chart is exactly `H-i*(u-delta)**2`, where
+`delta=eps*tau*(4*A+(G-A)/(1+x))/2`. The zeros approach
+`u=+/-sqrt(-i*H)` as `tau` tends to zero. They stay
+distinct because `H` is bounded away from zero on the
+auxiliary triangle. The other base punctures go to
+infinity in the `u` chart.
+
+Multiplying the affine coordinates `[a1:a2:a3:a4:1]`
+by `u` gives the homogeneous representative
+`[-eps*A*tau:-eps*A*tau:-eps*tau*B/(2*(1+x)):
+-eps*tau*Q*s/(2*(1+x)):u]`, with `B=1-A-s`.
+In this representative the unregulated homogeneous
+quadratic pulls back to `eps*H`. The homogeneous sum
+of coordinates is `u-delta`, so the affine regulated
+denominator is `eps*(H-i*(u-delta)**2)/u**2`.
+For small positive `tau`, a positive loop around
+the frame and both roots therefore has winding zero
+in the affine denominator. The local indices are
+`-2` at the frame and `+1` at each of the two zeros.
+In the normalized denominator the corresponding indices
+are `0`, `+1`, and `+1`, with outer winding two. The
+example measures both balances and checks agreement
+with the preexisting regulated parameter formula.
+
+The simultaneous zero of the homogeneous coordinate
+vector at `tau=u=0` has a ratio chart `u=tau*w`.
+At `tau=0` its image is
+`[-eps*A:-eps*A:-eps*B/2:-eps*Q*s/2:w]`.
+The other chart `tau=u*v` has a finite representative
+after division by `u`, with last coordinate one. In
+the finite `w` chart the normalized denominator tends
+to `H`. These formulas resolve the frame/meridian
+incidence for this diagonal cap at fixed positive
+regulator. They leave the simultaneous limit in the
+homogeneous Feynman map and matching the resulting
+relative boundary to the Lorentzian chain open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
