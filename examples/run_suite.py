@@ -1,6 +1,7 @@
 """Run the complete set of cusp validation examples from the repository root."""
 
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
+from .cd_auxiliary_faces import check_cd_auxiliary_faces
 from .cd_cap_endpoints import check_cd_cap_endpoints
 from .cd_compactified_cap import check_cd_compactified_cap
 from .cd_cycle_seam import check_cd_cycle_seam
@@ -92,6 +93,7 @@ def main():
         ("Swept CD cap and relative boundary terms", check_cd_swept_cap),
         ("Resolved endpoint faces of the swept CD cap", check_cd_cap_endpoints),
         ("Reduced principal contour and the shared CD meridian", check_cd_principal_seam),
+        ("Unreduced CD auxiliary faces and diagonal-cap corners", check_cd_auxiliary_faces),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

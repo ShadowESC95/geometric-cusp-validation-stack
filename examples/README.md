@@ -1186,6 +1186,47 @@ forms. Lifting the matching to the unreduced Feynman chain,
 including the auxiliary parameter boundaries and both resolved
 endpoint faces, remains a separate step.
 
+## Unreduced CD auxiliary faces and diagonal-cap corners
+
+At zero regulator the unreduced projective map factors the
+five-form into the CD three-form and an auxiliary two-form.
+For `C0=p1*a1+p2*a2`, set `t=k/(1+k)`, `r=w*(1-t)`,
+`s=t`. Write `A=1-r-s`, `B=r`. The auxiliary domain is the
+oriented triangle `r,s>=0, r+s<=1`. The projective coordinates
+are `a3=C0*B/(A*(p3+S*a1))` and
+`a4=C0*Q*s/(A*(-p4+T*a2))`, with `Q=exp(i*pi/4)`.
+The normalized fiber form has density
+`-2*Q/(1-(1+Q)*s)**3` in the order `(r,s)`. Its auxiliary
+denominator stays at least `sin(pi/8)` away from zero,
+and the two-form integrates to one by taking the endpoint
+difference of `-(1-s)**2/(1-(1+Q)*s)**2`. The example checks
+the uniform bound on errors from trimming all three edges.
+
+The three auxiliary faces correspond generically to `a4=0`,
+`a5=0` (the projective infinity edge), and `a3=0`, in the
+counterclockwise boundary order. The pulled-back fiber form
+vanishes on each one-dimensional face. For a three-chain
+`K`, its lift has boundary `dK x triangle - K x d(triangle)`.
+The auxiliary faces therefore remain part of the lifted
+boundary even though integrating the fiber reproduces the
+reduced scalar exactly.
+
+On the diagonal cap `y=x`, put `h=1+z`, `d=5*z+3`.
+One homogeneous representative of the five Feynman coordinates is
+`[2*h*x*(1+x)*A, 2*h*x*(1+x)*A, h*x*B, h*x*Q*s, d*(1+x)*A]`.
+On the punctured base disk `h` is nonzero, and the
+representative is valid away from the degenerate frame
+`d=0`. At `x=0, A=0`, set `A=x*b`; the lifted corner
+maps to `[0:0:h*(1-s):h*Q*s:d*b]`. At the other end set
+`X=1/x`, `A=X*b`. Its image is
+`[2*h*b:2*h*b:h*(1-s):h*Q*s:0]`. The reciprocal ratio
+charts cover `b=infinity`. The dependence on `b` exhibits
+the auxiliary boundary data lost by taking separate
+endpoint limits. This calculation resolves the two corners
+of the diagonal cap in the zero-regulator parameter map.
+The other cap pieces and comparison with the original
+finite-regulator Lorentzian chain remain open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
