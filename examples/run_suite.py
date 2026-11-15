@@ -19,6 +19,7 @@ from .null_insertion_crossing import check_null_insertion_crossing
 from .null_pinch import check_null_pinch
 from .pinch_intersection import check_pinch_intersection
 from .pinch_inventory import check_pinch_inventory
+from .regulator_moment_crossover import check_regulator_moment_crossover
 from .regulator_spectrum import check_regulator_spectrum
 from .regulator_spectral_edge import check_regulator_spectral_edge
 from .regulator_upper_edge import check_regulator_upper_edge
@@ -62,6 +63,7 @@ def main():
         ("Positive spectrum of the critical regulator kernel", check_regulator_spectrum),
         ("Low spectral edge and subleading regulator terms", check_regulator_spectral_edge),
         ("Upper spectral edge and its merger at z=1", check_regulator_upper_edge),
+        ("High-order moments across the merging spectral edges", check_regulator_moment_crossover),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

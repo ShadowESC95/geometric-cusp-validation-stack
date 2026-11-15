@@ -39,6 +39,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.regulator_spectrum` | A positive spectral density for the critical kernel, its moment sum rules, and bounds for all positive regulator ratios |
 | `PYTHONPATH=src python -m examples.regulator_spectral_edge` | The two leading low-energy density coefficients and the resulting subleading small-regulator terms |
 | `PYTHONPATH=src python -m examples.regulator_upper_edge` | Upper spectral exponent, interior cusp, high-order moment asymptotics, and the crossover as the two edge locations merge |
+| `PYTHONPATH=src python -m examples.regulator_moment_crossover` | The high-order moment crossover and its first finite-order correction as the edge locations merge |
 
 ## Finite-cutoff continuation
 
@@ -613,6 +614,42 @@ contribution from negative `v`. The profile behaves as
 `(16/3)*sqrt(xi)` at small `xi` and
 `2*log(3)/sqrt(xi)` at large `xi`. This recovers the two endpoint
 powers and resolves the interior cusp at `xi=1`.
+
+## High-order moments across the merging spectral edges
+
+Write `M_n=integral (h/H_plus)**n * sigma(h) dh` and use
+`delta=(H_plus-H_minus)/H_plus`. With `q=1-t-u*(1-2*t)`,
+the exact factorization is
+
+```text
+h/H_plus = (1-(4*t-1)**2)*(1-delta*u)
+8*t*abs(dq/du) = 1-(4*t-1)**2
+```
+
+Keep `lambda=n*delta` fixed and set `s=sqrt(n)*(4*t-1)`.
+The two factors become `exp(-s**2-lambda*u)` at leading order.
+Let `q0=3/4-u/2`, `c=(2*u-1)/4`, and `f(q)=1/(q*(1-q))`.
+The resulting expansion is `sqrt(n)*M_n=G(lambda)+J(lambda)/n+o(1/n)`,
+where
+
+```text
+G(lambda) = sqrt(pi)/4 * integral_0^1 exp(-lambda*u)*f(q0) du
+J(lambda) = sqrt(pi)/4 * integral_0^1 exp(-lambda*u) * (
+    c**2*f''(q0)/4 - (7/8+(lambda*u)**2/2)*f(q0)
+) du
+```
+
+The order `1/sqrt(n)` term integrates to zero because it is odd in
+`s`. The Gaussian moments of `s**2+s**4/2` give the factor `7/8`
+in the correction. The profile satisfies `G(0)=sqrt(pi)*log(3)` and
+`lambda*G(lambda)->4*sqrt(pi)/3` at large `lambda`. The first limit
+recovers the `n**(-1/2)` law. The large-`lambda) coefficient matches
+the `n**(-3/2)` edge law with `delta>0).
+
+The example compares both terms against the original folded-coordinate
+integral and checks order 1024 independently against the spectral
+density. The expansion with the stated correction holds for fixed
+`lambda` as `n` grows.
 
 ## Scope of the checks
 
