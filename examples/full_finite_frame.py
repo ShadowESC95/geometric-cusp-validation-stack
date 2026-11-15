@@ -77,7 +77,7 @@ def parameter_integral(eps, power, seed):
     return total
 
 
-def spatial_integral(eps, power, seed, centers):
+def spatial_integral(eps, power, seed, centers, x_coefficient=-4):
     """Spatial ball integral of the normalized upper energy residue sum."""
     radius = SPATIAL_CUTOFF
     u, v, w = qmc.Sobol(3, scramble=True, seed=seed).random_base2(power).T
@@ -91,8 +91,8 @@ def spatial_integral(eps, power, seed, centers):
     chunk_size = 2**15
     for start in range(0, len(points), chunk_size):
         chunk = slice(start, start+chunk_size)
-        total += upper_residues(points[chunk], centers, eps).sum()
-        total += upper_residues(reflected[chunk], centers, eps).sum()
+        total += upper_residues(points[chunk], centers, eps, x_coefficient).sum()
+        total += upper_residues(reflected[chunk], centers, eps, x_coefficient).sum()
     # 2/pi from upper closure and the loop normalization, times the
     # half-ball volume (the other half is included by reflection).
     return 4*radius**3/3*total/len(points)

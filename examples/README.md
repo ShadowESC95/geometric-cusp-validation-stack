@@ -30,6 +30,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.pinch_inventory` | A pairwise inventory of the finite-frame pinch sets and the small-ball expansion at the isolated insertion center |
 | `PYTHONPATH=src python -m examples.second_null_insertion_crossing` | The second insertion crossing, with a real leading cylinder coefficient from an even axial weight |
 | `PYTHONPATH=src python -m examples.full_finite_frame` | The complete normalized finite-frame integral via energy residues plus the Wick-rotated exterior, compared with an independent Feynman-parameter calculation and its regulator limit |
+| `PYTHONPATH=src python -m examples.finite_cross_ratio` | Symbolic reduction for positive cross-ratios at fixed rho, plus full-domain numerical comparisons at `z=1/2, 3/2, 2` |
 
 ## Finite-cutoff continuation
 
@@ -312,6 +313,31 @@ and parametric quadratures are compared at `eps=0.3` and `0.16`.
 The smaller-regulator convergence is checked in parameter space.
 Scramble spreads describe variation across the chosen deterministic
 seeds.
+
+## Full finite-frame integral at non-unit cross-ratios
+
+At fixed `rho=1/2`, use the insertion line with
+`a=-1`, `b=-1/2` and `d=1/(2*(1+z))`. Write
+`p_j=-(P_insertion-P_j)**2` in the affine frame. This family has
+`p1,p2,p3>0>p4` and `-p1*p3/(p2*p4)=z`.
+The symbolic check derives the projective denominator and its numerator
+from the center separations. It applies to real `z>0`.
+
+The rotated `a4` ray and the regulator bound work with
+`A=p1*a1+p2*a2+(p3+2*a1)*a3` and `B=-p4+2*a2`, which are positive.
+At zero regulator, integrate out `a4` and `a3`, then set
+`x=2*a1/p3`, `y=2*a2/(-p4)`. The remaining integral is
+`2*(1+z)*dx*dy/((1+x)*(1+y)*(z*x+y))` on the positive quadrant.
+The `x` integral gives `log(y/z)/(y-z)`. On setting `y=z*t` in
+the remaining expression and differentiating with respect to `log(z)`,
+the derivative is `-2*integral_0^infinity log(s/z)/(1+s)**2 ds`.
+The log of `s` integrates to zero by inversion, so the derivative
+equals `2*log(z)`. The unit-ratio value fixes the integration constant
+to `pi**2`.
+
+The example compares the full spatial and parametric integrals at
+`eps=0.3` for `z=1/2, 3/2, 2`, and checks the boundary limit using
+smaller regulators in parameter space.
 
 ## Scope of the checks
 

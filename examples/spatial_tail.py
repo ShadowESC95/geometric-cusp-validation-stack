@@ -32,7 +32,7 @@ def wick_energy(spatial, centers, eps):
     return 4j*spatial[0]/radius**9*value
 
 
-def tail_quadrature(radius, centers, n, eps=0):
+def tail_quadrature(radius, centers, n, eps=0, x_coefficient=-4):
     """Integrate the normalized tail using the reflection-symmetrized kernel."""
     nodes, weights = np.polynomial.legendre.leggauss(n)
     # r = radius/s. Write Euclidean energy as r*tan(alpha).
@@ -54,8 +54,9 @@ def tail_quadrature(radius, centers, n, eps=0):
     density = s**5*nx**2*cos_sq**5/factors
     integral = np.einsum("i,j,k,ijkl->", weights, weights, weights, density)/n
     # The radial, energy-angle and azimuth weights supply pi^2/(2*n)
-    # before including the normalized numerator coefficient -4/pi^2.
-    return -2*integral/radius**6
+    # before including the reflected numerator coefficient
+    # -2*x_coefficient*p_insertion_x/pi^2.
+    return -x_coefficient*float(centers[-1][1])*integral/radius**6
 
 
 def asymptotic_coefficients(centers):

@@ -10,9 +10,10 @@ from scipy.integrate import quad
 from .geometry import EXTERNAL, affine, lorentzian_line
 
 
-def finite_frame():
-    """Return the four external centers and the insertion at rho=1/2."""
-    ab = lorentzian_line(-1, sp.Rational(1, 4), -sp.Rational(1, 2))
+def finite_frame(cross_ratio=1):
+    """Return the rho=1/2 frame with the requested cross-ratio."""
+    z = sp.sympify(cross_ratio)
+    ab = lorentzian_line(-1, 1/(2*(1+z)), -sp.Rational(1, 2))
     matrices = [affine(line)[1] for line in (*EXTERNAL, ab)]
     return [
         ((X[0, 0]+X[1, 1])/2, sp.re(X[0, 1]), -sp.im(X[0, 1]),
@@ -43,7 +44,7 @@ def energy_poles(spatial, centers, eps):
     return centers[:, 0]-omega, centers[:, 0]+omega
 
 
-def upper_residues(spatial, centers, eps):
+def upper_residues(spatial, centers, eps, x_coefficient=-4):
     spatial = np.asarray(spatial)
     centers = np.asarray(centers)
     upper, lower = energy_poles(spatial, centers, eps)
@@ -51,7 +52,7 @@ def upper_residues(spatial, centers, eps):
     indices = np.arange(len(centers))
     differences[..., indices, indices] = 1
     factors = differences*(upper[..., :, None]-lower[..., None, :])
-    return -4*spatial[..., :1]/np.prod(factors, axis=-1)
+    return x_coefficient*spatial[..., :1]/np.prod(factors, axis=-1)
 
 
 def direct_energy_integral(spatial, centers, eps):
