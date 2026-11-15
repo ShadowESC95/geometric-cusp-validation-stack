@@ -201,14 +201,90 @@ of detour over a parameter subregion carries an interface chain with the
 pair-meridian boundary, so the local period bound alone does not identify
 the full relative cycle.
 
-## 4. Conditions for closing Gate 6
+## 4. Physical prescription with fixed affine Feynman weights
+
+In the finite frame of [the regulated parameter integral](../examples/finite_cross_ratio.py),
+set the fifth homogeneous weight to one. Hold the four remaining weights
+\(a_1,\dots,a_4\) fixed and define \(\ell=K-5/2\), \(P=1+\sum_j a_j\). This
+uses a different slicing from sections 2 and 3, which keep \((\lambda,t,A,s)\)
+fixed while varying \(K\). In the fixed-weight slicing, the coefficients of
+the terms linear in \(a_j\) are
+
+\[
+(p_1,p_2,p_3,p_4)=\left(1+\frac{3}{2\ell},-1-\frac{5}{2\ell},
+-\frac{2}{\ell},\frac{2}{\ell}\right).
+\]
+
+Thus the affine Feynman denominator with the original regulator is exactly
+
+\[
+F_\epsilon(\ell)=C+\frac{L}{\ell}-i\epsilon P^2,
+\quad C=2(a_1a_3-a_2a_4)+a_1-a_2,\quad
+L=\tfrac32a_1-\tfrac52a_2-2a_3+2a_4.
+\]
+
+For positive real weights, \(P>0\). If \(L\ne0\), the unique finite base zero
+at \(\epsilon>0\) is simple and lies at
+
+\[
+\ell_\epsilon=-\frac{L}{C-i\epsilon P^2},\qquad
+\Im\ell_\epsilon=-\frac{\epsilon LP^2}{C^2+\epsilon^2P^4}.
+\]
+
+At a real zero \(\ell_0=-L/C\ne0\), the displacement to first order is
+\(i\epsilon P^2/F_0'(\ell_0)\), with \(F_0'(\ell_0)=-L/\ell_0^2\).
+The oriented real path through that point consequently passes above the
+pole for \(L>0\) and below it for \(L<0\). For example, fixed weights
+\((1,1/2,1/4,1/4)\) give \(K_0=13/6\) and
+\(\lim_{\epsilon\downarrow0}\Im K_\epsilon/\epsilon=-4\). Fixed weights
+\((1/4,1/2,1/4,1/2)\) give \(K_0=19/10\) and the slope \(+6\).
+Both zeros are on the real frame side \(\ell<0\). When \(L=0\), the
+denominator is independent of \(K\) off the frame and has no finite zero
+on this positive-weight slice at \(\epsilon>0\). When \(C=0\) and \(L\ne0\),
+the zero tends to infinity as the regulator is removed.
+
+### Relation to the rotated ray and the two rim detours
+
+For real \(\ell<0\), keep \(a_1,a_2,a_3\) positive and rotate
+\(a_4=r e^{i\theta}\) through \(0\le\theta\le\pi/4\) at fixed \(r>0\).
+Write \(P=P_*+c+id\), where \(P_*=1+a_1+a_2+a_3>0\),
+\(c=r\cos\theta\), \(d=r\sin\theta\), and \(c\ge d\ge0\).
+The imaginary part of the regulated denominator along the rotation is
+
+\[
+\Im F_\epsilon=(2/\ell-2a_2)d-\epsilon[(P_*+c)^2-d^2]<0.
+\]
+
+This gives a pointwise pole-free connection to the rotated ray on the real
+frame side. It transports the local sign of the Lorentzian prescription.
+The outer base poles and the frame puncture remain excluded from this
+local comparison.
+
+The two collisions in section 2 are in the moving-weight slicing. In the
+resolved chart \(w=A\ell/x\), the affine weights obey \(a_1=-x/\ell\)
+and \(a_3=BJ/[2(1+x)w]\), \(a_4/Q=sJ/[2(1+tx)w]\), with
+\(B=1-A-s\). At the positive limiting rim point, \(\ell>0\) forces
+\(a_1<0\) along the real cap with \(x>0\). At the negative limiting rim
+point, \(w<0\) and \(J=1-5(1-t_*)/2>0\) force \(a_3<0\) and
+\(a_4/Q<0\) in the auxiliary interior. The strict signs persist on
+nearby real cap points. The positive rotated ray does not directly meet
+those real cap neighborhoods. Accordingly the fixed-weight sign rule
+gives the physical local bypass on its own slice, while assigning
+\(C_{\mathrm{in}}\) or \(C_{\mathrm{out}}\) requires a comparison that
+also transports the weights and the relative faces. A fixed infinitesimal
+imaginary shift of the base coordinate contributes \(\Im F_0\) with sign
+set by \(F_0'\), which changes between the two positive-weight examples.
+It cannot reproduce the sign of \(-i\epsilon P^2\) on both examples.
+
+## 5. Conditions for closing Gate 6
 
 1. **Construct and control the regulated comparison through the rim
    collisions.** Fix a common prescription and cutoff chain for the capped
    lift and the Lorentzian integral. Section 3 gives both local rim detours,
    their signed meridian relations, and the bound on their period difference.
-   Transport the physical cycle into these patches, choose the detours from
-   its prescription, and compute or bound the interface terms. Extend that
+   Section 4 fixes the local prescription on the original weight slices and
+   connects it to the rotated ray. Transport the physical cycle into the
+   moving-weight patches, determine the detour and interface terms, and extend
    control to the remaining transverse domains and their endpoints, together
    with the auxiliary and base/frame faces. Specify the order of regulator
    removal and other cutoff limits and justify any interchange. Example 60
