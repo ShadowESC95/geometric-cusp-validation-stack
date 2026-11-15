@@ -20,6 +20,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.spatial_pinch` | Regulator scaling at a merger of spatial pinch roots and convergence of a finite three-dimensional spatial patch to the on-shell surface integral |
 | `PYTHONPATH=src python -m examples.pinch_intersection` | A local intersection of two timelike pinch surfaces, including the principal values and the contribution supported where both surfaces meet |
 | `PYTHONPATH=src python -m examples.closed_pinch_curve` | Integration along the full closed intersection and regulator convergence of the lower `D4` residue over a tube around it |
+| `PYTHONPATH=src python -m examples.tube_energy_sum` | All five energy residues over that tube, including a group contour through same-side pole coincidences |
 
 ## Finite-cutoff continuation
 
@@ -100,6 +101,19 @@ regulator over the tube `abs(u), abs(v) <= 1/320`. Its limiting real
 part is the full-curve intersection term. The single principal value
 in `u` supplies the imaginary part. This calculation covers one energy
 residue and the bounded tube around the entire ellipse.
+
+## Complete energy contour over the tube
+
+Four lower-half-plane poles lie inside a common energy contour throughout
+the tube. Summing their residues by contour integration stays regular at
+same-side coincidences, including a `D1`–`D3` coincidence on the ellipse.
+The fifth lower pole, from `D4`, supplies the boundary value checked in
+the preceding example. Adding the two contributions and applying clockwise
+closure gives the regulator limit of the real-axis energy integral over
+the bounded spatial tube. The example also checks the closure sign and
+normalization against direct energy quadrature at two spatial points.
+The values use the raw integrand before the overall `1/(i*pi**2)` loop
+normalization.
 
 ## Scope of the checks
 

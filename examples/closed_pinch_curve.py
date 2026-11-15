@@ -1,6 +1,6 @@
 """Integrate the intersecting-pinch contribution around its closed curve."""
 
-from math import pi, sqrt
+from math import log1p, pi, sqrt
 
 import numpy as np
 import sympy as sp
@@ -45,6 +45,12 @@ def integrate_tube(centers, eps, n, angles):
     theta = 2*pi*np.arange(angles)/angles
     values = regulated_d4_residue(u[:, None, None], u[:, None], theta, centers, eps)
     return 2*pi*(w @ values.mean(axis=-1) @ w)
+
+
+def d4_tube_boundary_value():
+    """Analytic integral of the lower D4 residue as eps tends to zero."""
+    pv_u = pi*log1p(2*HALF_WIDTH/(2-HALF_WIDTH))
+    return -pi**3 - 1j*pi*pv_u
 
 
 def check_closed_pinch_curve():
@@ -113,7 +119,8 @@ def check_closed_pinch_curve():
     assert sp.simplify(sp.diff(pv_primitive, u)
                        - (angle_integral-angle_integral.subs(u, -u))/u) == 0
     pv_u = float(pv_primitive.subs(u, width))
-    target = contact - 1j*pi*pv_u
+    target = d4_tube_boundary_value()
+    np.testing.assert_allclose(target, contact - 1j*pi*pv_u, rtol=0, atol=1e-12)
     numeric_centers = np.array(centers, dtype=float)
     theta = 2*pi*np.arange(128)/128
     for uu, vv in ((0, 0), (HALF_WIDTH/2, -HALF_WIDTH/2), (-HALF_WIDTH, HALF_WIDTH)):

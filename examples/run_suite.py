@@ -7,6 +7,7 @@ from .energy_contour import check_energy_contour
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
 from .pinch_intersection import check_pinch_intersection
 from .spatial_pinch import check_spatial_pinch
+from .tube_energy_sum import check_tube_energy_sum
 
 
 def main():
@@ -24,6 +25,7 @@ def main():
         ("Merging pinch roots and a spatial patch", check_spatial_pinch),
         ("Intersecting timelike pinch surfaces", check_pinch_intersection),
         ("Closed timelike pinch curve", check_closed_pinch_curve),
+        ("Complete energy contour over the closed-pinch tube", check_tube_energy_sum),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
