@@ -18,6 +18,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.chart_transport` | Exact transport of the weighted rational form and all five Feynman prescriptions, a family leaving the original affine chart, the external residue in the adjacent chart, and matching that residue across charts at a point and over a transverse patch |
 | `PYTHONPATH=src python -m examples.energy_contour` | Real-energy quadrature versus the sum of five upper-half-plane residues, and the integrated weight of an isolated Feynman pinch in one spatial direction |
 | `PYTHONPATH=src python -m examples.spatial_pinch` | Regulator scaling at a merger of spatial pinch roots and convergence of a finite three-dimensional spatial patch to the on-shell surface integral |
+| `PYTHONPATH=src python -m examples.pinch_intersection` | A local intersection of two timelike pinch surfaces, including the principal values and the contribution supported where both surfaces meet |
 
 ## Finite-cutoff continuation
 
@@ -62,6 +63,25 @@ energy integral has a finite spatial integral as the regulator tends to
 zero. The example compares that convergence with the surface density
 obtained from the two propagators on shell, including the Jacobian from
 `(p_x,p_y)` to `(lambda,p_y/p_x)`.
+
+## Intersecting timelike pinch surfaces
+
+At `p_z=-1`, the two upper poles of `D2` and the insertion meet the
+lower pole of `D4` at `(E,p_x,p_y)=(1/3,-1/2,sqrt(7)/6)`. Closing
+below, the two pinch surfaces are `u=0` and `v=0` in the `D4=0`
+chart `u=D2`, `v=D_insertion`. The spectator denominators there are
+`-2/3` and `-4/3`.
+
+The positive imaginary shifts at the `D4` pole give the product of
+boundary values `1/(u+i0)/(v+i0)`. Applying the
+[Sokhotski–Plemelj formula](https://scipp.ucsc.edu/~haber/archives/physics215_17/Plemelj17.pdf)
+in each coordinate gives a double principal value, two single-surface
+terms, and a term proportional to `-pi**2*delta(u)*delta(v)`. The last
+term contributes `-9*pi**2/(4*sqrt(7))` to the integral of the `D4`
+residue with its spatial Jacobian, before multiplying by `-2*pi*i` for
+clockwise closure. The example checks the full complex integral over a
+small `(u,v)` rectangle at this fixed `p_z`, including the other four
+lower poles.
 
 ## Scope of the checks
 
