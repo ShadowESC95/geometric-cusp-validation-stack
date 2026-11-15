@@ -22,8 +22,21 @@ def spectral_density(h, z):
     if not 0 < h < upper_edge:
         return 0.
 
+    return density_from_edge(upper_edge-h, z)
+
+
+def density_from_edge(distance, z):
+    """Use H-h directly, to resolve arbitrarily close points at the upper edge."""
+    z = max(z, 1/z)
+    upper_edge = spectral_support(z)
+    h = upper_edge-distance
+    if not 0 < distance < upper_edge:
+        return 0.
+
     def roots(g):
-        discriminant = sqrt(max(0., 1-2*(1+z)*h/g))
+        edge = g/(2*(1+z))
+        gap = 0. if g == z else upper_edge-edge
+        discriminant = sqrt(max(0., (distance-gap)/edge))
         lo = (1+z)*h/(2*g*(1+discriminant))
         hi = (1+discriminant)/4
         return lo, hi, discriminant
@@ -51,16 +64,17 @@ def spectral_density(h, z):
     )
 
 
-def spectral_integral(z, kernel):
+def spectral_integral(z, kernel, *, breakpoints=()):
     """Integrate a function of h against the positive spectral density."""
     upper = spectral_support(z)
     inner_edge = min(1, z)/(2*(1+z))
     # h=upper*(1-s^2) handles the square-root edge at z=1.
     def density(s):
         h = upper*(1-s)*(1+s)
-        return 2*upper*s*spectral_density(h, z)*kernel(h)
+        return 2*upper*s*density_from_edge(upper*s*s, z)*kernel(h)
 
-    knots = sorted({0., sqrt(1-inner_edge/upper), 1.})
+    knots = sorted({0., sqrt(1-inner_edge/upper), 1.,
+                    *(sqrt(1-h/upper) for h in breakpoints if 0 < h < upper)})
     return sum(quad(density, lo, hi, epsabs=1e-9, epsrel=1e-9,
                     complex_func=True)[0]
                for lo, hi in zip(knots, knots[1:]))

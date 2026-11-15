@@ -40,6 +40,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.regulator_spectral_edge` | The two leading low-energy density coefficients and the resulting subleading small-regulator terms |
 | `PYTHONPATH=src python -m examples.regulator_upper_edge` | Upper spectral exponent, interior cusp, high-order moment asymptotics, and the crossover as the two edge locations merge |
 | `PYTHONPATH=src python -m examples.regulator_moment_crossover` | The high-order moment crossover and its first finite-order correction as the edge locations merge |
+| `PYTHONPATH=src python -m examples.complex_regulator` | The regulator-plane cut, its two boundary values, and the complex singularity at the upper endpoint |
 
 ## Finite-cutoff continuation
 
@@ -650,6 +651,29 @@ The example compares both terms against the original folded-coordinate
 integral and checks order 1024 independently against the spectral
 density. The expansion with the stated correction holds for fixed
 `lambda` as `n` grows.
+
+## Complex regulator cut and endpoint singularity
+
+Set `w=i*eta` and write the critical kernel as the transform
+`G(w)=integral_0^H sigma(h)/(h-w) dh`. It is analytic off `[0,H]`,
+so the regulator cut in `eta` is the segment from `0` to `-i*H`.
+At an interior point `v`, the boundary values in the `w` plane are
+the principal value plus or minus `i*pi*sigma(v)`. This uses the
+[Sokhotski–Plemelj formula](https://scipp.ucsc.edu/~haber/ph215/Plemelj18.pdf)
+with the denominator `h-w`. The example subtracts the value of the
+density at the pole and adds the principal value of the constant
+term analytically.
+
+For `w=H+delta`, take the principal square root of `delta`.
+At `z=1`, the edge coefficient `C=2*log(3)` gives
+`G(H+delta)~-pi*C/sqrt(delta)`. For `z!=1`, `G(H)` is finite
+and `G(H+delta)-G(H)~pi*C*sqrt(delta)` with `C` from the upper
+edge example. The signs follow from the negative denominator outside
+the support. In the second case the subtracted kernel is
+`delta/((H-h)*(H-h+delta))`. In both cases inserting the leading
+density and scaling `H-h` gives the convergent integral of
+`s**(-1/2)/(1+s)`, equal to `pi`. The quadrature checks the
+coefficients along three rays in the right half-plane of `delta`.
 
 ## Scope of the checks
 

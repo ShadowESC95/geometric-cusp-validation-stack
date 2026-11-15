@@ -4,6 +4,7 @@ from .cd_integral import check_cd_benchmark, check_continuation, check_contour_a
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .complex_cross_ratio import check_complex_cross_ratio
+from .complex_regulator import check_complex_regulator
 from .critical_regulator_kernel import check_critical_regulator_kernel
 from .cusp_regulator_scaling import check_cusp_regulator_scaling
 from .energy_contour import check_energy_contour
@@ -64,6 +65,7 @@ def main():
         ("Low spectral edge and subleading regulator terms", check_regulator_spectral_edge),
         ("Upper spectral edge and its merger at z=1", check_regulator_upper_edge),
         ("High-order moments across the merging spectral edges", check_regulator_moment_crossover),
+        ("Complex regulator cut and endpoint singularity", check_complex_regulator),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
