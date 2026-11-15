@@ -997,6 +997,52 @@ the vanishing scalar excision term therefore give separate
 information. A relative cap with additional boundary pieces
 and its connection to the Lorentzian contour remain open.
 
+## Compactified CD seam and the two base poles
+
+Use homogeneous coordinates `[x0:x1]`, `[y0:y1]`, `[z0:z1]`
+with affine ratios `x=x1/x0`, `y=y1/y0`, `z=z1/z0`.
+Write `B=z1*x1*y0+z0*x0*y1`, `A=x0+x1`, `C=y0+y1`.
+The quotient `D=B/(z0*A*C)` extends as a nonzero function
+where its zero and pole divisors are excluded, including across
+the parameter infinities `x0=0` and `y0=0`. On the resolved
+seam circle it winds `-1`. This rules out an absolute cap in
+that complement, even after compactifying `x` and `y`.
+The quotient `D/z=B/(z1*A*C)` gives the same winding.
+
+An explicit cap exists when both base poles are allowed.
+At any positive `x`, first contract the small loop in `z` to
+`z=-1` with `y` fixed. In that slice the coordinate
+`w=(y+1)/(y-x)` identifies the twice-punctured `y` sphere with
+the nonzero complex numbers. The positive `y=-1` meridian
+and the negative `y=x` meridian have the same winding in `w`.
+The example interpolates their degree-zero factors in logarithmic
+coordinates. It then transfers the negative meridian to the
+`z` plane while keeping `z*x+y=q` fixed on the loop. At the
+end `y=x` and `z=-1+delta*exp(-i*theta)`, with `0<delta<1`.
+The cap `z=-1+delta/k`, `abs(k)<=1`, has homogeneous coordinates
+`[k:delta-k]`. Its moving section is the nonzero constant
+`x*delta`. It crosses `z=0` at `k=delta` and `z=infinity` at
+`k=0`, each with index `+1`.
+
+These signed intersections are forced for any cap that avoids
+`B=0`, `A=0`, and `C=0`. The boundary windings of `D` and
+`D/z` give `-I_infinity=-1` and `-I_zero=-1`, respectively.
+The original meridian also bounds a local disk meeting only
+`C=0` once. Gluing a cap to the reversed local disk gives a
+closed two-cycle of degrees `(0,-1,1)` in the three projective
+factors, since `B` has multidegree `(1,1,1)`, and `A` and `C`
+measure the first two degrees. Both base intersections measure
+the third degree.
+
+The normalized CD form has genuine base residues, with
+the overall `1/(2*pi*i)` omitted here. They are
+`2/((1+x)*(1+y)*y)` at zero and
+`-2/((1+x)*(1+y)*x)` at infinity in the variable `1/z`,
+in the coordinate order `(x,y,base)`. This construction gives
+a compactified cap at each finite positive `x`. A relative
+three-chain with prescribed base-pole and `x` endpoint data
+and its Lorentzian identification require further work.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

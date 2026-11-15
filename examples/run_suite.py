@@ -1,6 +1,7 @@
 """Run the complete set of cusp validation examples from the repository root."""
 
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
+from .cd_compactified_cap import check_cd_compactified_cap
 from .cd_cycle_seam import check_cd_cycle_seam
 from .cd_cycle_monodromy import check_cd_cycle_monodromy
 from .cd_moving_contour import check_cd_moving_contour
@@ -84,6 +85,7 @@ def main():
         ("Projective CD intersection balance", check_cd_projective_intersections),
         ("Circle-first CD period and seam excision", check_cd_projective_period),
         ("Resolved CD seam and normal disk", check_cd_resolved_seam),
+        ("Compactified CD seam and the two base poles", check_cd_compactified_cap),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
