@@ -49,6 +49,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_projective_infinity` | A periodic projective family, its signed infinity crossing, and a residue calculation of the lateral jump |
 | `PYTHONPATH=src python -m examples.cd_projective_intersections` | A chart-independent signed crossing count, tested by routing the winding through either infinity divisor |
 | `PYTHONPATH=src python -m examples.cd_projective_period` | The CD period evaluated with the circle integral first, an absolute seam bound, and its exact finite-width loss |
+| `PYTHONPATH=src python -m examples.cd_resolved_seam` | The normal circle at the polar seam, its local cap obstruction, and the excised disk contribution |
 
 ## Finite-cutoff continuation
 
@@ -959,6 +960,42 @@ at `a=pi-delta`, in agreement with direct scalar quadrature.
 This evaluates the scalar period of the excised family. The
 chain at the seam and its identification with the Lorentzian
 integration class remain open.
+
+## Resolved CD seam and normal disk
+
+On the real sweep `u>0, |z|=1`, set `f=1+u*z=r*exp(i*theta)`.
+In a neighborhood of the crossing, the inverse is
+`u=abs(f-1), z=(f-1)/u`. Resolving the normal coordinate retains
+the `theta` circle at `r=0` over each positive `x`.
+The normal circle has winding `+1` in the positive disk
+orientation. The boundary of the complement of the excised
+disk has the opposite orientation. The corresponding loop in
+`z` has zero winding around zero.
+
+At fixed `z`, the coefficient of `dx^df/f` at `f=0` is
+`2*(1+z)/((1+x)*(z*x-1))`. The seam value is zero, and the
+coefficient divided by `1+z` tends to `-2/(1+x)**2`.
+For a positive normal meridian followed in the coordinate
+order `(x,theta)`, this yields the stripped period `-4*pi*i`.
+
+For the excision in the real sweep, `du*dphi=(r/u)*dr*dtheta`
+and `1+z=i*r*sin(theta)+O(r**2)`. The angular integral of
+`i*sin(theta)*exp(-i*theta)` is `pi`. Including the normalized
+base measure and the `x` integral gives a contribution
+`R**2/2+o(R**2)` from the disk `abs(f)<R`. This is a normal
+disk excision, with its own cutoff distinct from the angular
+excision in the preceding example.
+
+The ratio `(1+y)/(zx+y)` has winding one on the normal circle
+and extends to one at `y=infinity` for finite `x,z`.
+A disk with finite `x,z` avoiding both divisors would extend
+that loop in the nonzero complex numbers, which is impossible.
+In the limiting slice `z=-1`, the exterior disk
+`k=R/(1+y)` contains `y=infinity` at `k=0` and meets
+the moving divisor `y=x` at `k=R/(1+x)`. The winding and
+the vanishing scalar excision term therefore give separate
+information. A relative cap with additional boundary pieces
+and its connection to the Lorentzian contour remain open.
 
 ## Scope of the checks
 

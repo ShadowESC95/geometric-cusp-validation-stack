@@ -7,6 +7,7 @@ from .cd_moving_contour import check_cd_moving_contour
 from .cd_projective_infinity import check_cd_projective_infinity
 from .cd_projective_intersections import check_cd_projective_intersections
 from .cd_projective_period import check_cd_projective_period
+from .cd_resolved_seam import check_cd_resolved_seam
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .complex_cross_ratio import check_complex_cross_ratio
@@ -82,6 +83,7 @@ def main():
         ("Projective CD family and the infinity crossing", check_cd_projective_infinity),
         ("Projective CD intersection balance", check_cd_projective_intersections),
         ("Circle-first CD period and seam excision", check_cd_projective_period),
+        ("Resolved CD seam and normal disk", check_cd_resolved_seam),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
