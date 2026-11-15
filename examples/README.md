@@ -1552,6 +1552,43 @@ overlap, and numerical refinement in the transverse chart.
 The bounded chart excludes the remote regulated zeros.
 Matching the contour and meridians outside it remains open.
 
+## Paired regulated meridian period at the transverse pole scale
+
+In the preceding transverse chart let `tau=sqrt(x/(eps*A))`,
+`h=eps*tau`, and `u=h*w`. At fixed `x,t,A,s`, this gives
+`K=5/2+tau*u`, `J=(3-5*t)/2+(1-t)*tau*u`. Write `P=w+P0`,
+where `P0` is the sum of the first four homogeneous
+coordinates in the transverse formula. With
+`N=H*J+i*(u+h*P0)**2`, the coefficient of `du/(2*pi*i)`
+in the five-form, keeping the preceding coordinate order, is
+`4*Q*tau*J**2/((1+x)*(1+t*x)*K*(1-K)*N**3)`.
+Here `N` is quadratic in `u` and `J=0` introduces no
+additional pole. For sufficiently small `tau` the two
+distinct roots of `N` approach `+/-sqrt(i*H*(3-5*t)/2)`.
+The leading individual residues are opposite and of
+order `tau`.
+
+The slice coefficient decays at least as `u**(-6)` at
+infinity for sufficiently small `tau`. The sum of the two
+regulated residues is therefore the negative of the sum
+at `K=0,1`, where `J` equals `-1,-t`, respectively.
+At these remote points `u=(K-5/2)/tau`, so
+`tau**2*N` tends to `i*(K-5/2)**2`. It follows that the
+paired counterclockwise period divided by `tau**6` tends to
+`4*i*Q*(t**2/(3/2)**6-1/(5/2)**6)`.
+The limiting argument is uniform on compact transverse
+and auxiliary patches with bounded `eps`. The example
+checks the pole-scale form against the earlier chart,
+integrates the two meridians separately and together,
+and compares both sums with the remote-residue formula.
+
+This estimates a pair with both meridians included and
+the same orientation. The rim analysis allows regions
+with one meridian, whose leading residue survives in
+this slice calculation. Establishing the oriented global
+boundary and its match to the Lorentzian prescription
+remains open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
