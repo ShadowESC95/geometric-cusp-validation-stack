@@ -1475,6 +1475,39 @@ regulator. They leave the simultaneous limit in the
 homogeneous Feynman map and matching the resulting
 relative boundary to the Lorentzian chain open.
 
+## Joint zero-regulator limit of the homogeneous frame map
+
+The fixed-regulator chart `u=tau*w_old` still collapses
+for nonzero `w_old` as `eps` goes to zero. Resolve the
+projective map using `w=u/(eps*tau)=A*(k/R-5/2)/x`.
+Multiplying the affine coordinate vector by `w` gives
+`[-A:-A:-B/(2*(1+x)):-Q*s/(2*(1+x)):w]`.
+At `x=0` its first four coordinates cannot all vanish
+because `A+B+s=1`. The linear functional
+`-a1-2*a3-2*a4/Q` equals one on this limiting representative,
+and the coordinates recover `A,s,w` in that normalization.
+The reciprocal chart `v=1/w` extends to the single point
+`[0:0:0:0:1]` at `v=0`.
+
+Write `h=eps*tau=sqrt(eps*x/A)` and
+`J=2*A+(G-A)/(2*(1+x))`. The normalized denominator becomes
+`H-i*h**2*(w-J)**2`. The affine denominator is
+`(H-i*h**2*(w-J)**2)/(eps*tau**2*w**2)` on the punctured chart.
+For bounded `w`, the perturbation tends to zero uniformly
+because `abs(J)<=2`. Hence a fixed circle around `w=0`
+has normalized winding zero and affine winding minus two
+for sufficiently small `h`. The simple regulated zeros are
+`w=J +/- sqrt(-i*H)/h`. They leave every bounded `w` region.
+Both of their projective images approach the reciprocal
+point, but at the scale `v/h` their limits are the two
+distinct reciprocal roots `+/-1/sqrt(-i*H)`. This separates
+the projective frame scale `x/A` in `k/R` from the regulated
+root scale `sqrt(x/(eps*A))`. The example checks the two map
+charts and the different windings and limits. It resolves
+this local diagonal-cap degeneration. Matching the lifted
+boundary to the physical Lorentzian Feynman chain is still
+open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
