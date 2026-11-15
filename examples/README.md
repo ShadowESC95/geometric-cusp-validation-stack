@@ -1300,6 +1300,37 @@ calculation does not settle a lift with modified auxiliary
 contours or extra meridian boundaries, or their matching
 to the Lorentzian prescription.
 
+## Regulated cap rim crossings and meridian balance
+
+Keep `R=.06`, `A=.5`, and `s=.25` from the previous example.
+Writing `chi=x/eps`, the limiting roots are `c +/- m*sqrt(chi)`
+with `c=5*R/2` and `m=R*sqrt(-i*H/A)`. For either signed
+direction `d=+m` or `d=-m`, the equation for `t=sqrt(chi)`
+at the rim is `abs(d)**2*t**2+2*Re(conj(c)*d)*t+abs(c)**2-1=0`.
+It has exactly one positive solution, and the radial derivative
+is positive there. The two outward crossings are at
+`chi=189.052122729...` and `chi=270.946552526...` in the joint
+limit. The exact finite-regulator roots give nearby transverse
+crossings that converge to these values.
+
+Excise a disk around each regulated zero still in the cap.
+In positive circle orientation each new meridian has index
+one under the normalized denominator. Its contribution as
+an inner boundary has index minus one. The original three
+punctures have index zero on the tested slices. Consequently
+the outer index drops from two to one to zero, and subtracting
+the new meridian indices balances it on each slice. The code
+checks this directly at `chi=.25`, `220`, and `320`.
+
+A pole-free filling in a chart with a continuous nonvanishing
+normalized denominator must have signed boundary index zero.
+Holding the rim and the three original puncture loops fixed
+therefore rules out removing a positive index by an interior
+auxiliary deformation alone in that chart. The extra meridians
+provide the slice-wise boundary correction. Their full sweep
+over the auxiliary triangle and matching to the regulated
+Lorentzian chain require further work.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

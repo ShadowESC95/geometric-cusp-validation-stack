@@ -44,6 +44,15 @@ def denominator_on_cap(k, radius, x, A, s, eps):
     return H-1j*eps*U**2/(4*x*A)
 
 
+def cap_root_coefficients(radius, x, A, s):
+    """Write the roots as center +/- slope*sqrt(x/eps)."""
+    H = 1-(1+ROTATION)*s
+    G = 1+(ROTATION-1)*s
+    center = radius/2*(5+4*x+x*(G-A)/(A*(1+x)))
+    slope = radius*np.sqrt(-1j*H/A)
+    return center, slope
+
+
 def original_denominator(z, x, A, s, eps):
     """Evaluate the regulated polynomial using the original affine parameters."""
     p1, p2 = 2*z/(5*z+3), 2/(5*z+3)
@@ -59,17 +68,16 @@ def original_denominator(z, x, A, s, eps):
 
 def check_cap_roots():
     radius, A, s, chi = .06, .5, .25, .25
-    H = 1-(1+ROTATION)*s
-    G = 1+(ROTATION-1)*s
-    offset = radius/2*np.sqrt(-4j*chi*H/A)
-    limiting_roots = 2.5*radius+np.array([-offset, offset])
+    center, slope = cap_root_coefficients(radius, 0., A, s)
+    offsets = np.array([-slope, slope])*np.sqrt(chi)
+    limiting_roots = center+offsets
     print(f"Joint limit poles in k: {limiting_roots[0]:.9f}, {limiting_roots[1]:.9f}")
     unit = np.exp(2j*pi*np.arange(256)/256)
     previous = np.inf
     for eps in (.3, .08, .01, 1e-4, 1e-8):
         x = eps*chi
-        center = radius/2*(5+4*x+x*(G-A)/(A*(1+x)))
-        roots = center+np.array([-offset, offset])
+        center, _ = cap_root_coefficients(radius, x, A, s)
+        roots = center+offsets
 
         # Exclude the two base-pole holes and the frame singularity d=0.
         holes = np.array([0., radius, 2.5*radius])
