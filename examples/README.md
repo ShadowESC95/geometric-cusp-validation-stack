@@ -1369,6 +1369,40 @@ The construction describes the lower-corner crossings and
 excision circles. It leaves the upper endpoint, the limiting
 frame-puncture face, and the Lorentzian boundary matching open.
 
+## Regulated diagonal cap at the upper endpoint
+
+For `R=.06` and `x>=14`, the normalized denominator of
+the diagonal cap has a uniform gap of `sin(pi/8)` for
+every positive regulator and every auxiliary triangle
+point with `A>0`. To see this, write its regulator
+numerator as `U=A*(L(x)-2*k/R)+x*G/(1+x)`, with
+`L(x)=5+4*x-x/(1+x)` increasing. For `abs(k)<=1`, the
+disk of possible values of `L-2*k/R` lies in the sector
+`[-3*pi/16,5*pi/16]`: its distance from `L` to the nearer
+sector boundary is `L*sin(3*pi/16)>2/R` at the cutoff.
+The same sector contains `G=(1-s)+Q*s`. It is a convex
+cone, so it contains `U`. Rotation by `exp(-i*pi/8)` then
+puts the regulator shift `-i*eps*U**2/(4*x*A)` in the
+closed lower half-plane. The rotated `H` has constant
+imaginary part `-sin(pi/8)`. In particular the normalized
+polynomial has zero winding on the rim, and both roots
+are outside the disk in this range. The physical cap
+still uses the original frame and base punctures.
+
+In the upper chart `X=1/x`, `b=x*A`, the multiplier of
+`-i*eps` tends to `(4*b+G)**2/(4*b)` as `X` tends to zero
+at fixed `b>0`. If `eps` also tends to zero, the balances
+`b=eps*beta` and `b=ell/eps` preserve the shifts
+`-i*G**2/(4*beta)` and `-4*i*ell`, respectively. These
+limits follow by substitution with `X` tending to zero.
+Both are compatible with the uniform gap. The example
+checks the projected gap, zero winding, both root
+moduli, and the fixed and joint regulator limits.
+The bound covers the upper region of this diagonal
+product cap. Tracking regulated meridians in the finite
+`x` region and near the frame puncture, and identifying
+the remaining Lorentzian boundary data, remain open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
