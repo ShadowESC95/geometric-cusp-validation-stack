@@ -31,6 +31,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.second_null_insertion_crossing` | The second insertion crossing, with a real leading cylinder coefficient from an even axial weight |
 | `PYTHONPATH=src python -m examples.full_finite_frame` | The complete normalized finite-frame integral via energy residues plus the Wick-rotated exterior, compared with an independent Feynman-parameter calculation and its regulator limit |
 | `PYTHONPATH=src python -m examples.finite_cross_ratio` | Symbolic reduction for positive cross-ratios at fixed rho, plus full-domain numerical comparisons at `z=1/2, 3/2, 2` |
+| `PYTHONPATH=src python -m examples.complex_cross_ratio` | Continuation of the transported projective integral off the positive axis, and a cut jump from both the logarithm and the moving pole |
 
 ## Finite-cutoff continuation
 
@@ -338,6 +339,34 @@ to `pi**2`.
 The example compares the full spatial and parametric integrals at
 `eps=0.3` for `z=1/2, 3/2, 2`, and checks the boundary limit using
 smaller regulators in parameter space.
+
+## Complex cross-ratio and the principal cut
+
+Start from the zero-regulator projective chart selected on the positive
+axis. Put `a3=w*A/(p3+2*a1)` and
+`a4=exp(i*pi/4)*A*k/B`, where `A=(p1*a1+p2*a2)/(1-w)`,
+`0<w<1`, and `k>0`. Use the same `x,y` as in the preceding
+example. The pullback factors into the two-parameter kernel
+`2*(1+z)/((1+x)*(1+y)*(z*x+y))` and a ray factor
+`-2*Q/(1-Q*k)**3` with `Q=exp(i*pi/4)`. The ray factor integrates
+to one, and the `w` integral has unit length.
+
+The chart coefficients and pullback extend from the positive axis to
+the principal slit plane. On compact subsets of that plane,
+`abs(z*x+y)` is bounded below by a positive constant times `x+y`
+for `x,y>=0`, since the segment between `1` and `z` avoids zero.
+The integrable bound makes the pullback holomorphic there. Agreement
+on the positive axis identifies the continuation as
+`pi**2+Log(z)**2` on the principal sheet.
+
+At `z=-a` with `a>0`, the two lips are
+`log(a)**2 +/- 2*pi*i*log(a)`. The jump is `4*pi*i*log(a)`.
+In the two-parameter expression the same jump is obtained by
+integrating the delta term supported at `y=a*x`. The program compares
+both jump calculations and runs the four-parameter quadrature at
+complex points off the cut. The construction continues the
+zero-regulator projective integral at fixed `rho`. A global loop
+contour in weighted twistor space remains to be constructed.
 
 ## Scope of the checks
 
