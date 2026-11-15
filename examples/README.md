@@ -1508,6 +1508,50 @@ this local diagonal-cap degeneration. Matching the lifted
 boundary to the physical Lorentzian Feynman chain is still
 open.
 
+## Local Feynman ray overlap in the transverse frame chart
+
+Extend the joint frame chart away from the diagonal using
+`t=y/x` and `l=k/R-5/2=x*w/A`. Put `K=5/2+l` and
+`J=(3-5*t)/2+(1-t)*l=-K*(z+t)`. Multiplying the affine
+parameter vector by `w` gives the representative
+`[-A:-A*t:B*J/(2*(1+x)):Q*s*J/(2*(1+t*x)):w]`.
+If `P` is its coordinate sum, the normalized regulated
+denominator is `D=H+i*eps*x*P**2/(A*J)`. These formulas
+reduce to the diagonal formulas at `t=1`.
+
+For real `z>-3/5` and `0.8<=t<=1.2`, one has `K>0`,
+`l<0`, and `J=-K*(z+t)<0`. Hence `w<0` and the affine
+coordinates satisfy `a1,a2,a3,a4/Q>0` in the triangle
+interior. At fixed `z` the orientation is the standard
+positive one in `(x,t,r,s)`, with `r=1-A-s`. The
+Jacobian of `(r/A,s/A)` with respect to `(A,s)` is
+`-1/A**3`, giving the sign in the chart used here.
+The denominator on this real slice obeys the rotated
+sector bound used at `z=1`, because `P` is the negative
+of a sum of nonnegative real terms and a nonnegative
+multiple of `Q`. This exhibits local agreement with the
+rotated Feynman parameter ray anchored at positive `z`.
+At `z=0` it is the auxiliary affine polynomial that
+extends in this comparison. The outer `dz/z` form
+still has its base pole there.
+
+For the transverse five-form, in the order `(x,t,w,A,s)`
+the Jacobian into `(x,y,z,r,s)` is `x**2/(A*K**2)`.
+Omitting the constant `1/(2*pi*i)`, the pulled-back
+density is `4*Q*(x/A)/((1+x)*(1+t*x)*K*(1-K)*J*D**3)`.
+For `abs(w)<=3`, `0<x/A<=.01`, `0<=eps<=.1`, and the
+same interval in `t`, one has `.494<=abs(J)<=1.506`,
+`abs(K)>=2.47`, `abs(1-K)>=1.47`, and `abs(P)<=6.4`.
+The regulator perturbation is smaller than `sin(pi/8)/2`,
+which gives an absolute density bound of `320*x/A`.
+For a product with uniformly bounded remaining coordinate
+volume this implies an integral of order `eta**2` on
+`0<x/A<=eta`, since `dx=A*d(x/A)` at fixed `A`.
+The example checks the symbolic pullback, the real-ray
+overlap, and numerical refinement in the transverse chart.
+The bounded chart excludes the remote regulated zeros.
+Matching the contour and meridians outside it remains open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
