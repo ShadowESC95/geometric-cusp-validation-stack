@@ -22,6 +22,14 @@ def upper_coefficient(z):
     return 8/(3*(upper-lower)*sqrt(upper))
 
 
+def cusp_coefficient(z):
+    """Coefficient of the square-root density deficit just below H_minus."""
+    lower, upper = edges(z)
+    if lower == upper:
+        raise ValueError("The two spectral edges coincide at z=1")
+    return 8/(3*(upper-lower)*sqrt(lower))
+
+
 def crossover(xi):
     """Limit of sqrt(H_plus-H_minus)*sigma at h=H_plus-xi*(H_plus-H_minus)."""
     right = sqrt(xi)
@@ -86,7 +94,7 @@ def check_regulator_upper_edge():
 
         if z != 1:
             baseline = spectral_density(lower, z)
-            predicted = 8/(3*(upper-lower)*sqrt(lower))
+            predicted = cusp_coefficient(z)
             distance = 1e-7
             below = (baseline-spectral_density(lower-distance, z))/sqrt(distance)
             above = (spectral_density(lower+distance, z)-baseline)/sqrt(distance)

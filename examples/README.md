@@ -41,6 +41,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.regulator_upper_edge` | Upper spectral exponent, interior cusp, high-order moment asymptotics, and the crossover as the two edge locations merge |
 | `PYTHONPATH=src python -m examples.regulator_moment_crossover` | The high-order moment crossover and its first finite-order correction as the edge locations merge |
 | `PYTHONPATH=src python -m examples.complex_regulator` | The regulator-plane cut, its two boundary values, and the complex singularity at the upper endpoint |
+| `PYTHONPATH=src python -m examples.regulator_interior_cusp` | The square-root correction at the interior spectral cusp, approached along complex rays and both lips of the cut |
 
 ## Finite-cutoff continuation
 
@@ -674,6 +675,29 @@ the support. In the second case the subtracted kernel is
 density and scaling `H-h` gives the convergent integral of
 `s**(-1/2)/(1+s)`, equal to `pi`. The quadrature checks the
 coefficients along three rays in the right half-plane of `delta`.
+
+## Interior spectral cusp on the complex-regulator cut
+
+For fixed positive `z!=1`, let `c=H_minus`, and use the transform
+`G(w)=integral sigma(h)/(h-w) dh`. The density is continuous at `c`.
+The interval excluded just below `c` contributes a deficit
+`-C*sqrt(c-h)` with `C=8/(3*(H_plus-H_minus)*sqrt(c))`.
+In a neighborhood of `c`, the rest of the density has a smooth
+continuation across `c`, and the next term in the deficit is
+`O((c-h)**(3/2))`.
+
+With `delta=w-c`, write `s=c-h` in the deficit term.
+Subtracting its value at `delta=0` leaves
+`-C*delta*integral_0^b ds/(sqrt(s)*(s+delta))` for a fixed
+local cutoff `b>0`. Extending this integral to infinity changes
+the result by `O(delta)` and gives `-pi*C*sqrt(delta)`.
+The other terms change by `O(delta)` on each side separately.
+Thus the upper and lower boundary values at `c` are finite,
+with the same square-root coefficient relative to their respective
+limits. The square root is principal, so the correction is real
+on the right lip and purely imaginary with opposite signs on the
+two left lips. The example verifies these phases and coefficients
+with four complex rays and direct boundary-value quadrature.
 
 ## Scope of the checks
 
