@@ -22,6 +22,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.closed_pinch_curve` | Integration along the full closed intersection and regulator convergence of the lower `D4` residue over a tube around it |
 | `PYTHONPATH=src python -m examples.tube_energy_sum` | All five energy residues over that tube, including a group contour through same-side pole coincidences |
 | `PYTHONPATH=src python -m examples.spatial_tail` | Wick rotation outside a large sphere, a uniform bound for the exterior integral, and its first two asymptotic coefficients |
+| `PYTHONPATH=src python -m examples.null_pinch` | Local integrability and the leading transverse area term over a segment shared by two projected external null edges |
 
 ## Finite-cutoff continuation
 
@@ -137,6 +138,28 @@ At zero regulator the large-`R` expansion starts with
 cancels odd powers of `1/r` after integration. The example compares the
 coefficients to quadrature at four radii. The ball `r<=R` contains the
 finite-momentum pinch regions.
+
+## External null-edge cylinder
+
+Take `p_z=lambda-1` with `1/4<=lambda<=3/8` and a transverse disk
+centered at the origin. In this cylinder the opposite-side `D2`–`D3`
+and `D1`–`D4` pairs pinch at `E=1-lambda` and `E=-lambda`,
+respectively. The pairs have distinct pinch energies over the interval.
+The other upper poles are integrated on contours that stay separated
+from the pinching poles.
+
+The energy gap of each pinching pair is proportional to
+`r_perp**2-i*eps` up to a smooth factor with nonzero real part. Before
+reflection the numerator is proportional to `p_x`, so the local
+singularity is bounded in magnitude by a constant times `1/r_perp`.
+On this reflection-symmetric disk, averaging `p_x` and `-p_x` gives
+a factor `p_x**2` and the reflected insertion denominator. This bounds
+the averaged energy integral uniformly and gives a cylinder integral
+of order the transverse area. Its coefficient after division by the
+disk radius squared is approximately `1.990891125602` in the
+normalized convention. The example checks the shrinking-disk limit
+and the regulator limit at fixed radius. The axial interval avoids
+the null-edge endpoints and intersections with the insertion.
 
 ## Scope of the checks
 
