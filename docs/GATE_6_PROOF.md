@@ -276,15 +276,95 @@ imaginary shift of the base coordinate contributes \(\Im F_0\) with sign
 set by \(F_0'\), which changes between the two positive-weight examples.
 It cannot reproduce the sign of \(-i\epsilon P^2\) on both examples.
 
-## 5. Conditions for closing Gate 6
+## 5. Local transport through the positive-weight vertex
+
+There is a local comparison that moves the weights at fixed base
+coordinate. Start with a compact slice of the positive rotated ray in
+section 4 and scale its four affine weights to zero, keeping \(a_5=1\).
+On the real frame side \(\ell<0\), the imaginary-part inequality in section 4
+continues to hold, including at the vertex where \(F_\epsilon=-i\epsilon\).
+At the vertex the base path can move in the punctured base chart while
+the denominator remains \(-i\epsilon\). This moves a local path from the
+real frame side to the rim patch, with the base and frame punctures avoided.
+
+In that rim patch, let \(a_j^{\mathrm{cap}}(K)\) denote the affine weights of
+the moving-weight chart, with \(x=\epsilon A\lambda\). Take the explicit
+interpolation \(a_j=q a_j^{\mathrm{cap}}(K)\), \(0\le q\le1\). The cap
+weights are \(O(\epsilon)\) on the patch. More explicitly they are
+
+\[
+(a_1,a_2,a_3,a_4)^{\mathrm{cap}}
+=\frac{\epsilon\lambda}{\ell}
+\left(-A,-At,\frac{BJ}{2(1+x)},\frac{QsJ}{2(1+tx)}\right),
+\qquad B=1-A-s.
+\]
+
+The exact cap identity \(F_0=C_0 H/A\), with
+\(C_0=p_1a_1+p_2a_2=-xJ/\ell^2\), gives the linear contribution in these
+weights up to \(O(\epsilon^2)\). Thus along this interpolation
+
+\[
+\frac{F_\epsilon(q a^{\mathrm{cap}})}{\epsilon}
+=-i-q\frac{\lambda HJ}{\ell^2}+O(\epsilon).
+\]
+
+The estimate is uniform on any compact patch separated from the frame
+and on \(0\le q\le1\). At either limiting rim collision \(K_*=\pm R^{-1}\),
+use \(H=-ia\), \(a=\sqrt2-1\), and
+\(\lambda aJ=\ell^2-(K-K_*)^2\). The scaled denominator becomes
+
+\[
+-i\left[(1-q)+q\frac{(K-K_*)^2}{\ell^2}\right].
+\]
+
+For real \(K\) near \(K_*\), its imaginary part is strictly negative on
+each closed interval \(0\le q\le q_0<1\). The sign survives at sufficiently
+small positive regulator and sufficiently small perturbations of the
+collision parameters. At \(q=1\), use the fixed local detour boundary of
+section 3. This is a deformation of a local path. Scaling the weight
+coordinates to the vertex also collapses the corresponding integration
+directions, so the homotopy's lateral faces must be retained when making
+a comparison of full chains.
+
+### Which roots lie inside during this transport
+
+Let \(c=5/2\). After clearing \(\ell^2\), the limiting polynomial along the
+interpolation is proportional to
+
+\[
+(1-q)(K-c)^2+q(K-K_*)^2.
+\]
+
+For \(0<q<1\) its two roots lie on opposite sides of the real axis at
+
+\[
+K=(1-q)c+qK_*\ \pm\ i\sqrt{q(1-q)}(K_*-c),
+\qquad |K|^2=(1-q)c^2+qR^{-2}<R^{-2}.
+\]
+
+Both roots approach the rim from its interior in this scaled transport.
+Continuing the rim locally while keeping both enclosed leads to the outer
+detour \(C_{\mathrm{out}}\) from section 3. The calculation identifies that
+detour for this vertex-based path. It does not assert that every transport
+of the physical cycle has the same relative boundary. At \(q=0\), the
+cleared polynomial has a double zero at \(K=c\), but the actual denominator
+is constant. Tracking the pair all the way from the vertex must therefore
+account for the frame puncture, where this normalization changes the
+winding. At positive regulator, continuity also preserves strict interior
+root placement on compact subintervals of \(0<q<1\) for this family. The
+endpoints require the frame and rim charts. Exact polynomial identities
+and finite-regulator evaluations on both patches check these statements.
+
+## 6. Conditions for closing Gate 6
 
 1. **Construct and control the regulated comparison through the rim
    collisions.** Fix a common prescription and cutoff chain for the capped
    lift and the Lorentzian integral. Section 3 gives both local rim detours,
    their signed meridian relations, and the bound on their period difference.
    Section 4 fixes the local prescription on the original weight slices and
-   connects it to the rotated ray. Transport the physical cycle into the
-   moving-weight patches, determine the detour and interface terms, and extend
+   connects it to the rotated ray. Section 5 supplies a local vertex-based
+   transport and its rim detour. Determine the frame and lateral boundary
+   terms and whether the transport extends to the physical cycle. Extend
    control to the remaining transverse domains and their endpoints, together
    with the auxiliary and base/frame faces. Specify the order of regulator
    removal and other cutoff limits and justify any interchange. Example 60
