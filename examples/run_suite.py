@@ -4,6 +4,7 @@ from .cd_integral import check_cd_benchmark, check_continuation, check_contour_a
 from .cd_cycle_seam import check_cd_cycle_seam
 from .cd_cycle_monodromy import check_cd_cycle_monodromy
 from .cd_moving_contour import check_cd_moving_contour
+from .cd_projective_infinity import check_cd_projective_infinity
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .complex_cross_ratio import check_complex_cross_ratio
@@ -76,6 +77,7 @@ def main():
         ("CD parameter seam and resolved meridian", check_cd_cycle_seam),
         ("CD contour winding obstruction and monodromy", check_cd_cycle_monodromy),
         ("Moving CD square and nested meridian", check_cd_moving_contour),
+        ("Projective CD family and the infinity crossing", check_cd_projective_infinity),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

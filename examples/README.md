@@ -46,6 +46,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_cycle_seam` | The CD contour difference at the capped-cycle seam and the meridian retained by resolving the moving pole |
 | `PYTHONPATH=src python -m examples.cd_cycle_monodromy` | A winding obstruction for periodic CD paths in the fixed positive-x chart and the period of the continued branch |
 | `PYTHONPATH=src python -m examples.cd_moving_contour` | A fixed-corner obstruction for moving CD parameters and the period of the nested meridian at chart infinity |
+| `PYTHONPATH=src python -m examples.cd_projective_infinity` | A periodic projective family, its signed infinity crossing, and a residue calculation of the lateral jump |
 
 ## Finite-cutoff continuation
 
@@ -846,6 +847,37 @@ A general relative chain can change the boundary construction
 or involve contributions at infinity. Accounting for those
 contributions and relating the result to the Lorentzian contour
 remain open.
+
+## Projective CD family and the infinity crossing
+
+Take `x,u>0` and `y=z*u`, and use projective coordinates at
+the ends. This family is periodic as `z` winds and has
+`zx+y=z*(x+u)` on its interior. It reaches the polar divisor
+`y=-1`, or `Y=infinity`, at `z=-1,u=1) on the unit circle.
+On the diagonal connecting the fixed opposite corners use
+`x=(1-v)/v` and `u=v/(1-v)`. The affine divisor function
+is then `D=z*((1-v)**2+v**2)/(1-v+z*v)`.
+At `v=1/2,arg(z)=pi` the chart factor has local derivatives
+`-2,-i/2` in the orientation `(v,arg(z))`. Its index is
+`+1`, so `D` has a pole of index `-1` there. That pole
+accounts for the difference between the corner windings.
+
+The pulled-back CD form is
+`2*(1+z)*dx^du/((1+x)*(1+z*u)*(x+u))`.
+After integrating over `x`, its coefficient in `du` is
+`2*(1+z)*log(u)/((u-1)*(1+z*u))`, with a continuous
+logarithmic quotient at `u=1`. This integral agrees off the
+cut with the principal-sheet CD parameter value. For `z=-a`
+the pole at `u=1/a) approaches from above when `Im(z)>0`.
+With `x` fixed, its residue is
+`-2*(1-a)/((1+x)*(1+a*x))`. Integrating the residue with
+the positive orientation gives the lateral jump
+`4*pi*i*log(a)`. The crossing on the unit circle has zero
+scalar jump at `a=1`; the chart index is still nonzero.
+
+The periodic geometric family crosses the polar locus.
+Turning it into a pole-avoiding relative cycle at the seam
+and identifying its Lorentzian class remain open.
 
 ## Scope of the checks
 
