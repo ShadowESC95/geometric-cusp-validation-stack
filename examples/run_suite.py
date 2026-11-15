@@ -1,6 +1,7 @@
 """Run the complete set of cusp validation examples from the repository root."""
 
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
+from .cd_cycle_seam import check_cd_cycle_seam
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
 from .closed_pinch_curve import check_closed_pinch_curve
 from .complex_cross_ratio import check_complex_cross_ratio
@@ -70,6 +71,7 @@ def main():
         ("Complex regulator cut and endpoint singularity", check_complex_regulator),
         ("Interior spectral cusp on the complex-regulator cut", check_regulator_interior_cusp),
         ("Capped weighted-divisor cycle and scalar pushforward", check_cycle_and_period),
+        ("CD parameter seam and resolved meridian", check_cd_cycle_seam),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

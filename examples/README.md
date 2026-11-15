@@ -43,6 +43,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.complex_regulator` | The regulator-plane cut, its two boundary values, and the complex singularity at the upper endpoint |
 | `PYTHONPATH=src python -m examples.regulator_interior_cusp` | The square-root correction at the interior spectral cusp, approached along complex rays and both lips of the cut |
 | `PYTHONPATH=src python -m examples.weighted_boundary_cycle` | An explicit capped cycle on the complex weighted divisor, its chart orientations, and its scalar pushforward to the benchmark contour |
+| `PYTHONPATH=src python -m examples.cd_cycle_seam` | The CD contour difference at the capped-cycle seam and the meridian retained by resolving the moving pole |
 
 ## Finite-cutoff continuation
 
@@ -741,6 +742,37 @@ The calculation supplies no deformation of that prescription to
 the capped cycle, no transport of the CD integration class along
 the cycle, and no accounting of additional chains in such a
 deformation.
+
+## CD parameter seam and resolved meridian
+
+On the transported projective domain, the auxiliary ray and interval
+integrate to one. In the two remaining CD parameters, set `y=x*t`.
+The relative integration form at fixed `z` has coefficient
+`2*(1+z)/((1+x)*(1+t*x)*(t+z))` in `dx^dt`.
+At `z=-a` with `a>0`, the upper and lower limits bypass the pole
+`t=a` on opposite sides. The upper left-to-right bypass minus the
+lower bypass is one clockwise meridian. The other pole
+`t=-1/x` stays outside that meridian for `x>0).
+
+The jump after dividing out `1+z` is
+`-4*pi*i*integral_0^infinity dx/((1+x)*(1+a*x))`.
+The integral is `log(a)/(a-1)` with value one at `a=1`.
+Thus the scalar jump vanishes at `z=-1), while the winding is
+still minus one and the limiting jump after division is
+`-4*pi*i`. The numerical check integrates the two detours with
+their orientations and compares their difference with the residue.
+
+To track the pole as the outer cycle enters the cap, write
+`s=z+1` and `t=1+s*v`. This chart keeps the pole at `v=-1`.
+Meridians of size `O(abs(s))` in the original `t) coordinate
+retain a full winding in the resolved coordinate. The pulled-back
+relative form is
+`2*s*dx^dv/((1+x)*(1+x*(1+s*v))*(1+v))`.
+It has zero scalar period in the cap limit, with limiting coefficient
+`2/((1+x)**2*(1+v))` after division by `s`. This identifies the
+meridian that must be accounted for when gluing the projective
+CD parameter chains. A global chain in the original loop variables
+remains open.
 
 ## Scope of the checks
 
