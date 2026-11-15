@@ -88,6 +88,10 @@ Use the established finite function `F(g,z)` and compare:
 
 The target relation is the source convention's RG extraction equation, with the sign/orientation dictionary recorded explicitly.
 
+The [benchmark validation record](BENCHMARK_VALIDATION.md) describes the
+completed suite. The [Gate 6 proof](GATE_6_PROOF.md) records the outstanding
+regulated and oriented chain comparisons.
+
 ## Gate 7 — continuum layer
 
 Only after the geometric source term is fixed, export it to FEniCSx/Firedrake/deal.II/FiPy/COMSOL.

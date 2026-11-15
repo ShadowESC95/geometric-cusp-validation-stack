@@ -330,10 +330,12 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Reproduce the cusp validation examples with `make examples`. The suite
-covers the residue, finite CD quadrature, Lorentzian continuation, and chart
-matching checks. The [example guide](examples/README.md) lists the individual
-commands and the scope of each calculation.
+Run the benchmark with `make test && make examples`. The validation snapshot
+contains 8 pytest tests and 60 example groups. See the
+[benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
+expected output, and established results. The [example guide](examples/README.md)
+gives the individual commands and derivations. The remaining comparison to
+the Lorentzian contour is tracked in the [Gate 6 proof](docs/GATE_6_PROOF.md).
 
 Dedicated amplituhedron experiment:
 

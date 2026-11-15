@@ -1,6 +1,8 @@
 # Cusp validation examples
 
-Run from the repository root with the core Python dependencies installed.
+Run all 60 example groups from the repository root with the core Python
+dependencies installed. The [benchmark validation record](../docs/BENCHMARK_VALIDATION.md)
+records the expected test output and the checked environment.
 
 ```bash
 make examples
@@ -50,6 +52,23 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_projective_intersections` | A chart-independent signed crossing count, tested by routing the winding through either infinity divisor |
 | `PYTHONPATH=src python -m examples.cd_projective_period` | The CD period evaluated with the circle integral first, an absolute seam bound, and its exact finite-width loss |
 | `PYTHONPATH=src python -m examples.cd_resolved_seam` | The normal circle at the polar seam, its local cap obstruction, and the excised disk contribution |
+| `PYTHONPATH=src python -m examples.cd_compactified_cap` | Cap through both base poles and signed intersections |
+| `PYTHONPATH=src python -m examples.cd_swept_cap` | Oriented sweep, base tubes, and scalar endpoint limit |
+| `PYTHONPATH=src python -m examples.cd_cap_endpoints` | Resolved faces at the two sweep endpoints |
+| `PYTHONPATH=src python -m examples.cd_principal_seam` | Principal contour deformation and shared CD meridian |
+| `PYTHONPATH=src python -m examples.cd_auxiliary_faces` | Unreduced auxiliary triangle and diagonal-cap corners |
+| `PYTHONPATH=src python -m examples.cd_regulated_auxiliary` | Regulated auxiliary edge at real \(z=1\) |
+| `PYTHONPATH=src python -m examples.cd_regulated_base_cap` | Two regulated roots in the complex base cap |
+| `PYTHONPATH=src python -m examples.cd_regulated_cap_meridians` | Rim crossings and the signed meridian balance |
+| `PYTHONPATH=src python -m examples.cd_regulated_meridian_sweep` | Lower-corner crossing surfaces across the auxiliary triangle |
+| `PYTHONPATH=src python -m examples.cd_regulated_upper_cap` | Uniform upper cap gap and joint regulator limits |
+| `PYTHONPATH=src python -m examples.cd_regulated_finite_cap` | Confinement of diagonal-cap roots to the lower layer |
+| `PYTHONPATH=src python -m examples.cd_regulated_frame_face` | Resolved frame puncture and both denominator windings |
+| `PYTHONPATH=src python -m examples.cd_regulated_joint_frame` | Homogeneous frame coordinates in the joint limit |
+| `PYTHONPATH=src python -m examples.cd_frame_feynman_overlap` | Local rotated Feynman overlap and transverse density bound |
+| `PYTHONPATH=src python -m examples.cd_remote_meridian_period` | Suppression of the paired residue at the transverse pole scale |
+| `PYTHONPATH=src python -m examples.cd_single_meridian_layer` | Nonzero linear coefficient on a compact one-meridian patch |
+| `PYTHONPATH=src python -m examples.cd_diagonal_meridian_band` | Entire lower one-meridian band on the diagonal, per unit transverse coordinate |
 
 ## Finite-cutoff continuation
 
@@ -1658,5 +1677,6 @@ The CD parameter calculation reproduces the established two-loop coefficient.
 The chart checks establish local matching with a transported prescription at
 finite regulator. The parameter tail is an estimate in the reduced integral.
 The capped cycle realizes the benchmark scalar contour on the complex
-weighted divisor. Identifying it with the Lorentzian contour class, including
-the CD cycle and any additional chart-edge contributions, remains open.
+weighted divisor. The [Gate 6 proof](../docs/GATE_6_PROOF.md) records the open
+Lorentzian contour identity and the transverse rim collisions that constrain
+the comparison.
