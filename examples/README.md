@@ -37,6 +37,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.large_regulator_ratio` | Uniform large-ratio expansion of the critical kernel and the independent fixed-regulator cusp coefficient |
 | `PYTHONPATH=src python -m examples.matched_regulator_limit` | A common rescaling for the two regulator limits and a proof of their matching coefficient |
 | `PYTHONPATH=src python -m examples.regulator_spectrum` | A positive spectral density for the critical kernel, its moment sum rules, and bounds for all positive regulator ratios |
+| `PYTHONPATH=src python -m examples.regulator_spectral_edge` | The two leading low-energy density coefficients and the resulting subleading small-regulator terms |
 
 ## Finite-cutoff continuation
 
@@ -536,6 +537,45 @@ and `M1` and lower bounds `M0/(1+(H/eta)**2)` and
 `eta**2/(h**2+eta**2)` with the positive density and its
 `h`-weighted counterpart. The example checks the density against
 the existing folded quadrature and verifies the four moment sum rules.
+
+## Low spectral edge and subleading regulator terms
+
+The spectrum near `h=0` comes from the branches near `t=0` and
+`t=1/2`. On the small-`t` branch, invert the defining quadratic in
+`t` at fixed `q`. With `g=1+(z-1)*q`, it gives
+`t=(1+z)*h/(4*g)+O(h**2)`. The angular endpoints occur at
+`q=(1+z)*h/4+O(h**2)` and `1-q=(1+z)*h/(4*z)+O(h**2)`.
+The pushforward weight divided by `h` therefore has a factor
+`(1+z)**2/2` times `1/(q*(1-q)*g**2)` at leading order.
+Subtract the linear interpolant of `1/g**2` to isolate the two
+endpoint logarithms and integrate the resulting regular remainder.
+
+On the other branch, set `t=1/2-h*v`. The angular variable tends to
+`1/2`, and for `z>1` the width in `v` tends to
+`(1+z)*(1-1/z)/4`. Substituting into the pushforward integral gives
+an additional `2*(1+z)**2/z` in the coefficient of `h`.
+The two inverse branches at `z=1` give the continuous limit of the
+same formula. Together,
+
+```text
+sigma_z(h) = h*(A*log(1/h)+B) + O(h**2*log(1/h))
+A = (1+z)**2*(1+z**(-2))/2
+B = (1+z)**2/2 * (
+    (1+z**(-2))*log(4/(1+z)) + (2*z**(-2)-1)*log(z)
+    + 6/z - 1 - z**(-2)
+)
+```
+
+In the transform at positive `eta`, put `L=log(1/eta)`.
+The imaginary part has expansion `eta*(A*L**2/2+B*L+O(1))).
+The real deficit from the boundary value is
+`(pi/2)*eta*(A*L+B)+o(eta)`. These follow by inserting the density
+expansion into the real and imaginary kernels. The constant
+`pi/2` is the integral of `1/(1+s**2)` on the positive half-line,
+and the integral of `log(s)/(1+s**2)` vanishes by inversion.
+The example compares the predicted `B` against both the density
+and the real deficit, and checks that subtracting the imaginary
+logarithms leaves a finite remainder.
 
 ## Scope of the checks
 
