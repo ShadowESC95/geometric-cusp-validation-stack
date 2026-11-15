@@ -103,18 +103,116 @@ contour around the two roots has a smooth period locally, since the enclosing
 loop can be held off all poles even at coincidence. Its boundary relation to
 the physical contour must still be specified.
 
-## 3. Conditions for closing Gate 6
+## 3. Local rim detours through a double root
+
+Let \(p=(\lambda,t,A,s)\) and let \(p_*\) denote an interior auxiliary slice of
+either collision in section 2. Work in the \(K\) plane and give the disk
+\(D_R=\{|K|\le R^{-1}\}\) its complex orientation. Choose a closed disk \(E\)
+centered at the collision point \(K_*\), small enough to miss \(0,1,5/2\) and
+to meet the rim transversely at two points. On a compact neighborhood of
+\(p_*\) and for all sufficiently small \(\epsilon\ge0\) in the scaled variables,
+both regulated roots stay strictly inside \(E\). This follows by continuity of
+the monic quadratic coefficients, or by applying Rouché's theorem on
+\(\partial E\) at the double root. The boundary of \(E\) can stay fixed.
+
+The boundary of \(D_R\cup E\) detours outside the original rim and includes
+both roots. The boundary of \(D_R\setminus\operatorname{int}E\) detours inside
+the rim and excludes both roots. Keep every original base and frame hole
+in the two chains. The outer detour uses the arc of \(\partial E\) outside
+\(D_R\) counterclockwise. The inner detour uses the arc inside \(D_R\)
+clockwise. Write the resulting oriented rim cycles as \(C_{\mathrm{out}}\)
+and \(C_{\mathrm{in}}\). Their difference, as one-chains, is
+\(C_{\mathrm{out}}-C_{\mathrm{in}}=\partial E\) counterclockwise.
+
+At a parameter point where the original rim avoids the roots, let \(S\) be
+the set of roots in \(D_R\) and \(S^c\) the remaining roots in \(E\). Write
+\(M_J\) for the sum of counterclockwise meridians around the roots in \(J\),
+with \(M_\varnothing=0\). The punctured regions \(E\cap D_R\) and
+\(E\setminus D_R\) supply the respective homologies
+
+\[
+C_{\mathrm{rim}}-C_{\mathrm{in}}\sim M_S,\qquad
+C_{\mathrm{out}}-C_{\mathrm{rim}}\sim M_{S^c}.
+\]
+
+Indeed the positive rim arc occurs in the first region and the negative
+rim arc in the second. After subtracting the included meridians, each
+difference bounds its region in the complement. These formulas cover each
+single-root side where the rim contains one root, and give the periods with
+the orientation fixed. For instance, transporting the original rim to the
+outer detour adds the meridian of the excluded root. Summing the two
+relations yields the pair contour. Each detour extends through the
+collision with no pole on its path. The individual meridian terms from the
+original rim can be singular even though their grouped sum extends.
+
+### The grouped period and its regulator bound
+
+Write the sliced form in the orientation of example 58 as
+
+\[
+\omega_\epsilon=\frac{4QJ^2}{(1+x)(1+tx)K(1-K)N_\epsilon(K)^3}
+\frac{dK}{2\pi i},
+\qquad N_\epsilon(K)=HJ+i(u+hP_0)^2,
+\quad u=\frac{K-5/2}{\sqrt\lambda},\quad h=\epsilon\sqrt\lambda.
+\]
+
+Here \(P_0\) is the affine function of \(K\) from example 58, with no
+singularity on \(E\). On the compact product of the parameter patch and
+\(\partial E\), \(N_\epsilon\) is uniformly bounded away from zero after
+shrinking the patch and regulator interval. The base factors are also
+bounded away from zero. Consequently the grouped period
+\(G_\epsilon(p)=\oint_{\partial E}\omega_\epsilon\) is bounded and smooth in
+the real parameters and regulator, even through the double root. For a
+fixed compact patch \(V\) of the \(p\) variables, the difference of the two
+detour periods is therefore
+
+\[
+\epsilon\int_V A\,G_0(p)\,d\lambda\,dt\,dA\,ds+O(\epsilon^2).
+\]
+
+This is from \(dx=\epsilon A\,d\lambda\) modulo \(dA\) at fixed regulator.
+The error follows from the uniform bound on the first regulator derivative
+on the fixed loop. The estimate applies to the local detour difference.
+
+At \(p_*\) and \(\epsilon=0\) in the scaled variables,
+\(N_0(K)=i(K-K_*)^2/\lambda_*\). The rational form has no residue at
+infinity, and its only poles outside \(E\) are the base poles at \(K=0,1\).
+Taking the negative sum of those residues gives
+
+\[
+G_0(p_*)=4iQ\lambda_*^3\left(\frac{t_*^2}{(1-K_*)^6}
+-\frac{1}{K_*^6}\right).
+\]
+
+At \(K_*=+50/3\) this is approximately \(-6.052350324174+6.052350324174i\).
+At \(K_*=-50/3\) it is approximately \(3.045968993180-3.045968993180i\).
+Direct circle quadrature of the existing slice density agrees with the
+remote-residue formula to within \(3\times10^{-14}\) at the two limiting
+collisions and at nearby continued collisions for
+\(A=1/4\), \(\epsilon=10^{-7},10^{-6}\). Thus the local two-detour ambiguity
+has a bounded, generally nonzero coefficient at order \(\epsilon\), and
+its period vanishes as \(\epsilon\) tends to zero on this compact patch.
+
+The two detours differ topologically in the regulated divisor complement
+at positive regulator. The original rim and the meridians specify the
+local relation above. The Lorentzian \(i0\) prescription still has to
+select the detour and its attachments on the parameter boundary. A change
+of detour over a parameter subregion carries an interface chain with the
+pair-meridian boundary, so the local period bound alone does not identify
+the full relative cycle.
+
+## 4. Conditions for closing Gate 6
 
 1. **Construct and control the regulated comparison through the rim
    collisions.** Fix a common prescription and cutoff chain for the capped
-   lift and the Lorentzian integral. Near each rim collision, describe how a
-   contour surrounding the pair joins the deformed rim and the single-root
-   pieces on either side. Compute the resulting boundary term or prove its
-   cancellation with a uniform bound. Extend that control to the remaining
-   transverse domains and their endpoints, together with the auxiliary and
-   base/frame faces. Specify the order of regulator removal and other cutoff
-   limits and justify any interchange. Example 60 gives a diagonal check
-   for this construction.
+   lift and the Lorentzian integral. Section 3 gives both local rim detours,
+   their signed meridian relations, and the bound on their period difference.
+   Transport the physical cycle into these patches, choose the detours from
+   its prescription, and compute or bound the interface terms. Extend that
+   control to the remaining transverse domains and their endpoints, together
+   with the auxiliary and base/frame faces. Specify the order of regulator
+   removal and other cutoff limits and justify any interchange. Example 60
+   gives a diagonal check for this construction.
 2. **Establish the oriented global identity or exhibit its obstruction.**
    Put the geometric and Feynman cycles in a common resolved complement of
    the regulated polar divisor with explicit relative boundary data. Give a
