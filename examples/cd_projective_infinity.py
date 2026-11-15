@@ -52,8 +52,12 @@ def rotated_integral(z):
     # Cancel the nearby complex pole before quadrature and integrate the
     # subtracted constant analytically on the principal sheet.
     subtract = compact(pole) if .05 < pole.real < .95 and abs(pole.imag)<.1 else 0.
-    residual = quad(lambda v: (compact(v)-subtract)/(1+(z-1)*v), 0, 1,
-                    complex_func=True, epsabs=1e-10, epsrel=1e-10)[0]
+    knots = (0., pole.real, 1.) if subtract else (0., 1.)
+    # Absolute tolerances for the two pieces avoid an unnecessary
+    # refinement when their real parts nearly cancel after recombination.
+    residual = sum(quad(lambda v: (compact(v)-subtract)/(1+(z-1)*v), lo, hi,
+                        complex_func=True, epsabs=3e-10, epsrel=1e-10)[0]
+                   for lo, hi in zip(knots, knots[1:]))
     return 2*(1+z)*(residual+subtract*np.log(complex(z))/(z-1))
 
 

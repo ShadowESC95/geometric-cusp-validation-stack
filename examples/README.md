@@ -48,6 +48,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_moving_contour` | A fixed-corner obstruction for moving CD parameters and the period of the nested meridian at chart infinity |
 | `PYTHONPATH=src python -m examples.cd_projective_infinity` | A periodic projective family, its signed infinity crossing, and a residue calculation of the lateral jump |
 | `PYTHONPATH=src python -m examples.cd_projective_intersections` | A chart-independent signed crossing count, tested by routing the winding through either infinity divisor |
+| `PYTHONPATH=src python -m examples.cd_projective_period` | The CD period evaluated with the circle integral first, an absolute seam bound, and its exact finite-width loss |
 
 ## Finite-cutoff continuation
 
@@ -920,6 +921,44 @@ either infinity divisor. These indices constrain relative
 deformations with the fixed endpoints. A changed boundary or
 the original Lorentzian loop cycle still requires a separate
 construction.
+
+## Circle-first CD period and seam excision
+
+On the family `y=z*u` with `x,u>0` and `abs(z)=1`,
+the normalized integrand is the pulled-back CD form
+times `dz/(2*pi*i*z)`. Integrate over `z) first. The scalar factor
+`(1+z)/(z*(1+u*z))` has residue one at zero. The second pole at
+`-1/u` contributes `1/u-1` when `u>1` and lies outside the circle
+when `u<1`. At `u=1` the apparent second pole cancels in this scalar
+factor. The resulting circle weight is one on `0<u<1` and
+`1/u` on `u>1`.
+
+Integrating `1/((1+x)*(x+u))` in `x` gives
+`J(u)=log(u)/(u-1)`. Since `J(1/u)=u*J(u)`, both halves
+give the same contribution. The full normalized period is
+`4*integral_0^1 J(u) du=2*pi**2/3`, using the series for
+`1/(1-u)`. This derivation integrates the base circle before
+using the CD scalar benchmark.
+
+For absolute convergence use
+`abs(1+u*z)**2=(1-u)**2+u*abs(1+z)**2`.
+The ratio of the two moduli is bounded by `1/sqrt(u)` for
+the numerator `1+z`. The integral of `J(u)/sqrt(u)` over
+positive `u` is `pi**2`, by folding at one and setting
+`u=v**2` on the lower interval. Thus the full normalized
+absolute integral is at most `2*pi**2`, and omitting the arcs
+of angular half-width `delta` at the seam costs at most
+`2*pi*delta` in absolute value. This bound justifies the
+exchange of integrations and shows the seam excision vanishes.
+
+For a retained arc `-a<=arg(z)<=a` with `a<pi`, the base
+weight is `(a+(1-u)*arg(1+u*exp(i*a))/u)/pi`, using the
+continuous argument along the arc. Integrating this weight gives
+an omitted scalar contribution of `delta**2-delta**3/(3*pi)`
+at `a=pi-delta`, in agreement with direct scalar quadrature.
+This evaluates the scalar period of the excised family. The
+chain at the seam and its identification with the Lorentzian
+integration class remain open.
 
 ## Scope of the checks
 
