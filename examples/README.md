@@ -38,6 +38,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.matched_regulator_limit` | A common rescaling for the two regulator limits and a proof of their matching coefficient |
 | `PYTHONPATH=src python -m examples.regulator_spectrum` | A positive spectral density for the critical kernel, its moment sum rules, and bounds for all positive regulator ratios |
 | `PYTHONPATH=src python -m examples.regulator_spectral_edge` | The two leading low-energy density coefficients and the resulting subleading small-regulator terms |
+| `PYTHONPATH=src python -m examples.regulator_upper_edge` | Upper spectral exponent, interior cusp, high-order moment asymptotics, and the crossover as the two edge locations merge |
 
 ## Finite-cutoff continuation
 
@@ -576,6 +577,42 @@ and the integral of `log(s)/(1+s**2)` vanishes by inversion.
 The example compares the predicted `B` against both the density
 and the real deficit, and checks that subtracting the imaginary
 logarithms leaves a finite remainder.
+
+## Upper spectral edge and its merger at z=1
+
+Write `H_minus=min(1,z)/(2*(1+z))`, `H_plus=max(1,z)/(2*(1+z))`,
+and `Delta=H_plus-H_minus`. Use reciprocity to take `z>=1`.
+The exact edge coordinates obey
+`H_plus-h=H_plus*(4*t-1)**2+8*t*Delta*(1-t-q)`.
+For `z>1` the maximum occurs at `t=1/4,q=3/4`. The allowed
+interval in `t` has width `sqrt(H_plus-h)/(2*sqrt(H_plus))`,
+and the angular weight after integrating the delta function
+tends to `16/(3*Delta)`. This gives
+`sigma(h)~8*sqrt(H_plus-h)/(3*Delta*sqrt(H_plus))`.
+Below `H_minus`, an interval opens in the excluded region near
+`t=q=1/4`. Its width gives a one-sided square-root deficit with
+coefficient `8/(3*Delta*sqrt(H_minus))`.
+
+At `z=1` the whole angular interval at `t=1/4` attains
+`H_plus=1/4`. The two inverse branches give
+`sigma(h)~2*log(3)/sqrt(H_plus-h)`. If the density has edge power
+`p` and coefficient `C`, its normalized moment
+`integral (h/H_plus)**n * sigma(h) dh` is asymptotic to
+`C*H_plus**(p+1)*Beta(n+1,p+1)`. Thus the normalized moments
+decay as `n**(-3/2)` away from `z=1` and as `n**(-1/2)` at
+`z=1`. The program checks this prediction up to moment order 1024.
+
+To connect the two regimes, keep `xi=(H_plus-h)/Delta` fixed while
+`Delta` shrinks, and use `v=(4*t-1)*sqrt(H_plus/Delta)`.
+The allowed positive interval becomes
+`sqrt(max(xi-1,0))<=v<=sqrt(xi)`, and
+`q=3/4-(xi-v**2)/2` in the limit. The rescaled density
+`sqrt(Delta)*sigma(h)` tends to the integral of
+`1/(q*(1-q))` over that interval after including the equal
+contribution from negative `v`. The profile behaves as
+`(16/3)*sqrt(xi)` at small `xi` and
+`2*log(3)/sqrt(xi)` at large `xi`. This recovers the two endpoint
+powers and resolves the interior cusp at `xi=1`.
 
 ## Scope of the checks
 

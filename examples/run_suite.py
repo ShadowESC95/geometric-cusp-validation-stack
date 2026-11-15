@@ -21,6 +21,7 @@ from .pinch_intersection import check_pinch_intersection
 from .pinch_inventory import check_pinch_inventory
 from .regulator_spectrum import check_regulator_spectrum
 from .regulator_spectral_edge import check_regulator_spectral_edge
+from .regulator_upper_edge import check_regulator_upper_edge
 from .second_null_insertion_crossing import check_second_null_insertion_crossing
 from .spatial_pinch import check_spatial_pinch
 from .spatial_tail import check_spatial_tail
@@ -60,6 +61,7 @@ def main():
         ("Matched small-regulator and large-ratio limits", check_matched_regulator_limit),
         ("Positive spectrum of the critical regulator kernel", check_regulator_spectrum),
         ("Low spectral edge and subleading regulator terms", check_regulator_spectral_edge),
+        ("Upper spectral edge and its merger at z=1", check_regulator_upper_edge),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
