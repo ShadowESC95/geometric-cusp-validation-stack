@@ -1096,6 +1096,53 @@ at the endpoints. The scalar bound does not resolve
 those faces or identify this relative chain with the
 Lorentzian contour.
 
+## Resolved endpoint faces of the swept CD cap
+
+Use a fixed transferred base radius `delta=R` in the last
+two pieces of the cap. This is a deformation of `delta=R/(1+x)`
+for every positive `x`. Both lie in `0<delta<=R`, so the
+transfer has the same pole avoidance and the disk excisions
+can follow the base poles. The first collar is unchanged. In
+the last disk this choice keeps the two punctures `k=0` and
+`k=delta` distinct as `x` tends to either endpoint.
+
+Blow up `(x,y)=(0,0)` over the base and use the charts
+`y=x*a` and `x=y*b`. The strict moving section in the
+two charts has affine factor `z+a` and `1+z*b` respectively.
+In the order `(x,a,z)`, the Jacobian `x` cancels the radial
+factor of the moving divisor. The pulled-back form has no
+radial residue at `x=0`. At the other endpoint, set
+`X=1/x`, `Y=1/y` and use `Y=X*a`. The analogous strict moving
+factor is `1+z*a`. Here the Jacobian cancels `X`, and the
+radial residue is again zero. The base divisors are still
+punctured throughout this construction.
+
+The first collar approaches the proper endpoint fiber with
+`y=f-1` bounded away from zero and infinity. On the logarithmic
+collar at `z=-1`, split the interpolation in `w=(1+y)/(y-x)`
+into two radial segments and the phase rotation on
+`abs(w)=x**(-1/2)`. On that circle both coordinates in the
+joining chart tend to zero at rate `O(sqrt(x))` near the
+lower endpoint and `O(1/sqrt(x))` near the upper one. For
+example, at `x=e**2` the bounds for `y` and `b=x/y` are both
+`e*(1+e)/(1-e)`, using `y=(x*w+1)/(w-1)`. At `x=e**(-2)`
+the same bounds hold for `Y=1/y` and `X/Y`. The phase
+rotation therefore collapses to the common chart point.
+The two radial legs limit to a leg on the proper endpoint
+fiber and a leg on the exceptional curve. Their homogeneous
+coordinates keep `y=-1` and the strict moving divisor excluded.
+
+For the last transfer use `a=1+(1-s)*q`, `z=-1+s*q`,
+`q=delta*exp(-i*theta)` at the lower end. Then `z+a=q`.
+At the upper end the ratio is reciprocal, giving the
+affine factor `1+z/a=q/a`. The last disk has ratio one
+and base coordinates `[k:delta-k]`, so its strict moving
+section is the constant `delta`. These pieces extend
+over both exceptional faces with the base punctures
+removed. The lifted faces are relative boundary data
+on the resolved space; their matching to the endpoint
+and base boundary of the Lorentzian chain remains open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
