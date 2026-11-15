@@ -36,6 +36,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.critical_regulator_kernel` | One-dimensional quadrature of the fixed-ratio kernel and its leading logarithmic regulator corrections |
 | `PYTHONPATH=src python -m examples.large_regulator_ratio` | Uniform large-ratio expansion of the critical kernel and the independent fixed-regulator cusp coefficient |
 | `PYTHONPATH=src python -m examples.matched_regulator_limit` | A common rescaling for the two regulator limits and a proof of their matching coefficient |
+| `PYTHONPATH=src python -m examples.regulator_spectrum` | A positive spectral density for the critical kernel, its moment sum rules, and bounds for all positive regulator ratios |
 
 ## Finite-cutoff continuation
 
@@ -503,6 +504,38 @@ small-`eps` limit of `eps` times the fixed-regulator coefficient.
 The example compares the new coordinates with the compactified
 integral at positive regulator and checks both boundary paths and
 a path with `rho=eps`.
+
+## Positive spectrum of the critical regulator kernel
+
+For `z>0`, write the folded kernel with
+`h=4*t*(1-(1+z)*t+(z-1)*q)/(1+z)` and positive weight
+`8*t*dt*dq/(q*(1-q))`, with `0<t<1/2` and `t<q<1-t`.
+Pushing this weight forward to `h` gives a positive density
+`sigma_z(h)` and the Stieltjes representation
+
+```text
+F(z,eta) = integral_0^H sigma_z(h)/(h-i*eta) dh
+H = max(1,z)/(2*(1+z)).
+```
+
+The support follows by maximizing the endpoints in `q`, where `h`
+equals `4*t*(1-2*t)/(1+z)` and `z` times that value.
+For `z>1`, solving the affine equation for `q` leaves a
+one-dimensional integral in `t`. The two quadratic inequalities from
+the endpoints determine its allowed intervals. At `z=1`, `h` is
+independent of `q` and its two inverse branches in `t` give the
+density directly. The exchange `q -> 1-q` gives the reciprocal case.
+
+The inverse moment is `pi**2+log(z)**2`. The zeroth, first and second
+moments give the three large-ratio coefficients in the preceding
+examples. Let `M0` and `M1` be the zeroth and first moments.
+For every `eta>0`, `Re F` is positive and decreases. Both
+`eta*Im F` and `eta**2*Re F` increase, with upper bounds `M0`
+and `M1` and lower bounds `M0/(1+(H/eta)**2)` and
+`M1/(1+(H/eta)**2)`, respectively. These follow by integrating
+`eta**2/(h**2+eta**2)` with the positive density and its
+`h`-weighted counterpart. The example checks the density against
+the existing folded quadrature and verifies the four moment sum rules.
 
 ## Scope of the checks
 

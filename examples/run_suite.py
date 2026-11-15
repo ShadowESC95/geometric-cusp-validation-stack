@@ -19,6 +19,7 @@ from .null_insertion_crossing import check_null_insertion_crossing
 from .null_pinch import check_null_pinch
 from .pinch_intersection import check_pinch_intersection
 from .pinch_inventory import check_pinch_inventory
+from .regulator_spectrum import check_regulator_spectrum
 from .second_null_insertion_crossing import check_second_null_insertion_crossing
 from .spatial_pinch import check_spatial_pinch
 from .spatial_tail import check_spatial_tail
@@ -56,6 +57,7 @@ def main():
         ("Reduced critical regulator kernel", check_critical_regulator_kernel),
         ("Large regulator ratio and the fixed-regulator path", check_large_regulator_ratio),
         ("Matched small-regulator and large-ratio limits", check_matched_regulator_limit),
+        ("Positive spectrum of the critical regulator kernel", check_regulator_spectrum),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)
