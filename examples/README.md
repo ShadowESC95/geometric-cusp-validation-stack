@@ -1331,6 +1331,44 @@ provide the slice-wise boundary correction. Their full sweep
 over the auxiliary triangle and matching to the regulated
 Lorentzian chain require further work.
 
+## Regulated meridian sweep over the auxiliary triangle
+
+Use `lambda=x/(eps*A)` to resolve the lower endpoint jointly
+with the auxiliary infinity edge. For each `lambda>0`, the
+roots are `c_eps +/- m(s)*sqrt(lambda)`, where
+`c_eps=5*R/2+(R/2)*(4*x+eps*lambda*(G-A)/(1+x))` and
+`m(s)=-i*R*sqrt(i*H(s))`. The right-half-plane square root
+determines a continuous branch with `Im(m)<0`, including by
+continuity at `s=0`. Indeed `i*H` lies in the closed right
+half-plane and never vanishes for `0<=s<=1`. The limiting
+roots at positive `lambda` avoid all three real punctures.
+They can approach the frame puncture as `lambda` tends to zero.
+
+In the limit use `c=5*R/2`. The rim equation has one
+positive solution `lambda_+(s)` for `+m` and one solution
+`lambda_-(s)` for `-m`, by the same quadratic as in the
+fixed-slice check. Thus the number of regulated meridians
+on a non-crossing slice is the sum of the two indicators
+`lambda<lambda_+(s)` and `lambda<lambda_-(s)`. In the
+unscaled coordinate, the crossing surfaces are
+`x/eps=A*lambda_+(s)` and `x/eps=A*lambda_-(s)`.
+The formula extends to `A=0` in the resolved scale, where
+the unscaled thresholds tend to zero. This is a joint
+limit of the root formula and does not identify the
+original Feynman map at `A=x=0`.
+
+The two thresholds coincide at `s=1/(1+Re(Q))`, since
+`Re(m)=0` precisely when `Re(H)=0`. The two equal-scale
+crossings are transverse in the `(s,lambda)` threshold
+diagram. The roots are `c +/- i*sqrt(1-c**2)` there, two
+distinct points of the rim. The example checks the formulas
+across the limiting triangle, verifies finite-regulator
+crossing convergence on selected slices, and measures the
+signed boundary balance for each of the three possible counts.
+The construction describes the lower-corner crossings and
+excision circles. It leaves the upper endpoint, the limiting
+frame-puncture face, and the Lorentzian boundary matching open.
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.

@@ -18,11 +18,11 @@ def limiting_crossing(center, slope):
     """Solve |center+slope*sqrt(chi)|=1 in the joint scaling limit."""
     projection = (center.conjugate()*slope).real
     length = abs(slope)**2
-    distance = (-projection+sqrt(projection**2+length*(1-abs(center)**2)))/length
-    assert distance > 0
+    distance = (-projection+np.sqrt(projection**2+length*(1-abs(center)**2)))/length
+    assert np.all(distance > 0)
     root = center+slope*distance
     np.testing.assert_allclose(abs(root), 1., atol=1e-14, rtol=0)
-    assert (root.conjugate()*slope).real > 0
+    assert np.all((root.conjugate()*slope).real > 0)
     return distance**2
 
 
