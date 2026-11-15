@@ -2,6 +2,7 @@
 
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
 from .chart_transport import check_chart_matching, check_edge_residue, check_transport
+from .closed_pinch_curve import check_closed_pinch_curve
 from .energy_contour import check_energy_contour
 from .geometry import check_complex_ray, check_local_geometry, check_lorentzian_poles
 from .pinch_intersection import check_pinch_intersection
@@ -22,6 +23,7 @@ def main():
         ("Five-propagator energy integral and transverse pinch", check_energy_contour),
         ("Merging pinch roots and a spatial patch", check_spatial_pinch),
         ("Intersecting timelike pinch surfaces", check_pinch_intersection),
+        ("Closed timelike pinch curve", check_closed_pinch_curve),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

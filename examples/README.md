@@ -19,6 +19,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.energy_contour` | Real-energy quadrature versus the sum of five upper-half-plane residues, and the integrated weight of an isolated Feynman pinch in one spatial direction |
 | `PYTHONPATH=src python -m examples.spatial_pinch` | Regulator scaling at a merger of spatial pinch roots and convergence of a finite three-dimensional spatial patch to the on-shell surface integral |
 | `PYTHONPATH=src python -m examples.pinch_intersection` | A local intersection of two timelike pinch surfaces, including the principal values and the contribution supported where both surfaces meet |
+| `PYTHONPATH=src python -m examples.closed_pinch_curve` | Integration along the full closed intersection and regulator convergence of the lower `D4` residue over a tube around it |
 
 ## Finite-cutoff continuation
 
@@ -82,6 +83,23 @@ residue with its spatial Jacobian, before multiplying by `-2*pi*i` for
 clockwise closure. The example checks the full complex integral over a
 small `(u,v)` rectangle at this fixed `p_z`, including the other four
 lower poles.
+
+## Closed timelike pinch curve
+
+With `p_z` free, the intersection `D2=D4=D_insertion=0` is the ellipse
+`p_y**2 + (41/36)*(p_z+42/41)**2 = 8/41` on the lower `D4` energy
+branch. The angular coordinate covers both signs of `p_y`, including
+the endpoints where the fixed-`p_z` coordinates degenerate. On the
+neighboring ellipses with `(D2,D_insertion)=(u,v)`, integrating the
+smooth factor of the residue over the angle gives `2*pi/(2-u)`.
+The term supported on the entire intersection is therefore `-pi**3`
+in the residue convention, before the `-2*pi*i` closure factor.
+
+The numerical check uses the lower `D4` residue with a common positive
+regulator over the tube `abs(u), abs(v) <= 1/320`. Its limiting real
+part is the full-curve intersection term. The single principal value
+in `u` supplies the imaginary part. This calculation covers one energy
+residue and the bounded tube around the entire ellipse.
 
 ## Scope of the checks
 
