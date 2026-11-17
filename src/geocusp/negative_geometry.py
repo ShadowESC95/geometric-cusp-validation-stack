@@ -16,11 +16,14 @@ def symbolic_two_loop_integrand():
 
 
 def collective_scaling(L: int, graph: list[tuple[int,int]], xvals=None, zvals=None, dirs=None):
-    """Return exact leading power under y_i=rho*a_i, w_i=rho*b_i for a tree graph.
+    """Power counting under y_i=rho*a_i, w_i=rho*b_i for a tree graph.
 
-    For tree graph with L vertices and L-1 edges:
-      D_ext ~ rho^(2L), mutual ~ rho^(L-1), numerator ~ rho^(L-1), measure ~ rho^(2L-1) d rho,
-      hence total form ~ d rho/rho.
+    This is bookkeeping, not a computation on an integrand: it assumes
+      D_ext ~ rho^(2L), each mutual bracket ~ rho, numerator ~ rho^(edges),
+      measure ~ rho^(2L-1) d rho,
+    so the scalar power is -2L and the form power is -1 for every input.
+    The assumptions are verified against the explicit integrand only at
+    L=2, by `two_loop_blowup_leading_coefficient`.
     """
     edges = len(graph)
     scalar_power = -(2*L + edges) + edges

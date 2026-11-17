@@ -4,7 +4,9 @@ This file records only computations actually run in the current build environmen
 
 ## Core test suite
 
-`5 passed`
+`5 passed` on that date. This file is a historical record of the 18 Sep 2026
+build; the current suite and its expected output are in
+[BENCHMARK_VALIDATION.md](BENCHMARK_VALIDATION.md).
 
 ## Amplituhedron pushforward
 
@@ -79,7 +81,8 @@ J_{\rm radial}\sim\rho^{2L-1},
 \Omega\sim d\rho/\rho.
 \]
 
-This scaling was verified algebraically for \(L=1,2,3,4,5\).
+This is power counting under the stated assumptions. It is verified against
+the explicit integrand only for \(L=2\) (the leading coefficient above).
 
 ## Contour benchmark
 

@@ -1,8 +1,8 @@
 # Cusp benchmark validation
 
-The benchmark snapshot contains **8 pytest tests and 60 example groups**.
-The last example commit is `17e3e05b6a03ebfc410606703d95727b4cafcecf` on
-`cusp-example-suite`. The example runner defines the coverage of this snapshot.
+The benchmark snapshot contains **25 pytest tests and 60 example groups**.
+The 60th example group was added in commit
+`ab067d159aa92c3abef94b4eaf8cb69eaaaa3a33` on `main`. The example runner defines the coverage of this snapshot.
 
 ## Reproduce the snapshot
 
@@ -16,7 +16,7 @@ python -m pip install -e '.[test]'
 make test && make examples
 ```
 
-The expected final lines are `8 passed` (with elapsed time) and
+The expected final lines are `25 passed` (with elapsed time) and
 `PASS: all 60 example groups`. The user run on Linux reported both. The
 clean-checkout verification used Python 3.12.14, NumPy 2.3.5, SciPy 1.17.0,
 SymPy 1.14.0 and pytest 9.2.0. For a run record, save the full commit ID,

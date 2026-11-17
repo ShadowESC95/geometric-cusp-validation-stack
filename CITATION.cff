@@ -3,3 +3,4 @@ title: "Geometric Cusp Validation Stack"
 version: 3.1.0
 message: "Research software for adversarial numerical and symbolic tests of a geometric boundary/cusp framework."
 type: software
+license: MIT

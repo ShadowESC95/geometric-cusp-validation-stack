@@ -55,16 +55,27 @@ def commutator_density(X: np.ndarray) -> float:
     return float(s)
 
 
+def remove_trace(X: np.ndarray) -> np.ndarray:
+    """Project out the U(1) trace modes.
+
+    The commutator action does not depend on them, so under Langevin noise
+    they diffuse freely and smear the eigenvalue distribution.
+    """
+    N=X.shape[-1]
+    tr=np.trace(X,axis1=1,axis2=2)/N
+    return X-tr[:,None,None]*np.eye(N)
+
+
 def langevin(N=8,D=4,g=0.7,step_size=3e-4,thermalization=1000,steps=5000,measure_every=10,seed=20260918):
     rng=np.random.default_rng(seed)
     X=0.2*hermitian_noise(N,D,rng)
     for _ in range(thermalization):
         X -= step_size*gradient(X,g) + np.sqrt(2*step_size)*hermitian_noise(N,D,rng)
-        X=0.5*(X+X.conj().transpose(0,2,1))
+        X=remove_trace(0.5*(X+X.conj().transpose(0,2,1)))
     rec=[]; acts=[]; comm=[]
     for s in range(steps):
         X -= step_size*gradient(X,g) + np.sqrt(2*step_size)*hermitian_noise(N,D,rng)
-        X=0.5*(X+X.conj().transpose(0,2,1))
+        X=remove_trace(0.5*(X+X.conj().transpose(0,2,1)))
         if s%measure_every==0:
             rec.append(s); acts.append(action(X,g)); comm.append(commutator_density(X))
     eig=np.linalg.eigvalsh(X[0])

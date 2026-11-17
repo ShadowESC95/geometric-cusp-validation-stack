@@ -1,56 +1,62 @@
 # Geometric Cusp Validation Stack v3.1
 
-This is the expanded **code-first** research stack for the proposed chain
+A symbolic and numerical test suite for the four-point cusp geometry of the
+loop amplituhedron in planar N=4 super Yang–Mills: blow-ups and residues of
+the one-loop canonical form, the two-loop logarithm integrand, and the contour
+that extracts the cusp anomalous dimension.
+
+## Status: what is established and what is not
+
+**Reproduced from the literature (not new results).** The chart, the forms,
+the finite functions \(F^{(0)}=-1\), \(F^{(1)}=\log^2z+\pi^2\) and the contour
+rule are taken from the papers in [docs/references.md](docs/references.md).
+Feeding them through the code returns the known coefficients
+\(\Gamma^{(1)}_{\rm cusp}=4\) and \(\Gamma^{(2)}_{\rm cusp}=-4\pi^2/3\). This
+checks the implementation and its conventions. It is not an independent
+derivation of those numbers, and no three-loop check is included.
+
+**Computed here, exact in the stated charts.**
+
+- The blow-up of the adjacent-propagator intersection \(y=w=0\) carries a
+  simple radial pole with residue \(1/(x\,\eta\,z_0)\).
+- The homogeneous blow-up of the strict collinear line has zero radial
+  residue; the weighted blow-up with weights (1, 1, 2) has residue
+  \(-1/(a\,z\,D)\) and a variable cross-ratio.
+- The two-loop logarithm integrand scales as \(\rho^{-4}\) under the
+  collective scaling, and its iterated residues depend on the order taken.
+- Local contour analysis of a regulated lift of the finite integral
+  ([docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md)).
+
+**Open.** The identification of the geometric (weighted-divisor) integration
+chain with the Lorentzian Feynman chain is not proved. The relation
+\(dz/z=d\eta/\eta\) on the exceptional divisor follows immediately from
+\(z=\eta z_0/x\); it is consistent with that identification and is not
+evidence for it.
+
+**Speculative and not implemented as a connected calculation.** The project
+was motivated by a conjectured chain
 
 ```text
-IKKT / matrix substrate
-        |
-        v
-Poisson / emergent geometry
-        |
-        v
-positive Grassmannian + amplituhedron pushforward
-        |
-        v
-IR / cusp boundary strata and blow-ups
-        |
-        v
-iterated residues + linking / relative cycles
-        |
-        v
-finite z-contour extraction -> Gamma_cusp
-        |
-        v
-sigma_IR and entropy / irreversibility probes
-        |
-        +-----------------------------+
-        |                             |
-        v                             v
-continuum PDE / FEM             quantum boundary probes
-        |                             |
-        v                             v
-FEniCSx / Firedrake /         Kwant / QuTiP / tensor-network hooks
- deal.II / FiPy / COMSOL
-        |
-        +------------------+
-        |                  |
-        v                  v
-Meep / OpenFOAM        VASP / Geant4 downstream probes
+matrix model -> emergent geometry -> amplituhedron pushforward
+  -> cusp boundary / residues -> Gamma_cusp -> IR entropy source
+  -> continuum and quantum probes
 ```
 
-The project is intentionally **adversarial**. A numerical match is not treated as proof unless the definition of the geometric object is independent of the known field-theory answer.
+Only the middle (amplituhedron, residues, contour) is computed. The other
+stages are separate sandboxes with no derived link between them:
 
+- `matrix_model.py` is a Langevin simulation of a small bosonic
+  Yang–Mills matrix integral (default \(N=8\), \(D=4\)). It has no fermions
+  and is not the IKKT model; nothing is passed from it to the geometry.
+- `continuum.py` solves a 1D diffusion equation with a source
+  \(\sigma=\Gamma_{\rm cusp}\log(w/\lambda)\) inserted by hand as an ansatz.
+- `physics_maps.py` holds declared ansätze (\(m_{\rm eff}\), \(g_{\rm eff}\)),
+  not results.
+- The `canonical_proxy` weight in the pushforward sampler is a visual aid,
+  not the canonical-form density.
 
-## 0.1 Bleeding-edge research mode
-
-The repository is not limited to a residue calculation. Python is the orchestration layer for a multi-scale validation program:
-
-\[
-\boxed{
-\text{matrix}\to\theta\to g_{\mu\nu}\to\Omega_{\log}\to\mathscr F_{\rm cusp}\to R_B\to\Gamma_{\rm cusp}\to\sigma_{\rm IR}\to S_{\rm OB}}
-\]
-
-The `scripts/` directory contains reproducible runners; `src/geocusp/` contains the mathematical/numerical implementation; `external/` contains adapters or compile/run templates for the user's scientific-computing stack. The amplituhedron module now has a dedicated multi-case sweep (`scripts/run_amplituhedron_sweep.py`) with affine hull, Plücker PCA, positivity, boundary-weight, and independent-chart diagnostics.
+`scripts/` contains the runners, `src/geocusp/` the implementation, and
+`examples/` the 60 worked example groups with derivations.
 
 ## 1. What is actually simulated
 
@@ -254,36 +260,19 @@ The campaign produces:
 - Complex linking/winding plots.
 - \(F^{(1)}(z)\) contour traces.
 - Exact two-loop radial scaling plots.
-- IKKT-like matrix eigenvalue/commutator plots.
+- Bosonic matrix-model eigenvalue/commutator plots.
 - Continuum entropy-source and field-evolution plots.
 
-## 3. Backends
+## 3. External adapters (templates, mostly untested)
 
-The package contains actual adapters or export templates for:
-
-| Backend | Research role |
-|---|---|
-| FEniCSx/DOLFINx | variational continuum PDE, emergent boundary equations |
-| Firedrake/PETSc | high-order/HPC continuum solver |
-| deal.II | independent FEM implementation |
-| FiPy | finite-volume entropy/transport probe |
-| Meep | electromagnetic boundary propagation |
-| COMSOL | multiphysics PDE model template |
-| Kwant | quantum boundary transport |
-| QuTiP | open quantum dynamics and entropy |
-| VASP | import local potentials/charge fields for vacuum/VEV mapping |
-| FORM | large symbolic HEP algebra |
-| Geant4 | downstream particle-transport test |
-| OpenFOAM | continuum transport/irreversibility probe |
-| SageMath | ideals, varieties, dimension, radical/geometry audits |
-| Macaulay2 | algebraic-geometry cross-check |
-| Singular | algebraic singular-locus calculations |
-| Arb/python-flint | rigorous contour/interval arithmetic |
-| pySecDec | regulated sector-decomposition handoff |
-| Cadabra | tensor/effective-action algebra |
-| xAct | differential geometry / curvature algebra |
-
-The package does not claim unavailable native software is installed. `scripts/backend_report.py` reports the actual local availability.
+`external/` holds short adapter or template files for FEniCSx, Firedrake,
+deal.II, FiPy, Meep, COMSOL, Kwant, QuTiP, VASP, FORM, Geant4, OpenFOAM,
+SageMath, Macaulay2, Singular, Arb/python-flint, pySecDec, Cadabra and xAct.
+They are starting points for a user who has those packages. Most are a few
+lines, none is exercised by the test suite, and none has been run against
+the cusp calculation. The core results above need only NumPy, SciPy, SymPy
+and mpmath. `scripts/backend_report.py` reports which packages are present
+locally.
 
 ## 4. Installation
 
@@ -330,8 +319,8 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The validation snapshot
-contains 8 pytest tests and 60 example groups. See the
+Run the benchmark with `make test && make examples`. The suite has 25 pytest
+tests and 60 example groups. See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
 gives the individual commands and derivations. The remaining comparison to
@@ -345,14 +334,10 @@ PYTHONPATH=src python scripts/run_amplituhedron_deep.py --samples-k2 20000 --sam
 
 ## 6. Scientific interpretation
 
-The stack is a research instrument. It deliberately distinguishes:
-
-\[
-\text{established benchmark}
-\neq
-\text{your conjectural identification}.
-\]
-
-A numerical match to \(\Gamma_{\rm cusp}\) is meaningful only if the geometric object producing it is defined independently of the known answer.
-
-The current one-loop experiments are designed to expose exactly where a simple residue construction succeeds and where it fails. The two-loop experiments test whether collective geometry can repair the one-loop intuition.
+A numerical match to \(\Gamma_{\rm cusp}\) is meaningful only if the geometric
+object producing it is defined independently of the known answer. At present
+the match comes from the published finite functions and contour rule, so it
+validates conventions, not the conjectured chain. The one-loop experiments
+show where a simple residue construction succeeds and where it fails; the
+two-loop experiments show that independent one-loop residues do not
+factorize.
