@@ -1,6 +1,7 @@
 """Run the complete set of cusp validation examples from the repository root."""
 
 from .lorentzian_cusp_contour import check_lorentzian_cusp_contour
+from .lorentzian_all_cusps import check_lorentzian_all_cusps
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
 from .cd_auxiliary_faces import check_cd_auxiliary_faces
 from .cd_cap_endpoints import check_cd_cap_endpoints
@@ -120,6 +121,7 @@ def main():
         ("Integrated single-meridian patch in the lower regulator layer", check_cd_single_meridian_layer),
         ("Full lower one-meridian band per unit transverse coordinate on the diagonal", check_cd_diagonal_meridian_band),
         ("Lorentzian edge chain and its unit-circle contour on the weighted divisor", check_lorentzian_cusp_contour),
+        ("Edge statement at every cusp and in every real kinematic region", check_lorentzian_all_cusps),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -5,8 +5,10 @@ Lorentzian Feynman contour and the capped weighted-divisor cycle, by a route
 that does not use the regulated cap of [GATE_6_PROOF.md](GATE_6_PROOF.md).
 The local statement (sections 2 to 6) rests on exact algebraic identities and
 is confirmed numerically to \(10^{-7}\) or better. The passage from the local
-statement to the double pole of the full integral (section 7) is a standard
-asymptotic argument that is written out but not proved with error bounds.
+statement to the double pole of the full integral (section 7) is treated in
+[GATE_6_BOUNDS.md](GATE_6_BOUNDS.md), which also corrects one statement of
+section 7: the double pole must be taken with an analytic regulator, not a
+hard cutoff.
 The derivation was produced and machine-checked in one session and has not
 been reviewed by a specialist. Section 8 lists exactly what is and is not
 established.
@@ -248,24 +250,29 @@ is fixed by \(F=1\).
 
 ## 7. From the edge statement to the double pole
 
-The edge statement gives the coefficient of the collinear logarithm as
-\(-2\pi i\,M[F]\,d\beta/(\beta(1-\beta))\) on the segment. Integrating over
-\(\beta\) gives one further logarithm from each end. Near the cusp \(x_2\)
-both sectors \(|q_3|\ll|q_1|\) and \(|q_1|\ll|q_3|\) contribute, the second
-being the edge statement for the adjacent edge. Summing the four sign
-quadrants with the principal-value signs gives the density
-\(\sum\operatorname{sign}(q_1q_3)\,q_1q_3K_f\to 2\pi i\,M[F]\) in both
-sectors, and each sector contributes \(\tfrac12\log^2\). The real parts,
-which individually carry higher powers of logarithms, cancel between
-quadrants.
+The edge statement gives the coefficient of the collinear singularity as
+\(-2\pi i\,M[F]\,d\beta/(\beta(1-\beta))\) on the segment, for any regulator
+acting on the collinear invariant. The \(\beta\) integral has a logarithmic
+endpoint singularity at each cusp, which supplies the second pole. Near the
+cusp \(x_2\) the sector \(|q_1|\ll|q_3|\) is the edge statement for the
+adjacent edge, and the sum over the four sign quadrants tends to
+\(2\pi i\,M[F]\) in both sectors.
 
-The other three cusps follow from the cyclic symmetry of the square; at
-cusps 1 and 3 it acts as \(z\to1/z\), under which \(M\) is invariant.
+**Correction.** An earlier version of this section inferred a
+\(\log^2\) coefficient with a hard cutoff on the collinear invariants. That
+is right only for weights bounded at \(z\to0,\infty\). Where the two
+invariants are comparable, growing weights produce cutoff-dependent terms
+larger than \(\log^2\); they are artefacts of cutting through the light
+cones and are absent in an analytic regulator. See
+[GATE_6_BOUNDS.md](GATE_6_BOUNDS.md), section 4. The double pole is
+therefore defined in dimensional regularisation, where
+\(L[F]/L[1]=M[F]\) follows from the Mellin–Barnes evaluation of
+[GATE_6_FUNCTIONAL.md](GATE_6_FUNCTIONAL.md) and Lemma 3 of GATE_6_BOUNDS.
+What the present document adds is the reason: the circle is the image of the
+real integration region at a light-like edge.
 
-Hence \(L[F]/L[1]=M[F]\), which is the functional identity of
-[GATE_6_FUNCTIONAL.md](GATE_6_FUNCTIONAL.md), now with the circle derived
-from the real integration region and the Feynman prescription instead of
-from the Mellin transform.
+All four cusps, both edges at each, and all three real kinematic regions
+are computed in GATE_6_BOUNDS section 2.
 
 ## 8. What is established and what is not
 
@@ -287,22 +294,22 @@ from the Mellin transform.
 - With \(x_{04}^2\) held at \(t\) the contour is the circle
   \(|z|=1/(1-\beta)\).
 
-**Argued, not proved.**
+**Treated in [GATE_6_BOUNDS.md](GATE_6_BOUNDS.md).**
 
-- That the terms dropped in section 4 and the difference between the exact
-  \(x_{04}^2\) and its edge value contribute only single logarithms. The
-  power counting is given; uniform bounds are not.
-- That the leading coefficient with a cutoff equals the coefficient of
-  \(1/\epsilon^2\) in dimensional regularisation. The agreement with the
-  independent Mellin–Barnes value \(L[z^p]=\sin\pi p/(\pi p)\) supports it.
-- The class of \(F\): \(f\) holomorphic in \(-2\pi<\operatorname{Im}L<2\pi\)
-  apart from the points over \(z=-1\), with integrable singularities there
-  and growth slower than \(e^{|\operatorname{Re}L|}\). \(\bar F^{(0)}\) and
-  \(\bar F^{(1)}\) are in it. \(\bar F^{(2)}\) has its only singularities
-  over \(z=0,-1,\infty\), so it should be, but its continuation to the
-  second sheet has not been evaluated here.
-- Cusps 1, 3 and 4, and kinematics other than \(s,t<0\), are covered by
-  symmetry only.
+- The rate of the collinear limit (Lemma 1, proved) and the effect of the
+  exact fourth propagator (Lemma 2, sketch plus numerics).
+- All four cusps and all three kinematic regions (computed).
+- \(\bar F^{(2)}\) on its continued sheets: regular at \(z=-1\), and the edge
+  chain gives \(-11\pi^4/15\).
+- The relation to dimensional regularisation, and the failure of hard
+  cutoffs for growing weights.
+
+**Still argued, not proved.**
+
+- The exchange of the Mellin superposition with the regulated integral
+  (GATE_6_BOUNDS section 5).
+- That regions away from the edges contribute no double pole. This is
+  consistent with the Mellin–Barnes total but not shown directly.
 
 **Not addressed.**
 

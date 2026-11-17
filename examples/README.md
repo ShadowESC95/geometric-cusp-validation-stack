@@ -1,6 +1,6 @@
 # Cusp validation examples
 
-Run all 61 example groups from the repository root with the core Python
+Run all 62 example groups from the repository root with the core Python
 dependencies installed. The [benchmark validation record](../docs/BENCHMARK_VALIDATION.md)
 records the expected test output and the checked environment.
 
@@ -1690,6 +1690,24 @@ segment the path closes on one sheet and the jump is zero. The example checks
 the four sheet sequences, the jump at two points of the edge and one point
 off it, and the quadrant sum at the cusp. The derivation and its limits are
 in [docs/GATE_6_CLOSURE.md](../docs/GATE_6_CLOSURE.md).
+
+## 62. Edge statement at every cusp and kinematic region
+
+```bash
+PYTHONPATH=src python -m examples.lorentzian_all_cusps
+```
+
+Repeat example 61 at all four cusps, on both edges of each, for the three
+sign patterns of `(s, t)` that real null edges allow. The four invariants are
+exact in the coordinates `(alpha, beta, rho, theta)`, including the far one,
+`D'*(1 + alpha - beta) + w + 2*sqrt(rho*D'*u/D)*cos(theta)`. With every
+invariant, `s` and `t` included, carrying `-i0`, the phase is
+`arg z = pi*(tau2 + tau4 + tau_s - tau1 - tau3 - tau_t)` and never exceeds
+`2*pi` in modulus. The jump is `-2*pi*i` times the circle mean on each
+segment and zero off it. The example also checks that two different
+continuations of the two-loop weight agree, so it is regular at `z = -1`.
+Bounds, the regulator question and the status of each statement are in
+[docs/GATE_6_BOUNDS.md](../docs/GATE_6_BOUNDS.md).
 
 ## Scope of the checks
 
