@@ -11,7 +11,7 @@ maps to a path between the two lips of $`z=-1`$, and the unit circle is one
 representative of it. This explains the known contour rule. It does not
 replace the existing derivation of that rule.
 
-- **254 tests** and **63 worked example groups**, all passing
+- **267 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -43,7 +43,9 @@ replace the existing derivation of that rule.
 | Explicit integration contour, all kinematic regions | Constructed; conditions checked by a certificate |
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
 | Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes (90 evaluated, all three regions; floating point) |
-| The edge statement implies the double pole | **Not proved** |
+| Cusp-local model: a light-like triangle, double pole $`\sin\pi p/(\pi p)`$ | Exact closed form |
+| Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof for spacelike diagonals (parametric integral) |
+| The same in position space, from the Lorentzian paths alone | **Not proved** |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -62,7 +64,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 254 tests, about twenty minutes
+make test        # 267 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -181,9 +183,11 @@ What supports it:
 What it does not do:
 
 - The double pole of the full integral is not derived from the edge
-  statement. Its proof goes through the Mellin–Barnes form, which is the
-  route of the original paper, extended here from powers to a class of
-  weights.
+  statement in position space. It is proved from the parametric integral:
+  each cusp contributes one unit of $`M[z^p]`$, and the two poles belong to
+  the two edges at the cusp
+  ([CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md)). The Mellin–Barnes form is
+  still needed when a diagonal is timelike.
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
@@ -216,6 +220,7 @@ command line as shown in [Quick start](#quick-start).
 | [GATE_6_CLOSURE](docs/GATE_6_CLOSURE.md) | The edge statement and the comparison of the two integration chains |
 | [GATE_6_BOUNDS](docs/GATE_6_BOUNDS.md) | All cusps and regions, error bounds, the regulator, and a status table |
 | [GATE_6_CONTOUR](docs/GATE_6_CONTOUR.md) | The explicit contour, its certificate, convergence, and the regulated integral |
+| [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md) | The cusp-local triangle, and the double pole as a sum over cusps without Mellin–Barnes |
 | [GATE_6_FUNCTIONAL](docs/GATE_6_FUNCTIONAL.md) | The functionals on the Mellin family, and the solver |
 | [FROM_GEOMETRY](docs/FROM_GEOMETRY.md) | The two-loop form from its inequalities; the membership test for the sampler |
 | [GATE_6_PROOF](docs/GATE_6_PROOF.md) | The earlier regulated-cap approach and its obstruction |
@@ -237,7 +242,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            254 tests
+tests/            267 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
