@@ -156,3 +156,71 @@ def test_dimreg_density_tends_to_the_unregulated_value(p):
     gaps = [abs(le.dimreg_density_closed_form(p, mp.mpf(10) ** -k) - target) for k in (2, 4, 6)]
     assert gaps[0] > 50 * gaps[1] > 2500 * gaps[2]
     assert gaps[2] < 1e-4
+
+
+# ---- analytic regularity of the two-loop weight at z = -1 -----------------
+def test_two_loop_weight_has_no_logarithm_at_z_minus_one():
+    """After the inversion relations the log^3 and log^4 terms vanish
+    identically and the log and log^2 terms are multiples of Landen's
+    combination, which is zero. This is exact, not numerical."""
+    import sympy as sp
+
+    coefficients, landen, _ = le.f2_expansion_at_minus_one()
+    assert coefficients[4] == 0 and coefficients[3] == 0
+    for k in (1, 2):
+        quotient, remainder = sp.div(coefficients[k], landen, *landen.free_symbols)
+        assert remainder == 0 and quotient != 0
+    assert le.landen_derivative() == 0                   # and the combination is 0 at e = 0
+
+
+def test_regular_part_reproduces_the_weight_on_both_sides_of_z_minus_one():
+    with mp.workdps(25):
+        assert abs(le.f2_regular_part(0) - 11 * mp.pi**4 / 45) < mp.mpf("1e-20")
+        # upper lip: Im(1+z) > 0 on the principal sheet
+        for e in (mp.mpc("0.05", "0.02"), mp.mpc("-0.08", "0.03"), mp.mpc("0.001", "0.2")):
+            L = mp.log(-1 + e)
+            assert abs(le.f2_regular_part(e) - le.f2_cover(L)) < mp.mpf("1e-18")
+        # continued through z = -1 to Im(1+z) < 0: the sheet with Im L > pi
+        for e in (mp.mpc("0.05", "-0.02"), mp.mpc("-0.08", "-0.03")):
+            L = mp.log(-1 + e) + 2j * mp.pi
+            assert abs(le.f2_regular_part(e) - le.f2_cover(L)) < mp.mpf("1e-18")
+
+
+# ---- uniform bound on the regulated integral (Lemma 4) --------------------
+def test_regulated_integral_reduces_to_the_existing_real_case():
+    from geocusp import solver
+
+    for p in (0.3, -0.6):
+        mine = complex(le.regulated_double_pole(p, 0.02))
+        assert mine.real == pytest.approx(solver.double_pole(p, 0.02), abs=2e-6)
+        assert abs(mine.imag) < 1e-12
+
+
+@pytest.mark.parametrize("sigma", [0.3, -0.5])
+def test_regulated_integral_grows_no_faster_than_exp_pi_im_p(sigma):
+    """|eps^2 I_eps(sigma + i tau)| (1 + tau) exp(-pi tau) stays bounded,
+    uniformly as the regulator is removed."""
+    for eta in (0.1, 0.02, 0.004):
+        scaled = [float(abs(le.regulated_double_pole(mp.mpc(sigma, tau), eta))
+                        * (1 + tau) * mp.exp(-mp.pi * tau)) for tau in (0, 2, 4, 8)]
+        assert max(scaled) < 4.0 and scaled[-1] < 1.0
+
+
+def test_regulated_integral_converges_for_complex_exponent():
+    p = mp.mpc("0.3", "2.0")
+    target = 4 * mp.sin(mp.pi * p) / (mp.pi * p)
+    gaps = [abs(le.regulated_double_pole(p, eta) - target) for eta in (0.02, 0.002)]
+    assert gaps[1] < gaps[0] / 5 and gaps[1] < 0.5
+
+
+# ---- pinch surfaces --------------------------------------------------------
+def test_only_the_edges_can_pinch_the_contour():
+    import sympy as sp
+
+    result = le.landau_pinch_analysis()
+    a, c, d, s, t = result["symbols"]
+    assert result["adjacent_pair_on_edge"] == [0, 0]          # the whole edge x2 -> x3
+    first, second = result["diagonal_pair"]                   # the diagonal x1 -> x3
+    assert sp.simplify(first - s * (a - 1) ** 2) == 0 and sp.simplify(second - s * a**2) == 0
+    assert result["triple_123"] == [{a: 0, c: 0}]             # only the cusp x2
+    assert result["quadruple"] == []

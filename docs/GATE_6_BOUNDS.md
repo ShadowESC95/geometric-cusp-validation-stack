@@ -11,16 +11,16 @@ This document supplies the three items left open by
 
 It also **corrects** one statement of that document (section 4 below).
 
-**Status.** Item 3 is complete: it is computed, not inferred. Item 1 gives
-one lemma with a full proof, one with a proof sketch and numerical
-confirmation of the predicted rate, and identifies a limitation of hard
-cutoffs. Item 2 is an argument resting on the published Mellin–Barnes
-evaluation plus a lemma whose hypothesis is verified here for the weights of
-interest; the interchange it needs is stated, not proved. Nothing here has
-been reviewed by a specialist.
+**Status.** Item 3 is complete: it is computed, not inferred, and the
+regularity of the two-loop weight at \(z=-1\) is proved exactly. Item 1 has
+two lemmas with proofs and identifies a limitation of hard cutoffs. Item 2
+rests on the published Mellin–Barnes evaluation, a uniform bound proved here
+(Lemma 4) and a pinch analysis (Proposition 5); one standard step, the
+existence of an absolutely convergent contour, is stated and not constructed
+globally. Nothing here has been reviewed by a specialist.
 
 Code: `src/geocusp/lorentzian_edges.py`. Tests: `tests/test_gate6_bounds.py`
-(64 tests). Example 62: `examples/lorentzian_all_cusps.py`.
+(71 tests). Example 62: `examples/lorentzian_all_cusps.py`.
 
 ## 1. Setting
 
@@ -87,16 +87,42 @@ The sheets visited differ between cusps and regions:
 
 In every case \(|\arg z|\le2\pi\). This bound is used in section 5.
 
-**The two-loop weight.** \(\bar F^{(2)}\) is given on the principal sheet.
-Its continuation across the lower lip can be made across \(-1<z<0\), where
-\(\mathrm{Li}_n(1/(1+z))\) crosses its cut, or across \(z<-1\), where
-\(\mathrm{Li}_n(z/(1+z))\) does. The two results agree to \(10^{-23}\) at
-every point tested. Therefore \(\bar F^{(2)}\) has no monodromy around
-\(z=-1\) on the physical sheet: it is regular there, with
-\(\bar F^{(2)}(-1)=11\pi^4/45\). Its singularities over \(z=-1\) lie on other
-sheets, at \(\operatorname{Im}L=\pm3\pi\) and beyond, so
+**The two-loop weight is regular at \(z=-1\) (Proposition 1).** Put
+\(e=1+z\) with \(\operatorname{Im}e>0\) and \(\lambda=\log e\). The inversion
+relations
+
+\[
+\mathrm{Li}_2(y)+\mathrm{Li}_2(1/y)=-\tfrac{\pi^2}{6}-\tfrac12\log^2(-y),\quad
+\mathrm{Li}_3(y)-\mathrm{Li}_3(1/y)=-\tfrac{\pi^2}{6}\log(-y)-\tfrac16\log^3(-y),
+\]
+\[
+\mathrm{Li}_4(y)+\mathrm{Li}_4(1/y)=-\tfrac{7\pi^4}{360}-\tfrac{\pi^2}{12}\log^2(-y)-\tfrac1{24}\log^4(-y),
+\]
+
+applied to \(y=1/(1+z)\) and \(y=z/(1+z)\), express \(\bar F^{(2)}\) through
+\(a_n=\mathrm{Li}_n(e)\), \(b_n=\mathrm{Li}_n(-e/(1-e))\) and
+\(c=\log(1-e)\), all analytic at \(e=0\), and through \(\lambda\), with
+\(\log(-1/e)=i\pi-\lambda\), \(\log((1-e)/e)=c-\lambda\) and
+\(\log z=i\pi+c\). Expanding (`f2_expansion_at_minus_one`):
+
+- the coefficients of \(\lambda^4\) and \(\lambda^3\) vanish identically;
+- the coefficient of \(\lambda^2\) is \(\tfrac23(2a_2+2b_2+c^2)\) and that of
+  \(\lambda\) is \(-\tfrac23(c+i\pi)(2a_2+2b_2+c^2)\);
+- \(2a_2+2b_2+c^2=2\,[\mathrm{Li}_2(e)+\mathrm{Li}_2(-e/(1-e))+\tfrac12\log^2(1-e)]=0\)
+  by Landen's identity (its derivative vanishes and it is zero at \(e=0\)).
+
+So \(\bar F^{(2)}\) equals the \(\lambda^0\) coefficient, which is analytic at
+\(e=0\), with value \(11\pi^4/45\). This is exact. It extends
+\(\bar F^{(2)}\) through \(z=-1\); for \(\operatorname{Im}e<0\) the extension
+is the sheet with \(\operatorname{Im}L>\pi\), which the test compares with
+the independent continuation formula to \(10^{-18}\). By reflection the same
+holds on the lower lip. The singularities over \(z=-1\) therefore lie at
+\(\operatorname{Im}L=\pm3\pi\) and beyond, and
 \(f^{(2)}(L)=\bar F^{(2)}(e^L)\) is holomorphic for
 \(|\operatorname{Im}L|<3\pi\).
+
+As an independent numerical check, the continuation across \(-1<z<0\) and
+the continuation across \(z<-1\) agree to \(10^{-23}\) at every point tested.
 
 With this continuation the edge chain gives
 
@@ -167,26 +193,54 @@ The constant degrades as \(\beta\to0\): the bound becomes
 section 4 shows it is not an artefact of the proof.
 
 **Lemma 2 (exact fourth propagator).** Let \(J^{\rm ex}\) be defined with
-the exact \(x_{0,i+2}^2\) of section 1, averaged over \(\theta\), and
-\(\rho\le\rho_{\max}\). Then for fixed \(\beta\) in the segment,
+the exact \(x_{0,i+2}^2\) of section 1, averaged over \(\theta\), on the
+contour \(\rho=re^{i\psi}\), \(0\le r\le\rho_{\max}\), with \(\rho_{\max}\)
+small enough that \(|\delta|\le\tfrac12\) below. Then for \(\beta\) in the
+segment,
 
 \[
-\big|J^{\rm ex}-J\big|\le C\,A\,|c_+|\,\big(1+\log(\rho_{\max}/|c_+|)\big).
+\big|J^{\rm ex}-J\big|\le
+\frac{C\,A}{(1-\beta)^3\sin^3\psi}\,|c_+|\,
+\Big(1+\log\frac{\rho_{\max}}{|c_+|}+\log\frac1\beta\Big)^{k+1}.
 \]
 
-*Sketch.* The ratio of the exact propagator to its edge value is
-\(1+\delta\) with
+*Proof.* The ratio of the exact propagator to its edge value is \(1+\delta\),
+\(\delta=\delta_0+\delta_1\cos\theta\), with
 
 \[
-\delta=\frac{D'\alpha+w+2\sqrt{\rho D'u/D}\cos\theta}{D'(1-\beta)} .
+\delta_0=\frac{D'\alpha+w}{D'(1-\beta)},\qquad
+\delta_1=\frac{2\sqrt{\rho D'u/D}}{D'(1-\beta)} .
 \]
 
-It enters through \(f(L+\sigma\log(1+\delta))/(1+\delta)\). Expanding to
-second order, the term linear in \(\sqrt\rho\cos\theta\) averages to zero.
-What remains is \(O(\rho+|c_+|)\) times \(|f|+|f'|+|f''|\). The measure
-\(c_-c_+\,d\rho/|w(w+c_-)(w+c_+)|\) behaves as \(|c_+|\,d\rho/\rho^2\) for
-\(\rho\gg|c_+|\), so the correction integrates to
-\(|c_+|\log(\rho_{\max}/|c_+|)\). \(\blacksquare\)
+It enters through \(G(\delta)=f(L+\sigma\log(1+\delta))/(1+\delta)\). By
+Taylor's theorem \(G(\delta)=f(L)+G'(0)\delta+R\) with
+\(G'(0)=\sigma f'(L)-f(L)\) and \(|R|\le\tfrac12\sup|G''|\,|\delta|^2\). The
+angular average of \(\delta\) is \(\delta_0\), and of \(|\delta|^2\) at most
+\(2|\delta_0|^2+|\delta_1|^2\). Since \(|\alpha|=|c_+/D|\),
+\(|w|\le\beta|c_+|+r\) and \(|\delta_1|^2\) is linear in \(r\),
+
+\[
+\big|\langle G(\delta)\rangle-f(L)\big|\le
+\frac{C_1A\,(1+|L|)^k}{(1-\beta)^2}\,\big(|c_+|+r\big).
+\]
+
+On the contour the distance from \(re^{i\psi}\) to a real point \(a\) is at
+least \(\sin\psi\,\max(r,|a|)\). With \(w_0=-\beta c_+\) this gives
+\(|w|\ge\sin\psi\max(r,\beta|c_+|)\),
+\(|w+c_+|\ge\sin\psi\max(r,(1-\beta)|c_+|)\) and
+\(|w+c_-|\ge\tfrac12\sin\psi\,|c_-|\). Hence
+
+\[
+|J^{\rm ex}-J|\le|c_-c_+|\int_0^{\rho_{\max}}
+\frac{C_1A(1+|L|)^k(|c_+|+r)}{(1-\beta)^2\,|w||w+c_-||w+c_+|}\,dr
+\le\frac{C_2A\,|c_+|}{(1-\beta)^3\sin^3\psi}\int_0^{\rho_{\max}}
+\frac{(1+|L|)^k}{\max(r,\beta|c_+|)}\,dr ,
+\]
+
+using \((|c_+|+r)/\max(r,(1-\beta)|c_+|)\le2/(1-\beta)\). On the contour
+\(|L|\le C_0+\log(1/\beta)+2|\log(r/|c_+|)|\), and the integral is bounded by
+\((1+\log(\rho_{\max}/(\beta|c_+|)))^{k+1}\) up to a constant.
+\(\blacksquare\)
 
 The test `test_lemma_2_...` evaluates the two-dimensional integral with the
 exact propagator. The difference falls as \(c\log(1/c)\): \(7.9\times10^{-2}\),
@@ -300,41 +354,136 @@ The hypothesis holds for \(\bar F^{(0)}\) and \(\bar F^{(1)}\) (entire in
 \(\pi\), is a consequence of the sheet bookkeeping: the Lorentzian contour
 leaves the principal sheet.
 
-**What is still assumed.** To conclude \(L[F]=\int c(p)L[z^p]\,dp=M[F]\) in
-dimensional regularisation one must exchange the \(p\) integral with the
-regulated loop integral and with the extraction of the \(1/\epsilon^2\)
-coefficient. Lemma 3 gives domination of the integrand on the integration
-region. A bound on the regulated integral of \(z^p\) that is uniform in
-\(\operatorname{Im}p\) is also required; the closed Mellin–Barnes form
-suggests growth no faster than \(e^{\pi|\operatorname{Im}p|}\), which is
-enough, but this is not proved here.
+**Lemma 4 (uniform bound).** Let
+\(N_\eta(p)=\epsilon^2st\times\)(regulated integral of \(z^p\)) at
+\(\epsilon=-\eta\). For \(|\operatorname{Re}p|\le\sigma_0<1\) and
+\(0<\eta\le\eta_0\) with \(\sigma_0+\eta_0<1\),
 
-## 6. Summary of status
+\[
+|N_\eta(\sigma+i\tau)|\le C\,\frac{e^{\pi|\tau|}}{1+|\tau|},
+\]
+
+with \(C\) independent of \(\eta\) and \(\tau\).
+
+*Proof.* On the contour \(w=-1-p+\eta/2+iy\) of the Mellin–Barnes integral
+two of the Gamma functions lose their dependence on \(p\):
+
+\[
+N_\eta(p)=\frac{\eta^2}{\Gamma(2\eta)}\int\frac{dy}{2\pi}\,
+\big|\Gamma(\tfrac\eta2+iy)\big|^4\Big(\frac st\Big)^{\eta/2+iy}\,
+\frac{\Gamma(1+p-\tfrac\eta2-iy)\,\Gamma(1-p-\tfrac\eta2+iy)}
+{\Gamma(1+p)^2\,\Gamma(1-p)^2}.
+\]
+
+By Stirling's bound on vertical strips the numerator is at most
+\(C_1(1+|\tau-y|)\,e^{-\pi|\tau-y|}\), and
+\(|\Gamma(1+p)\Gamma(1-p)|^{-2}=|\sin\pi p/(\pi p)|^2\le C_2e^{2\pi|\tau|}/(1+\tau^2)\).
+Since \(e^{-\pi|\tau-y|}\le e^{-\pi|\tau|}e^{\pi|y|}\), the ratio is at most
+\(C_3e^{\pi|\tau|}e^{\pi|y|}(1+|y|)/(1+|\tau|)\), using
+\(1+|\tau-y|\le(1+|\tau|)(1+|y|)\). The weight satisfies
+\(|\Gamma(\eta/2+iy)|^4\le C_4e^{-2\pi|y|}(1+|y|)^{2+2\eta}(\eta^2/4+y^2)^{-2}\)
+(it behaves as \((\eta^2/4+y^2)^{-2}\) near \(y=0\) and as
+\(4\pi^2|y|^{2\eta-2}e^{-2\pi|y|}\) for large \(|y|\)), so its integral
+against \(e^{\pi|y|}(1+|y|)\) is at most \(C_5/\eta^3\). With
+\(\eta^2/\Gamma(2\eta)\le3\eta^3\) the factors of \(\eta\) cancel.
+\(\blacksquare\)
+
+The test evaluates \(|N_\eta(\sigma+i\tau)|(1+\tau)e^{-\pi\tau}\) for
+\(\tau\) up to 8 and \(\eta=0.1,0.02,0.004\): it stays between 0.57 and 3.6.
+It also checks \(N_\eta(p)\to4\sin\pi p/(\pi p)\) at a complex \(p\).
+
+**Conclusion of item 2.** Combine Lemma 3
+(\(|c(p)|\le Ce^{-(2\pi+\delta')|\tau|}\)) with Lemma 4. The function
+\(c(p)N_\eta(p)\) is dominated, uniformly in \(\eta\), by
+\(Ce^{-(\pi+\delta')|\tau|}\), which is integrable. By dominated convergence
+
+\[
+\lim_{\eta\to0}\int c(p)\,N_\eta(p)\,dp=\int c(p)\,\frac{4\sin\pi p}{\pi p}\,dp=4\,M[F],
+\]
+
+the last step being Fubini on the unit circle. So the double pole of the
+superposition is \(4M[F]\).
+
+**What is still assumed.** That the regulated integral with weight \(F\)
+equals \(\int c(p)\times\)(regulated integral of \(z^p\))\(\,dp\). This is
+Fubini for the loop integral and the \(p\) integral. It holds on any
+integration contour on which the regulated integrand is absolutely
+integrable and every invariant stays in the closed lower half plane, since
+there \(|z^p|\le|z|^{\operatorname{Re}p}e^{2\pi|\tau|}\) and Lemma 3 applies.
+Near an edge such a contour is the rotation \(\rho\to\rho e^{i\psi}\) used
+throughout this document: the lower bounds in the proof of Lemma 2 make the
+integrand absolutely integrable for \(\epsilon<0\). Away from the edges the
+contour is not pinched (Proposition 5) and can be displaced off the light
+cones. A global contour assembled from these pieces is not constructed here.
+
+## 6. Pinch surfaces (the regions away from the edges)
+
+**Proposition 5.** The only points at which the integration contour is
+pinched are the four closed edge segments.
+
+*Argument.* All four propagators, and the weight through \(L\), carry the
+same \(-i0\). A pinch at a real point requires weights \(\lambda_i>0\) on the
+invariants that vanish there with
+\(\sum_i\lambda_i\,\partial_{x_0}x_{0i}^2=0\), that is
+\(\sum_i\lambda_i(x_0-x_i)=0\): \(x_0\) is a convex combination of the
+\(x_i\) involved and is null-separated from each. With
+\(x_0=x_2-ap_1+(c+d)p_2+dp_3\) the four invariants are explicit polynomials
+(`landau_pinch_analysis`):
+
+- two adjacent points: both invariants vanish on the whole segment between
+  them, which is the edge;
+- two opposite points: on the diagonal the invariants are \(s(a-1)^2\) and
+  \(sa^2\), which vanish only at its ends;
+- three points: the only solution is the cusp;
+- four points: no solution.
+
+Infinity is not a singular point, because \(d^4x_0/\prod x_{0i}^2\) is
+invariant under conformal inversion. The weight adds no singular surfaces:
+on the sheets reached, \(f\) is singular only over \(z=0,\infty\)
+(Proposition 1 removes \(z=-1\)), which are the same light cones.
+
+Where the contour is not pinched it can be displaced into the complex
+domain, the integrand is bounded there, and the regulated integral is
+analytic in \(\epsilon\) at \(\epsilon=0\). So poles arise only from the
+edges: a single pole from the interior of each edge, with the coefficient of
+section 3, and a double pole only from the ends. \(\blacksquare\)
+
+This is the standard Landau and Coleman–Norton reasoning. It is stated here
+as an argument, with the algebra checked; the displacement of the contour
+is not constructed explicitly. The restriction to *convex* combinations is
+the same fact as the vanishing of the edge jump off the segment found in
+section 2.
+
+## 7. Summary of status
 
 | Statement | Status |
 | --- | --- |
 | Exact form of the four invariants in \((\alpha,\beta,\rho,\theta)\) | Proved (identity), tested at every cusp and region |
 | Edge statement at every cusp, edge and region | Computed to \(10^{-8}\) |
 | Collinear limit with rate \(r\log^{k+1}\) (Lemma 1) | Proved for interior points of an edge |
-| Exact fourth propagator (Lemma 2) | Proof sketch; rate confirmed numerically |
-| \(\bar F^{(2)}\) regular at \(z=-1\), holomorphic for \(|{\rm Im}L|<3\pi\) | Numerical (two continuations agree to \(10^{-23}\)) |
+| Exact fourth propagator (Lemma 2) | Proved; rate confirmed numerically |
+| \(\bar F^{(2)}\) regular at \(z=-1\), holomorphic for \(|{\rm Im}L|<3\pi\) | Proved (inversion relations and Landen's identity) |
 | Edge chain with \(\bar F^{(2)}\) gives \(-11\pi^4/15\) | Computed to \(10^{-8}\) |
 | \(|\arg z|\le2\pi\) on the Lorentzian region | From the sheet rule; tested |
 | Hard cutoff equals \(\log^2\times M[F]\) | **False** for growing weights (section 4) |
 | Local dimensional density \(\to2\pi i\,M[z^p]\) | Closed form, checked numerically |
 | \(L[z^p]=M[z^p]\) for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
-| Extension to \(\bar F^{(0,1,2)}\) (Lemma 3) | Hypothesis verified; one interchange assumed |
-| No double pole from regions away from the edges | Not proved; consistent with the Mellin–Barnes total |
+| Uniform bound \(e^{\pi|{\rm Im}\,p|}\) on the regulated integral (Lemma 4) | Proved (Stirling); checked numerically |
+| Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given an absolutely convergent contour |
+| Only the edges pinch the contour (Proposition 5) | Algebra exact; contour displacement argued |
+| Global absolutely convergent contour | Local pieces given; not assembled |
 
-**What would complete it.** (a) A written proof of Lemma 2 with constants.
-(b) The uniform bound in \(\operatorname{Im}p\) needed in section 5.
-(c) An analytic, not numerical, proof that \(\bar F^{(2)}\) is regular at
-\(z=-1\), for example from its symbol or from the inversion relations of the
-polylogarithms. (d) Review by someone who works with these integrals.
+**What would complete it.** (a) An explicit global contour for the Fubini
+step and for Proposition 5: a partition of unity joining the rotation
+\(\rho\to\rho e^{i\psi}\) near each edge to a displacement off the cones
+elsewhere. (b) Review by someone who works with these integrals. The
+remaining items of the earlier list are done: Lemma 2 is proved, the
+uniform bound is Lemma 4, and the regularity of \(\bar F^{(2)}\) at
+\(z=-1\) is Proposition 1.
 
-## 7. Reproduce
+## 8. Reproduce
 
 ```bash
-PYTHONPATH=src pytest -q tests/test_gate6_bounds.py      # about 3 minutes
+PYTHONPATH=src pytest -q tests/test_gate6_bounds.py      # about 3.5 minutes
 PYTHONPATH=src python -m examples.lorentzian_all_cusps
 ```

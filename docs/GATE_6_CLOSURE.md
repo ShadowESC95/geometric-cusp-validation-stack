@@ -296,20 +296,20 @@ are computed in GATE_6_BOUNDS section 2.
 
 **Treated in [GATE_6_BOUNDS.md](GATE_6_BOUNDS.md).**
 
-- The rate of the collinear limit (Lemma 1, proved) and the effect of the
-  exact fourth propagator (Lemma 2, sketch plus numerics).
+- The rate of the collinear limit (Lemma 1) and the effect of the exact
+  fourth propagator (Lemma 2), both proved.
 - All four cusps and all three kinematic regions (computed).
-- \(\bar F^{(2)}\) on its continued sheets: regular at \(z=-1\), and the edge
-  chain gives \(-11\pi^4/15\).
-- The relation to dimensional regularisation, and the failure of hard
-  cutoffs for growing weights.
+- \(\bar F^{(2)}\) on its continued sheets: regular at \(z=-1\) (proved
+  exactly), and the edge chain gives \(-11\pi^4/15\).
+- The relation to dimensional regularisation, with a uniform bound on the
+  regulated integral, and the failure of hard cutoffs for growing weights.
+- The pinch surfaces: only the four edge segments.
 
-**Still argued, not proved.**
+**Still not carried out.**
 
-- The exchange of the Mellin superposition with the regulated integral
-  (GATE_6_BOUNDS section 5).
-- That regions away from the edges contribute no double pole. This is
-  consistent with the Mellin–Barnes total but not shown directly.
+- An explicit global integration contour on which the regulated integrand
+  is absolutely integrable (GATE_6_BOUNDS sections 5 and 6). It is given
+  near each edge and argued elsewhere.
 
 **Not addressed.**
 

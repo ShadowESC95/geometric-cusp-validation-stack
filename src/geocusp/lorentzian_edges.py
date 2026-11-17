@@ -370,3 +370,147 @@ def dimreg_density_closed_form(p, eps):
             * (phase * g(eps - p) / g(eps) - g(1 - eps) / g(1 + p - eps))
             - 2 * phase * g(1 - eps) * g(eps - p) / g(1 - p))
     return -rays
+
+
+# --------------------------------------------------------------------------
+# Analytic regularity of the two-loop weight at z = -1
+# --------------------------------------------------------------------------
+def f2_expansion_at_minus_one():
+    """Expand the two-loop weight in lambda = log(1 + z) near z = -1.
+
+    Write e = 1 + z with Im e > 0 (the upper lip), x = 1/e. The inversion
+    relations
+
+        Li_2(y) + Li_2(1/y) = -pi^2/6 - log^2(-y)/2
+        Li_3(y) - Li_3(1/y) = -pi^2 log(-y)/6 - log^3(-y)/6
+        Li_4(y) + Li_4(1/y) = -7 pi^4/360 - pi^2 log^2(-y)/12 - log^4(-y)/24
+
+    applied to y = 1/(1+z) and y = z/(1+z) express the weight through
+        a_n = Li_n(e),  b_n = Li_n(-e/(1-e)),  c = log(1-e)
+    which are analytic at e = 0, and through lambda = log e, with
+    log(-1/e) = i pi - lambda, log((1-e)/e) = c - lambda, log z = i pi + c.
+
+    Returns (coefficients, landen), where coefficients[k] multiplies
+    lambda^k and landen = 2 a_2 + 2 b_2 + c^2, which vanishes identically
+    (Landen's identity). The coefficients of lambda^3 and lambda^4 are zero
+    as polynomials; those of lambda and lambda^2 are multiples of `landen`.
+    """
+    import sympy as sp
+
+    lam, c = sp.symbols("lambda c")
+    a2, a3, a4, b2, b3, b4 = sp.symbols("a2 a3 a4 b2 b3 b4")
+    pi, I = sp.pi, sp.I
+
+    def inverted(n, li, log_minus):
+        if n == 2:
+            return -li - pi**2 / 6 - log_minus**2 / 2
+        if n == 3:
+            return li - pi**2 / 6 * log_minus - log_minus**3 / 6
+        return -li - 7 * pi**4 / 360 - pi**2 / 12 * log_minus**2 - log_minus**4 / 24
+
+    la, lb = I * pi - lam, c - lam
+    A = {2: inverted(2, a2, la), 3: inverted(3, a3, la), 4: inverted(4, a4, la)}
+    B = {2: inverted(2, b2, lb), 3: inverted(3, b3, lb), 4: inverted(4, b4, lb)}
+    L = I * pi + c
+    s2 = A[2] + B[2]
+    F = (-L**4 / 2 + L**2 * (sp.Rational(2, 3) * s2 - 19 * pi**2 / 9)
+         + L * (4 * A[3] - 4 * B[3])
+         + sp.Rational(2, 3) * (s2 - pi**2 / 6) ** 2
+         + sp.Rational(8, 3) * pi**2 * (s2 - pi**2 / 6)
+         + 8 * A[4] + 8 * B[4] - 23 * pi**4 / 18)
+    poly = sp.Poly(sp.expand(F), lam)
+    coefficients = {k: sp.expand(poly.coeff_monomial(lam**k)) for k in range(5)}
+    landen = 2 * a2 + 2 * b2 + c**2
+    symbols = {"c": c, "a": (a2, a3, a4), "b": (b2, b3, b4)}
+    return coefficients, landen, symbols
+
+
+def landen_derivative():
+    """d/de of Li_2(e) + Li_2(-e/(1-e)) + log^2(1-e)/2, which must vanish."""
+    import sympy as sp
+
+    e = sp.symbols("e")
+    c = sp.log(1 - e)
+    # d Li_2(u)/de = -log(1-u) u'/u ;  u = -e/(1-e) has 1 - u = 1/(1-e)
+    u = -e / (1 - e)
+    d_a2 = -sp.log(1 - e) / e
+    d_b2 = c * sp.diff(u, e) / u
+    return sp.simplify(d_a2 + d_b2 + c * sp.diff(c, e))
+
+
+def f2_regular_part(e):
+    """The lambda^0 coefficient evaluated at a complex e = 1 + z."""
+    import sympy as sp
+
+    coefficients, _, sym = f2_expansion_at_minus_one()
+    e = mp.mpmathify(e)
+    u = -e / (1 - e)
+    values = {sym["c"]: mp.log(1 - e)}
+    for n, (an, bn) in zip((2, 3, 4), zip(sym["a"], sym["b"])):
+        values[an] = mp.polylog(n, e)
+        values[bn] = mp.polylog(n, u)
+    names = list(values)
+    fn = sp.lambdify(names, coefficients[0], "mpmath")
+    return fn(*[values[n] for n in names])
+
+
+# --------------------------------------------------------------------------
+# Uniform bound on the regulated integral of z^p (Lemma 4)
+# --------------------------------------------------------------------------
+def regulated_double_pole(p, eta, ratio=1):
+    """eps^2 s t times the regulated integral of z^p at eps = -eta, complex p.
+
+    The Mellin-Barnes contour of GATE_6_FUNCTIONAL, w = -1 - p + eta/2 + i y,
+    makes the p-dependence explicit:
+
+        eta^2 / Gamma(2 eta) / (2 pi)
+          * int dy |Gamma(eta/2 + i y)|^4 ratio^(eta/2 + i y)
+            Gamma(1 + p - eta/2 - i y) Gamma(1 - p - eta/2 + i y)
+            / (Gamma(1+p)^2 Gamma(1-p)^2).
+
+    Tends to 4 sin(pi p)/(pi p) as eta -> 0.
+    """
+    p, eta = mp.mpmathify(p), mp.mpf(eta)
+
+    def integrand(y):
+        weight = abs(mp.gamma(eta / 2 + 1j * y)) ** 4 * mp.mpf(ratio) ** (eta / 2 + 1j * y)
+        return weight * mp.gamma(1 + p - eta / 2 - 1j * y) * mp.gamma(1 - p - eta / 2 + 1j * y)
+
+    knots = [-mp.inf, -5, -1, -eta, 0, eta, 1, 5, mp.inf]
+    integral = mp.quad(integrand, knots) / (2 * mp.pi)
+    return eta**2 * mp.rgamma(2 * eta) * mp.rgamma(1 + p) ** 2 * mp.rgamma(1 - p) ** 2 * integral
+
+
+# --------------------------------------------------------------------------
+# Pinch surfaces (Landau analysis)
+# --------------------------------------------------------------------------
+def landau_pinch_analysis():
+    """Where can the integration contour be pinched?
+
+    All four propagators carry the same -i0, so a pinch at a real point needs
+    positive weights lambda_i on the vanishing invariants with
+    sum_i lambda_i (x0 - x_i) = 0: x0 is a convex combination of the x_i
+    involved and is null-separated from each of them. With
+    x0 = x2 - a p1 + (c + d) p2 + d p3 the four invariants are polynomials in
+    (a, c, d); the function returns them and the solution sets.
+    """
+    import sympy as sp
+
+    a, c, d, s, t = sp.symbols("a c d s t", real=True)
+
+    def sq(k1, k2, k3):          # (k1 p1 + k2 p2 + k3 p3)^2 with 2p1p2=s, 2p2p3=t, 2p1p3=-s-t
+        return sp.expand(k1 * k2 * s + k2 * k3 * t + k1 * k3 * (-s - t))
+
+    inv = {1: sq(1 - a, c + d, d), 2: sq(-a, c + d, d),
+           3: sq(-a, c + d - 1, d), 4: sq(-a, c + d - 1, d - 1)}
+    return {
+        "invariants": inv,
+        "adjacent_pair_on_edge": [sp.simplify(inv[2].subs({a: 0, d: 0})),
+                                  sp.simplify(inv[3].subs({a: 0, d: 0}))],
+        "diagonal_pair": [sp.factor(inv[1].subs({d: 0, c: 1 - a})),
+                          sp.factor(inv[3].subs({d: 0, c: 1 - a}))],
+        "triple_123": sp.solve([inv[1].subs(d, 0), inv[2].subs(d, 0), inv[3].subs(d, 0)],
+                               [a, c], dict=True),
+        "quadruple": sp.solve([inv[1], inv[2], inv[3], inv[4]], [a, c, d], dict=True),
+        "symbols": (a, c, d, s, t),
+    }

@@ -45,26 +45,28 @@ from the Lorentzian integral itself.
 - The real integration region, with the Feynman prescription, maps to a path
   in the \(\log z\) plane that deforms to the unit circle. It leaves the
   principal sheet, with \(|\arg z|\le2\pi\).
-- The two-loop weight is regular at \(z=-1\) on the physical sheet, and the
-  edge chain with it gives \(-11\pi^4/15\), the value behind
+- The two-loop weight is regular at \(z=-1\) on the physical sheet. This is
+  proved exactly from the polylogarithm inversion relations and Landen's
+  identity. The edge chain with it gives \(-11\pi^4/15\), the value behind
   \(\Gamma^{(3)}_{\rm cusp}\).
-- The collinear limit is proved with a rate; the effect of the exact fourth
-  propagator is bounded by a sketch and confirmed numerically.
+- The collinear limit and the effect of the exact fourth propagator are
+  proved with rates. The regulated integral of \(z^p\) is bounded uniformly
+  in the regulator, which carries the result from powers to general weights.
+- Only the four edge segments can pinch the integration contour.
 - A hard cutoff on the collinear invariants does **not** reproduce the
   double pole for weights that grow at \(z\to0,\infty\). The double pole is
   taken in dimensional regularisation.
 
-**Open.** Two analytic steps (an interchange of a Mellin superposition with
-the regulated integral, and the absence of a double pole away from the
-edges) are argued, not proved; the regularity of the two-loop weight at
-\(z=-1\) is numerical; and none of this has been checked by a specialist.
-The weight \(F\) is still an input from the Lorentzian integral, and the
-cycle is selected by the Lorentzian real structure and the \(-i0\)
-prescription, not by positivity of the amplituhedron. The relation
-\(dz/z=d\eta/\eta\) on the exceptional divisor follows immediately from
-\(z=\eta z_0/x\) and is not evidence for any identification. The
-regulated-cap programme of [docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md) is
-bypassed, not resolved.
+**Open.** One standard step is not carried out: an explicit global
+integration contour on which the regulated integrand is absolutely
+integrable. It is given near each edge and argued elsewhere. None of this
+has been checked by a specialist. The weight \(F\) is still an input from
+the Lorentzian integral, and the cycle is selected by the Lorentzian real
+structure and the \(-i0\) prescription, not by positivity of the
+amplituhedron. The relation \(dz/z=d\eta/\eta\) on the exceptional divisor
+follows immediately from \(z=\eta z_0/x\) and is not evidence for any
+identification. The regulated-cap programme of
+[docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md) is bypassed, not resolved.
 
 **Speculative and not implemented as a connected calculation.** The project
 was motivated by a conjectured chain
@@ -352,7 +354,7 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 138 pytest
+Run the benchmark with `make test && make examples`. The suite has 145 pytest
 tests and 62 example groups (about five minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
