@@ -730,9 +730,109 @@ from the ends.
   collinear pinches, one for each edge at $`x_3`$, each giving $`1/\eta`$:
   in total $`\tfrac{1}{2\eta}(\tfrac1\eta+\tfrac1\eta)=1/\eta^2`$, one unit.
 
-These two bullets are power counting. They are consistent with one unit of
-$`M[F]`$ per cusp, but the estimate that turns them into "edge piece
-$`=`$ two cusp terms $`+\,O(1/\eta)`$" is not written, and the far-end
-coefficient has not been computed or checked numerically. That estimate is
-the remaining step for a derivation of the full coefficient entirely in
-position space. This section has not been independently reviewed.
+The far-end coefficient is computed in section 10: it is one unit, as at
+the near end. What is still not written is the estimate that turns the two
+leading terms into "edge piece $`=`$ two cusp terms $`+\,O(1/\eta)`$". That
+estimate is the remaining step for a derivation of the full coefficient
+entirely in position space. Sections 9 and 10 have not been independently
+reviewed.
+
+## 10. The far end of an edge piece
+
+Take the piece of section 9 for the edge $`(2,3)`$, $`0<\beta<1`$, and its
+far end $`b=1-\beta\to0`$, the cusp $`x_3`$. After closing the $`\alpha`$
+contour, with $`u_3`$ on the keyhole,
+
+```math
+x_{02}^2=-\frac{\beta u_3+\rho}{b},\qquad
+x_{04}^2=-\frac{(T+1)\,|y_\perp-y_*|^2+(T+\beta)\,u_3}{b},\qquad |y_*|^2=b^2\,\frac{T}{1+T},
+```
+
+where the second is exact: $`x_{04}^2`$ is a negative definite quadratic in
+the transverse position, vanishing only at $`y_\perp=y_*`$, $`u_3=0`$, which
+is the edge $`(3,4)`$. Scale $`y_\perp=b\sqrt{T/(1+T)}\,n`$ and
+$`u_3=b^2\tfrac{T}{1+T}v`$. As $`b\to0`$, $`x_{01}^2\to s`$ and
+
+```math
+z\to-\frac{(v+|n|^2)(v+|n-e|^2)}{v},\qquad|e|=1,
+```
+
+with no dependence on $`T`$. The $`b`$ integral gives
+$`\int_0db\,b^{2\eta-1}=1/(2\eta)`$, and what multiplies it is the universal
+integral
+
+```math
+\Sigma_\eta[F]=\int d^{2+2\eta}n\oint_H\frac{dv}{v}\,\frac{F(z)}{(v+|n|^2)(v+|n-e|^2)} .
+```
+
+The two factors in the denominator are the two edges at $`x_3`$: the
+integrand is symmetric under $`n\to e-n`$.
+
+**Proposition (far-end coefficient).** For $`F=z^p`$,
+$`\eta-1<\operatorname{Re}p<0`$,
+
+```math
+\Sigma_\eta[z^p]=2i\sin(\pi p)\,J,\qquad
+J=\int_0^\infty dv\,v^{-1-p}\int d^{2+2\eta}n\,(v+|n|^2)^{p-1}(v+|n-e|^2)^{p-1}
+=\pi^{1+\eta}\,\frac{\Gamma(-p)\,\Gamma(1-p-\eta)\,\Gamma(\eta)^2}{\Gamma(1-p)^2\,\Gamma(2\eta)} .
+```
+
+*Proof.* The keyhole gives $`2i\sin\pi p`$ times the integral over
+$`v>0`$, as in section 8. Combine the two factors with one Feynman
+parameter $`\xi`$:
+$`\xi|n|^2+(1-\xi)|n-e|^2=|n-(1-\xi)e|^2+\xi(1-\xi)`$. The integral over
+$`n`$ gives
+$`\pi^{1+\eta}\Gamma(1-2p-\eta)/\Gamma(2-2p)\,(v+\xi(1-\xi))^{2p-1+\eta}`$,
+the integral over $`v`$ a Beta function,
+$`(\xi(1-\xi))^{p-1+\eta}\Gamma(-p)\Gamma(1-p-\eta)/\Gamma(1-2p-\eta)`$, and
+the integral over $`\xi`$ is
+$`\int_0^1(\xi(1-\xi))^{\eta-1}d\xi=\Gamma(\eta)^2/\Gamma(2\eta)`$.
+$`\blacksquare`$
+
+The two poles in $`\Gamma(\eta)^2/\Gamma(2\eta)\approx2/\eta`$ come from
+$`\xi\to0`$ and $`\xi\to1`$: the two collinear limits, one for each edge at
+$`x_3`$. With the $`1/(2\eta)`$ from $`b`$,
+
+```math
+\frac{1}{2\eta}\,\Sigma_\eta[z^p]\;\longrightarrow\;-\frac{2\pi^2i}{\eta^2}\,\frac{\sin\pi p}{\pi p} .
+```
+
+**Comparison with the near end.** In the same units, with the transverse
+measure $`d^{2+2\eta}y`$ and the prefactor $`st`$, the two leading terms of
+the edge piece are
+
+```math
+\text{near end }(x_2):\quad-2\pi^{2+\eta}i\,\frac{\Gamma(\eta)^2\,\Gamma(1+p-\eta)}{\Gamma(1+p)^2\,\Gamma(1+2\eta-p)},
+\qquad
+\text{far end }(x_3):\quad-2\pi^{2+\eta}i\,\Big(\frac{T}{1+T}\Big)^{\eta}\frac{\Gamma(\eta)^2\,\Gamma(1-p-\eta)}{\Gamma(1+p)\,\Gamma(1-p)^2\,\Gamma(1+2\eta)} .
+```
+
+Both have the double pole $`-2\pi^2i\,\sin\pi p/(\pi p)\,/\eta^2`$, with the
+same sign. So each edge piece carries two units, one per end, and the two
+edge pieces carry the four units of the known result. The mechanism at the
+two ends is different:
+
+| | Endpoint | Collinear | Product |
+| --- | --- | --- | --- |
+| Near end | $`\int\beta^{\eta-1}d\beta=1/\eta`$ | one edge, $`1/\eta`$ | $`1/\eta^2`$ |
+| Far end | $`\int b^{2\eta-1}db=1/(2\eta)`$ | two edges, $`2/\eta`$ | $`1/\eta^2`$ |
+
+For a general weight the far-end integral is treated in the same way as
+section 8 and gives $`M[F]`$; this is not written out.
+
+**Numerical checks** (`far_end_transverse`, `far_end_numerical`):
+
+| Check | Result |
+| --- | --- |
+| Transverse integral against its Feynman-parameter form, $`v=0.3`$, $`p=-0.3`$, $`\eta=0.5`$ | 8.5202446630 against 8.5202446627 |
+| The same at $`v=0.02`$, $`p=-0.6`$, $`\eta=0.3`$ | agree to $`10^{-13}`$ |
+| $`J`$ against the closed form at $`(p,\eta)=(-0.3,0.5),(-0.6,0.3),(-0.2,0.1)`$ | agree to $`10^{-10}`$ or better |
+| $`\eta^2\times`$ far-end term at $`p=0.3`$, $`T=1.7`$, $`\eta=10^{-1},10^{-2},10^{-3}`$ | 0.8818, 0.8600, 0.8585 → 0.8584 |
+
+**Status.** The far-end leading term is exact for the scaled integrand.
+Not proved: that the edge piece minus its two leading terms is
+$`O(1/\eta)`$. For $`\operatorname{Re}p<0`$ the integrand after the keyhole
+is a constant times a positive function, so this should follow from
+estimates on moduli of the kind used in section 3, in three regions (near
+end, far end, the rest), but it is not written. The equality of the edge
+piece with the other piece's mirror image has not been checked either.

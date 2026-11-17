@@ -177,3 +177,31 @@ def test_full_integrand_is_a_keyhole_inside_the_slab(beta):
         direct = cl.full_light_cone_integral(f, beta, **FULL)
         keyhole = cl.full_keyhole_integral(f, beta, **FULL)
         assert abs(direct) > 1e-3 and direct == pytest.approx(keyhole, rel=1e-6)
+
+
+# ---- the far end of an edge piece (section 10) -----------------------------
+@pytest.mark.parametrize("v,p,eta", [(0.3, -0.3, 0.5), (0.02, -0.6, 0.3)])
+def test_far_end_transverse_integral(v, p, eta):
+    assert cl.far_end_transverse(v, p, eta) == pytest.approx(
+        cl.far_end_transverse_feynman(v, p, eta), rel=1e-8)
+
+
+@pytest.mark.parametrize("p,eta", [(-0.3, 0.5), (-0.6, 0.3), (-0.2, 0.1)])
+def test_far_end_integral_has_the_closed_form(p, eta):
+    assert cl.far_end_numerical(p, eta) == pytest.approx(float(cl.far_end_closed_form(p, eta)), rel=1e-7)
+
+
+@pytest.mark.parametrize("p", [0.3, -0.5, mp.mpc(0.2, 1.0)])
+def test_far_end_carries_one_unit_like_the_near_end(p):
+    limit = mp.sin(mp.pi * p) / (mp.pi * p)
+    far = cl.far_end_coefficient(p, mp.mpf("1e-5"), T=1.7)
+    near = cl.triangle_closed_form(p, mp.mpf("1e-5"))
+    assert abs(far - limit) < 1e-3 * abs(limit) and abs(near - limit) < 1e-3 * abs(limit)
+
+
+def test_far_end_coefficient_is_the_scaled_closed_form():
+    """(1/(2 eta)) 2 i sin(pi p) J, in the units of the near end."""
+    p, eta, T = mp.mpf("-0.3"), mp.mpf("0.2"), mp.mpf("1.7")
+    scaled = (T / (1 + T)) ** eta / (2 * eta) * 2j * mp.sin(mp.pi * p) * cl.far_end_closed_form(p, eta)
+    near_units = -2j * mp.pi ** (2 + eta) / (mp.gamma(1 + eta) * eta**2) * cl.far_end_coefficient(p, eta, T)
+    assert abs(scaled - near_units) < 1e-12 * abs(scaled)

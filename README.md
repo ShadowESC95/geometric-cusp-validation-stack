@@ -21,7 +21,7 @@ Together they explain the known contour rule and give a conditional proof
 of it for the three benchmark weights in all three kinematic regions. The
 conditions are listed under [Scope and limits](#scope-and-limits).
 
-- **312 tests** and **63 worked example groups**, all passing
+- **321 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -59,7 +59,8 @@ conditions are listed under [Scope and limits](#scope-and-limits).
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
 | Cusp-local model derived from the Lorentzian domain: support on the edge segment, discontinuity across $`z<0`$, exact factorisation | Written proof for the iterated integral in a fixed order; independently checked |
 | Full integrand: support in a null slab and exact split into two edge pieces | Written proof; checked numerically; not reviewed |
-| Each edge piece equals its two cusp terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
+| Leading term at both ends of an edge piece: one unit of $`M[z^p]`$ each | Closed form; checked numerically; not reviewed |
+| Each edge piece equals its two leading terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -78,7 +79,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 312 tests, about twenty minutes
+make test        # 321 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -264,8 +265,11 @@ $`(2,3)`$ and one for the edge $`(4,1)`$.
 
 That the full integral equals the sum of the four cusp terms up to a single
 pole is proved for the Feynman-parameter form, by elementary estimates on
-the simplex, in all three regions. In position space the missing step is
-the estimate at the two ends of each edge piece. See
+the simplex, in all three regions. In position space the leading term at each
+end of each edge piece is computed, and each gives one unit: at the near
+end one pole from the endpoint and one from a collinear limit, at the far
+end half a pole from the endpoint and two collinear limits. The missing
+step is the estimate that the rest is a single pole. See
 [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md).
 
 ## Solver
@@ -309,7 +313,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            312 tests
+tests/            321 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

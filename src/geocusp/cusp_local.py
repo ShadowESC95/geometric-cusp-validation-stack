@@ -333,3 +333,83 @@ def full_keyhole_integral(f, beta, rho, kappa, T, eps=1e-2):
     cre = quad(lambda c: circle(c).real, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
     cim = quad(lambda c: circle(c).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
     return re + 1j * im + cre + 1j * cim
+
+
+# --------------------------------------------------------------------------
+# The far end of an edge piece (docs/CUSP_LOCAL_MODEL.md section 10)
+# --------------------------------------------------------------------------
+def far_end_closed_form(p, eta):
+    """J(p, eta) = int_0^oo dv v^(-1-p) int d^(2+2 eta) n (v + |n|^2)^(p-1) (v + |n - e|^2)^(p-1),
+    |e| = 1, in closed form:
+
+        pi^(1+eta) Gamma(-p) Gamma(1 - p - eta) Gamma(eta)^2 / (Gamma(1-p)^2 Gamma(2 eta)),
+
+    valid for eta - 1 < ... Re p < 0. The far end of an edge piece is
+    (1/(2 eta)) * 2 i sin(pi p) * J, whose double pole has coefficient
+    sin(pi p)/(pi p), like the near end.
+    """
+    p, eta = mp.mpmathify(p), mp.mpf(eta)
+    return (mp.pi ** (1 + eta) * mp.gamma(-p) * mp.gamma(1 - p - eta) * mp.gamma(eta) ** 2
+            / (mp.gamma(1 - p) ** 2 * mp.gamma(2 * eta)))
+
+
+def far_end_transverse(v, p, eta):
+    """int d^(2+2 eta) n (v + |n|^2)^(p-1) (v + |n - e|^2)^(p-1) by direct
+    two-dimensional quadrature: n = (kappa, y'), y' in 1 + 2 eta dimensions."""
+    import numpy as np
+    from scipy.integrate import dblquad
+    from scipy.special import gamma
+
+    v, p, eta = float(v), float(p), float(eta)
+    sphere = 2 * np.pi ** (eta + 0.5) / gamma(eta + 0.5)       # unit sphere in 1 + 2 eta dimensions
+
+    def g(x, k):                                               # s = |y'| = e^x
+        s = np.exp(x)
+        return s ** (2 * eta + 1) * (v + k * k + s * s) ** (p - 1) * (v + (k - 1) ** 2 + s * s) ** (p - 1)
+
+    return sphere * sum(dblquad(g, lo, hi, -30, 10, epsabs=0, epsrel=1e-8)[0]
+                        for lo, hi in ((-np.inf, 0.0), (0.0, 1.0), (1.0, np.inf)))
+
+
+def far_end_transverse_feynman(v, p, eta):
+    """The same after combining the two factors with one Feynman parameter:
+    pi^(1+eta) Gamma(1-2p-eta)/Gamma(1-p)^2 int_0^1 d xi (xi(1-xi))^(-p) (v + xi(1-xi))^(2p-1+eta)."""
+    import numpy as np
+    from scipy.integrate import quad
+    from scipy.special import gamma
+
+    v, p, eta = float(v), float(p), float(eta)
+    def g(x):                                                  # xi = e^x, to resolve xi ~ v
+        xi = np.exp(x)
+        m = xi * (1 - xi)
+        return xi * m ** (-p) * (v + m) ** (2 * p - 1 + eta)
+
+    knot = min(np.log(v), np.log(0.5) - 1e-9)
+    integral = 2 * sum(quad(g, lo, hi, epsabs=0, epsrel=1e-11, limit=200)[0]
+                       for lo, hi in ((knot - 60, knot), (knot, np.log(0.5))) if hi > lo)
+    return np.pi ** (1 + eta) * gamma(1 - 2 * p - eta) / gamma(1 - p) ** 2 * integral
+
+
+def far_end_numerical(p, eta):
+    """J(p, eta) by quadrature in v of the transverse integral (real p < 0)."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    p, eta = float(p), float(eta)
+    return sum(quad(lambda t: np.exp(-p * t) * far_end_transverse_feynman(np.exp(t), p, eta), lo, hi,
+                    epsabs=0, epsrel=1e-9, limit=200)[0]
+               for lo, hi in ((-40 / eta, -5), (-5, 0), (0, 5), (5, 80)))
+
+
+def far_end_coefficient(p, eta, T=1.0):
+    """eta^2 times the far-end leading term of an edge piece, in units in
+    which the near end is `triangle_closed_form`:
+
+        (T/(1+T))^eta Gamma(1+eta) Gamma(eta)^2 eta^2 Gamma(1-p-eta)
+          / (Gamma(1+p) Gamma(1-p)^2 Gamma(1 + 2 eta)).
+
+    It tends to sin(pi p)/(pi p).
+    """
+    p, eta, T = mp.mpmathify(p), mp.mpf(eta), mp.mpf(T)
+    return ((T / (1 + T)) ** eta * mp.gamma(1 + eta) * eta**2 * mp.gamma(eta) ** 2 * mp.gamma(1 - p - eta)
+            / (mp.gamma(1 + p) * mp.gamma(1 - p) ** 2 * mp.gamma(1 + 2 * eta)))
