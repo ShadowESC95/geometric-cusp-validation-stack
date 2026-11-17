@@ -142,8 +142,13 @@ class Cusp:
         return 1 if self.index % 2 == 0 else -1
 
     def far_edge_value(self, c_prev, c_next):
-        """x0,i+2^2 on the plane yperp = 0 to first order: D'(1 - beta)(1 + alpha)."""
-        return self.Dfar * (1 - c_prev / self.D) * (1 - c_next / self.D)
+        """x0,i+2^2 on the plane yperp = 0, exactly: D'(1 + alpha - beta) + alpha beta D.
+
+        With beta = c_prev/D and alpha = -c_next/D this is
+        D'(1 - c_prev/D - c_next/D) - c_prev c_next/D. On the edge (alpha = 0)
+        it is D'(1 - beta).
+        """
+        return self.Dfar * (1 - c_prev / self.D - c_next / self.D) - c_prev * c_next / self.D
 
     def log_z(self, w, c_prev, c_next, far):
         near = lg(w) + lg(far) - lg(w + c_prev) - lg(w + c_next)

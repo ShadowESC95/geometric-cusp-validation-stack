@@ -330,29 +330,63 @@ and the continuation between them is the standard dimensional-regularisation
 argument.
 
 **Lemma 3 (from the Mellin family to a class of weights).** Suppose
-$`f(L)=F(e^L)`$ is holomorphic for $`|\operatorname{Im}L|<2\pi+\delta`$ and
-polynomially bounded there. Then $`F`$ is a superposition
-$`\int c(p)\,z^p\,dp`$ on lines $`\operatorname{Re}p=\pm\sigma`$,
-$`0<\sigma<1`$, with $`|c(p)|\le C\,e^{-(2\pi+\delta')|\operatorname{Im}p|}`$,
-and the superposition converges absolutely and uniformly on the Lorentzian
-integration region.
+$`f(L)=F(e^L)`$ is holomorphic for $`|\operatorname{Im}L|<W`$ with
+$`|f(L)|\le A(1+|L|)^k`$ there. Fix an integer $`m`$ with $`m\pi\ge W`$.
+Then for every $`0<\sigma<1/m`$ and every $`L`$ in the strip,
 
-*Reason.* Split $`f=f\,\chi+f\,(1-\chi)`$ with
-$`\chi(L)=1/(1+e^{L/4})`$, whose poles lie at
-$`\operatorname{Im}L=\pm4\pi`$. Each piece decays exponentially in one
-direction of $`\operatorname{Re}L`$, so its two-sided Laplace transform
-exists on a strip of $`p`$. Holomorphy in a strip of half-width
-$`2\pi+\delta`$ gives the stated decay of $`c(p)`$ by shifting the contour
-in $`L`$. On the Lorentzian region $`|\arg z|\le2\pi`$ (section 2), so
-$`|z^p|\le|z|^{\pm\sigma}e^{2\pi|\operatorname{Im}p|}`$, and the integrand of
-the $`p`$ integral is dominated by an integrable function.
-$`\blacksquare`$
+```math
+f(L)=\int_{\operatorname{Re}p=-\sigma}c_+(p)\,e^{pL}\,dp+\int_{\operatorname{Re}p=\sigma}c_-(p)\,e^{pL}\,dp .
+```
 
-The hypothesis holds for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ (entire in
-$`L`$) and for $`\bar F^{(2)}`$ (holomorphic for
-$`|\operatorname{Im}L|<3\pi`$, section 2). The need for $`2\pi`$, not
-$`\pi`$, is a consequence of the sheet bookkeeping: the Lorentzian contour
-leaves the principal sheet.
+$`c_+`$ is holomorphic for $`-1/m<\operatorname{Re}p<0`$ and $`c_-`$ for
+$`0<\operatorname{Re}p<1/m`$, and for every $`\delta'>0`$
+
+```math
+|c_\pm(\sigma'+i\tau)|\le C(\sigma',\delta')\,e^{-(W-\delta')|\tau|},
+```
+
+with $`C`$ bounded on compact subsets of the open strips.
+
+*Proof.* Let $`\chi(L)=1/(1+e^{L/m})`$, whose poles lie at
+$`\operatorname{Im}L=\pm m\pi,\pm3m\pi,\dots`$, outside the strip. Put
+$`f_+=f\chi`$ and $`f_-=f(1-\chi)`$. On
+$`|\operatorname{Im}L|\le W-\delta'`$,
+$`|f_+(L)|\le A'(1+|L|)^k\min(1,e^{-\operatorname{Re}L/m})`$. So
+
+```math
+c_+(p)=\frac{1}{2\pi i}\int_{\mathbb R}f_+(L)\,e^{-pL}\,dL
+```
+
+converges absolutely for $`-1/m<\operatorname{Re}p<0`$ and is holomorphic
+there. Moving the line of integration to
+$`\operatorname{Im}L=-\operatorname{sign}(\tau)(W-\delta')`$, which Cauchy's
+theorem allows because the integrand decays at both ends, multiplies the
+bound by $`e^{-(W-\delta')|\tau|}`$. The function $`f_+(L)e^{\sigma L}`$ is
+smooth and integrable on the real line and its Fourier transform is
+integrable, so Fourier inversion gives $`f_+(L)=\int c_+(p)e^{pL}dp`$ for
+real $`L`$. Both sides are holomorphic for $`|\operatorname{Im}L|<W`$, the
+right side by the decay of $`c_+`$, so they agree on the strip. The same
+holds for $`f_-`$ with the signs reversed. $`\blacksquare`$
+
+The constant $`C(\sigma',\delta')`$ grows like $`|\sigma'|^{-(k+1)}`$ as
+$`\sigma'\to0`$, because $`f`$ does not decay.
+
+**The hypothesis for the three weights.** $`\bar F^{(0)}`$ and
+$`\bar F^{(1)}`$ are polynomials in $`L`$: the hypothesis holds for every
+$`W`$. $`\bar F^{(2)}`$ is holomorphic for $`|\operatorname{Im}L|<3\pi`$
+(section 2), so $`W=3\pi`$. Its polynomial bound with $`k=4`$ is not written
+out here. The reason is that it is a combination of logarithms and
+polylogarithms of total weight four, each of which grows at most like a
+power of $`L`$ at $`z\to0`$ and $`z\to\infty`$ on every sheet. The test
+`test_two_loop_weight_is_polynomially_bounded_on_the_cover` finds
+$`|\bar F^{(2)}|/(1+|L|)^4\le70`$ for $`|\operatorname{Im}L|\le2.5\pi`$,
+$`|\operatorname{Re}L|\le40`$.
+
+**Correction.** An earlier version stated this lemma on lines
+$`0<\sigma<1`$ with $`W=2\pi+\delta`$. With the cutoff function used the
+strips have width $`1/4`$, not 1. More importantly the lines must lie in
+$`|\operatorname{Re}p|<\eta`$ for the exchange of integrals below, which the
+earlier version did not require.
 
 **Lemma 4 (uniform bound).** Let
 $`N_\eta(p)=\epsilon^2st\times`$(regulated integral of $`z^p`$) at
@@ -388,31 +422,104 @@ against $`e^{\pi|y|}(1+|y|)`$ is at most $`C_5/\eta^3`$. With
 $`\eta^2/\Gamma(2\eta)\le3\eta^3`$ the factors of $`\eta`$ cancel.
 $`\blacksquare`$
 
+**Timelike diagonal.** For $`s/t<0`$ the factor $`(s/t)^{iy}`$ has modulus
+up to $`e^{\pi|y|}`$ and the step
+$`e^{-\pi|\tau-y|}\le e^{-\pi|\tau|}e^{\pi|y|}`$ above loses the decay in
+$`y`$. Use instead the bounds of
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md) section 7. The integrand is at most
+
+```math
+C\,\frac{(1+|y|)^6\,(1+|\tau-y|)^5}{(\eta^2/4+y^2)^2}\;e^{-\pi|y|-\pi|\tau-y|} .
+```
+
+By the triangle inequality $`e^{-\pi|y|-\pi|\tau-y|}=e^{-\pi|\tau|}e^{-2\pi d(y)}`$,
+where $`d(y)`$ is the distance from $`y`$ to the interval between $`0`$ and
+$`\tau`$. For $`|y|\le1`$ the integral is at most
+$`C(1+|\tau|)^5e^{-\pi|\tau|}/\eta^3`$. For $`|y|\ge1`$ the denominator is at
+least 1 and the integral is at most $`C(1+|\tau|)^{12}e^{-\pi|\tau|}`$: the
+interval has length $`|\tau|`$ and the two tails converge. With
+$`\eta^2/\Gamma(2\eta)\le2.3\,\eta^3`$ and
+$`|\sin\pi p/(\pi p)|^2\le Ce^{2\pi|\tau|}`$,
+
+```math
+|N_\eta(\sigma+i\tau)|\le C\,(1+|\tau|)^{12}\,e^{\pi|\tau|}\qquad(s/t<0),
+```
+
+uniformly in $`\eta`$. The power of $`|\tau|`$ does not matter below. The
+test `test_uniform_bound_at_a_timelike_diagonal` finds
+$`|N_\eta|(1+\tau)e^{-\pi\tau}`$ between 0.56 and 3.6 at
+$`\arg(s/t)=\pi`$.
+
 The test evaluates $`|N_\eta(\sigma+i\tau)|(1+\tau)e^{-\pi\tau}`$ for
 $`\tau`$ up to 8 and $`\eta=0.1,0.02,0.004`$: it stays between 0.57 and 3.6.
 It also checks $`N_\eta(p)\to4\sin\pi p/(\pi p)`$ at a complex $`p`$.
 
-**Conclusion of item 2.** Combine Lemma 3
-($`|c(p)|\le Ce^{-(2\pi+\delta')|\tau|}`$) with Lemma 4. The function
-$`c(p)N_\eta(p)`$ is dominated, uniformly in $`\eta`$, by
-$`Ce^{-(\pi+\delta')|\tau|}`$, which is integrable. By dominated convergence
+**Conclusion of item 2.** Let $`\Phi`$ be the largest value of
+$`|\arg z|`$ on the integration contour of
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), and suppose $`W>\Phi`$. Choose
+$`\delta'<W-\Phi`$ and $`m`$ as in Lemma 3. Write $`I_\eta[F]`$ for the
+regulated integral with weight $`F`$ on that contour.
+
+*Step A (exchange of integrals).* Fix $`\eta`$ and take
+$`\sigma=\tfrac12\min(\eta,1/m)`$. On the contour
+$`|z^p|\le|z|^{\operatorname{Re}p}e^{\Phi|\tau|}`$, and the regulated
+integrand with weight $`|z|^{\pm\sigma}`$ is absolutely integrable because
+$`\sigma<\eta`$ (GATE_6_CONTOUR, Lemma 8′). With
+$`|c_\pm|\le Ce^{-(W-\delta')|\tau|}`$ the double integral over the contour
+and over $`p`$ converges absolutely, so by Fubini
 
 ```math
-\lim_{\eta\to0}\int c(p)\,N_\eta(p)\,dp=\int c(p)\,\frac{4\sin\pi p}{\pi p}\,dp=4\,M[F],
+I_\eta[F]=\int_{\operatorname{Re}p=-\sigma}c_+(p)\,I_\eta[z^p]\,dp+\int_{\operatorname{Re}p=\sigma}c_-(p)\,I_\eta[z^p]\,dp .
 ```
 
-the last step being Fubini on the unit circle. So the double pole of the
-superposition is $`4M[F]`$.
+The condition $`\sigma<\eta`$ is necessary: for $`|\operatorname{Re}p|\ge\eta`$
+the integral of $`|z^p|`$ over the contour diverges near the cusps.
 
-**The Fubini step.** The argument also needs the regulated integral with
-weight $`F`$ to equal $`\int c(p)\times`$(regulated integral of
-$`z^p`$)$`\,dp`$. This holds on an integration contour on which the
-regulated integrand is absolutely integrable and $`|\arg z|\le2\pi+\delta''`$
-with $`\delta''<\delta'`$. Such a contour is constructed in
-[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md) in all three kinematic regions; its
-properties are proved there with explicit constants, and section 10 of that
-document identifies the regulated integral on it with the Mellin–Barnes
-form.
+*Step B (each power).* For $`|\operatorname{Re}p|<\eta`$,
+$`\epsilon^2st\,I_\eta[z^p]=N_\eta(p)`$, the Mellin–Barnes form
+(GATE_6_CONTOUR, Proposition 8 and Lemmas 13 and 14).
+
+*Step C (moving the lines).* For fixed $`\eta`$, $`N_\eta(p)`$ is
+holomorphic for $`|\operatorname{Re}p|<1-\eta`$ (Lemma 13) and bounded there
+by Lemma 4. So $`c_\pm(p)N_\eta(p)`$ is holomorphic between
+$`\operatorname{Re}p=\mp\sigma`$ and $`\operatorname{Re}p=\mp\sigma_0`$,
+$`\sigma_0=1/(2m)`$, and is at most $`C(1+|\tau|)^{12}e^{-(W-\delta'-\pi)|\tau|}`$
+there. Since $`W-\delta'>\pi`$, Cauchy's theorem moves both lines to
+$`\operatorname{Re}p=\mp\sigma_0`$, which do not depend on $`\eta`$.
+
+*Step D (the limit).* On the fixed lines $`c_\pm N_\eta`$ is dominated
+uniformly in $`\eta`$ by an integrable function, and
+$`N_\eta(p)\to4\sin\pi p/(\pi p)`$. By dominated convergence
+
+```math
+\lim_{\eta\to0}\epsilon^2st\,I_\eta[F]=\int c(p)\,\frac{4\sin\pi p}{\pi p}\,dp=4\,M[F],
+```
+
+the last step being Lemma 3 on the unit circle and
+$`M[z^p]=\sin\pi p/(\pi p)`$. So the double pole of the regulated integral
+with weight $`F`$ is $`4M[F]`$.
+
+**Which cases this covers.** By GATE_6_CONTOUR section 5:
+
+| Region | Bound on $`\Phi`$ proved | $`\Phi`$ measured |
+| --- | --- | --- |
+| $`(-,-)`$ | $`2\pi+4e`$, $`e\le0.085`$ | $`2\pi`$ |
+| $`(+,-)`$, $`(-,+)`$ | $`3\pi+4e`$, $`e\le0.05`$ | $`2\pi`$ |
+
+- $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: any $`W`$ is allowed, so the
+  conclusion is proved in all three regions.
+- $`\bar F^{(2)}`$: $`W=3\pi`$. The conclusion is proved for spacelike
+  diagonals. With a timelike diagonal it needs $`\Phi<3\pi`$, which is
+  proved at real points (Lemma P) and observed on the contour, but not
+  proved on the contour.
+
+**What this argument does and does not use.** Steps A to D use the contour,
+the Mellin–Barnes evaluation and the identity
+$`M[z^p]=\sin\pi p/(\pi p)`$. They do not use the edge statement of
+GATE_6_CLOSURE, Lemmas 1 and 2, or Proposition 5. The result is the rule of
+Arkani-Hamed, Henn and Trnka, extended from powers to the class of
+Lemma 3. The edge statement explains where the circle comes from; it is not
+a step of this proof.
 
 ## 6. Pinch surfaces (the regions away from the edges)
 
@@ -462,18 +569,23 @@ section 2.
 | Exact fourth propagator (Lemma 2) | Proved; rate confirmed numerically |
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
-| $`\vert \arg z\vert \le2\pi`$ on the Lorentzian region | From the sheet rule; tested |
+| $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals, $`3\pi+4e`$ otherwise. Measured: $`2\pi`$ in all regions |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
-| Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ on the regulated integral (Lemma 4) | Proved, with elementary Gamma bounds (GATE_6_CONTOUR section 7) |
-| Extension to $`\bar F^{(0,1,2)}`$ (Lemmas 3, 4) | Proved, given the contour |
+| Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
+| Extension to $`\bar F^{(0)},\bar F^{(1)}`$ (Lemma 3, steps A to D) | Proved in all regions, given the contour |
+| Extension to $`\bar F^{(2)}`$ | Proved for spacelike diagonals; with a timelike diagonal it rests on the measured phase bound. Its polynomial bound is checked numerically, not written out |
+| The edge statement implies the double pole | **Not proved.** The proof of the double pole does not pass through the edge statement |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
-| Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved line by line |
+| Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
 | Regulated integral on the contour equals the Mellin–Barnes form | Proved in all three regions (GATE_6_CONTOUR sections 11 and 12) |
 
-**What would complete it.** Review by someone who works with these
-integrals.
+**What would complete it.** A proof of the phase bound on the contour with
+a timelike diagonal; the polynomial bound on $`\bar F^{(2)}`$ written out;
+and review by someone who works with these integrals. An internal review
+found the gaps now repaired or marked above.
 
 ## 8. Reproduce
 

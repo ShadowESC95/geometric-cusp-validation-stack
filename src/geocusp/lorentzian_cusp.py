@@ -133,12 +133,12 @@ def weighted_chart_dictionary():
 # Sheet bookkeeping and the transverse kernel
 # --------------------------------------------------------------------------
 def edge_value_x04(q1, q3, s=-1.0, t=-1.0):
-    """x04^2 on the plane yperp = 0, to first order: t (1 - beta)(1 + alpha).
+    """x04^2 on the plane yperp = 0, exactly: t (1 + alpha - beta) + alpha beta s.
 
-    With beta = -q1/|s| and alpha = q3/|s|. On the null edge (alpha -> 0) the
-    exact value is t (1 - beta); it changes sign at the far cusp beta = 1.
+    With beta = -q1/|s| and alpha = q3/|s| (s < 0). On the null edge
+    (alpha = 0) it is t (1 - beta); it changes sign at the far cusp beta = 1.
     """
-    return t * (1 + q1 / abs(s)) * (1 + q3 / abs(s))
+    return t * (1 + q1 / abs(s) + q3 / abs(s)) + q1 * q3 / abs(s)
 
 
 def log_z(w, q1, q3, s=-1.0, t=-1.0, x04=None):

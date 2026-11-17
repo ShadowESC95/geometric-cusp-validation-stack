@@ -257,3 +257,40 @@ def test_field_is_continuously_differentiable(contour):
         step = rng.normal(size=4) * 1e-4 * scale
         worst = max(worst, np.abs(jac(x0) - jac(x0 + step)).max())
     assert worst < 5e-3
+
+
+# ---- repairs after review -------------------------------------------------
+@pytest.mark.parametrize("region,low,high", [("--", -2, 2), ("+-", -1, 2), ("-+", -2, 1)])
+def test_phase_of_z_at_real_points_and_on_the_contour(region, low, high):
+    """Lemma P: at real points Im log z / pi is an integer in the stated
+    range. On the contour it stays within the same range plus a margin."""
+    out = fc.phase_survey(fc.tuned_contour(region, 1.1), 6000, seed=6)
+    assert low - 1e-9 <= out["real_min"] and out["real_max"] <= high + 1e-9
+    assert low - 0.06 <= out["contour_min"] and out["contour_max"] <= high + 0.06
+
+
+def test_causal_fact_behind_lemma_p():
+    """If x13 is timelike and x0 is timelike from x2, then x0 is timelike
+    from x1 or from x3."""
+    from geocusp import lorentzian_edges as le
+    p, s, t = le.light_like_square("+-")
+    assert s > 0
+    x = [np.zeros(4), p[0], p[0] + p[1], p[0] + p[1] + p[2]]
+    rng = np.random.default_rng(1)
+    hits = 0
+    for _ in range(20000):
+        x0 = x[1] + rng.normal(size=4) * rng.choice([0.3, 1.0, 3.0])
+        if le.msq(x0 - x[1]) > 0:
+            hits += 1
+            assert le.msq(x0 - x[0]) > 0 or le.msq(x0 - x[2]) > 0
+    assert hits > 1000
+
+
+def test_strip_integral_with_powers_converges_only_below_the_regulator():
+    """Lemma 8': with propagator powers 1 -+ sigma the strip bound is
+    integrable if and only if |sigma| < eta."""
+    eta = 0.2
+    inside = [fc.strip_power_integral(eta, 0.1, c) for c in (1e-12, 1e-24, 1e-48)]
+    outside = [fc.strip_power_integral(eta, 0.3, c) for c in (1e-12, 1e-24, 1e-48)]
+    assert inside[2] - inside[1] < 0.2 * (inside[1] - inside[0])      # increments shrink
+    assert outside[2] - outside[1] > 5 * (outside[1] - outside[0])    # increments grow

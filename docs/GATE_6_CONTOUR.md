@@ -187,9 +187,9 @@ $`\kappa'=2\times10^{-3}`$. Section 9 states the precise conditions.
 
 1. near the cone of $`x_i`$, $`\operatorname{Im}x_{0i}^2\le0`$ on the
    contour, with equality only on the edges;
-2. away from the cones each invariant stays within a small angle of its
-   real value, so $`|\arg z|\le2\pi+\delta''`$ on the contour with
-   $`\delta''`$ as small as desired;
+2. the argument of each invariant stays within a small angle $`e`$ of
+   $`[-\pi,0]`$, so on the contour $`|\arg z|\le2\pi+4e`$ for spacelike
+   diagonals and $`|\arg z|\le3\pi+4e`$ when one diagonal is timelike;
 3. the invariants vanish on the contour only on the four edge segments;
 4. near a cusp, in its frame,
    $`|x_{0,j}^2|\ge c\,\nu\max(\rho,|\alpha\beta D|)`$,
@@ -200,12 +200,40 @@ $`\kappa'=2\times10^{-3}`$. Section 9 states the precise conditions.
 *Argument.* (1) and (3): by Lemma 5 and section 3 every field that is
 switched on near a cone is admissible for it; by section 4 at least one
 frame field has weight 1 there, and its bound vanishes only on its triangle,
-which meets the cone only on the edges. (2): by the choice of constants.
+which meets the cone only on the edges. (2): by (D) of section 9 each
+argument lies in $`[-\pi-e,e]`$; $`\arg z`$ is the sum of two of them minus
+the other two, plus $`\pi(\tau_s-\tau_t)`$ from the diagonals.
 (4): if $`\rho\ge|\alpha\beta D|/2`$ the imaginary part is at least
 $`2\nu\rho`$; otherwise the real part is at least $`|\alpha\beta D|/2`$; the
 other two are the same. (5): the Jacobian is $`1+i\,\partial V`$ with
 $`\partial V`$ real, whose determinant vanishes only if $`\partial V`$ has
 an eigenvalue of modulus 1; $`\|\partial V\|<1`$.
+
+**Lemma P (phases at real points).** At every real point where no
+invariant vanishes, with $`\tau_i=1`$ if $`x_{0i}^2>0`$ and 0 otherwise,
+
+```math
+\frac{\arg z}{\pi}=\tau_2+\tau_4-\tau_1-\tau_3+\tau_s-\tau_t\in
+\begin{cases}[-2,2],&s<0,\ t<0\\ [-1,2],&s>0\\ [-2,1],&t>0.\end{cases}
+```
+
+*Proof.* The formula is the Feynman prescription. For $`s,t<0`$ the range
+is immediate. Let $`s>0`$, so $`x_3-x_1`$ is timelike; say it points to the
+future. The null vectors $`x_2-x_1`$ and $`x_3-x_2`$ have product
+$`s/2>0`$, so they have the same time orientation, and their sum points to
+the future, so both do. Suppose $`\tau_2=1`$. If $`x_0-x_2`$ points to the
+future then $`x_0-x_1=(x_0-x_2)+(x_2-x_1)`$ is a future timelike vector plus
+a future null vector, hence timelike: $`\tau_1=1`$. If it points to the
+past then $`x_3-x_0=(x_3-x_2)+(x_2-x_0)`$ is timelike: $`\tau_3=1`$. The
+same holds with $`x_4`$ in place of $`x_2`$. So
+$`\tau_2+\tau_4-\tau_1-\tau_3\le1`$ and $`\arg z\le2\pi`$; the lower bound
+$`-\pi`$ is immediate. The case $`t>0`$ is the mirror image. $`\blacksquare`$
+
+On the contour this sharper bound is not proved when a diagonal is
+timelike: near two cones at once the arguments are not close to their real
+values. It is observed: `phase_survey` finds $`\arg z/\pi`$ in
+$`[-2,2]`$, $`[-1,2]`$ and $`[-2,1]`$ on the contour in the three regions,
+on 30 000 stress points each.
 
 Measured on stress samples of 30 000 points in each region (generic points
 at three scales, points within $`10^{-4}`$ to $`10^{-1}`$ of one cone, points
@@ -228,14 +256,19 @@ points placed within $`10^{-4}`$ of a cone.
 ## 6. Consequences
 
 **Absolute integrability.** The regulated integrand is absolutely integrable
-on the contour for small $`\eta=-\epsilon>0`$. The proof is section 10.
+on the contour for small $`\eta=-\epsilon>0`$, for weights of polynomial
+growth in $`\log z`$ and for $`z^p`$ with $`|\operatorname{Re}p|<\eta`$. For
+$`|\operatorname{Re}p|\ge\eta`$ it is not. The proof is section 10.
 
 **The Fubini step of GATE_6_BOUNDS section 5.** On the contour
-$`|z^p|\le|z|^{\operatorname{Re}p}e^{(2\pi+\delta'')|\operatorname{Im}p|}`$
-by item 2, the integrand is absolutely integrable, and
-$`|c(p)|\le Ce^{-(2\pi+\delta')|\operatorname{Im}p|}`$ by Lemma 3. Taking
-$`\delta''<\delta'`$, the double integral over the contour and over $`p`$
-converges absolutely, and the order can be exchanged.
+$`|z^p|\le|z|^{\operatorname{Re}p}e^{\Phi|\operatorname{Im}p|}`$ with
+$`\Phi`$ the bound of item 2. For $`|\operatorname{Re}p|<\eta`$ the
+integrand is absolutely integrable (Lemma 8′), and
+$`|c(p)|\le Ce^{-(W-\delta')|\operatorname{Im}p|}`$ by Lemma 3. If
+$`W-\delta'>\Phi`$ the double integral over the contour and over $`p`$
+converges absolutely and the order can be exchanged. The lines of the
+$`p`$ integral are then moved out to fixed positions; see steps A to D of
+GATE_6_BOUNDS section 5.
 
 **The displacement in Proposition 5.** Item 3 is that displacement: off the
 edges the contour does not meet any light cone, so the integrand is bounded
@@ -285,7 +318,8 @@ $`\eta^2/\Gamma(2\eta)=2\eta^3/\Gamma(1+2\eta)\le2.3\,\eta^3`$. Therefore
 ```
 
 uniformly in $`\eta`$. The power of $`|\tau|`$ is worse than in Lemma 4 and
-does not matter: $`c(p)`$ decays like $`e^{-(2\pi+\delta')|\tau|}`$. The
+does not matter: $`c(p)`$ decays like $`e^{-(W-\delta')|\tau|}`$ with
+$`W-\delta'>\pi`$ (Lemma 3). The
 test `test_elementary_gamma_bounds` checks the three inequalities on a grid.
 
 ## 8. Kinematic regions
@@ -623,6 +657,38 @@ modulus, so $`|L|\le C(1+\log(1/\rho))`$ and
 $`(1+|L|)^k\le C\rho^{-\eta/2}`$. Lemma 8 with $`\eta'=\eta/2`$ gives
 convergence.
 
+**Lemma 8′ (powers $`1\pm p`$).** Let $`\sigma=\operatorname{Re}p`$. With
+the powers $`1-\sigma`$ on $`x_{0,j}^2`$ and $`1+\sigma`$ on its two
+neighbours, or the reverse,
+
+```math
+\int_{S_j^+}\frac{\rho^{\eta}\,d\alpha\,d\beta\,d\rho}
+{\rho^{1\mp\sigma}\,\max(\rho,|\alpha|)^{1\pm\sigma}\,\max(\rho,|\beta|)^{1\pm\sigma}}
+\le C_\sigma\int_0^{\rho_1}\rho^{\eta-1-|\sigma|}d\rho ,
+```
+
+which is finite if and only if $`|\sigma|<\eta`$.
+
+*Proof.* For $`a>1`$,
+$`\int_{-1}^1d\alpha/\max(\rho,|\alpha|)^a\le2a\rho^{1-a}/(a-1)`$; for
+$`a<1`$ it is at most $`2/(1-a)`$. With the upper signs and $`\sigma>0`$
+the two neighbours give $`\rho^{-2\sigma}`$ and the first factor
+$`\rho^{-1+\sigma}`$. With $`\sigma<0`$ the neighbours give a constant and
+the first factor $`\rho^{-1-|\sigma|}`$. The lower signs exchange the two
+cases. $`\blacksquare`$
+
+So for $`z^p`$ the strips converge when $`|\operatorname{Re}p|<\eta`$: by
+Lemma 7 each factor $`|x^2|^{-(1\pm\sigma)}`$ is bounded by the
+corresponding factor above, and $`|z^{i\tau}|\le e^{\Phi|\tau|}`$. The
+bound cannot be improved by the sharper lower bounds of Proposition 6: in
+the region $`\rho\sim|\alpha|\ll|\beta|\ll1`$ the three moduli are of the
+order of $`\rho`$, $`|\alpha|`$ and $`|\beta|`$, and the integral of
+$`|z|^{\sigma}`$ behaves like $`\int d\beta\,\beta^{\eta-1-\sigma}`$. The
+divergence is real. Elsewhere in the ball and at infinity the argument
+below is unchanged, since the powers still sum to 4 and are positive. The
+test `test_strip_integral_with_powers_converges_only_below_the_regulator`
+checks the threshold.
+
 **The rest of the ball.** Let $`K`$ be the set $`r\le2R`$ with the open
 strips removed. On $`K`$ no invariant vanishes: near a cone and inside $`R`$
 by (A), where equality in Lemma 5 forces the point onto an edge; near a cone
@@ -703,8 +769,9 @@ through $`|e|`$ and a radial factor, so the integral reduces to one over
 $`x_0`$ and $`m=|e|`$ with weight $`m^{2\eta-1}`$, which is analytic in
 $`\eta`$.
 
-**Proposition 8 (parametric representation).** Let $`a_i>0`$ with
-$`\sum a_i=4`$ and $`0<\eta<\tfrac12`$. The regulated integral of
+**Proposition 8 (parametric representation).** Let $`a_i`$ be complex with
+$`0<\operatorname{Re}a_i<2`$, $`\sum a_i=4`$, and, when the $`a_i`$ are
+$`1\pm p`$, $`|\operatorname{Re}p|<\eta`$. Let $`0<\eta<\tfrac12`$. The regulated integral of
 $`\prod(-X_i)^{-a_i}`$ over the contour equals
 
 ```math
@@ -725,8 +792,12 @@ combination of $`1`$ and $`e^{i(\pi-2\varphi)}`$, so all four lie in a closed
 cone of opening $`\pi-2\varphi<\pi`$, and
 $`|Y_i(\varphi)|\ge\sin\varphi\,(\mu+|x_0-x_i|^2)`$. The integral over real
 $`(x_0,e)`$ is absolutely convergent: the singularity at $`x_0=x_i`$,
-$`\mu=0`$ is integrable because $`2a_i<4`$, and the decay at infinity is
-$`|x|^{-8}`$.
+$`\mu=0`$ is integrable because $`2\operatorname{Re}a_i<4`$, and the decay
+at infinity is $`|x|^{-8}`$. For complex powers
+$`|Y^{-a}|\le|Y|^{-\operatorname{Re}a}e^{\pi|\operatorname{Im}a|}`$ in the
+cone, so every bound below holds with $`\operatorname{Re}a_i`$ and a
+constant factor. The Feynman-parameter formula of step 2 holds for
+$`\operatorname{Re}a_i>0`$.
 
 *Step 2 (Feynman parameters).* For numbers in a common proper cone,
 $`\prod Y_i^{-a_i}=\frac{\Gamma(4)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta(1-\sum\alpha)\prod\alpha_i^{a_i-1}(\sum\alpha_iY_i)^{-4}`$,
@@ -837,7 +908,12 @@ where no $`Y_i`$ vanishes, with its powers continued from $`\lambda=0`$,
 where the $`Y_i`$ lie in the cone of step 1. The form $`h\,dz_1\cdots dz_D`$
 is closed. The map $`(\lambda,x)\mapsto x+i\lambda V(x)`$ is continuously
 differentiable (section 2) and by Lemma 10(c) takes $`[0,1]\times\mathbb R^D`$ into that set. Apply Stokes'
-theorem on $`[0,1]\times\{|x|\le\rho\}`$: the difference of the integrals
+theorem on $`[0,1]\times\{|x|\le\rho\}`$ with a ball of radius $`r`$
+removed around each point $`(x_i,0)`$. There $`Y_i`$ vanishes for every
+$`\lambda`$, because $`V(x_i)=0`$; the integrand is of order
+$`|n|^{-2\operatorname{Re}a_i}`$, the side of the removed tube has area of
+order $`r^{D-1}`$ and the form contributes $`|V|\le Jr`$, so that side
+contributes $`O(r^{D-2\operatorname{Re}a_i})\to0`$. The difference of the integrals
 at $`\lambda=1`$ and $`\lambda=0`$ over the ball is the integral over the
 side $`[0,1]\times\{|x|=\rho\}`$. On the side, for fixed $`\varphi>0`$, every
 $`|Y_i|\ge c(\varphi)\rho^2`$: where $`V\!\cdot n\le0`$ by Lemma 10(a) and
@@ -859,7 +935,11 @@ integral of $`\prod(-X_i)^{-a_i}`$ over the contour.
 There the integrand converges pointwise as $`\varphi\to0`$. It is dominated
 uniformly in $`\varphi\le\varphi_0`$: near the cones in the inner zone by
 Lemma 10(d), which gives the bound of Lemma 6 with $`c_J`$ in place of
-$`\tfrac12`$, so that Lemmas 7 and 8 apply with a different constant; away
+$`\tfrac12`$, so that Lemma 7 holds with a different constant and Lemma 8
+(unit powers) or Lemma 8′ (powers $`1\pm p`$, $`|\operatorname{Re}p|<\eta`$)
+applies; near the cones in the blend zone, which is compact and contains no
+edge, $`V\!\cdot n\le-c_1<0`$ by (C1) and (A), and Lemma 10(a) gives
+$`|Y|\ge2\cos\varphi\,c_1`$; away
 from the cones in the ball by $`|Y|\ge\delta_0/4`$; in the outer zone by
 $`|Y|\ge\cos\varphi\cdot2\kappa'|n^2+n\!\cdot u|`$ where $`V\!\cdot n\le0`$
 and by $`|Y|\ge\tfrac12|n^2|`$ otherwise, which reproduce Lemma 9. The
@@ -1132,14 +1212,26 @@ rotation invariance and that $`|\sigma|<0.01`$.
 
 ## 13. What remains
 
-- Review by someone who works with these integrals.
+An internal review of this document found gaps, which are repaired above:
+absolute integrability for the powers $`1\pm p`$ (Lemma 8′, and the
+restriction $`|\operatorname{Re}p|<\eta`$), complex powers in
+Proposition 8, the excision of the cusp points in Lemma 11, and the blend
+zone in Lemma 12. Still open:
 
-What the argument takes from general analysis is now only this: Fubini's
-theorem and dominated convergence, Cauchy's theorem in one variable, the
-ordinary Stokes theorem for a continuously differentiable map, the Beta and
-Dirichlet integrals, the Weierstrass product for the Gamma function, and
-the identity theorem for analytic functions. Every inequality specific to
-the problem is either proved here or evaluated by the certificate.
+- **The phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$ is
+  proved at real points (Lemma P) and observed on the contour. On the
+  contour only $`3\pi+4e`$ is proved. This suffices for $`\bar F^{(0)}`$ and
+  $`\bar F^{(1)}`$ but not for $`\bar F^{(2)}`$.
+- **Lemma 10(c), outer zone.** The sentence using $`n\!\cdot u\ge c_ur`$ is
+  not justified where it stands. The conclusion $`\operatorname{Re}Y>0`$
+  should be re-derived.
+- **Review** by someone who works with these integrals.
+
+What the argument takes from general analysis: Fubini's theorem and
+dominated convergence, Cauchy's theorem in one variable, the ordinary
+Stokes theorem for a continuously differentiable map, Fourier inversion,
+the Beta and Dirichlet integrals, the Weierstrass product for the Gamma
+function, and the identity theorem for analytic functions.
 
 ## 14. Reproduce
 

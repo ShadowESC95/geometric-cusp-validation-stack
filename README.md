@@ -5,11 +5,13 @@ amplituhedron in planar N=4 super Yang–Mills: blow-ups and residues of the
 canonical form, the two-loop logarithm integrand, and the contour that
 extracts the cusp anomalous dimension.
 
-Its main result is a derivation of that contour from the Lorentzian integral
-itself: the real integration region at a light-like edge, with the Feynman
-prescription, deforms to the unit circle in the cross-ratio plane.
+Its main result is a local statement about the Lorentzian integral: at a
+light-like edge the real integration region, with the Feynman prescription,
+maps to a path between the two lips of $`z=-1`$, and the unit circle is one
+representative of it. This explains the known contour rule. It does not
+replace the existing derivation of that rule.
 
-- **217 tests** and **63 worked example groups**, all passing
+- **237 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -37,11 +39,16 @@ prescription, deforms to the unit circle in the cross-ratio plane.
 | Lorentzian edge chain equals the unit-circle mean | Computed to $`10^{-8}`$ in every case tested |
 | Two-loop weight is regular at $`z=-1`$ | Proved |
 | Explicit integration contour, all kinematic regions | Constructed; conditions checked by a certificate |
-| Regulated integral equals the Mellin–Barnes form | Proved |
-| Independent review of the contour argument | **Not done** |
+| Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
+| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)}`$ | Written proof, all regions |
+| The same for $`\bar F^{(2)}`$ | Written proof for spacelike diagonals; otherwise rests on a measured bound |
+| The edge statement implies the double pole | **Not proved** |
+| Review by a specialist | **Not done** |
 
-The contour argument was produced and machine-checked in one working session
-and has not been read by a specialist. Treat it as a proposed proof.
+The contour argument was written and machine-checked in one working
+session. An internal review found one substantial gap and several smaller
+ones, which are repaired or marked as open in the documents. It has not been
+read by a specialist. Treat it as a proposed proof.
 
 ## Quick start
 
@@ -52,7 +59,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 217 tests, about ten minutes
+make test        # 237 tests, about ten minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -126,7 +133,7 @@ the code returns
 | 3 | published two-loop weight | $`-11\pi^4/15`$ | $`44\pi^4/45`$ |
 
 The overall constant of the rule is fixed at one loop. Orders two and three
-are checks that could have failed. The weights themselves are taken from the
+check the published rule and the transcribed weights against known values. The weights themselves are taken from the
 literature; the one-loop-lower weight is also recomputed here from its
 parameter integral.
 
@@ -143,7 +150,8 @@ edge produces a collinear singularity whose coefficient is
 ```
 
 The factor $`M[F]`$ arises because the image of the real integration region
-in the $`\log z`$ plane is a path that deforms to the unit circle. The path
+in the $`\log z`$ plane is a path from one lip of $`z=-1`$ to the other,
+which can be deformed to the unit circle. The path
 leaves the principal sheet, with $`|\arg z|\le2\pi`$, and the weighted
 blow-up above is exactly the collinear scaling of the edge.
 
@@ -157,11 +165,24 @@ What supports it:
 - an explicit, continuously differentiable integration contour whose
   properties reduce to inequalities evaluated by a certificate, for 90
   squares across the three regions;
-- written proofs of absolute convergence and of the equality with the
-  Mellin–Barnes form of the regulated integral.
+- written proofs of absolute convergence (for polynomially bounded weights,
+  and for $`z^p`$ with $`|\operatorname{Re}p|`$ below the regulator) and of
+  the equality with the Mellin–Barnes form of the regulated integral.
 
-Two earlier statements were found to be wrong while doing this, and are
-corrected in the documents: a hard cutoff on the collinear invariants does
+What it does not do:
+
+- The double pole of the full integral is not derived from the edge
+  statement. Its proof goes through the Mellin–Barnes form, which is the
+  route of the original paper, extended here from powers to a class of
+  weights.
+- The three-loop value from the edge chain equals the circle mean by
+  Cauchy's theorem, so it is not an independent check.
+- With a timelike diagonal, the bound $`|\arg z|\le2\pi`$ on the contour is
+  measured, not proved.
+
+Earlier statements found to be wrong and corrected in the documents: the
+exchange of integrals was claimed on lines where the integral does not
+converge absolutely; a hard cutoff on the collinear invariants does
 not reproduce the double pole for weights that grow at $`z\to0,\infty`$, and
 dimensional regularisation cannot be treated as a real shift on a
 four-dimensional contour.
@@ -203,7 +224,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            217 tests
+tests/            237 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
@@ -223,7 +244,7 @@ external/         adapter templates for other packages (untested)
   is not evidence for any identification.
 - **The earlier regulated-cap programme** of GATE_6_PROOF is bypassed, not
   resolved.
-- **No independent review.**
+- **No specialist review.**
 
 ## Other components
 

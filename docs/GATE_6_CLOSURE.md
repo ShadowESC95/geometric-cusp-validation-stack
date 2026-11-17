@@ -55,9 +55,12 @@ $`L=i\phi`$, which is the unit circle.
 **Consequences.**
 
 1. The remaining $`\beta`$ integral diverges logarithmically at both ends of
-   the segment, the two cusps. The double logarithm of the full integral is
-   therefore proportional to $`M[F]`$, for every $`F`$ in the class of
-   section 8, with a constant fixed by $`F=1`$ (the massless box).
+   the segment, the two cusps. This is the origin of the double pole, whose
+   coefficient is proportional to $`M[F]`$. That last statement is not
+   proved from the edge statement: the edge density is not uniform as
+   $`\beta\to0`$, and the proof of the double pole
+   ([GATE_6_BOUNDS.md](GATE_6_BOUNDS.md) section 5) goes through the
+   Mellin–Barnes form instead.
 2. In the coordinates of the weighted blow-up (section 3) the Lorentzian
    chain and the capped cycle of
    [example 36](../examples/weighted_boundary_cycle.py) have the same class
@@ -81,8 +84,8 @@ x_{02}^2=w,\qquad x_{01}^2=w+q_1,\qquad x_{03}^2=w+q_3,
 w=\frac{q_1q_3}{|s|}-\rho,\quad q_1=\beta s,\quad q_3=-\alpha s ,
 ```
 
-and on the plane $`y_\perp=0`$, to first order in $`\alpha`$,
-$`x_{04}^2=t(1-\beta)(1+\alpha)`$. On the edge itself ($`\alpha\to0`$) the
+and on the plane $`y_\perp=0`$, exactly,
+$`x_{04}^2=t(1+\alpha-\beta)+\alpha\beta s`$. On the edge itself ($`\alpha\to0`$) the
 fourth propagator is $`t(1-\beta)`$: spacelike inside the segment and
 timelike beyond the far cusp.
 
@@ -153,7 +156,7 @@ q_1q_3\,K_f(q_1,q_3)\;\longrightarrow\;-\int_{\gamma}f(L)\,dL
 ```
 
 where $`\gamma`$ is the image of the $`w`$ contour in the $`L`$ plane, with
-corrections proportional to $`q_3/q_1`$. The $`q_3`$ integral
+corrections of order $`r\log(1/r)`$, $`r=|q_3/q_1|`$. The $`q_3`$ integral
 $`\int dq_3/q_3`$ is a principal value across $`q_3=0`$, so the coefficient
 of the collinear logarithm is the jump
 
@@ -239,12 +242,21 @@ $`\tau_4`$ flips and the loop again closes up. Holding $`x_{04}^2`$ at $`t`$
 instead moves the endpoints to $`|z|=1/(1-\beta)`$; this is a different
 representative of the same class.
 
+**What the comparison shows.** In the limit the difference
+$`\gamma_+-\gamma_-`$ is a path from $`L=-i\pi`$ to $`L=i\pi`$ inside the
+domain where $`f`$ is holomorphic. Any such path gives the same integral,
+$`g(i\pi)-g(-i\pi)`$ with $`g'=f`$. The unit circle is one representative;
+the actual image runs out towards $`z=0`$ and $`z=\infty`$. So the statement
+is about the endpoints, the two lips of $`z=-1`$, and the sheet. It concerns
+the $`z`$ fibre only.
+
 **Relation to the capped cycle.** The cycle of example 36 is
 $`\{|a|=R\}\times\{z=e^{i\phi}\}\times\{\theta\}`$. The Lorentzian chain on
 $`E`$ is $`\{a\ \text{real}\}\times\gamma\times S^1_\theta`$. The factor in
 $`z`$ is identified above. The circle in $`a`$ is the residue at the cusp
 $`a=0`$, which is the coefficient of the second logarithm from
-$`\int da/a`$ (section 7). The $`\theta`$ factor is the compact circle in
+$`\int da/a`$ (section 7); this identification of the $`a`$ factor is an
+interpretation, not a proved equality of chains. The $`\theta`$ factor is the compact circle in
 both. The overall constant, including the order-two quotient in $`\theta`$,
 is fixed by $`F=1`$.
 
@@ -289,7 +301,8 @@ are computed in GATE_6_BOUNDS section 2.
 - The jump equals $`-2\pi i\,M[F]`$ at $`\beta=0.1,0.5,0.9`$ and vanishes at
   $`\beta=-0.3,1.4`$, to $`10^{-7}`$, for $`F=z^{0.3},z^{-0.6}, \log^2z+\pi^2,\log^3z`$.
 - The quadrant sum equals $`2\pi i\,M[F]`$ in both collinear sectors, to
-  $`10^{-7}`$; the error is linear in the ratio of scales.
+  $`10^{-7}`$; the error is of order $`r\log(1/r)`$ in the ratio $`r`$ of
+  scales.
 - With $`x_{04}^2`$ held at $`t`$ the contour is the circle
   $`|z|=1/(1-\beta)`$.
 
@@ -321,7 +334,16 @@ are computed in GATE_6_BOUNDS section 2.
 - The regulated complex cap of GATE_6_PROOF.md sections 2 to 5, with its rim
   collisions and detours, is bypassed, not resolved. This route never
   introduces that lift.
-- A referee-level proof would need the error bounds above written out.
+- The edge statement is not a step in the proof of the double pole. It
+  explains the circle; the proof is the Mellin–Barnes argument of
+  GATE_6_BOUNDS section 5, which re-derives the rule of arXiv:2112.06956
+  and extends it from powers to a class of weights.
+- The three-loop value from the edge chain is, by Cauchy's theorem, the
+  same number as the circle mean. It tests the continuation of
+  $`\bar F^{(2)}`$ to its second sheet, not an independent quantity.
+- Lemmas 1 and 2 are proved for weights of polynomial growth in $`L`$. The
+  numerical checks with $`z^{0.3}`$ show the same rate but are not covered
+  by those proofs.
 
 ## 9. Reproduce
 

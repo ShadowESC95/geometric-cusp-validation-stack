@@ -247,3 +247,40 @@ def test_extra_dimensions_integrate_to_the_dimensional_power():
         lhs = mp.quad(lambda v: 1 / (A + v ** (1 / eta)) ** 2,
                       [0, A**eta / 2, A**eta, 2 * A**eta, mp.inf]) / (eta * mp.gamma(eta))
         assert abs(lhs - mp.gamma(2 - eta) * A ** (eta - 2)) < mp.mpf("1e-10")
+
+
+# ---- repairs after review -------------------------------------------------
+@pytest.mark.parametrize("region", list(REGIONS))
+@pytest.mark.parametrize("cusp", [1, 2, 3, 4])
+def test_far_invariant_on_the_plane_is_exact(region, cusp):
+    """x0,i+2^2 at y_perp = 0 is D'(1 + alpha - beta) + alpha beta D exactly,
+    not D'(1 - beta)(1 + alpha)."""
+    rng = np.random.default_rng(3 * cusp + len(region))
+    for _ in range(5):
+        alpha, beta = rng.normal(size=2) * 0.4
+        exact, _, info = le.exact_invariants(cusp, alpha, beta, 0.0, 0.0, region)
+        c = le.Cusp(cusp, info["D"], info["Dp"]) if cusp % 2 == 0 else le.Cusp(cusp, info["Dp"], info["D"])
+        far = (cusp + 1) % 4 + 1
+        assert c.far_edge_value(beta * info["D"], -alpha * info["D"]) == pytest.approx(exact[far], abs=1e-12)
+
+
+@pytest.mark.parametrize("sigma", [0.3, -0.5])
+def test_uniform_bound_at_a_timelike_diagonal(sigma):
+    """Lemma 4 at arg(S/T) = pi: |N_eta| (1+tau) exp(-pi tau) stays bounded,
+    uniformly in eta."""
+    mp.mp.dps = 15
+    values = [abs(le.regulated_double_pole_complex(mp.mpc(sigma, tau), eta, 1.0, mp.pi))
+              * (1 + tau) * mp.exp(-mp.pi * tau)
+              for eta in (0.1, 0.004) for tau in (0, 2, 4, 8)]
+    assert 0.4 < min(values) and max(values) < 5
+
+
+def test_two_loop_weight_is_polynomially_bounded_on_the_cover():
+    """|F2(e^L)| <= C (1 + |L|)^4 for |Im L| <= 2.5 pi (hypothesis of Lemma 3)."""
+    mp.mp.dps = 15
+    rng = np.random.default_rng(0)
+    worst = 0.0
+    for _ in range(300):
+        L = mp.mpc(rng.uniform(-40, 40), rng.uniform(-2.5, 2.5) * np.pi)
+        worst = max(worst, float(abs(le.f2_cover(L)) / (1 + abs(L)) ** 4))
+    assert worst < 200

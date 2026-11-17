@@ -786,3 +786,55 @@ def shifted_surface_sides(contour: Contour, mu: float, n: int, seed: int = 0) ->
         out["real_shift"] += int(C.displaced_invariants(x0)[0][i].imag > 0)
         out["extended"] += int(displaced_extended(C, x0, np.array([np.sqrt(mu)]))[0][i].imag > 0)
     return out
+
+
+# --------------------------------------------------------------------------
+# The phase of z itself on the contour
+# --------------------------------------------------------------------------
+def log_z_imaginary_part(contour: Contour, displaced):
+    """Im log z = arg x02^2 + arg x04^2 - arg x01^2 - arg x03^2 + pi (tau_s - tau_t),
+    each argument on the branch continued from the Feynman prescription."""
+    a = [contour.branch_argument(v) for v in displaced]
+    return a[1] + a[3] - a[0] - a[2] + np.pi * ((contour.s > 0) - (contour.t > 0))
+
+
+def phase_survey(contour: Contour, n: int, seed: int = 0) -> dict:
+    """Range of Im log z over a stress sample: at real points and on the contour.
+
+    At real points it is a multiple of pi in [-2 pi, 2 pi] (Lemma P). On the
+    contour it must stay within 2 pi plus a small margin.
+    """
+    C = contour
+    out = {"real_min": np.inf, "real_max": -np.inf, "contour_min": np.inf, "contour_max": -np.inf,
+           "points": 0}
+    for x0 in sample_points(C, n, seed):
+        if C.distance_to_edges(x0) < 1e-5:
+            continue
+        real = C.invariants(x0)
+        if np.min(np.abs(real)) > 1e-12:
+            v = log_z_imaginary_part(C, real.astype(complex) - 1e-300j) / np.pi
+            out["real_min"], out["real_max"] = min(out["real_min"], v), max(out["real_max"], v)
+        displaced, _ = C.displaced_invariants(x0)
+        v = log_z_imaginary_part(C, displaced) / np.pi
+        out["contour_min"], out["contour_max"] = min(out["contour_min"], v), max(out["contour_max"], v)
+        out["points"] += 1
+    return {k: float(v) for k, v in out.items()}
+
+
+def strip_power_integral(eta: float, sigma: float, cutoff: float) -> float:
+    """int_cutoff^1 d rho rho^(eta - a_j) g(rho, a_+) g(rho, a_-), with
+    g(rho, a) = int_0^1 d alpha max(rho, alpha)^(-a), a_j = 1 - sigma and
+    a_+ = a_- = 1 + sigma: the strip integral of Lemma 8 for propagator
+    powers 1 -+ sigma, using the lower bounds of Lemma 7. It has a finite
+    limit as cutoff -> 0 if and only if |sigma| < eta.
+    """
+    from scipy.integrate import quad
+
+    def g(rho, a):
+        if abs(a - 1) < 1e-12:
+            return 1 + np.log(1 / rho)
+        return rho ** (1 - a) + (1 - rho ** (1 - a)) / (1 - a)
+
+    a_j, a_n = 1 - sigma, 1 + sigma
+    f = lambda x: np.exp(-x * (eta - a_j + 1)) * g(np.exp(-x), a_n) ** 2      # rho = exp(-x)
+    return quad(f, 0, np.log(1 / cutoff), epsabs=0, epsrel=1e-10, limit=400)[0]
