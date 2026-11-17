@@ -362,7 +362,7 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 155 pytest
+Run the benchmark with `make test && make examples`. The suite has 160 pytest
 tests and 63 example groups (about five minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)

@@ -1,13 +1,16 @@
 """Local cusp functional solver: numerics and command line.
 
-Three linear functionals turn a finite weight F(z) into a cusp coefficient:
+Four linear functionals turn a finite weight F(z) into a cusp coefficient:
 the unit-circle mean, the period over the capped cycle on the weighted
-divisor, and the leading double pole of the dimensionally regulated
-frozen-loop integral. See docs/GATE_6_FUNCTIONAL.md for the derivation.
+divisor, the leading double pole of the dimensionally regulated frozen-loop
+integral, and the Lorentzian edge chain (the coefficient of the collinear
+singularity at a light-like edge, divided by -2*pi*i). See
+docs/GATE_6_FUNCTIONAL.md, docs/GATE_6_CLOSURE.md and docs/GATE_6_BOUNDS.md.
 
 Run ``python -m geocusp.solver`` to open the desktop window, or use the
-``functional``, ``cd`` and ``rim`` subcommands in a terminal. Everything runs
-in this process: there is no server and no network access.
+``functional``, ``edge``, ``two-loop``, ``contour``, ``cd`` and ``rim``
+subcommands in a terminal. Everything runs in this process: there is no
+server and no network access.
 """
 from __future__ import annotations
 
@@ -47,6 +50,15 @@ class Weight:
         log_z = np.log(np.asarray(z, dtype=complex))
         value = sum(c*log_z**k for k, c in enumerate(self.logs))
         return value+self.amplitude*np.exp(self.exponent*log_z)
+
+    def of_log(self, L):
+        """The weight as a function of L = log z, for mpmath arguments on any sheet."""
+        import mpmath as mp
+
+        value = sum(mp.mpf(c)*L**k for k, c in enumerate(self.logs) if c)
+        if self.amplitude:
+            value += mp.mpf(self.amplitude)*mp.exp(mp.mpf(self.exponent)*L)
+        return value
 
     def describe(self) -> str:
         names = ["", "*log(z)", "*log(z)**2", "*log(z)**3", "*log(z)**4"]
@@ -157,9 +169,73 @@ def lorentzian(weight: Weight, eta: float) -> float:
     return float(total)
 
 
+REGIONS = {"--": (-1.0, -1.7), "+-": (1.3, -1.0), "-+": (-1.0, 0.8)}
+TWO_LOOP_MEAN = -11*pi**4/15
+
+
+def edge_chain(weight, cusp: int = 2, edge: str = "next", position: float = .4,
+               region: str = "--", ratio: float = 1e-9, digits: int = 15) -> dict:
+    """Lorentzian edge chain: the collinear singularity at a point of a null line.
+
+    ``weight`` is a Weight or the string "two-loop". ``position`` runs along
+    the null line through the cusp and its neighbour; the edge segment is
+    0 < position < 1. Returns the jump of the transverse kernel across the
+    collinear invariant divided by -2*pi*i, which equals the unit-circle mean
+    of the weight on the segment and zero off it.
+    """
+    import mpmath as mp
+
+    from . import lorentzian_edges as le
+
+    if cusp not in (1, 2, 3, 4):
+        raise ValueError("cusp must be 1, 2, 3 or 4")
+    if edge not in ("next", "prev"):
+        raise ValueError("edge must be 'next' or 'prev'")
+    if region not in REGIONS:
+        raise ValueError("region must be one of '--', '+-', '-+' (the signs of s and t)")
+    if position in (0, 1):
+        raise ValueError("position 0 and 1 are the cusps; choose a point of the line off them")
+    two_loop = isinstance(weight, str)
+    if two_loop and weight != "two-loop":
+        raise ValueError("the only named weight is 'two-loop'")
+    f = le.f2_cover if two_loop else weight.of_log
+    geometry = le.Cusp(cusp, *REGIONS[region])
+    with mp.workdps(digits):
+        jump = geometry.edge_jump(f, edge, position, mp.mpf(ratio))
+        constant = geometry.edge_jump(lambda L: 1, edge, position, mp.mpf(ratio))
+        value = complex(jump/(-2j*mp.pi))
+        unit = complex(constant/(-2j*mp.pi))
+        sheets = sorted({k for a in (1, -1) for b in (1, -1)
+                         for k in geometry.sheet_sequence(a*1e-3*abs(geometry.D),
+                                                          b*1e-7*abs(geometry.D))})
+    on_segment = 0 < position < 1
+    mean = TWO_LOOP_MEAN if two_loop else closed_mean(weight)
+    expected = mean if on_segment else 0.
+    return {
+        "weight": "two-loop weight F2" if two_loop else weight.describe(),
+        "cusp": cusp, "edge": edge, "position": position, "region": region,
+        "on_segment": on_segment,
+        "edge_chain": value.real, "edge_chain_imag": value.imag,
+        "constant_weight": unit.real,
+        "circle_mean": mean,
+        "expected": expected,
+        "agree": bool(abs(value-expected) < 1e-5*max(1., abs(mean))),
+        "sheets": sheets,
+    }
+
+
+def edge_scan(weight, positions, cusp: int = 2, edge: str = "next", region: str = "--") -> list:
+    """Edge chain at several positions along one null line."""
+    return [edge_chain(weight, cusp, edge, x, region, ratio=1e-8, digits=13) for x in positions]
+
+
 def solve_functional(weight: Weight, loop_order: int = 2, radius: float = 1.3,
-                     eta: float = .01, curve: bool = False) -> dict:
-    """Evaluate all three functionals and the resulting cusp coefficient."""
+                     eta: float = .01, curve: bool = False, edge: bool = False) -> dict:
+    """Evaluate the functionals and the resulting cusp coefficient.
+
+    With ``edge=True`` the Lorentzian edge chain is evaluated as well (about a
+    second), at the midpoint region of an edge at cusp 2.
+    """
     if loop_order < 1:
         raise ValueError("loop_order must be positive")
     exact = closed_mean(weight)
@@ -170,6 +246,7 @@ def solve_functional(weight: Weight, loop_order: int = 2, radius: float = 1.3,
     scale = max(1., abs(exact))
     reference = weak_coefficients().get(loop_order)
     gamma = float(np.real(cusp_coefficient_from_mean(loop_order, exact)))
+    agree = abs(cycle-exact) < 1e-5*scale and abs(extrapolated-exact) < 2e-3*scale
     result = {
         "weight": weight.describe(),
         "closed_mean": exact,
@@ -178,7 +255,6 @@ def solve_functional(weight: Weight, loop_order: int = 2, radius: float = 1.3,
         "cycle_period_imag": cycle.imag,
         "lorentzian": regulated,
         "lorentzian_extrapolated": extrapolated,
-        "agree": bool(abs(cycle-exact) < 1e-5*scale and abs(extrapolated-exact) < 2e-3*scale),
         "loop_order": loop_order,
         "gamma": gamma,
         "reference": reference,
@@ -186,9 +262,68 @@ def solve_functional(weight: Weight, loop_order: int = 2, radius: float = 1.3,
         "radius": radius,
         "eta": eta,
     }
+    if edge:
+        chain = edge_chain(weight)
+        result["edge_chain"] = chain["edge_chain"]
+        agree = agree and chain["agree"]
+    result["agree"] = bool(agree)
     if curve:
         etas = (.1, .06, .03, .02, .01, .006, .003)
         result["curve"] = [{"eta": e, "value": lorentzian(weight, e)} for e in etas]
+    return result
+
+
+def solve_two_loop(edge: bool = True, position: float = .4) -> dict:
+    """The published two-loop weight F2 and the three-loop cusp coefficient.
+
+    F2 is not a polynomial in log z, so the Mellin-Barnes and capped-cycle
+    routines for the Weight family do not apply; the circle mean is computed
+    directly and, with ``edge=True``, so is the Lorentzian edge chain on the
+    continued sheets (about a minute).
+    """
+    import mpmath as mp
+
+    from . import lorentzian_edges as le
+
+    with mp.workdps(18):
+        circle = complex(le.circle_mean(le.f2_cover))
+        at_minus_one = complex(le.f2_regular_part(0))
+    reference = weak_coefficients()[3]
+    gamma = float(np.real(cusp_coefficient_from_mean(3, circle)))
+    result = {
+        "weight": "two-loop weight F2 (arXiv:2112.06956, Eq. 2.23)",
+        "closed_mean": TWO_LOOP_MEAN,
+        "circle_mean": circle.real,
+        "value_at_z_minus_one": at_minus_one.real,
+        "regular_at_z_minus_one": True,
+        "loop_order": 3,
+        "gamma": gamma,
+        "reference": reference,
+        "matches_reference": bool(abs(gamma-reference) < 1e-6),
+    }
+    agree = abs(circle-TWO_LOOP_MEAN) < 1e-9
+    if edge:
+        chain = edge_chain("two-loop", position=position)
+        off = edge_chain("two-loop", position=-position)
+        result["edge_chain"] = chain["edge_chain"]
+        result["edge_chain_off_segment"] = off["edge_chain"]
+        agree = agree and chain["agree"] and off["agree"]
+    result["agree"] = bool(agree)
+    return result
+
+
+def contour_survey(points: int = 5000, seed: int = 0) -> dict:
+    """Survey the explicit integration contour of docs/GATE_6_CONTOUR.md."""
+    from . import feynman_contour as fc
+
+    if points < 100:
+        raise ValueError("use at least 100 sample points")
+    contour = fc.Contour()
+    result = {key: float(value) for key, value in fc.survey(contour, points, seed).items()}
+    result["near_count"] = int(result["near_count"])
+    result["points"] = points
+    result["feynman_side_of_every_cone"] = bool(result["max_im_near"] <= 0)
+    result["zeros_only_on_edges"] = bool(result["min_ratio"] > 0)
     return result
 
 
@@ -294,6 +429,28 @@ def main(argv=None) -> None:
     fun.add_argument("--loop-order", type=int, default=2)
     fun.add_argument("--radius", type=float, default=1.3)
     fun.add_argument("--eta", type=float, default=.01)
+    fun.add_argument("--no-edge", action="store_true",
+                     help="skip the Lorentzian edge chain (it takes about a second)")
+
+    edg = sub.add_parser("edge", help="Lorentzian edge chain at a point of a null line")
+    edg.add_argument("--logs", type=float, nargs="*", default=[pi**2, 0, 1])
+    edg.add_argument("--amplitude", type=float, default=0.)
+    edg.add_argument("--exponent", type=float, default=0.)
+    edg.add_argument("--two-loop", action="store_true", help="use the two-loop weight F2")
+    edg.add_argument("--cusp", type=int, default=2)
+    edg.add_argument("--edge", choices=("next", "prev"), default="next")
+    edg.add_argument("--position", type=float, default=.4,
+                     help="along the null line; the edge segment is 0 < position < 1")
+    edg.add_argument("--region", choices=tuple(REGIONS), default="--",
+                     help="signs of the two diagonals s and t")
+
+    two = sub.add_parser("two-loop", help="the two-loop weight F2 and the three-loop coefficient")
+    two.add_argument("--no-edge", action="store_true",
+                     help="skip the edge chain on the continued sheets (about a minute)")
+
+    con = sub.add_parser("contour", help="survey the explicit integration contour")
+    con.add_argument("--points", type=int, default=5000)
+    con.add_argument("--seed", type=int, default=0)
 
     cd = sub.add_parser("cd", help="integrate the CD weight at a complex z")
     cd.add_argument("z", type=complex, help="for example 0.35+0.8j")
@@ -309,14 +466,23 @@ def main(argv=None) -> None:
             from .solver_gui import run
         except ImportError as error:
             parser.error(f"the desktop window needs Tk and Matplotlib ({error}); install your "
-                         "platform's Tk package for Python, or use the functional, cd and rim "
-                         "subcommands")
+                         "platform's Tk package for Python, or use the functional, edge, "
+                         "two-loop, contour, cd and rim subcommands")
         run()
         return
     try:
         if args.command == "functional":
             weight = Weight(tuple(args.logs) or (0.,), args.amplitude, args.exponent)
-            result = solve_functional(weight, args.loop_order, args.radius, args.eta)
+            result = solve_functional(weight, args.loop_order, args.radius, args.eta,
+                                      edge=not args.no_edge)
+        elif args.command == "edge":
+            weight = ("two-loop" if args.two_loop else
+                      Weight(tuple(args.logs) or (0.,), args.amplitude, args.exponent))
+            result = edge_chain(weight, args.cusp, args.edge, args.position, args.region)
+        elif args.command == "two-loop":
+            result = solve_two_loop(edge=not args.no_edge)
+        elif args.command == "contour":
+            result = contour_survey(args.points, args.seed)
         elif args.command == "cd":
             result = solve_cd(args.z)
         else:

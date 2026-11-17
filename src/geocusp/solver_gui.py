@@ -130,6 +130,7 @@ class SolverApp:
         book = ttk.Notebook(root)
         book.pack(fill="both", expand=True, padx=8, pady=8)
         for title, build in (("Functional solver", self.build_functional),
+                             ("Lorentzian edge chain", self.build_edge),
                              ("CD weight at a point", self.build_cd),
                              ("Rim collision explorer", self.build_rim)):
             page = ttk.Frame(book, padding=12)
@@ -138,6 +139,7 @@ class SolverApp:
             page.rowconfigure(0, weight=1)
             build(page)
         self.update_functional()
+        self.update_edge()
         self.update_cd()
         self.update_rim()
 
@@ -248,7 +250,8 @@ class SolverApp:
         if not known:
             text += "No reference coefficient is built in at this loop order."
         elif r["loop_order"] == 3:
-            text += "The three-loop reference needs F2, which is not built in, so no match is expected."
+            text += ("The three-loop coefficient comes from the two-loop weight F2, which is not "
+                     "in this polynomial family. Use the Lorentzian edge chain tab.")
         elif r["matches_reference"]:
             text += f"With L = {r['loop_order']} this weight reproduces the known coefficient."
         else:
@@ -268,6 +271,164 @@ class SolverApp:
         axes.grid(True, color="#e1e0d9", lw=.8)
         axes.legend(fontsize=8, frameon=False)
         self.f_canvas.draw_idle()
+
+    # -- Lorentzian edge chain
+
+    def build_edge(self, page):
+        left, right = self.panel(page)
+        self.e_formula = ttk.Label(left, font=MONO, wraplength=380, justify="left")
+        self.e_formula.grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 4))
+        ttk.Label(left, text="The weight is the one set on the Functional solver tab.",
+                  style="Cap.TLabel", wraplength=380, justify="left").grid(
+            row=1, column=0, columnspan=3, sticky="w", pady=(0, 8))
+        change = lambda: self.later("edge", self.update_edge, delay=400)
+        self.e = {"cusp": Control(left, 2, "cusp", 1, 4, 2, change, integer=True),
+                  "position": Control(left, 3, "position on the line", -.9, 1.9, .4, change, digits=3)}
+        self.e_edge = tk.StringVar(value="next")
+        self.e_region = tk.StringVar(value="--")
+        for row, (label, variable, values) in enumerate(
+                (("edge at the cusp", self.e_edge, ("next", "prev")),
+                 ("signs of s and t", self.e_region, tuple(solver.REGIONS))), start=4):
+            ttk.Label(left, text=label).grid(row=row, column=0, sticky="w", padx=(0, 8), pady=2)
+            box = ttk.Combobox(left, textvariable=variable, values=values, state="readonly", width=8)
+            box.grid(row=row, column=1, sticky="w", pady=2)
+            box.bind("<<ComboboxSelected>>", lambda _: change())
+        buttons = ttk.Frame(left)
+        buttons.grid(row=6, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        ttk.Button(buttons, text="Scan the null line", command=self.scan_edge).grid(
+            row=0, column=0, padx=(0, 6))
+        ttk.Button(buttons, text="Two-loop weight F2 (about a minute)",
+                   command=self.two_loop).grid(row=0, column=1)
+        ttk.Label(left, text="The edge segment is 0 < position < 1. Positions 0 and 1 are the "
+                             "cusps. On the segment the chain equals the unit-circle mean of "
+                             "the weight; on the rest of the null line it is zero.",
+                  style="Cap.TLabel", wraplength=380, justify="left").grid(
+            row=7, column=0, columnspan=3, sticky="w", pady=(10, 0))
+
+        heads = ttk.Frame(right)
+        heads.grid(row=0, column=0, sticky="w")
+        self.e_big = {}
+        for column, (key, caption) in enumerate((("chain", "EDGE CHAIN  jump / (-2πi)"),
+                                                 ("mean", "CIRCLE MEAN M[F]"),
+                                                 ("expected", "EXPECTED HERE"))):
+            ttk.Label(heads, text=caption, style="Cap.TLabel").grid(row=0, column=column, sticky="w", padx=(0, 28))
+            self.e_big[key] = ttk.Label(heads, text="-", style="Big.TLabel")
+            self.e_big[key].grid(row=1, column=column, sticky="w", padx=(0, 28))
+        self.e_table = Table(right, ("Quantity", "Meaning", "Value"), (200, 400, 170), 5)
+        self.e_table.grid(row=1, column=0, sticky="ew", pady=(10, 0))
+        self.e_figure, self.e_canvas = self.figure(right, 2, (6.4, 2.8))
+        self.e_verdict = self.note(right, 3)
+
+    def edge_settings(self):
+        position = self.e["position"].get()
+        if abs(position) < 1e-3 or abs(position-1) < 1e-3:
+            position += 2e-3          # step off the cusp itself
+        return self.e["cusp"].get(), self.e_edge.get(), position, self.e_region.get()
+
+    def update_edge(self):
+        weight = self.weight()
+        self.e_formula.configure(text="F(z) = "+weight.describe())
+        cusp, edge, position, region = self.edge_settings()
+        try:
+            r = solver.edge_chain(weight, cusp, edge, position, region)
+        except (ValueError, ArithmeticError) as error:
+            self.e_verdict.configure(text=f"Solver error: {error}", foreground=BAD)
+            return
+        self.results["edge"] = r
+        self.show_edge(r)
+
+    def show_edge(self, r):
+        self.e_big["chain"].configure(text=signed(r["edge_chain"], 7))
+        self.e_big["mean"].configure(text=signed(r["circle_mean"], 7))
+        self.e_big["expected"].configure(text=signed(r["expected"], 7),
+                                         foreground=GOOD if r["agree"] else BAD)
+        tag = "ok" if r["agree"] else "bad"
+        self.e_table.fill([
+            ("Edge chain", "jump of the transverse kernel / (-2πi)", signed(r["edge_chain"], 9), tag),
+            ("Imaginary part", "should vanish", f"{r['edge_chain_imag']:+.1e}", ""),
+            ("Constant weight", "the same with F = 1: 1 on the segment, 0 off it",
+             signed(r["constant_weight"], 9), ""),
+            ("Sheets visited", "values of arg z / π along the contour",
+             ", ".join(str(k) for k in r["sheets"]), ""),
+            ("Point", f"cusp {r['cusp']}, {r['edge']} edge, signs {r['region']}",
+             "on the segment" if r["on_segment"] else "off the segment", ""),
+        ])
+        where = "on the edge segment" if r["on_segment"] else "off the edge segment"
+        if r["agree"]:
+            text = (f"This point is {where}. The Lorentzian chain "
+                    + ("reproduces the unit-circle mean." if r["on_segment"]
+                       else "vanishes: the contour closes up on one sheet."))
+        else:
+            text = f"This point is {where}, and the chain does not match the expected value."
+        self.e_verdict.configure(text=text, foreground=GOOD if r["agree"] else BAD)
+
+    def scan_edge(self):
+        weight = self.weight()
+        cusp, edge, _, region = self.edge_settings()
+        positions = (-.6, -.3, -.1, .1, .3, .5, .7, .9, 1.1, 1.3, 1.6)
+        self.root.configure(cursor="watch")
+        self.root.update_idletasks()
+        try:
+            scan = solver.edge_scan(weight, positions, cusp, edge, region)
+        except (ValueError, ArithmeticError) as error:
+            self.e_verdict.configure(text=f"Solver error: {error}", foreground=BAD)
+            return
+        finally:
+            self.root.configure(cursor="")
+        self.results["edge_scan"] = scan
+        self.e_figure.clear()
+        axes = self.e_figure.add_subplot()
+        axes.axvspan(0, 1, color="#e9f1fb", lw=0)
+        axes.plot(positions, [point["edge_chain"] for point in scan], "o", color=BLUE, ms=7,
+                  label="edge chain")
+        mean = scan[0]["circle_mean"]
+        axes.plot([-.7, 0, 0, 1, 1, 1.7], [0, 0, mean, mean, 0, 0], color=ORANGE, lw=2, ls="--",
+                  label="circle mean on the segment, zero off it")
+        axes.set_xlabel("position along the null line (shaded: the edge segment)")
+        axes.set_title("Collinear singularity along the null line through the cusp", fontsize=10, loc="left")
+        axes.grid(True, color="#e1e0d9", lw=.8)
+        axes.legend(fontsize=8, frameon=False)
+        self.e_canvas.draw_idle()
+        good = all(point["agree"] for point in scan)
+        self.e_verdict.configure(
+            text=("All scanned points agree: the mean on the segment, zero off it." if good else
+                  "Some scanned points do not match the expected value."),
+            foreground=GOOD if good else BAD)
+
+    def two_loop(self):
+        self.root.configure(cursor="watch")
+        self.e_verdict.configure(text="Computing the two-loop weight on its continued sheets ...",
+                                 foreground="")
+        self.root.update_idletasks()
+        try:
+            r = solver.solve_two_loop(edge=True)
+        except (ValueError, ArithmeticError) as error:
+            self.e_verdict.configure(text=f"Solver error: {error}", foreground=BAD)
+            return
+        finally:
+            self.root.configure(cursor="")
+        self.results["two_loop"] = r
+        self.e_formula.configure(text="F(z) = two-loop weight F2")
+        self.e_big["chain"].configure(text=signed(r["edge_chain"], 7))
+        self.e_big["mean"].configure(text=signed(r["circle_mean"], 7))
+        self.e_big["expected"].configure(text=signed(r["closed_mean"], 7),
+                                         foreground=GOOD if r["agree"] else BAD)
+        tag = "ok" if r["agree"] else "bad"
+        self.e_table.fill([
+            ("Edge chain", "on the segment at cusp 2, continued sheets", signed(r["edge_chain"], 9), tag),
+            ("Edge chain off segment", "the same null line beyond the cusp",
+             f"{r['edge_chain_off_segment']:+.1e}", ""),
+            ("Circle mean", "closed form is -11π⁴/15", signed(r["circle_mean"], 9), ""),
+            ("F2 at z = -1", "regular there; closed form 11π⁴/45",
+             signed(r["value_at_z_minus_one"], 9), ""),
+            ("Γ(3) = -4M/3", f"reference {r['reference']:.9f}", signed(r["gamma"], 9),
+             "ok" if r["matches_reference"] else "bad"),
+        ])
+        self.e_verdict.configure(
+            text=("With the two-loop weight the edge chain gives -11π⁴/15, hence the three-loop "
+                  "coefficient 44π⁴/45." if r["agree"] else
+                  "The two-loop weight did not reproduce the expected values."),
+            foreground=GOOD if r["agree"] else BAD)
 
     # -- CD weight
 
@@ -408,7 +569,8 @@ def run() -> None:
         root = tk.Tk()
     except tk.TclError as error:
         raise SystemExit(f"No display is available for the desktop window ({error}). "
-                         "Use the functional, cd and rim subcommands instead.") from None
+                         "Use the functional, edge, two-loop, contour, cd and rim "
+                         "subcommands instead.") from None
     SolverApp(root)
     root.mainloop()
 

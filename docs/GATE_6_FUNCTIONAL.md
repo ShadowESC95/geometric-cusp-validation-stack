@@ -112,14 +112,27 @@ What this does not establish:
 
 ## 5. Solver
 
-`geocusp.solver` evaluates the three functionals for a weight
-\(F=\sum_k c_k\log^kz+Az^p\), integrates the CD weight at a complex \(z\),
-and reports the roots and meridian periods on a rim slice. It runs locally in
-one process with no server and no network access.
+`geocusp.solver` evaluates four functionals for a weight
+\(F=\sum_k c_k\log^kz+Az^p\): the circle mean, the capped-cycle period, the
+Mellin–Barnes double pole, and the Lorentzian edge chain of
+[GATE_6_CLOSURE.md](GATE_6_CLOSURE.md). It also handles the two-loop weight
+\(\bar F^{(2)}\), surveys the integration contour of
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), integrates the CD weight at a complex
+\(z\), and reports the roots and meridian periods on a rim slice. It runs
+locally in one process with no server and no network access.
 
 ```bash
 PYTHONPATH=src python -m geocusp.solver                 # desktop window
 PYTHONPATH=src python -m geocusp.solver functional --logs 9.8696044 0 1 --loop-order 2
+PYTHONPATH=src python -m geocusp.solver edge --cusp 3 --edge prev --position 0.7 --region +-
+PYTHONPATH=src python -m geocusp.solver edge --two-loop --position 0.4
+PYTHONPATH=src python -m geocusp.solver two-loop        # about a minute; --no-edge is quick
+PYTHONPATH=src python -m geocusp.solver contour --points 5000
 PYTHONPATH=src python -m geocusp.solver cd 0.35+0.8j
 PYTHONPATH=src python -m geocusp.solver rim --t 1 --lam 470 --s 0.27
 ```
+
+`edge --position x` evaluates the collinear singularity at a point of the
+null line through a cusp; the edge segment is `0 < x < 1`. The window has a
+"Lorentzian edge chain" tab with the same controls, a scan along the line,
+and a button for the two-loop weight.
