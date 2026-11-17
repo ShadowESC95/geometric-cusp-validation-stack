@@ -2,6 +2,7 @@
 
 from .lorentzian_cusp_contour import check_lorentzian_cusp_contour
 from .lorentzian_all_cusps import check_lorentzian_all_cusps
+from .feynman_contour_survey import check_feynman_contour
 from .cd_integral import check_cd_benchmark, check_continuation, check_contour_and_tail
 from .cd_auxiliary_faces import check_cd_auxiliary_faces
 from .cd_cap_endpoints import check_cd_cap_endpoints
@@ -122,6 +123,7 @@ def main():
         ("Full lower one-meridian band per unit transverse coordinate on the diagonal", check_cd_diagonal_meridian_band),
         ("Lorentzian edge chain and its unit-circle contour on the weighted divisor", check_lorentzian_cusp_contour),
         ("Edge statement at every cusp and in every real kinematic region", check_lorentzian_all_cusps),
+        ("Explicit integration contour on the Feynman side of every light cone", check_feynman_contour),
     )
     for index, (name, check) in enumerate(checks, start=1):
         print(f"\n[{index}/{len(checks)}] {name}", flush=True)

@@ -14,10 +14,10 @@ It also **corrects** one statement of that document (section 4 below).
 **Status.** Item 3 is complete: it is computed, not inferred, and the
 regularity of the two-loop weight at \(z=-1\) is proved exactly. Item 1 has
 two lemmas with proofs and identifies a limitation of hard cutoffs. Item 2
-rests on the published Mellin–Barnes evaluation, a uniform bound proved here
-(Lemma 4) and a pinch analysis (Proposition 5); one standard step, the
-existence of an absolutely convergent contour, is stated and not constructed
-globally. Nothing here has been reviewed by a specialist.
+rests on the published Mellin–Barnes evaluation, a uniform bound (Lemma 4)
+and a pinch analysis (Proposition 5). The integration contour these need is
+constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), which also gives an
+elementary proof of Lemma 4. Nothing here has been reviewed by a specialist.
 
 Code: `src/geocusp/lorentzian_edges.py`. Tests: `tests/test_gate6_bounds.py`
 (71 tests). Example 62: `examples/lorentzian_all_cusps.py`.
@@ -404,17 +404,13 @@ It also checks \(N_\eta(p)\to4\sin\pi p/(\pi p)\) at a complex \(p\).
 the last step being Fubini on the unit circle. So the double pole of the
 superposition is \(4M[F]\).
 
-**What is still assumed.** That the regulated integral with weight \(F\)
-equals \(\int c(p)\times\)(regulated integral of \(z^p\))\(\,dp\). This is
-Fubini for the loop integral and the \(p\) integral. It holds on any
-integration contour on which the regulated integrand is absolutely
-integrable and every invariant stays in the closed lower half plane, since
-there \(|z^p|\le|z|^{\operatorname{Re}p}e^{2\pi|\tau|}\) and Lemma 3 applies.
-Near an edge such a contour is the rotation \(\rho\to\rho e^{i\psi}\) used
-throughout this document: the lower bounds in the proof of Lemma 2 make the
-integrand absolutely integrable for \(\epsilon<0\). Away from the edges the
-contour is not pinched (Proposition 5) and can be displaced off the light
-cones. A global contour assembled from these pieces is not constructed here.
+**The Fubini step.** The argument also needs the regulated integral with
+weight \(F\) to equal \(\int c(p)\times\)(regulated integral of
+\(z^p\))\(\,dp\). This holds on an integration contour on which the
+regulated integrand is absolutely integrable and \(|\arg z|\le2\pi+\delta''\)
+with \(\delta''<\delta'\). Such a contour is constructed in
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md) for \(s,t<0\); its properties are
+derived from one proved inequality and verified by sampling.
 
 ## 6. Pinch surfaces (the regions away from the edges)
 
@@ -448,9 +444,9 @@ analytic in \(\epsilon\) at \(\epsilon=0\). So poles arise only from the
 edges: a single pole from the interior of each edge, with the coefficient of
 section 3, and a double pole only from the ends. \(\blacksquare\)
 
-This is the standard Landau and Coleman–Norton reasoning. It is stated here
-as an argument, with the algebra checked; the displacement of the contour
-is not constructed explicitly. The restriction to *convex* combinations is
+This is the standard Landau and Coleman–Norton reasoning. The displacement
+of the contour is constructed explicitly in
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md). The restriction to *convex* combinations is
 the same fact as the vanishing of the edge jump off the segment found in
 section 2.
 
@@ -468,18 +464,14 @@ section 2.
 | Hard cutoff equals \(\log^2\times M[F]\) | **False** for growing weights (section 4) |
 | Local dimensional density \(\to2\pi i\,M[z^p]\) | Closed form, checked numerically |
 | \(L[z^p]=M[z^p]\) for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
-| Uniform bound \(e^{\pi|{\rm Im}\,p|}\) on the regulated integral (Lemma 4) | Proved (Stirling); checked numerically |
-| Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given an absolutely convergent contour |
-| Only the edges pinch the contour (Proposition 5) | Algebra exact; contour displacement argued |
-| Global absolutely convergent contour | Local pieces given; not assembled |
+| Uniform bound \(e^{\pi|{\rm Im}\,p|}\) on the regulated integral (Lemma 4) | Proved, with elementary Gamma bounds (GATE_6_CONTOUR section 7) |
+| Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given the contour |
+| Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
+| Global absolutely convergent contour (Proposition 6) | Constructed for \(s,t<0\); key inequality proved; global properties verified by sampling |
 
-**What would complete it.** (a) An explicit global contour for the Fubini
-step and for Proposition 5: a partition of unity joining the rotation
-\(\rho\to\rho e^{i\psi}\) near each edge to a displacement off the cones
-elsewhere. (b) Review by someone who works with these integrals. The
-remaining items of the earlier list are done: Lemma 2 is proved, the
-uniform bound is Lemma 4, and the regularity of \(\bar F^{(2)}\) at
-\(z=-1\) is Proposition 1.
+**What would complete it.** (a) A proof of Proposition 6 that tracks every
+constant, and its extension to the two regions with a timelike diagonal.
+(b) Review by someone who works with these integrals.
 
 ## 8. Reproduce
 

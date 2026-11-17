@@ -1,6 +1,6 @@
 # Cusp benchmark validation
 
-The benchmark snapshot contains **145 pytest tests and 62 example groups**.
+The benchmark snapshot contains **155 pytest tests and 63 example groups**.
 The 60th example group was added in commit
 `ab067d159aa92c3abef94b4eaf8cb69eaaaa3a33` on `main`. The example runner defines the coverage of this snapshot.
 
@@ -16,8 +16,8 @@ python -m pip install -e '.[test]'
 make test && make examples
 ```
 
-The expected final lines are `145 passed` (with elapsed time) and
-`PASS: all 62 example groups`. The user run on Linux reported both. The
+The expected final lines are `155 passed` (with elapsed time) and
+`PASS: all 63 example groups`. The user run on Linux reported both. The
 clean-checkout verification used Python 3.12.14, NumPy 2.3.5, SciPy 1.17.0,
 SymPy 1.14.0 and pytest 9.2.0. For a run record, save the full commit ID,
 dependency versions, and command output. The numerical examples include
@@ -42,7 +42,8 @@ dependencies and outputs.
 The benchmark suite is complete at this snapshot. A chain-level comparison
 of the geometric and Lorentzian integration chains is given in
 [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) and
-[GATE_6_BOUNDS.md](GATE_6_BOUNDS.md). It is unreviewed; the table in section 6
+[GATE_6_BOUNDS.md](GATE_6_BOUNDS.md), with the integration contour in
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md). It is unreviewed; the table in section 6
 of the latter lists which statements are proved, computed, or argued. The
 [Gate 6 proof document](GATE_6_PROOF.md) records the mathematical claims,
 the transverse rim collision, and the two outstanding proof obligations.

@@ -57,10 +57,18 @@ from the Lorentzian integral itself.
   double pole for weights that grow at \(z\to0,\infty\). The double pole is
   taken in dimensional regularisation.
 
-**Open.** One standard step is not carried out: an explicit global
-integration contour on which the regulated integrand is absolutely
-integrable. It is given near each edge and argued elsewhere. None of this
-has been checked by a specialist. The weight \(F\) is still an input from
+- An explicit integration contour is constructed
+  ([docs/GATE_6_CONTOUR.md](docs/GATE_6_CONTOUR.md)): the real domain is
+  displaced by an imaginary vector field built from four frame fields and
+  two far fields. It stays on the Feynman side of every light cone and meets
+  the cones only on the edges.
+
+**Open.** The global properties of that contour follow from one proved
+inequality plus a compactness argument, and are verified on a 60 000-point
+sample; a proof tracking every constant is not written, and the construction
+is done for spacelike diagonals only. None of this has been checked by a
+specialist.
+The weight \(F\) is still an input from
 the Lorentzian integral, and the cycle is selected by the Lorentzian real
 structure and the \(-i0\) prescription, not by positivity of the
 amplituhedron. The relation \(dz/z=d\eta/\eta\) on the exceptional divisor
@@ -91,7 +99,7 @@ stages are separate sandboxes with no derived link between them:
   not the canonical-form density.
 
 `scripts/` contains the runners, `src/geocusp/` the implementation, and
-`examples/` the 62 worked example groups with derivations.
+`examples/` the 63 worked example groups with derivations.
 
 ## 1. What is actually simulated
 
@@ -354,8 +362,8 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 145 pytest
-tests and 62 example groups (about five minutes for the tests). See the
+Run the benchmark with `make test && make examples`. The suite has 155 pytest
+tests and 63 example groups (about five minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
 gives the individual commands and derivations. The remaining comparison to

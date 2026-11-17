@@ -305,11 +305,11 @@ are computed in GATE_6_BOUNDS section 2.
   regulated integral, and the failure of hard cutoffs for growing weights.
 - The pinch surfaces: only the four edge segments.
 
-**Still not carried out.**
+**Constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md).**
 
-- An explicit global integration contour on which the regulated integrand
-  is absolutely integrable (GATE_6_BOUNDS sections 5 and 6). It is given
-  near each edge and argued elsewhere.
+- An explicit global integration contour, for \(s,t<0\). Its key inequality
+  is proved; its global properties are verified by sampling, and a proof
+  tracking every constant is not written.
 
 **Not addressed.**
 

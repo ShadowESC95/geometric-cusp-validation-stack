@@ -1,6 +1,6 @@
 # Cusp validation examples
 
-Run all 62 example groups from the repository root with the core Python
+Run all 63 example groups from the repository root with the core Python
 dependencies installed. The [benchmark validation record](../docs/BENCHMARK_VALIDATION.md)
 records the expected test output and the checked environment.
 
@@ -1708,6 +1708,24 @@ segment and zero off it. The example also checks that two different
 continuations of the two-loop weight agree, so it is regular at `z = -1`.
 Bounds, the regulator question and the status of each statement are in
 [docs/GATE_6_BOUNDS.md](../docs/GATE_6_BOUNDS.md).
+
+## 63. Explicit integration contour
+
+```bash
+PYTHONPATH=src python -m examples.feynman_contour_survey
+```
+
+Displace the real domain by `x0 -> x0 + i*V(x0)` with `V` real. Then
+`x0i^2 -> x0i^2 - V^2 + 2*i*V.(x0 - x_i)`, so the imaginary part is linear in
+`V` and admissible fields can be joined by a partition of unity. At each cusp
+the frame field `kappa*(d_beta*p_prev + d_alpha*p_next) + nu*yperp`, with
+`d` the vector from the triangle `conv(x_prev, x_cusp, x_next)` to the point,
+moves its three invariants into the lower half plane everywhere; this is the
+obtuse-angle property of the projection onto a convex set. Each frame field
+is switched off near the cone of the opposite cusp, and two dilation fields
+take over at large distance. The example checks the inequality and surveys
+the contour on a stress sample. See
+[docs/GATE_6_CONTOUR.md](../docs/GATE_6_CONTOUR.md).
 
 ## Scope of the checks
 
