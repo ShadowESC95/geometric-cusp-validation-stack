@@ -99,3 +99,51 @@ def test_smearing_density_is_a_probability_density_of_width_eta():
 
 def test_circle_formula_prefactor_tends_to_one():
     assert cl.circle_formula_prefactor(1e-6) == pytest.approx(1, abs=1e-5)
+
+
+# ---- derivation from the Lorentzian domain (section 8) ---------------------
+import numpy as np
+
+RHO = 0.3 * np.exp(0.9j)        # a phase on rho is the Feynman prescription
+
+
+@pytest.mark.parametrize("beta", [-0.4, 1.3, 1.6])
+def test_light_cone_integral_vanishes_off_the_edge_segment(beta):
+    for f in (lambda L: np.exp((-0.35 + 0.4j) * L), lambda L: (L**2 + np.pi**2) * np.exp(-0.2 * L)):
+        assert abs(cl.light_cone_integral(f, beta, RHO)) < 1e-9
+
+
+@pytest.mark.parametrize("beta", [0.3, 0.7])
+def test_light_cone_integral_is_a_discontinuity_on_the_segment(beta):
+    f = lambda L: np.exp((-0.35 + 0.4j) * L)
+    direct = cl.light_cone_integral(f, beta, RHO)
+    closed = cl.discontinuity_integral(f, beta, RHO)
+    assert abs(direct) > 1 and direct == pytest.approx(closed, rel=1e-5)
+
+
+def test_discontinuity_form_for_a_logarithmic_weight():
+    f = lambda L: (L**2 + np.pi**2) * np.exp(-0.2 * L)
+    assert cl.light_cone_integral(f, 0.4, RHO) == pytest.approx(
+        cl.discontinuity_integral(f, 0.4, RHO, reach=150), rel=1e-7)
+
+
+@pytest.mark.parametrize("p,eta", [(0.3, 0.2), (0.2 + 1.0j, 0.15), (-0.4, 0.05)])
+def test_lorentzian_product_formula_gives_the_closed_form(p, eta):
+    value = cl.lorentzian_product_formula(lambda L: np.exp(p * L), eta)
+    assert value == pytest.approx(complex(cl.triangle_closed_form(p, eta)), rel=5e-4)
+
+
+def test_lorentzian_and_circle_formulas_agree_for_a_logarithmic_weight():
+    f = lambda L: L**2 + np.pi**2
+    for eta in (0.2, 0.05):
+        assert cl.lorentzian_product_formula(f, eta) == pytest.approx(
+            cl.regulated_circle_formula(f, eta), rel=5e-4)
+
+
+def test_three_beta_integrals_give_the_closed_form():
+    """B(-p, 1+eta) B(eta, 1+p-eta) B(eta, 1+eta-p) times -2i sin(pi p)."""
+    p, eta = mp.mpc(-0.35, 0.4), mp.mpf("0.2")
+    m = mp.beta(-p, 1 + eta) * mp.beta(eta, 1 + p - eta) * mp.beta(eta, 1 + eta - p)
+    lorentzian = -2j * mp.sin(mp.pi * p) * m
+    closed = 2j * mp.pi * mp.gamma(1 + eta) / eta**2 * cl.triangle_closed_form(p, eta)
+    assert abs(lorentzian - closed) < 1e-12 * abs(closed)

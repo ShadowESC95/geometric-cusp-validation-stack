@@ -4,8 +4,9 @@ The question: does the local structure at a cusp determine the double pole
 of the whole integral directly?
 
 **Answer.** Largely, with one step still missing. Proved here, for the
-weight $`z^p`$, $`|\operatorname{Re}p|<1`$, and then for the class of weights
-of GATE_6_BOUNDS Lemma 3:
+weight $`z^p`$ and then for the class of weights of GATE_6_BOUNDS Lemma 3
+(items 1 to 3 for $`|\operatorname{Re}p|<1`$, item 4 for
+$`\eta-1<\operatorname{Re}p<1+\eta`$):
 
 1. The cusp-local model, in which the far propagator is frozen at its cusp
    value, is a triangle with two light-like sides. It has a closed form. Its
@@ -22,10 +23,19 @@ of GATE_6_BOUNDS Lemma 3:
    $`\eta^2\times`$(model)$`\to M[F]`$ with an $`O(\eta)`$ correction, for
    every weight polynomially bounded in $`\log z`$ on the principal sheet.
 
-What is **not** proved: the derivation of the formula of section 7 by
-integrating over the real Lorentzian domain directly. It is obtained from
-the closed form for powers and linearity. Section 5 says what a direct
-derivation has to compute.
+4. The cusp-local model is derived directly from the real Lorentzian
+   domain (section 8). Closing the contour in one light-cone coordinate
+   shows that the integral is supported on the edge segment and equals a
+   discontinuity across the negative $`z`$ axis. Three elementary integrals
+   remain, one for the position along the edge, one for the collinear
+   scale and one along the path between the lips. They factorise exactly,
+   so the region where both collinear scales vanish is under complete
+   control.
+
+What is **not** proved: the same for the full four-point integral. There
+the far propagator is not frozen, and the statement that the full integral
+differs from the four cusp-local models by a single pole is proved only for
+the parametric integral (sections 3 and 6).
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -246,7 +256,8 @@ found no error and asked for the remarks above.
   the correction to $`M[F]`$ is $`O(\eta)`$. If the model equals the frozen
   position-space integral, which is not proved, the mismatch between
   quadrants cannot promote to a higher pole.
-- **Not done: the derivation of that formula in position space.** In the
+- **Section 8 derives the cusp-local model in position space**, by a
+  different organisation of the integral from the one sketched next. In the
   exact variables of section 1 the local integral is
   $`\int\frac{du_1}{u_1}\frac{du_3}{u_3}|u_1u_3|^\eta\,G(u_1,u_3)`$, and its
   double pole is the sum over the four sign quadrants of the limits of
@@ -259,8 +270,9 @@ found no error and asked for the remarks above.
   mismatch does not promote to a higher pole. Section 7 shows that it does
 not for the parametric model, by a different route. A direct derivation would integrate
 $`u_1,u_3`$ over the real chain at fixed $`z`$ and must reproduce the kernel
-of section 7: the factor $`(1+1/z)^{2\eta}`$ and the convolution with
-$`\kappa_\eta`$. That computation is the remaining step.
+of section 7. Section 8 does not follow this route: it integrates the
+light-cone coordinate $`\alpha`$ first, by closing its contour, which
+removes the sum over quadrants altogether.
 
 ## 6. A timelike diagonal
 
@@ -397,7 +409,7 @@ $`|\operatorname{Im}L|\le\pi<W`$, inside the strip of Lemma 3. By Lemma 3, $`\in
   The constant is not computed; it grows quickly with $`k`$.
 - So $`\eta^2\times`$(model) is bounded and tends to $`M[F]`$ for every such
   weight, whatever its growth in $`\log z`$. "No pole beyond the second" is
-  meant in this sense; meromorphy in $`\eta`$ is not proved.
+  meant in this sense; for meromorphy in $`\eta`$ see section 8.
 - For the full integral, summing the vertex theorems against $`c(p)`$ gives
   $`\epsilon^2st\,I_\eta[F]=\sum_j\mathcal T^{(j)}_\eta[F]+O(\eta)=4M[F]+O(\eta)`$.
   This needs more than the theorem above: $`W>\Phi`$ for step A of
@@ -417,10 +429,8 @@ $`O(\eta)`$ rates for $`L,L^2+\pi^2,L^3,L^4,L^8`$. The qualifications it
 asked for are those stated here.
 
 **Status.** The formula is exact for the cusp-local model defined through
-its parametric form. That this equals the position-space integral with the
-far propagator frozen is the triangle analogue of Proposition 8, which has
-not been proved. The formula is derived from the closed form for powers,
-not by integrating over the Lorentzian domain.
+its parametric form. Section 8 derives the model from the Lorentzian
+domain and shows that the two agree.
 
 Numerical checks (`regulated_circle_formula`):
 
@@ -432,3 +442,204 @@ Numerical checks (`regulated_circle_formula`):
 | $`\log^2z+\pi^2`$ | 0.2, 0.05, 0.0125 | 8.7060, 7.1154, 6.7163 | same from $`\partial_p^2`$ of the closed form; $`M[F]=6.5797`$ |
 
 For the last weight $`(\mathcal T_\eta[F]-M[F])/\eta`$ is 10.6, 10.7, 10.9.
+
+## 8. Derivation from the Lorentzian domain
+
+Set $`s=-1`$ (so $`2p_1\!\cdot p_2=-1`$); the dimension is $`4+2\eta`$. With
+$`x_0=x_2+\alpha p_1+\beta p_2+y_\perp`$ and
+$`\rho=|y_\perp|^2`$,
+
+```math
+w=x_{02}^2=-\alpha\beta-\rho,\qquad u_1=x_{01}^2=w-\beta,\qquad u_3=x_{03}^2=w+\alpha,\qquad z=-\frac{w}{u_1u_3},
+```
+
+each with $`-i0`$, and $`L=\log z`$ on the branch fixed by the
+prescription. The cusp-local model in position space is the iterated
+integral
+
+```math
+\mathcal T^{\rm L}_\eta[F]=\int_{\mathbb R}d\beta\int_0^\infty d\rho\,\rho^\eta\int_{\mathbb R}d\alpha\;\frac{f(L)}{w\,u_1\,u_3}.
+```
+
+The measure is $`d^Dx_0=\tfrac12\,\pi^{1+\eta}/\Gamma(1+\eta)\;d\alpha\,d\beta\,\rho^\eta d\rho`$;
+the constant is omitted. The $`-i0`$ on all three invariants is the limit
+$`\psi\to0`$ of rotating the $`\rho`$ ray to $`\rho=e^{i\psi}r`$,
+$`0<\psi<\pi`$, measure included (a factor $`e^{i\psi(1+\eta)}`$). The
+integral does not depend on $`\psi`$, and for $`\psi>0`$ the $`\alpha`$
+integrand is non-singular on the real line. The order of integration is
+part of the definition: $`\alpha`$ innermost, then $`\rho`$, then
+$`\beta`$. The integral is not absolutely convergent on $`\mathbb R^3`$,
+since its vanishing off the edge segment is a cancellation, and other
+orders are not treated here.
+
+**Theorem (Lorentzian derivation).** Let $`0<\eta<1`$ and let $`f`$ be
+holomorphic on $`-2\pi-\delta<\operatorname{Im}L<\pi+\delta`$ with
+$`|f(L)|\le Ae^{\sigma_-|\operatorname{Re}L|}`$ for
+$`\operatorname{Re}L\le0`$ and
+$`|f(L)|\le Ae^{\sigma_+\operatorname{Re}L}`$ for $`\operatorname{Re}L\ge0`$,
+where $`\sigma_-<1-\eta`$ and $`\sigma_+<1+\eta`$. This includes
+polynomially bounded $`f`$ and $`e^{pL}`$ with
+$`\eta-1<\operatorname{Re}p<1+\eta`$. Then
+
+```math
+\mathcal T^{\rm L}_\eta[F]=i\int_0^1d\beta\,\beta^{\eta-1}(1-\beta)^{\eta}\int_0^\infty\frac{dy\,y^{\eta-1}}{1+y}
+\int_{-\pi}^{\pi}d\phi\,\big(1+e^{-i\phi}\big)^{\eta}\,f\big(i\phi-\log(1-\beta)-\log(1+y)\big).
+```
+
+*Proof.* **Step 1: support on the edge segment.** All three invariants are
+linear in $`\alpha`$. Their zeros, displaced by the prescription, are
+
+```math
+\alpha_w=-\frac{\rho+i0}{\beta},\qquad\alpha_1=-1-\frac{\rho+i0}{\beta},\qquad\alpha_3=\frac{\rho+i0}{1-\beta}.
+```
+
+For $`\beta<0`$ all three lie in the upper half plane, for $`\beta>1`$ all
+three in the lower. The integrand is holomorphic in the other half plane
+and decays at least like $`|\alpha|^{-3+\max(\sigma_-,\sigma_+-2)}`$ up to
+logarithms, so the $`\alpha`$ integral vanishes. In that half plane all
+three invariants have negative imaginary part, so
+$`\operatorname{Im}L\in(-2\pi,\pi)`$ and $`f`$ is evaluated inside the
+strip of the hypothesis. (On the segment, in step 2, only
+$`|\operatorname{Im}L|<\pi`$ occurs.) Hence only
+$`0<\beta<1`$ contributes: the integral is supported on the edge segment.
+This is the exact form of the vanishing of the edge jump off the segment.
+
+**Step 2: the discontinuity.** For $`0<\beta<1`$, $`\alpha_w`$ and
+$`\alpha_1`$ are in the lower half plane and $`\alpha_3`$ in the upper.
+Close the contour in the upper half plane around the cut from
+$`\alpha_3`$. With $`u_3=(1-\beta)(\alpha-\alpha_3)`$ as the variable,
+
+```math
+\int_{\mathbb R}d\alpha\,\frac{f(L)}{w\,u_1u_3}=-\frac{1}{1-\beta}\oint_H\frac{du_3}{u_3}\,\frac{f(L)}{w\,u_1},
+\qquad w=-\frac{\beta u_3+\rho}{1-\beta},\quad u_1=w-\beta,
+```
+
+where $`H`$ comes in along $`\arg u_3=0`$, circles the origin and goes out
+along $`\arg u_3=-2\pi`$. On the two sides $`w`$ and $`u_1`$ are negative
+and $`\arg z=\mp\pi`$: the two sides of $`H`$ are the two lips of the
+negative $`z`$ axis. When $`f`$ decays at $`\operatorname{Re}L\to+\infty`$
+the circle can be shrunk, and the $`\alpha`$ integral equals
+$`\frac{1}{1-\beta}\int_0^\infty\frac{du_3}{u_3}\frac{f(\ell-i\pi)-f(\ell+i\pi)}{|w||u_1|}`$,
+the discontinuity of $`F`$ across $`z<0`$ against a positive measure.
+
+**Step 3: three independent variables.** Put $`u_3=\rho t`$, so
+$`w=-\rho(1+\beta t)/(1-\beta)`$, with $`t`$ on a Hankel contour whose
+circle has a radius below $`1/\beta`$ that does not depend on $`\rho`$.
+Then $`\operatorname{Re}(1+\beta t)>0`$ on the contour. Exchange the
+$`\rho`$ and $`t`$ integrals: on the product the integrand is at most
+$`\rho^{\eta-1}|f|/(|t||1+\beta t||1+y|)`$ with $`t`$ bounded away from 0,
+which is integrable under the hypothesis (this is where
+$`\sigma_-<1-\eta`$ is used, at $`y\to\infty`$; no decay at
+$`\operatorname{Re}L\to+\infty`$ is needed because the circle is kept).
+At fixed $`t`$ rotate the $`\rho`$ ray so that
+$`y=\rho(1+\beta t)/(\beta(1-\beta))`$ is real and positive. The rotation is
+by less than $`\pi`$, crosses neither $`1+\beta t=0`$ nor $`y=-1`$, and the
+arc decays. Then exchange back, so that $`t`$ is integrated at fixed
+$`y`$. The outer $`\beta`$ integral converges at $`\beta\to1`$ because
+$`\sigma_+<1+\eta`$.
+Then $`u_1=-\beta(1+y)`$ and
+
+```math
+z=-\frac{1+\beta t}{\beta t}\cdot\frac{1}{(1-\beta)(1+y)} .
+```
+
+With $`x=\beta t/(1+\beta t)`$ the measure becomes
+$`\beta^{\eta-1}(1-\beta)^\eta d\beta\cdot y^{\eta-1}(1+y)^{-1}dy\cdot(1-x)^\eta dx/x`$,
+and $`z=-1/(x(1-\beta)(1+y))`$. The contour in $`x`$ runs around the
+segment $`(0,1)`$ from $`x=1`$ back to $`x=1`$; the integrand is
+holomorphic in the disc $`|x|<1`$ cut along that segment, so the contour
+may be taken to be the unit circle. Writing $`x=-e^{-i\phi}`$ gives the
+formula. $`\blacksquare`$
+
+**The three variables.**
+
+| Variable | Meaning | Measure | Effect |
+| --- | --- | --- | --- |
+| $`\beta\in(0,1)`$ | position along the edge | $`\beta^{\eta-1}(1-\beta)^\eta d\beta`$ | pole $`1/\eta`$ from the end $`\beta\to0`$, the cusp |
+| $`y\in(0,\infty)`$ | collinear scale, $`(\beta u_3+\rho)/(\beta(1-\beta))`$ | $`y^{\eta-1}(1+y)^{-1}dy`$ | pole $`1/\eta`$ from $`y\to0`$, the collinear limit |
+| $`\phi\in(-\pi,\pi)`$ | the path between the lips | $`(1+e^{-i\phi})^\eta d\phi`$ | the functional $`M[F]`$ |
+
+The argument of $`f`$ is the sum of the three contributions. The measure is
+a product, so the region where both collinear scales vanish,
+$`\beta\to0`$ and $`y\to0`$, contributes exactly the product of the two
+poles: $`B(\eta,1+\eta)\,B(\eta,1-\eta)`$. Nothing is left to estimate
+there.
+
+**Consequences.**
+
+1. For $`F=z^p`$, $`\eta-1<\operatorname{Re}p<1+\eta`$, the three integrals
+   are Beta integrals and
+
+```math
+\mathcal T^{\rm L}_\eta[z^p]=2\pi i\,\Gamma(1+\eta)\,\frac{\Gamma(\eta)^2\,\Gamma(1+p-\eta)}{\Gamma(1+p)^2\,\Gamma(1+2\eta-p)}
+=\frac{2\pi i\,\Gamma(1+\eta)}{\eta^2}\,\mathcal T_\eta(p).
+```
+
+   This is the closed form of section 2, obtained here without Feynman
+   parameters; with the omitted constant of the measure it reproduces the
+   prefactor $`-i\pi^{2+\eta}`$ of section 2 exactly. The range of $`p`$ is
+   that of the iterated integral; the closed form continues beyond it. The
+   theorem gives a general weight directly. The parametric model of
+   section 7 is defined by linearity from powers, so the two agree for the
+   weights of Lemma 3 (with $`W>2\pi`$ so that $`f`$ exists on the strip,
+   and lines $`\sigma<\min(1/m,1-\eta)`$), by Fubini on the product
+   formula. The formula of section 7 is then a second expression for the
+   same quantity.
+2. Normalising by $`2\pi i\,\Gamma(1+\eta)/\eta^2`$, the two outer measures
+   become probability measures concentrated at $`\beta=0`$ and $`y=0`$ with
+   widths of order $`\eta`$, up to a factor tending to 1, and
+
+```math
+\frac{\eta^2\,\mathcal T^{\rm L}_\eta[F]}{2\pi i\,\Gamma(1+\eta)}\;\longrightarrow\;\frac1{2\pi}\int_{-\pi}^{\pi}f(i\phi)\,d\phi=M[F],
+```
+
+   with an $`O(\eta)`$ error for $`|f|+|f'|\le A(1+|L|)^k`$ on
+   $`|\operatorname{Im}L|\le\pi`$.
+3. The right side has the form
+   $`\int\!\!\int\beta^{\eta-1}y^{\eta-1}h(\beta,y,\eta)\,d\beta\,dy`$ with
+   $`h`$ jointly analytic at $`\beta=y=0`$, because $`f`$ is holomorphic
+   near $`|\operatorname{Im}L|\le\pi`$, and with uniform convergence at
+   $`\beta\to1`$ and $`y\to\infty`$ for small $`|\eta|`$. Subtracting
+   $`h(0,y)`$, $`h(\beta,0)`$ and $`h(0,0)`$ shows that the right side
+   continues meromorphically in $`\eta`$ to a neighbourhood of 0, with a
+   pole of order at most two. This is a statement about the cusp-local
+   model, not about the full integral.
+4. Step 2 at fixed $`\beta`$ is the mechanism of the edge statement of
+   GATE_6_CLOSURE: the two sides of the edge are the two lips. The leading
+   density is $`2\pi i\,M[F]\,d\beta/\beta`$ per $`1/\eta`$, which matches
+   the edge statement once the far propagator is restored. The two are
+   identified as mechanisms; the edge statement itself is a jump in
+   $`q_3`$ of a transverse integral in four dimensions, and their identity
+   is not proved as a formula. With that understood, for the cusp-local
+   model the edge discontinuity, integrated along the edge with its
+   endpoint at the cusp, gives the double pole.
+
+**What this does not cover.** The full four-point integral. With the far
+propagator present, $`x_{04}^2`$ is not linear in $`\alpha`$ alone, since it
+depends on the angle of $`y_\perp`$, and step 1 fails as it stands. The
+passage from the full integral to the four cusp-local models is proved for
+the parametric integral (sections 3 and 6), not in position space. The
+iterated integral used here is the natural real-domain definition; its
+equality with the integral over the global contour of GATE_6_CONTOUR is
+not proved for the triangle.
+
+**Review.** An independent review re-derived every step, found no wrong
+sign or constant, and asked for the hypotheses and the exchanges of order
+now stated. With its own code it confirmed: the $`\alpha`$ integral below
+$`3\times10^{-12}`$ off the segment; the discontinuity form to 8 to 15
+digits; the product formula against the closed form to $`10^{-11}`$ at six
+values of $`(p,\eta)`$; independence of $`\psi`$; and the original triple
+integral in $`(\beta,\rho,\alpha)`$ against the closed form,
+$`27.8301i`$ against $`27.8280i`$ at $`p=0.3`$, $`\eta=0.5`$ and
+$`-0.5606+43.0209i`$ against $`-0.5578+43.0210i`$ at $`p=-0.2+0.3i`$,
+$`\eta=0.4`$, limited by its quadrature.
+
+**Numerical checks.**
+
+| Check | Result |
+| --- | --- |
+| $`\alpha`$ integral off the segment, $`\beta=-0.4,1.3,1.6`$ | $`10^{-12}`$ |
+| $`\alpha`$ integral against the discontinuity form, $`z^{-0.35+0.4i}`$, $`\beta=0.3,0.7`$ | agree to 6 digits |
+| The same for $`(\log^2z+\pi^2)z^{-0.2}`$, $`\beta=0.4`$ | $`186.272665+36.524833i`$ both ways |
+| Product formula against the closed form, $`z^{0.3}`$, $`z^{0.2+i}`$, $`z^{-0.4}`$ | agree to $`10^{-4}`$ (quadrature) |
+| Product formula against section 7 for $`\log^2z+\pi^2`$ | 8.7058 against 8.7060; 7.1151 against 7.1154 |

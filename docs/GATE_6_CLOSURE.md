@@ -350,8 +350,11 @@ are computed in GATE_6_BOUNDS section 2.
   explains the circle. The proof is in GATE_6_BOUNDS section 5 and
   [CUSP_LOCAL_MODEL.md](CUSP_LOCAL_MODEL.md): each cusp contributes a
   light-like triangle, whose regulated value for a general weight is an
-  explicit integral along the path between the lips of $`z=-1`$. That
-  formula is not yet derived from the Lorentzian domain directly.
+  explicit integral along the path between the lips of $`z=-1`$, derived
+  from the Lorentzian domain in section 8 of that document. For that
+  triangle the edge statement, integrated along the edge, gives the double
+  pole. The reduction of the full integral to the four triangles is proved
+  for the parametric form only.
 - The three-loop value from the edge chain is, by Cauchy's theorem, the
   same number as the circle mean. It tests the continuation of
   $`\bar F^{(2)}`$ to its second sheet, not an independent quantity.

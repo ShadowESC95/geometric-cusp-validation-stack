@@ -5,13 +5,23 @@ amplituhedron in planar N=4 super Yang–Mills: blow-ups and residues of the
 canonical form, the two-loop logarithm integrand, and the contour that
 extracts the cusp anomalous dimension.
 
-Its main result is a local statement about the Lorentzian integral: at a
-light-like edge the real integration region, with the Feynman prescription,
-maps to a path between the two lips of $`z=-1`$, and the unit circle is one
-representative of it. This explains the known contour rule. It does not
-replace the existing derivation of that rule.
+It has two main results.
 
-- **284 tests** and **63 worked example groups**, all passing
+- **The Lorentzian origin of the contour.** At a light-like edge the real
+  integration region, with the Feynman prescription, maps to a path between
+  the two lips of $`z=-1`$; the unit circle is one representative.
+- **The four-cusp decomposition.** The double pole of the integral is a sum
+  of four terms, one per cusp (proved for its Feynman-parameter form). Each
+  term is a triangle with two light-like sides, and is derived from the
+  real Lorentzian domain as an iterated integral: it is supported on the
+  edge segment, and it factorises into the position along the edge, the
+  collinear scale and the path between the lips.
+
+Together they explain the known contour rule and give a conditional proof
+of it for the three benchmark weights in all three kinematic regions. The
+conditions are listed under [Scope and limits](#scope-and-limits).
+
+- **295 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -21,6 +31,7 @@ replace the existing derivation of that rule.
 - [Quick start](#quick-start)
 - [What is computed](#what-is-computed)
 - [The contour result](#the-contour-result)
+- [The four-cusp decomposition](#the-four-cusp-decomposition)
 - [Solver](#solver)
 - [Documentation](#documentation)
 - [Repository layout](#repository-layout)
@@ -46,7 +57,8 @@ replace the existing derivation of that rule.
 | Cusp-local model: a light-like triangle, double pole $`\sin\pi p/(\pi p)`$ | Exact closed form |
 | Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
-| That formula derived by integrating over the Lorentzian domain | **Not done** |
+| Cusp-local model derived from the Lorentzian domain: support on the edge segment, discontinuity across $`z<0`$, exact factorisation | Written proof for the iterated integral in a fixed order; independently checked |
+| Full integral equals the four cusp terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -65,7 +77,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 284 tests, about twenty minutes
+make test        # 295 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -190,9 +202,9 @@ What it does not do:
   ([CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md)), in all three regions. For
   a general weight the cusp-local model, defined through its parametric
   form, is given exactly by an integral along the path between the lips,
-  with an $`O(\eta)`$ correction. What is missing is the derivation of that
-  formula from the real Lorentzian domain directly, and with it the proof
-  that the model is the frozen position-space integral.
+  with an $`O(\eta)`$ correction, and is derived from the real Lorentzian
+  domain. What is missing is the position-space proof that the full
+  integral reduces to the four cusp terms.
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
@@ -205,6 +217,47 @@ converge absolutely; a hard cutoff on the collinear invariants does
 not reproduce the double pole for weights that grow at $`z\to0,\infty`$, and
 dimensional regularisation cannot be treated as a real shift on a
 four-dimensional contour.
+
+## The four-cusp decomposition
+
+Freeze the far propagator at a cusp. What is left is a triangle with two
+light-like sides. In light-cone coordinates
+$`x_0=x_2+\alpha p_1+\beta p_2+y_\perp`$ all three invariants are linear in
+$`\alpha`$, and closing the $`\alpha`$ contour gives, exactly:
+
+- the integral vanishes unless $`0<\beta<1`$: it is supported on the edge
+  segment;
+- on the segment it is a discontinuity across the negative $`z`$ axis: the
+  two sides of the edge are the two lips;
+- the rest factorises into three independent integrals,
+
+```math
+i\int_0^1d\beta\,\beta^{\eta-1}(1-\beta)^\eta\int_0^\infty\frac{dy\,y^{\eta-1}}{1+y}
+\int_{-\pi}^{\pi}d\phi\,(1+e^{-i\phi})^\eta\,F\big(e^{i\phi}/((1-\beta)(1+y))\big),
+```
+
+  over the position along the edge, the collinear scale and the path
+  between the lips.
+
+Each of the first two gives a pole $`1/\eta`$, and the third gives
+$`2\pi M[F]`$. Because the measure is a product, the region where both
+collinear scales vanish needs no separate estimate. For $`F=z^p`$,
+$`\eta-1<\operatorname{Re}p<1+\eta`$, the result is
+
+```math
+2\pi i\,\Gamma(1+\eta)\,\frac{\Gamma(\eta)^2\,\Gamma(1+p-\eta)}{\Gamma(1+p)^2\,\Gamma(1-p+2\eta)}\;\approx\;\frac{2\pi i}{\eta^2}\,\frac{\sin\pi p}{\pi p},
+```
+
+and the four cusps add to the known coefficient. The derivation is for the
+iterated integral in a fixed order (the light-cone coordinate $`\alpha`$
+first); the integral is not absolutely convergent, and other orders are
+not treated.
+
+That the full integral equals the sum of the four cusp terms up to a single
+pole is proved for the Feynman-parameter form, by elementary estimates on
+the simplex, in all three regions. It is not proved in position space,
+where the far propagator spoils the linearity in $`\alpha`$. See
+[CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md).
 
 ## Solver
 
@@ -247,7 +300,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            284 tests
+tests/            295 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

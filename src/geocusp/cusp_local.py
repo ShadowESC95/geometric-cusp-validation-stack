@@ -142,3 +142,98 @@ def timelike_remainder_ratio(p, eta, modulus=1):
     p = mp.mpmathify(p)
     limit = 4 * mp.sin(mp.pi * p) / (mp.pi * p)
     return (regulated_double_pole_complex(p, eta, modulus, mp.pi) - limit) / mp.mpf(eta)
+
+
+# --------------------------------------------------------------------------
+# The Lorentzian derivation (docs/CUSP_LOCAL_MODEL.md section 8)
+# --------------------------------------------------------------------------
+def _feynman_log(x):
+    """log on the branch continued from the Feynman prescription: arg in (-3pi/2, pi/2]."""
+    import numpy as np
+    a = np.angle(x)
+    return np.log(abs(x)) + 1j * (a - 2 * np.pi if a > np.pi / 2 else a)
+
+
+def light_cone_integral(f, beta, rho):
+    """int over real alpha of f(log z)/(w u1 u3) at fixed beta and (complex) rho.
+
+    |s| = 1: w = -alpha beta - rho, u1 = w - beta, u3 = w + alpha,
+    z = -w/(u1 u3). Giving rho a phase e^{i psi}, 0 < psi < pi, is the
+    Feynman prescription for all three invariants at once. The result is
+    zero unless 0 < beta < 1.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+
+    def g(alpha):
+        w = -alpha * beta - rho
+        u1, u3 = w - beta, w + alpha
+        L = _feynman_log(w) - _feynman_log(u1) - _feynman_log(u3) - 1j * np.pi
+        return f(L) / (w * u1 * u3)
+
+    marks = sorted({float(np.real(-rho / beta)), float(np.real(-1 - rho / beta)),
+                    float(np.real(rho / (1 - beta))), 0.0})
+    edges = [-np.inf] + marks + [np.inf]
+    total = 0j
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        total += quad(lambda a: g(a).real, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+        total += 1j * quad(lambda a: g(a).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+    return total
+
+
+def discontinuity_integral(f, beta, rho, reach: float = 300.0):
+    """The same integral after closing the alpha contour, for 0 < beta < 1:
+    (1/(1-beta)) int_0^oo du3 [G(u3) - G(u3 e^{-2 pi i})].
+
+    `f` must decay as Re L -> +oo. `reach` is the range of log u3; slowly
+    decaying weights need a large one."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    def G(u3, turn):
+        sigma = beta * u3 + rho
+        w = -sigma / (1 - beta)
+        u1 = w - beta
+        L = _feynman_log(w) - _feynman_log(u1) - (np.log(u3) + turn) - 1j * np.pi
+        return f(L) / (w * u1 * u3)
+
+    h = lambda t: (G(np.exp(t), 0.0) - G(np.exp(t), -2j * np.pi)) * np.exp(t)
+    re = quad(lambda t: h(t).real, -reach, reach, limit=800, epsabs=0, epsrel=1e-10)[0]
+    im = quad(lambda t: h(t).imag, -reach, reach, limit=800, epsabs=0, epsrel=1e-10)[0]
+    return (re + 1j * im) / (1 - beta)
+
+
+def lorentzian_product_formula(f, eta, nodes: int = 160):
+    """eta^2 x (cusp-local model), normalised as `triangle_closed_form`, from
+    the Lorentzian derivation:
+
+        eta^2/(2 pi Gamma(1+eta)) int_0^1 d beta beta^(eta-1) (1-beta)^eta
+          int_0^oo dy y^(eta-1)/(1+y)
+          int_{-pi}^{pi} d phi (1 + e^{-i phi})^eta f(i phi - log(1-beta) - log(1+y)).
+
+    beta is the position along the edge, y the collinear scale, phi the path
+    between the lips. `f` must accept numpy arrays.
+    """
+    import numpy as np
+    from scipy.special import gamma
+
+    eta = float(eta)
+    t, wt = np.polynomial.legendre.leggauss(nodes)
+    u, wu = 0.5 * (t + 1), 0.5 * wt                           # nodes on (0, 1)
+    beta = u ** (1 / eta)                                     # d beta beta^(eta-1) = du/eta
+    w_beta = wu / eta * (1 - beta) ** eta
+    a = -np.log1p(-beta)
+    y_small = u ** (1 / eta)                                  # y in (0, 1)
+    w_small = wu / eta / (1 + y_small)
+    v = u ** (1 / (1 - eta))                                  # y = 1/v in (1, oo)
+    w_large = wu / (1 - eta) / (1 + v)
+    b = np.concatenate([np.log1p(y_small), np.log1p(1 / v)])
+    w_y = np.concatenate([w_small, w_large])
+    phi, w_phi = np.pi * t, np.pi * wt * (1 + np.exp(-1j * np.pi * t)) ** eta
+    shift = (a[:, None] - b[None, :]).ravel()
+    weights = (w_beta[:, None] * w_y[None, :]).ravel()
+    total = 0j
+    for k in range(0, shift.size, 4096):                      # in blocks, to bound memory
+        values = f(1j * phi[None, :] + shift[k:k + 4096, None])
+        total += np.sum(weights[k:k + 4096, None] * w_phi[None, :] * values)
+    return eta**2 / (2 * np.pi * gamma(1 + eta)) * total
