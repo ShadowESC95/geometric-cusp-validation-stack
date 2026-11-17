@@ -51,3 +51,47 @@ def test_no_invariant_vanishes_between_the_rotated_integral_and_the_contour(regi
         result = sw.family_check(C, 2500, mu=mu, seed=2)
         assert result["min_abs_over_scale"] > 0.5
         assert result["max_excursion"] < bound
+
+
+# ---- the contour in extra dimensions, and step 6 --------------------------
+def test_real_shift_is_not_the_feynman_prescription_but_the_extended_contour_is():
+    """With the four-dimensional field and a real shift mu, the surface
+    x0i^2 = mu is passed on the wrong side at some points once mu > delta0.
+    Displacing the extra coordinate as well removes every such point."""
+    C = fc.tuned_contour("--", 1.1)
+    small = fc.shifted_surface_sides(C, 0.5 * C.delta0, 8000, seed=0)
+    assert small["real_shift"] == 0 and small["extended"] == 0
+    large = fc.shifted_surface_sides(C, 5 * C.delta0, 8000, seed=0)
+    assert large["real_shift"] > 100                    # the earlier claim fails here
+    assert large["extended"] == 0
+    for mu in (1.0, 4.0, 50.0):
+        assert fc.shifted_surface_sides(C, mu, 4000, seed=1)["extended"] == 0
+
+
+@pytest.mark.parametrize("region", ["--", "+-", "-+"])
+def test_contour_in_five_dimensions(region):
+    C = fc.tuned_contour(region, 1.1)
+    result = fc.survey_extended(C, 8000, seed=4)
+    assert result["near_count"] > 3000 and result["largest_mu_near"] > 100
+    assert result["max_im_near"] <= 0.0
+    assert result["max_excursion"] <= fc.certificate(C)["excursion_bound"]
+    assert result["min_ratio"] > 0
+
+
+@pytest.mark.parametrize("region", ["--", "+-", "-+"])
+def test_step_6_identity_nonvanishing_and_uniform_bound(region):
+    """Lemma 10: Im(e^{i phi} Y) = sin(phi)(|n|^2 - lam^2|V|^2) - 2 lam cos(phi) V.n,
+    |V| <= J |n| with J < 1, no Y vanishes for phi > 0, and at lam = 1 the
+    lower bound of Lemma 6 survives uniformly in phi."""
+    C = fc.tuned_contour(region, 1.1)
+    result = sw.step6_check(C, 4000, seed=3)
+    assert result["identity"] < 1e-9
+    assert result["v_over_n"] < result["jacobian_bound"] < 1
+    assert result["nonvanishing"] > 0.5
+    assert result["uniform_count"] > 1000 and result["uniform"] > 0.15
+
+
+def test_step_6_also_holds_at_larger_rotation_angles():
+    C = fc.tuned_contour("--", 1.1)
+    result = sw.step6_check(C, 2500, seed=5, phi_max=0.3)
+    assert result["identity"] < 1e-9 and result["nonvanishing"] > 0.5

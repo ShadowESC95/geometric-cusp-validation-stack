@@ -67,12 +67,15 @@ from the Lorentzian integral itself.
   light-like square in all three kinematic regions, and a certificate checks
   every condition. Absolute convergence on it is proved line by line.
 - The parametric representation of the regulated integral is derived by
-  rotating the metric, with absolutely convergent integrals, and checked
-  against direct four-dimensional integration.
+  rotating the metric, with absolutely convergent integrals, checked against
+  direct four-dimensional integration, and connected to the contour by a
+  written contour-independence and limiting argument.
+- The contour displaces the extra dimensions of dimensional regularisation
+  as well. Treating them as a real shift, as an earlier version did, passes
+  some singular surfaces on the wrong side.
 
-**Open.** One limiting step in that derivation is the standard contour
-argument and is stated, not expanded; and none of this has been checked by a
-specialist.
+**Open.** One limit is not adapted to a timelike diagonal, and none of this
+has been checked by a specialist.
 The weight \(F\) is still an input from
 the Lorentzian integral, and the cycle is selected by the Lorentzian real
 structure and the \(-i0\) prescription, not by positivity of the
@@ -367,7 +370,7 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 199 pytest
+Run the benchmark with `make test && make examples`. The suite has 207 pytest
 tests and 63 example groups (about eight minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)

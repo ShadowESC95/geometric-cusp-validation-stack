@@ -602,3 +602,116 @@ def infinity_check(contour: Contour, n: int, seed: int = 0) -> float:
         X, _ = C.displaced_invariants(x0)
         worst = min(worst, np.min(np.abs(X)) / (C.kappa_far * max(rr, abs(mdot(y, y)))))
     return float(worst)
+
+
+# --------------------------------------------------------------------------
+# The contour in D = 4 + k dimensions (extra coordinates e)
+# --------------------------------------------------------------------------
+# Dimensional regularisation adds extra spatial coordinates e, and every
+# invariant becomes x0i^2 - e.e. The contour must displace e as well: with a
+# real shift mu = e.e and the four-dimensional field, the surface
+# x0i^2 = mu is not passed on the Feynman side once mu exceeds delta0. The
+# construction is the same in R^(1, 3+k): the transverse space of each frame
+# gains the coordinates e, so rho -> rho + e.e and the frame field gets the
+# component nu e; the far fields get -kappa' e.
+
+def invariants_extended(contour: Contour, z, e):
+    """x0i^2 - e.e for complex z in C^4 and e in C^k (bilinear)."""
+    e = np.atleast_1d(e)
+    return contour.invariants(z) - e @ e
+
+
+def field_extended(contour: Contour, x0, e):
+    """The displacement (V4, Ve) at the real point (x0, e) of R^(1, 3+k)."""
+    C = contour
+    e = np.atleast_1d(np.asarray(e, dtype=float))
+    mu = e @ e
+    X = C.invariants(x0) - mu
+    y = x0 - C.centre
+    r = np.sqrt(y @ y + mu)
+    g = smoothstep(r / C.radius - 1.0)
+    v4, ve = np.zeros(4), np.zeros_like(e)
+    if g < 1:
+        for j in range(4):
+            m = smoothstep(abs(X[(j + 2) % 4]) / C.delta0 - 1.0)
+            if m > 0:
+                v4 = v4 + (1 - g) * m * C.frame_field(j, x0)
+                ve = ve + (1 - g) * m * C.nu * e
+    if g > 0:
+        space = np.sqrt(y[1:] @ y[1:] + mu)
+        theta = y[0] / max(space, 1e-300)
+        up = smoothstep((theta - 0.25) / 0.25)
+        down = smoothstep((-theta - 0.25) / 0.25)
+        v4 = v4 + g * (-C.kappa_far) * (up * (x0 - C.c_past) + down * (x0 - C.c_future))
+        ve = ve + g * (-C.kappa_far) * (up + down) * e
+    return v4, ve
+
+
+def displaced_extended(contour: Contour, x0, e, lam: float = 1.0):
+    """Invariants at (x0 + i lam V4, e + i lam Ve), and the field."""
+    v4, ve = field_extended(contour, x0, e)
+    e = np.atleast_1d(np.asarray(e, dtype=float))
+    return invariants_extended(contour, x0 + 1j * lam * v4, e + 1j * lam * ve), (v4, ve)
+
+
+def sample_extended(contour: Contour, n: int, seed: int = 0):
+    """Points (x0, e) with one extra coordinate, weighted towards the D-dimensional cones."""
+    rng = np.random.default_rng(seed)
+    for x0 in sample_points(contour, n, seed):
+        X = contour.invariants(x0)
+        kind = rng.integers(0, 4)
+        if kind == 0:
+            e = 10 ** rng.uniform(-6, 1.5)
+        elif kind == 1 and np.any(X > 0):                   # exactly on a D-dimensional cone
+            e = np.sqrt(rng.choice(X[X > 0]))
+        elif kind == 2 and np.any(X > 0):                   # close to one
+            e = np.sqrt(max(rng.choice(X[X > 0]) + rng.normal() * 10 ** rng.uniform(-6, -1), 0.0))
+        else:
+            e = 0.0
+        yield x0, np.array([e])
+
+
+def survey_extended(contour: Contour, n: int, seed: int = 0) -> dict:
+    """The properties of `survey`, for the contour in 4 + 1 dimensions."""
+    C = contour
+    out = {"max_excursion": 0.0, "max_im_near": -np.inf, "near_count": 0, "min_ratio": np.inf,
+           "largest_mu_near": 0.0}
+    for x0, e in sample_extended(C, n, seed):
+        mu = float(e @ e)
+        dist = np.sqrt(C.distance_to_edges(x0) ** 2 + mu)
+        if dist < 1e-5:
+            continue
+        real = C.invariants(x0) - mu
+        displaced, _ = displaced_extended(C, x0, e)
+        r = np.sqrt((x0 - C.centre) @ (x0 - C.centre) + mu)
+        tol = C.delta0 / 2 if r < C.radius else 0.1 * r
+        for i in range(4):
+            out["max_excursion"] = max(out["max_excursion"], C.excursion(displaced[i]))
+            if abs(real[i]) <= tol:
+                out["near_count"] += 1
+                out["max_im_near"] = max(out["max_im_near"], displaced[i].imag)
+                out["largest_mu_near"] = max(out["largest_mu_near"], mu)
+        out["min_ratio"] = min(out["min_ratio"], np.min(np.abs(displaced)) / min(1.0, dist**2))
+    return out
+
+
+def shifted_surface_sides(contour: Contour, mu: float, n: int, seed: int = 0) -> dict:
+    """Points with x0i^2 = mu: how many are displaced to the wrong side.
+
+    'real_shift': the four-dimensional field with the invariants shifted by
+    the real number mu. 'extended': the field in 4 + 1 dimensions at
+    e = sqrt(mu). Only the second is the Feynman prescription for all mu.
+    """
+    rng = np.random.default_rng(seed)
+    C = contour
+    out = {"points": 0, "real_shift": 0, "extended": 0}
+    for _ in range(n):
+        i = int(rng.integers(0, 4))
+        v = rng.normal(size=3) * rng.uniform(0, 2)
+        x0 = C.x[i] + np.array([np.sqrt(mu + v @ v) * rng.choice([-1, 1]), *v])
+        if np.linalg.norm(x0 - C.centre) > C.radius:
+            continue
+        out["points"] += 1
+        out["real_shift"] += int(C.displaced_invariants(x0)[0][i].imag > 0)
+        out["extended"] += int(displaced_extended(C, x0, np.array([np.sqrt(mu)]))[0][i].imag > 0)
+    return out

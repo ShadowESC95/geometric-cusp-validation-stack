@@ -14,9 +14,10 @@ properties are reduced in section 9 to inequalities between named constants,
 each proved, and a certificate evaluates them; they hold across the family of
 squares. Absolute integrability is proved line by line in section 10. The
 parametric representation of the regulated integral is derived in section
-11, not cited. Three steps there are the standard contour argument in
-several variables and are stated, not expanded. Nothing here has been
-reviewed by a specialist.
+11, including the contour-independence and limiting step (Lemmas 10 to 12).
+Section 11 also corrects an earlier statement: the contour must displace the
+extra dimensions of dimensional regularisation, not treat them as a real
+shift. Nothing here has been reviewed by a specialist.
 
 Code: `src/geocusp/feynman_contour.py`, `src/geocusp/schwinger.py`. Tests:
 `tests/test_gate6_contour.py`, `tests/test_schwinger.py`.
@@ -627,115 +628,219 @@ integrable. \(\blacksquare\)
 
 ## 11. The regulated integral on the contour
 
-**Dimensional regularisation as a shift.** In \(D=4+2\eta\) dimensions the
-integrand depends on the \(2\eta\) extra components of \(x_0\) only through
-their squared length \(\mu\), and every invariant becomes \(x_{0i}^2-\mu\):
+**Correction: the extra dimensions are displaced too.** In \(D=4+k\)
+dimensions the point is \((x_0,e)\) with \(e\in\mathbb R^k\), and every
+invariant is \(X_i=x_{0i}^2-e\!\cdot e\). An earlier version of this section
+treated \(\mu=e\!\cdot e\) as a real shift and used the four-dimensional
+contour for every \(\mu\). That is wrong once \(\mu>\delta_0\): the frame
+field of the opposite cusp is then switched on near the surface
+\(x_{0i}^2=\mu\) and can move it to the wrong side. On 19 865 points of that
+surface at \(\mu=5\delta_0\), 994 are displaced to the wrong side.
+
+The remedy is to carry out the same construction in
+\(\mathbb R^{1,3+k}\). The transverse space of each frame gains the
+coordinates \(e\), so \(\rho\to\rho+e\!\cdot e\); the frame field gains the
+component \(\nu e\), the far fields the component \(-\kappa'e\); the cutoffs
+use the \(D\)-dimensional invariants. Lemma 5 and sections 4, 9 and 10 hold
+verbatim, with Euclidean norms taken in \(\mathbb R^{4+k}\); section 10 was
+already written with the transverse measure of this picture. With this
+contour no point of any surface \(x_{0i}^2=\mu\) is displaced to the wrong
+side (0 of 19 865 at \(\mu=5\delta_0\), and 0 at \(\mu=1,4,50\)), and the
+survey of section 5 in \(4+1\) dimensions gives the same results, with
+near-cone points at \(\mu\) up to \(4.5\times10^4\). Non-integer \(k=2\eta\)
+is reached in the usual way: the integrand and the field depend on \(e\)
+through \(|e|\) and a radial factor, so the integral reduces to one over
+\(x_0\) and \(m=|e|\) with weight \(m^{2\eta-1}\), which is analytic in
+\(\eta\).
+
+**Proposition 8 (parametric representation).** Let \(a_i>0\) with
+\(\sum a_i=4\) and \(0<\eta<\tfrac12\). The regulated integral of
+\(\prod(-X_i)^{-a_i}\) over the contour equals
 
 \[
-\int d^Dx_0\,(\cdots)=\frac{\pi^{\eta}}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}
-\int d^4x_0\,(\cdots)\big|_{x_{0i}^2\to x_{0i}^2-\mu}.
-\]
-
-The shift is real, so the contour serves for every \(\mu\ge0\).
-
-**Proposition 8 (parametric representation).** Let
-\(Y_i=\mu-x_{0i}^2\), \(\mu>0\), powers \(a_i>0\) with \(\sum a_i=4\). Then
-the integral of \(\prod Y_i^{-a_i}\) with the Feynman prescription
-(\(\operatorname{Im}Y_i\ge0\)) equals
-
-\[
--\,i\pi^2\,\frac{1}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)\,
-\frac{\prod\alpha_i^{a_i-1}}{\big(\mu-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2\big)^2}.
+-\,i\pi^{2+\eta}\,\frac{\Gamma(2-\eta)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)\,
+\prod\alpha_i^{a_i-1}\Big(-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2\Big)^{\eta-2}.
 \]
 
 *Derivation.* For \(0<\varphi\le\pi/2\) replace every squared time
 difference by \(e^{-2i\varphi}\) times itself, in the integration variable
-and in the external points alike:
+and in the external points alike. With \(\mu=e\!\cdot e\),
 
 \[
 Y_i(\varphi)=\mu+|\xi-\xi_i|^2-e^{-2i\varphi}(\tau-t_i)^2 .
 \]
 
-*Step 1 (a proper cone).* Each \(Y_i(\varphi)\) is a positive combination of
-\(1\) and \(e^{i(\pi-2\varphi)}\), so all four lie in a closed cone of
-opening \(\pi-2\varphi<\pi\), and
-\(|Y_i(\varphi)|\ge\sin\varphi\,(\mu+|x_0-x_i|_E^2)\). The integral over real
-\((\tau,\xi)\) is therefore absolutely convergent.
+*Step 1 (a proper cone).* Each \(Y_i(\varphi)\) is a non-negative
+combination of \(1\) and \(e^{i(\pi-2\varphi)}\), so all four lie in a closed
+cone of opening \(\pi-2\varphi<\pi\), and
+\(|Y_i(\varphi)|\ge\sin\varphi\,(\mu+|x_0-x_i|^2)\). The integral over real
+\((x_0,e)\) is absolutely convergent: the singularity at \(x_0=x_i\),
+\(\mu=0\) is integrable because \(2a_i<4\), and the decay at infinity is
+\(|x|^{-8}\).
 
 *Step 2 (Feynman parameters).* For numbers in a common proper cone,
 \(\prod Y_i^{-a_i}=\frac{\Gamma(4)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta(1-\sum\alpha)\prod\alpha_i^{a_i-1}(\sum\alpha_iY_i)^{-4}\),
-and \(|\sum\alpha_iY_i|\ge\sin\varphi\sum\alpha_i(\mu+|x_0-x_i|_E^2)\), so
+and \(|\sum\alpha_iY_i|\ge\sin\varphi\sum\alpha_i(\mu+|x_0-x_i|^2)\), so
 the double integral converges absolutely and the order can be exchanged.
 
 *Step 3 (completing the square).*
-\(\sum\alpha_iY_i=c_\alpha(\varphi)+|\xi-\bar\xi|^2-e^{-2i\varphi}(\tau-\bar t)^2\)
-with \(c_\alpha(\varphi)=\mu-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2(\varphi)\) and
+\(\sum\alpha_iY_i=\mu+A_\alpha(\varphi)+|\xi-\bar\xi|^2-e^{-2i\varphi}(\tau-\bar t)^2\)
+with \(A_\alpha(\varphi)=-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2(\varphi)\) and
 \(x_{ik}^2(\varphi)=e^{-2i\varphi}(t_i-t_k)^2-|\xi_i-\xi_k|^2\).
 
 *Step 4 (rotating the time).* Put \(\tau-\bar t=e^{i\psi}\sigma\) and turn
 \(\psi\) from \(0\) to \(\varphi-\pi/2\). The term
 \(-e^{-2i\varphi}(\tau-\bar t)^2\) has argument \(\pi+2\psi-2\varphi\), which
 moves from \(\pi-2\varphi\) to \(0\): it stays in the cone, the denominator
-never vanishes, and the rotation is allowed. At the end the integral is
-Euclidean,
+never vanishes, and the rotation is allowed. The integral is then Euclidean,
 \(\int d^4y\,(c+y^2)^{-4}=\pi^2/(6c^2)\), with Jacobian \(-ie^{i\varphi}\).
-Hence
+Integrating the extra dimensions,
+\(\frac{\pi^\eta}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}(A+\mu)^{-2}=\pi^\eta\Gamma(2-\eta)A^{\eta-2}\).
+Hence, for \(\varphi>0\),
 
 \[
-\int d\tau\,d^3\xi\prod Y_i(\varphi)^{-a_i}
-=-\,ie^{i\varphi}\,\frac{\pi^2}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)
-\frac{\prod\alpha_i^{a_i-1}}{c_\alpha(\varphi)^2}.
+G(\varphi):=\int d^Dx\prod Y_i(\varphi)^{-a_i}
+=-\,ie^{i\varphi}\,\pi^{2+\eta}\frac{\Gamma(2-\eta)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)
+\prod\alpha_i^{a_i-1}A_\alpha(\varphi)^{\eta-2}.
 \tag{$*$}
 \]
 
 Every integral in steps 1 to 4 is absolutely convergent.
 
-*Step 5 (the right side as \(\varphi\to0\)).*
-\(\operatorname{Re}c_\alpha(\varphi)\ge\mu-\sum\alpha_i\alpha_kx_{ik}^2\ge\mu\)
-when no diagonal is timelike, because \(\cos2\varphi\le1\). So the right
-side is continuous at \(\varphi=0\), where it is the stated formula.
+*Step 5 (the right side as \(\varphi\to0\)).* With spacelike diagonals
+\(\operatorname{Re}A_\alpha(\varphi)\ge A_\alpha(0)=\alpha_1\alpha_3|s|+\alpha_2\alpha_4|t|\ge0\),
+because \(\cos2\varphi\le1\). Since \(\eta-2<0\),
+\(|A_\alpha(\varphi)|^{\eta-2}\le A_\alpha(0)^{\eta-2}\), which is integrable
+against \(\prod\alpha_i^{a_i-1}\) for \(\eta>0\): this is the convergent
+regulated Feynman-parameter integral. By dominated convergence the right
+side of \((*)\) tends to the stated formula.
 
-*Step 6 (the left side as \(\varphi\to0\)).* For \(\varphi>0\) consider
-\(Y_i\) on \(x_0+i\lambda V\), \(0\le\lambda\le1\). Its imaginary part is
-\(-2\lambda V\!\cdot n+\sin2\varphi\,(n_0^2-\lambda^2V_0^2)+2\lambda(1-\cos2\varphi)n_0V_0\),
-and no \(Y_i\) vanishes for \(\varphi>0\). The integral is therefore
-independent of \(\lambda\), and at \(\lambda=1\) it converges as
-\(\varphi\to0\) to the integral over the contour of this document, by
-dominated convergence with the bounds of section 10.
+*Step 6 (the left side as \(\varphi\to0\)).* Three lemmas. Write
+\(n=(x_0-x_i,e)\), \(V=(V_4,V_e)\) for the displacement in \(D\) dimensions,
+\(|\cdot|\) for Euclidean norms and \(V\!\cdot n\) for the Minkowski product;
+\(Y_i(\varphi,\lambda)\) is \(Y_i(\varphi)\) at the point \((x_0,e)+i\lambda V\).
+\(J<1\) is the bound (E) on \(\|\partial V\|\).
+
+**Lemma 10 (no zeros, and a bound uniform in \(\varphi\)).**
+
+(a) \(\operatorname{Im}\big(e^{i\varphi}Y_i(\varphi,\lambda)\big)
+=\sin\varphi\,\big(|n|^2-\lambda^2|V|^2\big)-2\lambda\cos\varphi\;V\!\cdot n\).
+
+(b) \(|V|\le J|n|\) for every \(i\).
+
+(c) For \(0<\varphi\le\varphi_0=\delta_0/(8(2R+\Delta+1)^2)\) and
+\(0\le\lambda\le1\), no \(Y_i(\varphi,\lambda)\) vanishes.
+
+(d) For \(0\le\varphi\le\varphi_0\), at \(\lambda=1\), in the inner zone
+with \(|X_i|\le\delta_0\):
+\(|Y_i(\varphi,1)|\ge c_J\max\big(|X_i|,|\operatorname{Im}X_i^{\rm def}|\big)\)
+with \(c_J=\tfrac12\min\big(\tfrac14,\tfrac{1-J^2}{16J}\big)\).
+
+*Proof.* (a) Expand
+\(Y=|\vec n+i\lambda\vec V|^2-e^{-2i\varphi}(n_0+i\lambda V_0)^2\), with
+bilinear squares, multiply by \(e^{i\varphi}\) and take the imaginary part:
+the terms in \(\sin\varphi\) collect to
+\(|\vec n|^2-\lambda^2|\vec V|^2+n_0^2-\lambda^2V_0^2\) and those in
+\(\cos\varphi\) to \(2\lambda(\vec n\!\cdot\!\vec V-n_0V_0)=-2\lambda V\!\cdot n\).
+
+(b) \(V\) vanishes at each cusp \(x_i\): the three frames that contain
+\(x_i\) in their flat triangle have \(V_j(x_i)=0\), and the fourth is
+switched off there. \(V\) is \(J\)-Lipschitz, so
+\(|V(x)|=|V(x)-V(x_i)|\le J|x-x_i|\).
+
+(c) By (a) and (b), if \(V\!\cdot n\le0\) then
+\(\operatorname{Im}(e^{i\varphi}Y)\ge\sin\varphi\,(1-J^2)|n|^2>0\). Suppose
+\(V\!\cdot n>0\). In the inner and blend zones this happens only where
+\(|X_i|\ge\delta_0\), since near the cone every active field is admissible.
+Write \(Y=-X_i^{\lambda}+(1-e^{-2i\varphi})(n_0+i\lambda V_0)^2\), where
+\(X_i^\lambda\) is the invariant at the displaced point. The first term has
+modulus at least \(\delta_0-v^2\ge\delta_0/2\); the second at most
+\(2\varphi(2R+\Delta+1)^2\le\delta_0/4\). So \(|Y|\ge\delta_0/4\). In the
+outer zone \(V\!\cdot n=-\kappa'(n^2+n\!\cdot u)>0\) means
+\(n^2<-n\!\cdot u\). Then
+\(\operatorname{Re}Y=-(n^2-\lambda^2V^2)+(1-\cos2\varphi)(n_0^2-\lambda^2V_0^2)-2\lambda\sin2\varphi\,n_0V_0\).
+The last two terms are non-negative because \(V_0=-\kappa'(n_0+u_0)\) has
+the sign opposite to \(n_0\) and \(|V_0|<|n_0|\). For the first,
+\(V^2=\kappa'^2(n^2+2n\!\cdot u+u^2)\): if \(n\!\cdot u\ge0\) then
+\(n^2<0\) and \(n^2-\lambda^2V^2<0\) once \(|n^2|\ge n\!\cdot u\ge c_ur\)
+exceeds \(\kappa'^2(2n\!\cdot u+u^2)\); if \(n\!\cdot u<0\) then
+\(n^2\le-\tfrac34|\vec n|^2\) and the same holds. So \(\operatorname{Re}Y>0\).
+
+(d) Put \(X=X_i\), \(I=|\operatorname{Im}X_i^{\rm def}|=2|V\!\cdot n|\); here
+\(V\!\cdot n\le0\). From (a),
+\(\operatorname{Im}(e^{i\varphi}Y)\ge\sin\varphi(1-J^2)|n|^2+\cos\varphi\,I\).
+So \(|Y|\ge\cos\varphi\,I\ge\tfrac12I\). If \(I\ge\tfrac12|X|\) this is at
+least \(\tfrac14|X|\). Otherwise use
+\(\operatorname{Re}(e^{i\varphi}Y)=-\cos\varphi\operatorname{Re}X_i^{\rm def}+\sin\varphi\operatorname{Im}X_i^{\rm def}-4\sin\varphi\,n_0V_0\).
+By Lemma 6, \(|\operatorname{Re}X_i^{\rm def}|\ge|X|-\tfrac\theta2I\ge\tfrac34|X|\),
+and \(|4n_0V_0|\le4J|n|^2\). If \(4J\sin\varphi|n|^2\le\tfrac18|X|\) the real
+part is at least
+\(\tfrac38|X|-\tfrac14|X|\cdot\tfrac12-\tfrac18|X|=\tfrac18|X|\) in modulus.
+If not, \(\sin\varphi|n|^2>|X|/(32J)\) and the imaginary part is at least
+\((1-J^2)|X|/(32J)\). \(\blacksquare\)
+
+**Lemma 11 (independence of \(\lambda\)).** For \(0<\varphi\le\varphi_0\)
+the integral of \(\prod Y_i^{-a_i}\) over \((x_0,e)+i\lambda V\) does not
+depend on \(\lambda\in[0,1]\).
+
+*Proof.* The integrand is a holomorphic function \(h\) on the open set
+where no \(Y_i\) vanishes, with its powers continued from \(\lambda=0\),
+where the \(Y_i\) lie in the cone of step 1. The form \(h\,dz_1\cdots dz_D\)
+is closed. The map \((\lambda,x)\mapsto x+i\lambda V(x)\) is Lipschitz and
+by Lemma 10(c) takes \([0,1]\times\mathbb R^D\) into that set. Apply Stokes'
+theorem on \([0,1]\times\{|x|\le\rho\}\): the difference of the integrals
+at \(\lambda=1\) and \(\lambda=0\) over the ball is the integral over the
+side \([0,1]\times\{|x|=\rho\}\). On the side, for fixed \(\varphi>0\), every
+\(|Y_i|\ge c(\varphi)\rho^2\): where \(V\!\cdot n\le0\) by Lemma 10(a) and
+(b); where \(V\!\cdot n>0\), either
+\(\sin\varphi(1-J^2)|n|^2\ge4\kappa'|n^2|\) and (a) still gives
+\(\tfrac12\sin\varphi(1-J^2)\rho^2\), or \(|n^2|\) is at least a multiple of
+\(\sin\varphi\,\rho^2\) and \(|Y|\ge\operatorname{Re}Y\ge\tfrac12|n^2|\) by
+the proof of (c). The side has area of order \(\rho^{D-1}\), the form
+contributes a factor \(|V|\le\kappa'(\rho+\tau_0+\Delta)\), and
+\(|h|\le C\rho^{-8}\). The side integral is of order \(\rho^{D-8}\) and tends
+to zero. For non-integer \(D\) the same argument applies to the reduced
+variables \((x_0,m)\) with the factor \(m^{2\eta-1}\), which vanishes with
+the boundary at \(m=0\). \(\blacksquare\)
+
+**Lemma 12 (the limit).** As \(\varphi\to0\), \(G(\varphi)\) tends to the
+integral of \(\prod(-X_i)^{-a_i}\) over the contour.
+
+*Proof.* By Lemma 11, \(G(\varphi)\) equals the integral at \(\lambda=1\).
+There the integrand converges pointwise as \(\varphi\to0\). It is dominated
+uniformly in \(\varphi\le\varphi_0\): near the cones in the inner zone by
+Lemma 10(d), which gives the bound of Lemma 6 with \(c_J\) in place of
+\(\tfrac12\), so that Lemmas 7 and 8 apply with a different constant; away
+from the cones in the ball by \(|Y|\ge\delta_0/4\); in the outer zone by
+\(|Y|\ge\cos\varphi\cdot2\kappa'|n^2+n\!\cdot u|\) where \(V\!\cdot n\le0\)
+and by \(|Y|\ge\tfrac12|n^2|\) otherwise, which reproduce Lemma 9. The
+dominating function is integrable by section 10. \(\blacksquare\)
 
 Steps 5 and 6 give the proposition. \(\blacksquare\)
 
-*What is proved and what is stated.* Steps 1 to 4 are complete: they use
-only absolutely convergent integrals. Step 5 is complete for spacelike
-diagonals; with a timelike diagonal \(c_\alpha\) can vanish at \(\varphi=0\)
-for small \(\mu\) and the limit is a boundary value, which is the usual
-\(-i0\) of the Mandelstam invariant. In step 6 the non-vanishing is checked
-numerically (below) and the two limiting arguments are the standard ones.
+*Timelike diagonal.* With \(s>0\), \(A_\alpha(0)\) can vanish inside the
+simplex and step 5 is a boundary value: the right side at \(\varphi\to0^+\)
+is the formula with \(s\to s-i0\). Step 6 does not use the sign of the
+diagonals. The dominated-convergence argument of step 5 is not adapted to
+that case here.
 
 *Numerical checks.*
 
 | Check | Result |
 | --- | --- |
-| \(|Y_i|\ge\sin\varphi(\mu+|x_0-x_i|_E^2)\), \(0\le\arg Y_i\le\pi-2\varphi\) | holds at 24 000 points, three angles |
-| Both sides of \((*)\) at \(\varphi=\pi/2\), unit powers | \(1.4317\pm0.0008\) against \(1.43230\) |
+| \(|Y_i|\ge\sin\varphi(\mu+|x_0-x_i|^2)\), \(0\le\arg Y_i\le\pi-2\varphi\) | holds at 24 000 points, three angles |
+| Both sides of \((*)\) at \(\varphi=\pi/2\), \(\mu=0.5\), unit powers | \(1.4317\pm0.0008\) against \(1.43230\) |
 | Both sides at \(\varphi=1\), unit powers | \(1.0225-1.3751i\) against \(1.0235-1.3763i\) |
 | Both sides at \(\varphi=1\), powers \((1.2,0.8,1.2,0.8)\) | \(1.1356-1.4812i\) against \(1.1364-1.4820i\) |
 | Right side at \(\varphi=0.1,0.01,0.001\) | approaches the Minkowski formula linearly |
-| Step 6: \(|Y_i|/(\sin2\varphi\,(\tau-t_i)^2+\mu\sin\varphi)\) over the family | at least 0.70 |
+| Lemma 10(a), relative error of the identity | \(6\times10^{-12}\) |
+| Lemma 10(b), largest \(|V|/|n|\) | 0.0032, against \(J=0.30\) |
+| Lemma 10(c), smallest \(|Y_i|/(\sin\varphi|n|^2)\), also for \(\varphi\) up to 0.3 | 1.00 |
+| Lemma 10(d), smallest \(|Y_i|/\max(|X_i|,|\operatorname{Im}X_i^{\rm def}|)\) | 1.00, against \(c_J=0.095\) |
 
-The left side is a four-dimensional quasi-Monte Carlo integral; the
-agreement is within its error.
-
-**Extra dimensions.** With \(A=-\sum\alpha_i\alpha_kx_{ik}^2\),
-
-\[
-\frac{1}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}\frac{\Gamma(2)}{(A+\mu)^2}
-=\Gamma(2-\eta)\,A^{\eta-2},
-\]
-
-which turns the formula of Proposition 8 into the \(D\)-dimensional
-Feynman-parameter integral with exponent \(2-\eta=2+\epsilon\). Checked
-numerically.
+The left side of \((*)\) is a four-dimensional quasi-Monte Carlo integral at
+fixed \(\mu\); the agreement is within its error. The checks of Lemma 10 are
+in \(4+1\) dimensions, in all three kinematic regions.
 
 **Feynman parameters to Mellin–Barnes.** The Feynman-parameter integral for
 \(z^p\) (powers \(1\pm p\)) is evaluated directly, as three nested
@@ -754,15 +859,18 @@ So the regulated integral on the contour equals the Mellin–Barnes form.
 
 ## 12. What remains
 
-- In Proposition 8, step 6 uses the standard argument that an integral over
-  a family of contours does not change while no singularity is crossed, and
-  a dominated-convergence limit. Both are stated; the non-vanishing they
-  rest on is checked numerically, not proved.
-- With a timelike diagonal, step 5 is a boundary value in the Mandelstam
-  invariant and is not treated separately.
+- With a timelike diagonal, step 5 of Proposition 8 is a boundary value in
+  the Mandelstam invariant, and its dominated-convergence argument is not
+  adapted to that case. Steps 1 to 4 and 6 hold in all regions.
+- The equality of the Feynman-parameter and Mellin–Barnes forms is checked
+  numerically to \(10^{-7}\); it is a standard identity and is not proved
+  here.
 - In section 10 the constant \(c_u>0\) of Lemma 9 and the choice of
   \(a_1,\rho_1\) in the strips are verified for the contours used, by the
   sampled checks, and are not added to the certificate.
+- The non-integer dimension is handled by the usual reduction to the radial
+  variable of the extra dimensions; the corresponding Stokes argument is
+  indicated in Lemma 11, not written separately.
 - Review by someone who works with these integrals.
 
 ## 13. Reproduce

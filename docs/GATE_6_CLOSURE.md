@@ -310,7 +310,7 @@ are computed in GATE_6_BOUNDS section 2.
 - An explicit global integration contour for every light-like square, with
   its properties proved by explicit constants, absolute integrability proved
   line by line, and the parametric representation of the regulated integral
-  derived (one limiting step stated).
+  derived, including the contour-independence and limiting step.
 
 **Not addressed.**
 

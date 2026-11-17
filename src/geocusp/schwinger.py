@@ -123,3 +123,65 @@ def family_check(contour, n: int, mu: float = 0.05, seed: int = 0, phi_floor: fl
                     a += 2 * np.pi
                 excursion = max(excursion, -a, a - np.pi, 0.0)
     return {"min_abs_over_scale": float(smallest), "max_excursion": float(excursion)}
+
+
+# --------------------------------------------------------------------------
+# Step 6 in D = 4 + 1 dimensions: the family (phi, lam) and uniform bounds
+# --------------------------------------------------------------------------
+def rotated_invariant(contour, i, z4, ze, phi):
+    """Y_i = -[exp(-2 i phi)(z0 - t_i)^2 - |zvec - xi_i|^2 - ze.ze]."""
+    d = z4 - contour.x[i]
+    return -(np.exp(-2j * phi) * d[0] ** 2 - d[1:] @ d[1:] - ze @ ze)
+
+
+def step6_check(contour, n: int, seed: int = 0, phi_max: float = None) -> dict:
+    """Sampled check of the statements used in step 6 of Proposition 8.
+
+    With n = (x0 - x_i, e) and V the displacement in 4 + 1 dimensions:
+
+    identity     Im(exp(i phi) Y_i) = sin(phi)(|n|^2 - lam^2 |V|^2) - 2 lam cos(phi) V.n
+                 (Euclidean norms; V.n the Minkowski product); largest violation.
+    v_over_n     largest |V| / |n|: must be below the Jacobian bound J < 1,
+                 because V vanishes at the cusps and is J-Lipschitz.
+    nonvanishing smallest |Y_i| / (sin(phi) |n|^2) over 0 < phi <= phi_max, 0 <= lam <= 1.
+    uniform      smallest |Y_i| / max(|X_i|, |Im X_i displaced|) at lam = 1 for points
+                 in the inner zone with |X_i| <= delta0, where X_i = x0i^2 - e.e.
+    """
+    from .feynman_contour import certificate, displaced_extended, field_extended, sample_extended
+
+    C = contour
+    if phi_max is None:
+        reach = 2 * C.radius + max(np.linalg.norm(x - C.centre) for x in C.x) + 1
+        phi_max = C.delta0 / (8 * reach**2)
+    rng = np.random.default_rng(seed)
+    out = {"identity": 0.0, "v_over_n": 0.0, "nonvanishing": np.inf, "uniform": np.inf,
+           "uniform_count": 0, "phi_max": float(phi_max),
+           "jacobian_bound": certificate(C)["jacobian_bound"]}
+    for x0, e in sample_extended(C, n, seed):
+        mu = float(e @ e)
+        if np.sqrt(C.distance_to_edges(x0) ** 2 + mu) < 1e-6:
+            continue
+        v4, ve = field_extended(C, x0, e)
+        v_norm2 = v4 @ v4 + ve @ ve
+        r = np.sqrt((x0 - C.centre) @ (x0 - C.centre) + mu)
+        real = C.invariants(x0) - mu
+        displaced, _ = displaced_extended(C, x0, e)
+        for _ in range(4):
+            phi = phi_max * 10 ** rng.uniform(-4, 0)
+            lam = rng.choice([0.0, 1.0]) if rng.random() < 0.4 else rng.uniform(0, 1)
+            for i in range(4):
+                n4 = x0 - C.x[i]
+                n_norm2 = n4 @ n4 + mu
+                v_dot_n = v4 @ np.diag([1.0, -1, -1, -1]) @ n4 - ve @ e
+                Y = rotated_invariant(C, i, x0 + 1j * lam * v4, e + 1j * lam * ve, phi)
+                lhs = (np.exp(1j * phi) * Y).imag
+                rhs = np.sin(phi) * (n_norm2 - lam**2 * v_norm2) - 2 * lam * np.cos(phi) * v_dot_n
+                out["identity"] = max(out["identity"], abs(lhs - rhs) / max(abs(rhs), 1e-300))
+                out["v_over_n"] = max(out["v_over_n"], np.sqrt(v_norm2 / n_norm2))
+                out["nonvanishing"] = min(out["nonvanishing"], abs(Y) / (np.sin(phi) * n_norm2))
+                if lam == 1.0 and r <= C.radius and abs(real[i]) <= C.delta0:
+                    ref = max(abs(real[i]), abs(displaced[i].imag))
+                    if ref > 0:
+                        out["uniform_count"] += 1
+                        out["uniform"] = min(out["uniform"], abs(Y) / ref)
+    return out
