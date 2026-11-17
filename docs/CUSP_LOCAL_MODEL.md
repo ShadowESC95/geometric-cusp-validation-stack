@@ -181,15 +181,35 @@ integral is $`O(1)`$. $`\blacksquare`$
 \Big|N_\eta(p)-\frac{4\sin\pi p}{\pi p}\Big|\le C\,\eta\,(1+|\tau|)\,e^{2\pi|\tau|},
 ```
 
-uniformly for $`\sigma`$ in a compact subset of $`(-1,1)`$. This replaces
-Lemma 4, Lemma 13 and the residue computation of GATE_6_FUNCTIONAL in the
-chain of GATE_6_BOUNDS section 5 when both diagonals are spacelike. The
-growth $`e^{2\pi|\tau|}`$ is worse than Lemma 4's $`e^{\pi|\tau|}`$ and is
-still enough: steps C and D there need $`W-\delta'>2\pi`$, and
-$`W>\Phi\ge2\pi`$ holds already.
+uniformly for $`\sigma`$ in a compact subset of $`(-1,1)`$; the constant
+grows as $`|\sigma|\to1`$. The same bounds give absolute convergence of
+$`B_\eta(p)`$ locally uniformly in $`p`$, so $`B_\eta`$ and $`N_\eta`$ are
+holomorphic in $`p`$ for $`|\sigma|<1-\eta`$.
+
+This replaces Lemma 4, Lemma 13 and the residue computation of
+GATE_6_FUNCTIONAL in the chain of GATE_6_BOUNDS section 5 when both
+diagonals are spacelike. Proposition 8 is still needed for step B. The
+growth $`e^{2\pi|\tau|}`$ is worse than Lemma 4's $`e^{\pi|\tau|}`$ (and is
+loose: numerically the growth is about $`e^{\pi|\tau|}`$). It is enough
+provided $`\delta'`$ is chosen with $`W-\delta'>2\pi`$ in steps C and D,
+which is possible for the three weights: $`W=3\pi-\delta`$ for
+$`\bar F^{(2)}`$ and any $`W`$ for the others.
+
+Remarks on the proof. The inequality used in (ii) needs
+$`0\le\theta\le2-\eta`$, which holds. The Gamma quotient in (i) is
+$`1+O(\eta\log(2+|\tau|))`$, absorbed by the factor $`1+|\tau|`$. The
+parametric $`N_\eta`$ and the Mellin–Barnes one of GATE_6_FUNCTIONAL differ
+by the factor $`(S/T)^{\eta/2}=1+O(\eta)`$ when $`S\ne T`$.
 
 With a timelike diagonal $`A`$ changes sign on the simplex and this proof
 does not apply; Lemma 14 and the Mellin–Barnes form are still needed there.
+
+**Review.** An independent review re-derived sections 1 and 2, checked the
+proof of the theorem line by line, and computed $`B_\eta(p)`$ by its own
+direct integration over the simplex for six choices of $`p,S,T`$, including
+$`S\ne T`$ and complex $`p`$: $`(\eta^2B_\eta-\text{leading term})/\eta`$
+stays bounded in every case (about 5 at $`p=0.3`$, 85 at $`p=0.85`$). It
+found no error and asked for the remarks above.
 
 ## 4. Numerical checks
 
@@ -210,8 +230,9 @@ does not apply; Lemma 14 and the Mellin–Barnes form are still needed there.
   two $`\Gamma(\eta)`$ belong to the two edges at the cusp. This is the
   precise sense in which the edges determine the pole.
 - **The vertex of the Feynman simplex with $`\alpha_j\to1`$ is the cusp
-  $`x_j`$**, since the vertex model is the parametric form of the triangle
-  at that cusp. This identification is by comparison of the two formulas.
+  $`x_j`$**, in the sense that the vertex model and the parametric form of
+  the triangle at that cusp have the same double pole. They differ at order
+  $`1/\eta`$. This identification is by comparison of the two formulas.
 - **Not done: a position-space proof with the Lorentzian paths.** In the
   exact variables of section 1 the local integral is
   $`\int\frac{du_1}{u_1}\frac{du_3}{u_3}|u_1u_3|^\eta\,G(u_1,u_3)`$, and its

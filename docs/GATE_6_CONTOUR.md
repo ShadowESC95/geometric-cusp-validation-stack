@@ -637,6 +637,29 @@ All conditions, including (G), (S) and (I), hold at all 90 squares, and for the 
 ($`s/t\to0,\infty`$), as they must: the four-cone gap closes. The sampled
 properties were also checked at four extreme squares.
 
+**Interval arithmetic.** The table above is floating point at sample
+squares. `certificate_iv.interval_certificate` evaluates the same
+conditions with intervals, for all squares whose angle lies in a given
+interval, with the contour constants fixed at those of its midpoint. Every
+comparison is between the upper end of one interval and the lower end of
+the other, so a pass is a statement about every square in the range, with
+rounding included. Two bounds are replaced by weaker ones that imply them:
+$`\arctan x\le x`$, and $`B^2`$ by the trace of the Gram matrix of the
+transverse basis. In (I) any $`\omega`$ with $`2\omega\le c_u(\omega)`$
+serves in Lemma 9, and $`\omega`$ is taken 2% below the fixed point.
+
+| Region | Angle range | Boxes | $`s/t`$ covered | Result |
+| --- | --- | --- | --- | --- |
+| $`(-,-)`$ | 0.3 to 2.8 | 2500 | 0.0228 to 33.6 | all conditions hold on every box |
+| $`(+,-)`$ | 0.05 to 2.8 | 3500 | $`-34.6`$ to $`-1.0006`$ | all hold |
+| $`(-,+)`$ | 0.05 to 2.8 | 3500 | $`-0.9994`$ to $`-0.029`$ | all hold |
+
+On these ranges $`e\le0.093`$ and $`\mu_Q\le0.020`$. Closer to the
+degenerate squares the interval version fails, first in the bound for
+$`B`$, and only the floating-point evaluation is available. What interval
+arithmetic certifies is the list of inequalities; that those inequalities
+imply the properties of the contour is the content of the proofs above.
+
 ## 10. Absolute integrability, line by line
 
 Throughout, $`\eta=-\epsilon>0`$ is small, the weight satisfies
@@ -1339,8 +1362,9 @@ timelike diagonal (Lemma Q). Still open:
 - **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
   is proved at real points (Lemma P) and observed on the contour. On the
   contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
-- **The certificate is floating point**, evaluated at particular squares.
-  Within about $`10^{-9}`$ of an edge the float64 field loses the sign of
+- **The certificate** is verified in interval arithmetic on the ranges of
+  section 9 and in floating point outside them. The field itself is
+  evaluated in floating point in the surveys: within about $`10^{-9}`$ of an edge the float64 field loses the sign of
   $`\operatorname{Im}x_{0i}^2`$ at the $`10^{-24}`$ level; a 60-digit
   recomputation gives the right sign. The surveys exclude that
   neighbourhood.

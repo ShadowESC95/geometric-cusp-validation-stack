@@ -52,6 +52,14 @@ Checks: the identity is verified symbolically; on 5000 random points every
 point with $`Q>0`$ lies in exactly one piece and no point with $`Q<0`$ lies
 in any; each piece's form is positive on its piece.
 
+**Assumptions.** That the sum is the canonical form assumes that the region
+is a positive geometry and that forms add under triangulation, which is
+standard. Checked here are the tiling, the cancellation of spurious poles
+and positivity, not the residue recursion. The inequalities themselves are
+taken from the literature. An independent review rebuilt the five forms and
+confirmed the identity, the tiling on 20 000 points, and that
+$`\langle AB_1AB_2\rangle=-Q`$.
+
 **What this is.** A re-derivation of a published integrand
 (arXiv:2112.06956) by the standard method of cutting the region into
 simplices. It is not a new result. It does make the chain
@@ -73,7 +81,9 @@ attempted. So $`\bar F^{(2)}`$ remains an input.
 
 The sampler builds $`Y=CZ`$ with $`C`$ in the positive Grassmannian, so
 positivity of $`C`$ is a construction, not a test. The sign-flip
-characterisation of arXiv:1704.05069 tests $`Y`$ without any $`C`$:
+characterisation of arXiv:1704.05069, eq. (5.13), tests $`Y`$ without any
+$`C`$. The paper states one condition $`[Y\,i\,i{+}1\,j\,j{+}1]>0`$ with the
+convention $`Z_{n+1}=(-1)^{k-1}Z_1`$; written out, that is:
 
 ```math
 \langle Y\,i\,i{+}1\,j\,j{+}1\rangle>0,\qquad

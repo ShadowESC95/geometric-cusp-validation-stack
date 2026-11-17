@@ -291,7 +291,7 @@ def solve_two_loop(edge: bool = True, position: float = .4) -> dict:
     reference = weak_coefficients()[3]
     gamma = float(np.real(cusp_coefficient_from_mean(3, circle)))
     result = {
-        "weight": "two-loop weight F2 (arXiv:2112.06956, Eq. 2.23)",
+        "weight": "two-loop weight F2 (arXiv:2112.06956, Eq. 2.8)",
         "closed_mean": TWO_LOOP_MEAN,
         "circle_mean": circle.real,
         "value_at_z_minus_one": at_minus_one.real,

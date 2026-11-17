@@ -14,7 +14,7 @@ def Fbar1(z):
 
 
 def Fbar2(z, dps: int = 20):
-    """Two-loop finite function, arXiv:2112.06956 Eq. (2.23) ("Fweak2").
+    """Two-loop finite function, arXiv:2112.06956 Eq. (2.8) ("Fweak2").
 
     Transcribed from the paper's TeX source. It is an input from the
     literature, not something this package derives. Returns an mpmath number.

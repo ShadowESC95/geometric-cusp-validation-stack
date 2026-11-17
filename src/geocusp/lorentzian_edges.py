@@ -232,7 +232,7 @@ def circle_mean(f, radius=1):
 # The two-loop weight on the cover of the z plane
 # --------------------------------------------------------------------------
 def _f2_from_letters(L, li_a, li_b):
-    """Eq. (2.23) of arXiv:2112.06956 with log z = L and given Li_n(1/(1+z)), Li_n(z/(1+z))."""
+    """Eq. (2.8) of arXiv:2112.06956 with log z = L and given Li_n(1/(1+z)), Li_n(z/(1+z))."""
     pi = mp.pi
     s2 = li_a[2] + li_b[2]
     return (-L**4 / 2

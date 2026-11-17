@@ -17,7 +17,8 @@ two lemmas with proofs and identifies a limitation of hard cutoffs. Item 2
 rests on the published Mellin–Barnes evaluation, a uniform bound (Lemma 4)
 and a Mellin superposition (Lemma 3); it does not use the pinch analysis of
 Proposition 5. It is conditional on the certificate of the contour, which
-is evaluated in floating point at particular squares. The integration contour these need is
+is verified in interval arithmetic over a range of squares (GATE_6_CONTOUR
+section 9). The integration contour these need is
 constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), which also gives an
 elementary proof of Lemma 4. Nothing here has been reviewed by a specialist.
 
@@ -122,6 +123,13 @@ holds on the lower lip. The singularities over $`z=-1`$ therefore lie at
 $`\operatorname{Im}L=\pm3\pi`$ and beyond, and
 $`f^{(2)}(L)=\bar F^{(2)}(e^L)`$ is holomorphic for
 $`|\operatorname{Im}L|<3\pi`$.
+
+An independent review redid this algebra in computer algebra, with the
+inversion relations generated from Bernoulli polynomials, and confirmed the
+vanishing coefficients, the branch choices and the value; the published
+formula minus the $`\lambda^0`$ coefficient is below $`10^{-26}`$ at nine
+points. Holomorphy on the whole strip also uses that the continued
+polylogarithms are singular only at $`e\in\{0,1,\infty\}`$.
 
 As an independent numerical check, the continuation across $`-1<z<0`$ and
 the continuation across $`z<-1`$ agree to $`10^{-23}`$ at every point tested.
@@ -541,14 +549,29 @@ with weight $`F`$ is $`4M[F]`$.
   $`\Phi`$ in every region.
 
 So the conclusion holds for all three weights at every square for which the
-certificate of GATE_6_CONTOUR passes. It has been evaluated at 90 squares
-across the three regions. The certificate is floating-point arithmetic, not
-interval arithmetic, and no argument is given that its conditions (Q), (S),
-(I) and (G) can be met for an arbitrary square.
+certificate of GATE_6_CONTOUR passes. The certificate is verified in
+interval arithmetic for every square with
+$`0.023\le s/t\le33.6`$ in the region $`(-,-)`$,
+$`1.0006\le|s/t|\le34.6`$ in $`(+,-)`$ and $`0.029\le|s/t|\le0.9994`$ in
+$`(-,+)`$ (GATE_6_CONTOUR section 9). Outside these ranges, towards the
+degenerate squares, it is evaluated at sample squares in floating point
+only.
 
-**Terminology.** "Double pole" here means the limit of
-$`\epsilon^2st\,I_\eta[F]`$ as $`\eta\to0`$. Meromorphy in $`\eta`$ is not
-proved.
+**What "double pole" means.** The statement proved is the limit of
+$`\epsilon^2st\,I_\eta[F]`$ as $`\eta\to0`$. For spacelike diagonals there is
+also a rate. By the corollary of
+[CUSP_LOCAL_MODEL.md](CUSP_LOCAL_MODEL.md),
+$`|N_\eta(p)-4\sin\pi p/(\pi p)|\le C\eta(1+|\tau|)e^{2\pi|\tau|}`$ on the
+fixed lines, and $`|c(p)|\le Ce^{-(W-\delta')|\tau|}`$ with
+$`W-\delta'>2\pi`$, so
+
+```math
+I_\eta[F]=\frac{4\,M[F]}{\eta^2\,st}+O\Big(\frac1\eta\Big)\qquad(s,t<0).
+```
+
+Here $`\delta'`$ must be chosen with $`W-\delta'>2\pi`$. The corollary has
+been checked by an independent review. Meromorphy in $`\eta`$
+is not proved, and with a timelike diagonal only the limit is proved.
 
 **What this argument does and does not use.** Steps A to D use the contour,
 the Mellin–Barnes evaluation and the identity
@@ -613,7 +636,7 @@ section 2.
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
 | Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
-| Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes (90 evaluated, all three regions) |
+| Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes: verified in interval arithmetic over the ranges of $`s/t`$ given in section 5 |
 | The edge statement implies the double pole | **Not proved.** The proof of the double pole does not pass through the edge statement |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |

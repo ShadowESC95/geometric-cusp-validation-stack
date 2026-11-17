@@ -101,7 +101,7 @@ The same $`-i0`$ enters all three factors and $`L`$, because all three
 depend on $`y^2`$ alone. The integrand is therefore the boundary value of one
 function holomorphic in the lower half $`w`$ plane.
 
-## 3. Dictionary with the weighted divisor (exact)
+## 3. Dictionary with the weighted divisor
 
 In the chart $`A=e_1+ae_3+be_4`$, $`B=e_2+ce_3+de_4`$ of
 `strict_cusp_weighted_blowup`,
@@ -132,6 +132,18 @@ the bracket identities, the equality of the twistor and position-space cross
 ratios, and that the strict line is the edge.
 
 On $`E`$ the cap $`bc=0`$ is exactly $`z=-1`$.
+
+**What is exact here and what is not.** The bracket identities, the
+relation $`1+z=bc/(ad)`$ and the equality of the twistor and position-space
+cross-ratios are exact. The rows of the table are statements at leading
+order in the collinear scaling, up to factors that depend on $`a`$ and on
+the frame: for instance $`x_{03}^2=q_3(1+q_1/|s|)-\rho`$, and the last row
+holds in the further limit $`q_1\to0`$. On the divisor at fixed $`a`$ the
+exact statement is $`1+z=\rho|s|/(q_1x_{03}^2)`$. The identification of the
+phase of $`b`$ with $`\theta`$, the reality conditions on $`(b,c)`$ for a
+real point, and the coordinates $`(a,z,\theta)`$ on $`E`$ are asserted, not
+proved. What is established about the weights $`(1,1,2)`$ is that they
+match the scaling orders $`y_\perp\sim\lambda`$, $`\alpha\sim\lambda^2`$.
 
 ## 4. The measure (exact)
 
@@ -349,12 +361,15 @@ are computed in GATE_6_BOUNDS section 2.
 
 A literature check (full texts of the papers below, and web searches)
 compared four statements of these documents with what is published.
-Equation numbers are as reported by that check. Absence is "not found", not
-"does not exist".
+The equation numbers were then confirmed against the TeX sources of the
+papers, quoted verbatim. Absence is "not found", not "does not exist". The
+two-loop function is eq. (2.8) of arXiv:2112.06956; earlier versions of
+these documents cited it as (2.23), which is its number in the HTML
+rendering.
 
 | Statement here | In the literature |
 | --- | --- |
-| The functional is the unit-circle mean, and the contour runs between the two lips of $`z=-1`$ | **Published.** arXiv:2112.06956 eq. (2.19) writes $`I[F]=\frac{1}{2\pi i}\oint dz\,F(z)/z`$ on a contour from just below to just above the real axis at $`z=-1`$, and eq. (2.20) the circle form. It is obtained by rewriting $`\sin\pi p/(\pi p)`$, which comes from Feynman or Schwinger parameters (arXiv:1301.0149 eqs. (4.6), (4.9), appendix A; arXiv:2112.06956 eqs. (2.12)–(2.18)). arXiv:2406.04294 relates the cusp anomalous dimension to the discontinuity of $`F`$ across the negative axis |
+| The functional is the unit-circle mean, and the contour runs between the two lips of $`z=-1`$ | **Published.** arXiv:2112.06956 eq. (2.19) writes $`I[F]=\frac{1}{2\pi i}\oint dz\,F(z)/z`$ on a contour from just below to just above the real axis at $`z=-1`$, and eq. (2.20) the circle form. It is obtained by rewriting $`\sin\pi p/(\pi p)`$, which comes from Feynman or Schwinger parameters (arXiv:1301.0149 eqs. (4.6), (4.9), appendix A; arXiv:2112.06956 eqs. (2.12)–(2.18)). arXiv:2406.04294 eqs. (16), (17) express $`F`$ through a structure constant whose logarithmic derivative is the discontinuity of $`F`$ across the negative axis, and eq. (30) gives the cusp anomalous dimension as its value at 1 |
 | The edge statement: the transverse integral at a null edge gives $`-2\pi i\,M[F]`$ on the segment and 0 on the rest of the line | **Not found.** The published derivations are Euclidean or parametric |
 | $`\bar F^{(2)}`$ is regular at $`z=-1`$, with value $`11\pi^4/45`$ | **Partly.** arXiv:1911.10174 imposes finiteness at $`x=-1`$ as a boundary condition and expects no $`u`$-channel cut. An explicit statement of analyticity of the full two-loop function there, or the value, was not found. The value and the mean $`-11\pi^4/15`$ were confirmed from the independent expression in arXiv:2406.04294 |
 | The rule for a class of weights, with hypotheses | **Stated, not proved.** arXiv:2112.06956 assumes "a branch cut on the negative real axis only" and extends linearly from $`z^p`$; arXiv:2605.28926 eqs. (6.2)–(6.3) repeats this. No growth hypotheses and no theorem were found |
