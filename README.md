@@ -21,7 +21,7 @@ Together they explain the known contour rule and give a conditional proof
 of it for the three benchmark weights in all three kinematic regions. The
 conditions are listed under [Scope and limits](#scope-and-limits).
 
-- **295 tests** and **63 worked example groups**, all passing
+- **312 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -58,7 +58,8 @@ conditions are listed under [Scope and limits](#scope-and-limits).
 | Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
 | Cusp-local model derived from the Lorentzian domain: support on the edge segment, discontinuity across $`z<0`$, exact factorisation | Written proof for the iterated integral in a fixed order; independently checked |
-| Full integral equals the four cusp terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
+| Full integrand: support in a null slab and exact split into two edge pieces | Written proof; checked numerically; not reviewed |
+| Each edge piece equals its two cusp terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -77,7 +78,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 295 tests, about twenty minutes
+make test        # 312 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -253,10 +254,18 @@ iterated integral in a fixed order (the light-cone coordinate $`\alpha`$
 first); the integral is not absolutely convergent, and other orders are
 not treated.
 
+For the full integrand, with the far propagator, the same contour closing
+is still exact. All four invariants are linear in $`\alpha`$, and the
+integral along that null direction is supported in the slab between the
+null hyperplanes through $`x_4`$ and $`x_3`$. Inside the slab it is a
+discontinuity across the light cone of $`x_3`$ on one side of the edge
+$`(1,2)`$ and across that of $`x_4`$ on the other: one piece for the edge
+$`(2,3)`$ and one for the edge $`(4,1)`$.
+
 That the full integral equals the sum of the four cusp terms up to a single
 pole is proved for the Feynman-parameter form, by elementary estimates on
-the simplex, in all three regions. It is not proved in position space,
-where the far propagator spoils the linearity in $`\alpha`$. See
+the simplex, in all three regions. In position space the missing step is
+the estimate at the two ends of each edge piece. See
 [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md).
 
 ## Solver
@@ -300,7 +309,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            295 tests
+tests/            312 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

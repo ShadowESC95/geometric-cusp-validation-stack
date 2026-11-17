@@ -147,3 +147,33 @@ def test_three_beta_integrals_give_the_closed_form():
     lorentzian = -2j * mp.sin(mp.pi * p) * m
     closed = 2j * mp.pi * mp.gamma(1 + eta) / eta**2 * cl.triangle_closed_form(p, eta)
     assert abs(lorentzian - closed) < 1e-12 * abs(closed)
+
+
+# ---- the full four-point integrand (section 9) -----------------------------
+FULL = dict(rho=0.35, kappa=0.3, T=1.7, eps=2e-2)
+WEIGHTS = [lambda L: np.exp((-0.35 + 0.4j) * L), lambda L: L**2 + np.pi**2, lambda L: 1 + 0 * L]
+
+
+@pytest.mark.parametrize("beta", [-2.5, -1.9, 1.2, 2.0])
+def test_full_integrand_vanishes_outside_the_null_slab(beta):
+    for f in WEIGHTS:
+        assert abs(cl.full_light_cone_integral(f, beta, **FULL)) < 1e-9
+
+
+@pytest.mark.parametrize("beta,apart", [(-2.5, None), (-1.0, "u4"), (-0.3, "u4"), (0.4, "u3"), (0.8, "u3"), (1.2, None)])
+def test_which_zero_lies_apart(beta, apart):
+    zeros = cl.full_alpha_zeros(beta, FULL["rho"], FULL["kappa"], FULL["T"], FULL["eps"])
+    upper = [k for k, v in zeros.items() if v.imag > 0]
+    lower = [k for k, v in zeros.items() if v.imag < 0]
+    if apart is None:
+        assert not upper or not lower
+    else:
+        assert [apart] in (upper, lower)
+
+
+@pytest.mark.parametrize("beta", [-1.0, -0.3, 0.4, 0.8])
+def test_full_integrand_is_a_keyhole_inside_the_slab(beta):
+    for f in WEIGHTS:
+        direct = cl.full_light_cone_integral(f, beta, **FULL)
+        keyhole = cl.full_keyhole_integral(f, beta, **FULL)
+        assert abs(direct) > 1e-3 and direct == pytest.approx(keyhole, rel=1e-6)

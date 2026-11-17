@@ -42,3 +42,9 @@ def test_interval_certificate_rejects_a_bad_contour(monkeypatch):
     monkeypatch.setattr(fc, "tuned_contour", strong)
     result = ci.interval_certificate("--", 1.0999, 1.1001)
     assert not result["all"] and not result["D_excursion_small"]
+
+
+@pytest.mark.parametrize("region", ["--", "+-", "-+"])
+def test_field_has_the_right_sign_next_to_the_edges_in_high_precision(region):
+    result = ci.edge_sign_check(region, 1.1, dps=100, samples=30, seed=1)
+    assert result["pairs"] >= 30 and result["all_negative"]

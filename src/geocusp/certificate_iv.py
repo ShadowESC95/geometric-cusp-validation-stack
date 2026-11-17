@@ -242,3 +242,74 @@ def cover(region: str, angle_lo: float, angle_hi: float, boxes: int) -> dict:
             "all": not failed, "failed": failed[:5], "failed_count": len(failed),
             "ratio_s_over_t": [min(ratios), max(ratios)],
             "excursion_upper": worst_e, "mu_Q_upper": worst_mu}
+
+
+# --------------------------------------------------------------------------
+# The inner field near the edges, in high precision
+# --------------------------------------------------------------------------
+def edge_sign_check(region: str = "--", angle: float = 1.1, dps: int = 100,
+                    samples: int = 60, seed: int = 0) -> dict:
+    """Sign of Im x0i^2 on the contour at points within 10^-6 ... 10^-30 of
+    the four edges, in `dps`-digit arithmetic with exactly null edges.
+
+    In float64 the edges are null only to 1e-16 and the sign is lost within
+    about 1e-9 of an edge. Here the inner field is re-evaluated with mpmath.
+    Returns the largest Im x0i^2 over invariants within delta0 of their
+    cone (must be negative) and the number of such invariants.
+    """
+    contour = fc.tuned_contour(region, angle)
+    rng = np.random.default_rng(seed)
+    old = mp.dps
+    mp.dps = dps
+    try:
+        c, sn = mp.cos(mp.mpf(angle)), mp.sin(mp.mpf(angle))
+        one, zero = mp.mpf(1), mp.mpf(0)
+        a, b = [one, zero, zero, one], [one, zero, zero, -one]
+        m, q = [-one, -sn, zero, -c], [-one, sn, zero, c]
+        p = {"--": [a, m, b, q], "+-": [a, b, m, q], "-+": [q, a, b, m]}[region]
+        dot = lambda u, v: u[0] * v[0] - u[1] * v[1] - u[2] * v[2] - u[3] * v[3]
+        add = lambda u, v, k=1: [u[i] + k * v[i] for i in range(4)]
+        x = [[zero] * 4]
+        for k in range(3):
+            x.append(add(x[-1], p[k]))
+        kap, nu, d0 = mp.mpf(contour.kappa), mp.mpf(contour.nu), mp.mpf(contour.delta0)
+        dphi = lambda t: zero if t <= 0 else (t * t if t <= 1 else 2 * t - 1)
+        step = lambda u: zero if u <= 0 else (one if u >= 1 else u * u * (3 - 2 * u))
+
+        def field(x0):
+            X = [dot(add(x0, xi, -1), add(x0, xi, -1)) for xi in x]
+            V = [zero] * 4
+            for j in range(4):
+                weight = step(abs(X[(j + 2) % 4]) / d0 - 1)
+                if weight == 0:
+                    continue
+                pm, pp = p[(j - 1) % 4], p[j]
+                D = 2 * dot(pm, pp)
+                y = add(x0, x[j], -1)
+                al, be = 2 * dot(y, pp) / D, 2 * dot(y, pm) / D
+                yperp = add(add(y, pm, -al), pp, -be)
+                l1, l2, l3 = dphi(-be), dphi(al), dphi(be - al - 1)
+                d_beta, d_alpha = -l1 + l3, l2 - l3
+                Vj = add([-mp.sign(D) * kap * (d_beta * pm[i] + d_alpha * pp[i]) for i in range(4)],
+                         yperp, nu)
+                V = add(V, Vj, weight)
+            return X, V
+
+        worst, count, smallest = -mp.inf, 0, mp.inf
+        for _ in range(samples):
+            j = int(rng.integers(0, 4))
+            along = mp.mpf(float(rng.uniform(0.05, 0.95)))
+            size = mp.mpf(10) ** (-int(rng.integers(6, 31)))
+            offset = [mp.mpf(float(v)) * size for v in rng.normal(size=4)]
+            x0 = add(add(x[j], p[j], along), offset)
+            X, V = field(x0)
+            for i in range(4):
+                if abs(X[i]) <= d0:
+                    im = 2 * dot(V, add(x0, x[i], -1))
+                    worst, count = max(worst, im), count + 1
+                    smallest = min(smallest, abs(im))
+        return {"region": region, "dps": dps, "pairs": count,
+                "largest_im": float(worst), "smallest_abs_im": float(smallest),
+                "all_negative": bool(worst < 0)}
+    finally:
+        mp.dps = old

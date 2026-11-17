@@ -32,10 +32,15 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    so the region where both collinear scales vanish is under complete
    control.
 
-What is **not** proved: the same for the full four-point integral. There
-the far propagator is not frozen, and the statement that the full integral
-differs from the four cusp-local models by a single pole is proved only for
-the parametric integral (sections 3 and 6).
+5. For the full four-point integrand the same contour closing is exact
+   (section 9): integrated first along the null direction of an edge, the
+   integral is supported in the slab between two null hyperplanes and
+   splits into two pieces, one for each of two opposite edges.
+
+What is **not** proved: that each of those two pieces equals the cusp-local
+models at its two ends up to a single pole. In position space that
+estimate is missing; the statement is proved only for the parametric
+integral (sections 3 and 6).
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -615,10 +620,10 @@ there.
    endpoint at the cusp, gives the double pole.
 
 **What this does not cover.** The full four-point integral. With the far
-propagator present, $`x_{04}^2`$ is not linear in $`\alpha`$ alone, since it
-depends on the angle of $`y_\perp`$, and step 1 fails as it stands. The
-passage from the full integral to the four cusp-local models is proved for
-the parametric integral (sections 3 and 6), not in position space. The
+propagator present step 1 still holds, in a stronger form (section 9), but
+the product structure of step 3 is lost. The passage from the full
+integral to the four cusp-local models is proved for the parametric
+integral (sections 3 and 6), not in position space. The
 iterated integral used here is the natural real-domain definition; its
 equality with the integral over the global contour of GATE_6_CONTOUR is
 not proved for the triangle.
@@ -643,3 +648,91 @@ $`\eta=0.4`$, limited by its quadrature.
 | The same for $`(\log^2z+\pi^2)z^{-0.2}`$, $`\beta=0.4`$ | $`186.272665+36.524833i`$ both ways |
 | Product formula against the closed form, $`z^{0.3}`$, $`z^{0.2+i}`$, $`z^{-0.4}`$ | agree to $`10^{-4}`$ (quadrature) |
 | Product formula against section 7 for $`\log^2z+\pi^2`$ | 8.7058 against 8.7060; 7.1151 against 7.1154 |
+
+## 9. The full integrand: exact reduction to two edges
+
+Keep the far propagator. Set $`s=-1`$, $`t=-T`$, and let $`\kappa`$ be the
+component of $`y_\perp`$ along the transverse part of the far edge, so
+$`\kappa^2\le\rho`$. By the exact formula for the far invariant,
+
+```math
+x_{04}^2=-T(1-\beta)-\alpha\,(T+\beta)-\rho+c\,\kappa,\qquad c=2\sqrt{T(1+T)},
+\qquad z=\frac{w\,x_{04}^2}{u_1u_3\,T}.
+```
+
+So all four invariants are linear in $`\alpha`$ at fixed $`\beta`$ and fixed
+transverse position. Their zeros, displaced by the prescription, lie in
+these half planes:
+
+| | $`\beta<-T`$ | $`-T<\beta<0`$ | $`0<\beta<1`$ | $`\beta>1`$ |
+| --- | --- | --- | --- | --- |
+| $`x_{02}^2`$, $`x_{01}^2`$ | upper | upper | lower | lower |
+| $`x_{03}^2`$ | upper | upper | upper | lower |
+| $`x_{04}^2`$ | upper | lower | lower | lower |
+
+**Theorem (two edges).** Let $`f`$ be holomorphic and polynomially bounded
+on $`|\operatorname{Im}L|<2\pi+\delta`$. At fixed $`\beta`$, $`\rho`$ and
+$`\kappa`$,
+
+```math
+\int_{\mathbb R}d\alpha\,\frac{f(L)}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=
+\begin{cases}
+0,&\beta<-T\ \text{or}\ \beta>1,\\[2pt]
+\text{keyhole around the zero of }x_{03}^2,&0<\beta<1,\\[2pt]
+\text{keyhole around the zero of }x_{04}^2,&-T<\beta<0 .
+\end{cases}
+```
+
+*Proof.* As in step 1 of section 8: where all four zeros lie in one half
+plane the contour closes in the other; where exactly one zero lies apart,
+the contour is deformed onto a keyhole around a cut from that zero. In the
+closing half plane the four invariants have negative imaginary part, so
+$`|\operatorname{Im}L|<2\pi`$; the integrand decays like $`|\alpha|^{-4}`$
+up to logarithms. $`\blacksquare`$
+
+**Geometry.** The surfaces $`\beta=`$ const are the null hyperplanes
+orthogonal to $`p_1`$. The one with $`\beta=1`$ passes through $`x_3`$, the
+one with $`\beta=0`$ contains the edge from $`x_1`$ to $`x_2`$, and the one
+with $`\beta=-T`$ passes through $`x_4`$. So the integral along the null
+direction $`p_1`$ is supported in the slab between the hyperplanes through
+$`x_4`$ and $`x_3`$. The hyperplane containing the edge $`(1,2)`$ divides
+the slab in two. On one side the integral is a discontinuity across the
+light cone of $`x_3`$ and belongs to the edge $`(2,3)`$; on the other it is
+a discontinuity across the light cone of $`x_4`$ and belongs to the edge
+$`(4,1)`$. For $`F=1`$, the box, each keyhole is a residue.
+
+This is exact for the full integrand, for every weight in the class and
+for every value of the displacement $`\varepsilon>0`$ in $`-i\varepsilon`$.
+
+**Numerical check** (`full_light_cone_integral`, `full_keyhole_integral`),
+at $`T=1.7`$, $`\rho=0.35`$, $`\kappa=0.3`$, $`\varepsilon=0.02`$, for the
+weights $`z^{-0.35+0.4i}`$, $`\log^2z+\pi^2`$ and 1:
+
+| $`\beta`$ | $`\alpha`$ integral | Keyhole |
+| --- | --- | --- |
+| $`-2.5,\ -1.9,\ 1.2,\ 2.0`$ | below $`10^{-12}`$ in every case | 0 |
+| $`-1.0`$, $`\log^2z+\pi^2`$ | $`-0.0681280-1.729232i`$ | the same to 7 digits |
+| $`-0.3`$, $`z^{-0.35+0.4i}`$ | $`-6.201512-21.85390i`$ | the same |
+| $`0.4`$, $`F=1`$ | $`-2.205243-13.70115i`$ | the same |
+| $`0.8`$, $`z^{-0.35+0.4i}`$ | $`0.7404036-0.2133773i`$ | the same |
+
+**What remains.** Each edge piece has two ends, and the double pole comes
+from the ends.
+
+- *Near end* ($`\beta\to0^+`$ for the edge $`(2,3)`$: the cusp $`x_2`$).
+  There $`x_{04}^2\to t(1-\beta)`$ and the integrand tends to that of the
+  cusp-local model of section 8. The corrections are of relative order
+  $`\beta`$, $`y`$ and $`\sqrt{\beta y}`$ in the variables of section 8,
+  each of which removes at least one of the two poles.
+- *Far end* ($`\beta\to1`$: the cusp $`x_3`$). With $`b=1-\beta`$ and the
+  scaling $`\rho,u_3\sim b^2`$, $`\kappa\sim b`$, the measure gives
+  $`\int db\,b^{2\eta-1}=1/(2\eta)`$, and the scaled integral has two
+  collinear pinches, one for each edge at $`x_3`$, each giving $`1/\eta`$:
+  in total $`\tfrac{1}{2\eta}(\tfrac1\eta+\tfrac1\eta)=1/\eta^2`$, one unit.
+
+These two bullets are power counting. They are consistent with one unit of
+$`M[F]`$ per cusp, but the estimate that turns them into "edge piece
+$`=`$ two cusp terms $`+\,O(1/\eta)`$" is not written, and the far-end
+coefficient has not been computed or checked numerically. That estimate is
+the remaining step for a derivation of the full coefficient entirely in
+position space. This section has not been independently reviewed.

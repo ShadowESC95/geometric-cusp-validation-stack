@@ -237,3 +237,99 @@ def lorentzian_product_formula(f, eta, nodes: int = 160):
         values = f(1j * phi[None, :] + shift[k:k + 4096, None])
         total += np.sum(weights[k:k + 4096, None] * w_phi[None, :] * values)
     return eta**2 / (2 * np.pi * gamma(1 + eta)) * total
+
+
+# --------------------------------------------------------------------------
+# The full four-point integrand (docs/CUSP_LOCAL_MODEL.md section 9)
+# --------------------------------------------------------------------------
+def full_invariants(alpha, beta, rho, kappa, T, eps):
+    """The four invariants at s = -1, t = -T, each with -i eps.
+
+    kappa is the component of y_perp along the transverse part of the far
+    edge, |kappa| <= sqrt(rho). All four are linear in alpha.
+    """
+    import numpy as np
+    c = 2 * np.sqrt(T * (1 + T))
+    w = -alpha * beta - rho - 1j * eps
+    u1 = w - beta
+    u3 = w + alpha
+    u4 = -T * (1 - beta) - alpha * (T + beta) - rho + c * kappa - 1j * eps
+    return w, u1, u3, u4
+
+
+def _full_integrand(f, alpha, beta, rho, kappa, T, eps, shift=0.0):
+    import numpy as np
+    w, u1, u3, u4 = full_invariants(alpha, beta, rho, kappa, T, eps)
+    L = (_feynman_log(w) + _feynman_log(u4) - _feynman_log(u1) - _feynman_log(u3)
+         - np.log(T) + shift)                                  # z = w u4/(u1 u3 T)
+    return f(L) / (w * u1 * u3 * u4)
+
+
+def full_light_cone_integral(f, beta, rho, kappa, T, eps=1e-2):
+    """int over real alpha of the full four-point integrand F(z)/(w u1 u3 u4).
+
+    It vanishes unless -T < beta < 1: the integral along the null direction
+    p_1 is supported in the slab between the null hyperplanes through x_4
+    and x_3. This holds for every eps > 0.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+
+    zeros = full_alpha_zeros(beta, rho, kappa, T, eps)
+    marks = sorted({float(np.real(z)) for z in zeros.values()} | {0.0})
+    edges = [-np.inf] + marks + [np.inf]
+    g = lambda a: _full_integrand(f, a, beta, rho, kappa, T, eps)
+    total = 0j
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        total += quad(lambda a: g(a).real, lo, hi, limit=600, epsabs=0, epsrel=1e-10)[0]
+        total += 1j * quad(lambda a: g(a).imag, lo, hi, limit=600, epsabs=0, epsrel=1e-10)[0]
+    return total
+
+
+def full_alpha_zeros(beta, rho, kappa, T, eps):
+    """Zeros in alpha of the four invariants (each is linear in alpha)."""
+    import numpy as np
+    c = 2 * np.sqrt(T * (1 + T))
+    r = rho + 1j * eps
+    return {"w": -r / beta, "u1": -1 - r / beta, "u3": r / (1 - beta),
+            "u4": (-T * (1 - beta) - r + c * kappa) / (T + beta)}
+
+
+def full_keyhole_integral(f, beta, rho, kappa, T, eps=1e-2):
+    """The same integral after closing the alpha contour.
+
+    For 0 < beta < 1 only the zero of u3 is in the upper half plane; for
+    -T < beta < 0 only the zero of u4 is in the lower. The real line is
+    deformed onto a keyhole around a vertical cut from that zero: the two
+    sides of the cut, which differ by 2 pi i in log z, and a circle around
+    the zero. Outside -T < beta < 1 there is nothing to hang on and the
+    integral is zero.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+
+    zeros = full_alpha_zeros(beta, rho, kappa, T, eps)
+    if 0 < beta < 1:
+        name, up = "u3", True
+    elif -T < beta < 0:
+        name, up = "u4", False
+    else:
+        return 0j
+    a0 = zeros[name]
+    r0 = 0.5 * min(abs(a0 - v) for k, v in zeros.items() if k != name)
+    g = lambda a: _full_integrand(f, a, beta, rho, kappa, T, eps)
+    step = 1j if up else -1j
+    tiny = 1e-12
+
+    def sides(t):                       # s = r0 e^t along the cut
+        sdist = r0 * np.exp(t)
+        a = a0 + step * sdist
+        return (g(a + tiny) - g(a - tiny)) * step * sdist
+
+    re = quad(lambda t: sides(t).real, 0, 60, limit=800, epsabs=0, epsrel=1e-10)[0]
+    im = quad(lambda t: sides(t).imag, 0, 60, limit=800, epsabs=0, epsrel=1e-10)[0]
+    lo, hi = (np.pi / 2 + 1e-9, 5 * np.pi / 2 - 1e-9) if up else (3 * np.pi / 2 - 1e-9, -np.pi / 2 + 1e-9)
+    circle = lambda chi: g(a0 + r0 * np.exp(1j * chi)) * 1j * r0 * np.exp(1j * chi)
+    cre = quad(lambda c: circle(c).real, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+    cim = quad(lambda c: circle(c).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+    return re + 1j * im + cre + 1j * cim

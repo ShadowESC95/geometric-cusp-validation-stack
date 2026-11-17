@@ -1365,9 +1365,11 @@ timelike diagonal (Lemma Q). Still open:
 - **The certificate** is verified in interval arithmetic on the ranges of
   section 9 and in floating point outside them. The field itself is
   evaluated in floating point in the surveys: within about $`10^{-9}`$ of an edge the float64 field loses the sign of
-  $`\operatorname{Im}x_{0i}^2`$ at the $`10^{-24}`$ level; a 60-digit
-  recomputation gives the right sign. The surveys exclude that
-  neighbourhood.
+  $`\operatorname{Im}x_{0i}^2`$ at the $`10^{-24}`$ level. This is rounding,
+  not a property of the contour: `certificate_iv.edge_sign_check`
+  re-evaluates the inner field in 100-digit arithmetic with exactly null
+  edges at points $`10^{-6}`$ to $`10^{-30}`$ from the edges, and every
+  near-cone imaginary part is negative, in all three regions.
 - **Review** by someone who works with these integrals.
 
 What the argument takes from general analysis: Fubini's theorem and

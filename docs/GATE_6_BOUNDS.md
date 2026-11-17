@@ -639,7 +639,7 @@ section 2.
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
 | Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
 | Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes: verified in interval arithmetic over the ranges of $`s/t`$ given in section 5 |
-| The edge statement implies the double pole | Proved for the cusp-local model, from the Lorentzian domain (CUSP_LOCAL_MODEL section 8). For the full integral the reduction to four cusp-local models is proved for the parametric integral, not in position space |
+| The edge statement implies the double pole | Proved for the cusp-local model, from the Lorentzian domain (CUSP_LOCAL_MODEL section 8). For the full integral the reduction to four cusp-local models is proved for the parametric integral. In position space the integrand reduces exactly to two edge pieces (CUSP_LOCAL_MODEL section 9); the estimate at their ends is missing |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
 | Regulated integral of $`z^p`$ on the contour equals the Mellin–Barnes form | Proved for $`\vert {\rm Re}\,p\vert <\eta`$, where the certificate passes (GATE_6_CONTOUR sections 11 and 12) |
