@@ -85,3 +85,60 @@ def remainder_ratio(p, eta, ratio=1):
     p = mp.mpmathify(p)
     limit = 4 * mp.sin(mp.pi * p) / (mp.pi * p) if p != 0 else mp.mpf(4)
     return (regulated_double_pole(p, eta, ratio) - limit) / mp.mpf(eta)
+
+
+# --------------------------------------------------------------------------
+# The exact formula for a general weight
+# --------------------------------------------------------------------------
+def circle_formula_prefactor(eta):
+    """c_eta = Gamma(1+eta)^2 Gamma(1-eta)/Gamma(1+2 eta), which tends to 1."""
+    eta = mp.mpf(eta)
+    return mp.gamma(1 + eta) ** 2 * mp.gamma(1 - eta) / mp.gamma(1 + 2 * eta)
+
+
+def smearing_density(x, eta):
+    """Probability density on x >= 0:
+    exp(-(1-eta) x) (1 - exp(-x))^(eta-1) / (Gamma(eta) Gamma(1-eta)).
+    It concentrates at x = 0 as eta -> 0; its mean is of order eta."""
+    x, eta = mp.mpf(x), mp.mpf(eta)
+    return mp.exp(-(1 - eta) * x) * (-mp.expm1(-x)) ** (eta - 1) / (mp.gamma(eta) * mp.gamma(1 - eta))
+
+
+def regulated_circle_formula(f, eta, nodes: int = 400):
+    """eta^2 x (cusp-local model) for a general weight F(z) = f(log z):
+
+        c_eta / (2 pi) * int_{-pi}^{pi} d phi (1 + e^{-i phi})^(2 eta)
+                       * int_0^oo dx kappa_eta(x) f(i phi - x).
+
+    Only the principal sheet |Im L| <= pi and |z| <= 1 enter. For f = exp(p L)
+    this is `triangle_closed_form(p, eta)` exactly. `f` must accept numpy
+    arrays of complex numbers. Gauss-Legendre quadrature; x = y^(1/eta) near
+    0 removes the x^(eta-1) endpoint singularity.
+    """
+    import numpy as np
+    from scipy.special import gamma
+
+    eta = float(eta)
+    t, wt = np.polynomial.legendre.leggauss(nodes)
+    phi, wphi = np.pi * t, np.pi * wt
+    y, wy = 0.5 * (t + 1), 0.5 * wt                      # x in (0, 1): x = y^(1/eta)
+    x_near = y ** (1 / eta)
+    ratio = np.where(x_near > 1e-12, -np.expm1(-x_near) / np.maximum(x_near, 1e-300), 1.0)
+    w_near = wy / eta * np.exp(-(1 - eta) * x_near) * ratio ** (eta - 1)
+    x_far = 1 + 0.5 * (t + 1) * 59                       # x in (1, 60)
+    w_far = 0.5 * 59 * wt * np.exp(-(1 - eta) * x_far) * (-np.expm1(-x_far)) ** (eta - 1)
+    x = np.concatenate([x_near, x_far])
+    wx = np.concatenate([w_near, w_far]) / (gamma(eta) * gamma(1 - eta))
+    values = f(1j * phi[:, None] - x[None, :])
+    smeared = values @ wx
+    total = np.sum(wphi * (1 + np.exp(-1j * phi)) ** (2 * eta) * smeared)
+    return complex(circle_formula_prefactor(eta)) * total / (2 * np.pi)
+
+
+def timelike_remainder_ratio(p, eta, modulus=1):
+    """(N_eta(p) - 4 sin(pi p)/(pi p)) / eta at a timelike diagonal, arg(S/T) = pi."""
+    from .lorentzian_edges import regulated_double_pole_complex
+
+    p = mp.mpmathify(p)
+    limit = 4 * mp.sin(mp.pi * p) / (mp.pi * p)
+    return (regulated_double_pole_complex(p, eta, modulus, mp.pi) - limit) / mp.mpf(eta)

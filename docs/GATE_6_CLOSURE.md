@@ -347,9 +347,11 @@ are computed in GATE_6_BOUNDS section 2.
   collisions and detours, is bypassed, not resolved. This route never
   introduces that lift.
 - The edge statement is not a step in the proof of the double pole. It
-  explains the circle; the proof is the Mellin–Barnes argument of
-  GATE_6_BOUNDS section 5, which re-derives the rule of arXiv:2112.06956
-  and extends it from powers to a class of weights.
+  explains the circle. The proof is in GATE_6_BOUNDS section 5 and
+  [CUSP_LOCAL_MODEL.md](CUSP_LOCAL_MODEL.md): each cusp contributes a
+  light-like triangle, whose regulated value for a general weight is an
+  explicit integral along the path between the lips of $`z=-1`$. That
+  formula is not yet derived from the Lorentzian domain directly.
 - The three-loop value from the edge chain is, by Cauchy's theorem, the
   same number as the circle mean. It tests the continuation of
   $`\bar F^{(2)}`$ to its second sheet, not an independent quantity.

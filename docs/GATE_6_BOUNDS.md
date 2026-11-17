@@ -571,7 +571,9 @@ I_\eta[F]=\frac{4\,M[F]}{\eta^2\,st}+O\Big(\frac1\eta\Big)\qquad(s,t<0).
 
 Here $`\delta'`$ must be chosen with $`W-\delta'>2\pi`$. The corollary has
 been checked by an independent review. Meromorphy in $`\eta`$
-is not proved, and with a timelike diagonal only the limit is proved.
+is not proved. With a timelike diagonal the same rate holds, by section 6 of
+CUSP_LOCAL_MODEL, with $`W-\delta'>2\pi+\gamma'`$; that section and the
+exact formula of its section 7 have been checked by an independent review.
 
 **What this argument does and does not use.** Steps A to D use the contour,
 the Mellin–Barnes evaluation and the identity
@@ -637,7 +639,7 @@ section 2.
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
 | Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
 | Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes: verified in interval arithmetic over the ranges of $`s/t`$ given in section 5 |
-| The edge statement implies the double pole | **Not proved.** The proof of the double pole does not pass through the edge statement |
+| The edge statement implies the double pole | **Not proved** in position space. Proved at the level of the parametric integral: one cusp-local model per cusp, in all regions, with an exact formula for a general weight (CUSP_LOCAL_MODEL) |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
 | Regulated integral of $`z^p`$ on the contour equals the Mellin–Barnes form | Proved for $`\vert {\rm Re}\,p\vert <\eta`$, where the certificate passes (GATE_6_CONTOUR sections 11 and 12) |

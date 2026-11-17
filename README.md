@@ -11,7 +11,7 @@ maps to a path between the two lips of $`z=-1`$, and the unit circle is one
 representative of it. This explains the known contour rule. It does not
 replace the existing derivation of that rule.
 
-- **275 tests** and **63 worked example groups**, all passing
+- **284 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -44,8 +44,9 @@ replace the existing derivation of that rule.
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
 | Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes; the certificate is verified in interval arithmetic for $`0.023\le s/t\le33.6`$ and the corresponding ranges with a timelike diagonal |
 | Cusp-local model: a light-like triangle, double pole $`\sin\pi p/(\pi p)`$ | Exact closed form |
-| Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof for spacelike diagonals (parametric integral); independently checked |
-| The same in position space, from the Lorentzian paths alone | **Not proved** |
+| Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
+| Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
+| That formula derived by integrating over the Lorentzian domain | **Not done** |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -64,7 +65,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 275 tests, about twenty minutes
+make test        # 284 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -186,8 +187,12 @@ What it does not do:
   statement in position space. It is proved from the parametric integral:
   each cusp contributes one unit of $`M[z^p]`$, and the two poles belong to
   the two edges at the cusp
-  ([CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md)). The Mellin–Barnes form is
-  still needed when a diagonal is timelike.
+  ([CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md)), in all three regions. For
+  a general weight the cusp-local model, defined through its parametric
+  form, is given exactly by an integral along the path between the lips,
+  with an $`O(\eta)`$ correction. What is missing is the derivation of that
+  formula from the real Lorentzian domain directly, and with it the proof
+  that the model is the frozen position-space integral.
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
@@ -242,7 +247,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            275 tests
+tests/            284 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

@@ -3,22 +3,29 @@
 The question: does the local structure at a cusp determine the double pole
 of the whole integral directly?
 
-**Answer.** Partly. Two things are proved here, for spacelike diagonals and
-the weight $`z^p`$, $`|\operatorname{Re}p|<1`$:
+**Answer.** Largely, with one step still missing. Proved here, for the
+weight $`z^p`$, $`|\operatorname{Re}p|<1`$, and then for the class of weights
+of GATE_6_BOUNDS Lemma 3:
 
 1. The cusp-local model, in which the far propagator is frozen at its cusp
    value, is a triangle with two light-like sides. It has a closed form. Its
    double pole is the product of the collinear poles of the two edges at the
-   cusp, with coefficient $`\sin\pi p/(\pi p)=M[z^p]`$.
+   cusp, with coefficient $`\sin\pi p/(\pi p)=M[z^p]`$ (section 2).
 2. The full parametric integral equals the sum of the four cusp-local
-   models up to a single pole. So the double pole is
-   $`4\sin\pi p/(\pi p)`$, one unit of $`M[z^p]`$ per cusp. The proof is
-   elementary real analysis on the Feynman simplex. It does not use
-   Mellin–Barnes.
+   models up to a single pole, by elementary estimates on the Feynman
+   simplex, without Mellin–Barnes (section 3). This now covers a timelike
+   diagonal as well (section 6).
+3. For a general weight the regulated cusp-local model, defined through
+   its parametric form, is given exactly by an integral of $`F`$ along the
+   path between the two lips of $`z=-1`$, smeared radially by an explicit
+   probability density of width $`\eta`$ (section 7). So for the model
+   $`\eta^2\times`$(model)$`\to M[F]`$ with an $`O(\eta)`$ correction, for
+   every weight polynomially bounded in $`\log z`$ on the principal sheet.
 
-What is **not** proved: the same statement carried out entirely in position
-space, with the Lorentzian paths of GATE_6_CLOSURE as the source of
-$`M[F]`$ and no Mellin transform in $`z`$. Section 5 says where that stands.
+What is **not** proved: the derivation of the formula of section 7 by
+integrating over the real Lorentzian domain directly. It is obtained from
+the closed form for powers and linearity. Section 5 says what a direct
+derivation has to compute.
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -202,7 +209,7 @@ parametric $`N_\eta`$ and the Mellin–Barnes one of GATE_6_FUNCTIONAL differ
 by the factor $`(S/T)^{\eta/2}=1+O(\eta)`$ when $`S\ne T`$.
 
 With a timelike diagonal $`A`$ changes sign on the simplex and this proof
-does not apply; Lemma 14 and the Mellin–Barnes form are still needed there.
+does not apply as it stands. Section 6 extends it.
 
 **Review.** An independent review re-derived sections 1 and 2, checked the
 proof of the theorem line by line, and computed $`B_\eta(p)`$ by its own
@@ -233,7 +240,13 @@ found no error and asked for the remarks above.
   $`x_j`$**, in the sense that the vertex model and the parametric form of
   the triangle at that cusp have the same double pole. They differ at order
   $`1/\eta`$. This identification is by comparison of the two formulas.
-- **Not done: a position-space proof with the Lorentzian paths.** In the
+- **The exact formula of section 7** gives the complete effect of the
+  regulator at a cusp for a general weight: a smearing of width $`\eta`$ and
+  a factor $`(1+1/z)^{2\eta}`$ on the path between the lips. For the model
+  the correction to $`M[F]`$ is $`O(\eta)`$. If the model equals the frozen
+  position-space integral, which is not proved, the mismatch between
+  quadrants cannot promote to a higher pole.
+- **Not done: the derivation of that formula in position space.** In the
   exact variables of section 1 the local integral is
   $`\int\frac{du_1}{u_1}\frac{du_3}{u_3}|u_1u_3|^\eta\,G(u_1,u_3)`$, and its
   double pole is the sum over the four sign quadrants of the limits of
@@ -243,4 +256,179 @@ found no error and asked for the remarks above.
   contour. And for a weight growing like $`\log^kz`$ each quadrant has a
   $`\log^{k+1}`$ that cancels only in the sum, while the regulator differs
   between quadrants at $`|z|\sim1/|u|`$. A proof has to show that this
-  mismatch does not promote to a higher pole. That is the open theorem.
+  mismatch does not promote to a higher pole. Section 7 shows that it does
+not for the parametric model, by a different route. A direct derivation would integrate
+$`u_1,u_3`$ over the real chain at fixed $`z`$ and must reproduce the kernel
+of section 7: the factor $`(1+1/z)^{2\eta}`$ and the convolution with
+$`\kappa_\eta`$. That computation is the remaining step.
+
+## 6. A timelike diagonal
+
+Let $`s>0`$, $`t<0`$, and $`T=|t|`$. By Lemma 14 of GATE_6_CONTOUR the
+parametric integral is then the limit $`\theta\to\pi`$ of the integral with
+$`S=|s|e^{i\theta}`$, and equals the integral over the rotated contour
+$`\alpha_1=re^{-i\gamma}`$. Lemma 14 proves this for $`\gamma<\pi/4`$. At
+$`\varphi=0`$ the rotation extends to any $`\gamma<\pi`$: at fixed
+$`(\alpha_3,\alpha_2)`$ the zero of $`A`$ in $`\alpha_1`$ is on the positive
+real axis and that of $`1+\alpha_1+\alpha_3`$ on the negative real axis,
+both outside the sector swept; the arc at radius $`R`$ contributes
+$`R^{\sigma-1-\eta}\to0`$; and both rays are absolutely integrable by
+$`|A|\ge\sin(\gamma/2)(\dots)`$ and
+$`|1+re^{-i\gamma}+\alpha_3|\ge\cos(\gamma/2)(1+r+\alpha_3)`$. The integrand is homogeneous of degree
+$`-4`$, so the constraint may be put on the simplex in
+$`(r,\alpha_2,\alpha_3,\alpha_4)`$:
+
+```math
+B_\eta(p)=e^{-i\gamma(1+p)}\int_\Delta r^{p}\alpha_3^{p}\alpha_2^{-p}\alpha_4^{-p}\,
+h(r)^{-2\eta}\,\big(r\alpha_3S'+\alpha_2\alpha_4T\big)^{\eta-2},
+\qquad S'=|s|e^{i(\pi-\gamma)},\quad h(r)=1-r(1-e^{-i\gamma}).
+```
+
+**Theorem (timelike).** With $`S=|s|e^{i\pi}`$,
+
+```math
+B_\eta(p)=\frac{4\,\Gamma(1+p)\Gamma(1-p)}{\eta^2}\,S^{-1-p}\,T^{p-1}+R_\eta(p),
+\qquad|R_\eta(p)|\le\frac{C_\gamma\,(1+|\tau|)\,e^{\gamma\tau}}{\eta}.
+```
+
+*Proof.* The proof of section 3 goes through with $`S'`$ in place of $`S`$,
+with these changes. (a) For $`c=r\alpha_3S'`$ and $`x\ge0`$,
+$`|c+xT|\ge\sin(\gamma/2)\,(|c|+xT)`$, because the two terms make an angle
+$`\pi-\gamma`$. Every bound on a modulus therefore holds with an extra
+factor $`\sin(\gamma/2)^{\eta-2}`$. (b) The quotient
+$`(c+\alpha_2\alpha_4T)/(c+\alpha_4T)`$ equals
+$`1-(1-\alpha_2)\alpha_4T/(c+\alpha_4T)`$, which differs from 1 by at most
+$`(1-\alpha_2)/\sin(\gamma/2)`$; take $`\delta\le\sin(\gamma/2)/6`$. (c) The
+integral (i) holds for complex $`c`$ with $`|\arg c|<\pi`$ by analytic
+continuation, and gives $`c^{\eta-1-p}`$. (d)
+$`\cos(\gamma/2)\le|h|\le1`$, so $`|h^{-2\eta}-1|\le C_\gamma\eta`$, and the
+factor changes the integral by $`O(\eta)\cdot O(1/\eta^2)`$. The leading
+terms of the four vertices add to
+$`e^{-i\gamma(1+p)}\,4\Gamma(1+p)\Gamma(1-p)\,S'^{-1-p}T^{p-1}/\eta^2`$, which
+is the stated one and does not depend on $`\gamma`$. The factor
+$`e^{\gamma\tau}`$ is the modulus of $`e^{-i\gamma(1+p)}`$. $`\blacksquare`$
+
+**Corollary.** In the normalisation $`N_\eta`$, where
+$`|(s/t)^p|=|s/t|^\sigma e^{-\pi\tau}`$,
+
+```math
+\Big|N_\eta(p)-\frac{4\sin\pi p}{\pi p}\Big|\le C_\gamma\,\eta\,(1+|\tau|)\,e^{(\gamma-\pi)\tau+2\pi|\tau|}.
+```
+
+Taking $`\gamma`$ small for $`\tau>0`$ and $`\gamma=\pi-\gamma'`$ for
+$`\tau<0`$ gives the bound $`C\eta(1+|\tau|)e^{(2\pi+\gamma')|\tau|}`$ for any
+$`\gamma'>0`$. Steps C and D of GATE_6_BOUNDS section 5 then need
+$`W-\delta'>2\pi+\gamma'`$, which holds for the three weights. Step C also
+needs $`N_\eta`$ holomorphic in $`p`$ between the lines: the rotated
+integrand is entire in $`p`$ and is dominated, locally uniformly in $`p`$,
+by $`\sin(\gamma/2)^{\eta-2}\cos(\gamma/2)^{-2\eta}`$ times the spacelike
+integrand, so $`B_\eta`$ is holomorphic for $`|\sigma|<1-\eta`$. So Lemma 4
+and Lemma 13 are no longer needed in any region; Lemma 14 is used only for
+its first half, the passage to the rotated contour.
+
+Numerically, at $`\arg(S/T)=\pi`$, $`(N_\eta-4\sin\pi p/\pi p)/\eta`$ stays
+bounded as $`\eta\to0`$: about $`1.8+5.7i`$ at $`p=0.3`$, $`9+82i`$ at
+$`p=0.2+1.5i`$ and $`-51+48i`$ at $`p=0.2-1.5i`$.
+
+## 7. The exact formula for a general weight
+
+Write the normalised cusp-local model of section 2 as
+
+```math
+\mathcal T_\eta(p)=\eta^2\,\frac{\Gamma(\eta)^2\,\Gamma(1+p-\eta)}{\Gamma(1+p)^2\,\Gamma(1-p+2\eta)} .
+```
+
+Two classical integrals,
+
+```math
+\frac{\Gamma(1+2\eta)}{\Gamma(1+p)\Gamma(1-p+2\eta)}=\frac1{2\pi}\int_{-\pi}^{\pi}e^{ip\phi}\,\big(1+e^{-i\phi}\big)^{2\eta}\,d\phi,
+\qquad
+\frac{\Gamma(1+p-\eta)}{\Gamma(1+p)}=\frac{1}{\Gamma(\eta)}\int_0^\infty e^{-px}\,e^{-(1-\eta)x}\big(1-e^{-x}\big)^{\eta-1}dx ,
+```
+
+the first a Beta integral on the unit circle and the second Euler's, give
+for $`\operatorname{Re}p>\eta-1`$
+
+```math
+\mathcal T_\eta(p)=\frac{c_\eta}{2\pi}\int_{-\pi}^{\pi}d\phi\,\big(1+e^{-i\phi}\big)^{2\eta}\int_0^\infty dx\,\kappa_\eta(x)\,e^{p(i\phi-x)},
+```
+
+```math
+c_\eta=\frac{\Gamma(1+\eta)^2\Gamma(1-\eta)}{\Gamma(1+2\eta)}\to1,\qquad
+\kappa_\eta(x)=\frac{e^{-(1-\eta)x}\,(1-e^{-x})^{\eta-1}}{\Gamma(\eta)\Gamma(1-\eta)},\qquad\int_0^\infty\kappa_\eta=1 .
+```
+
+**Theorem (regulated circle).** Let $`0<\eta<1`$, let $`f(L)=F(e^L)`$
+satisfy the hypothesis of GATE_6_BOUNDS Lemma 3 with $`W>\pi`$, and
+define the cusp-local model of
+$`F`$ by linearity, $`\mathcal T_\eta[F]=\int c(p)\,\mathcal T_\eta(p)\,dp`$.
+Then, exactly,
+
+```math
+\mathcal T_\eta[F]=\frac{c_\eta}{2\pi}\int_{-\pi}^{\pi}d\phi\,\big(1+e^{-i\phi}\big)^{2\eta}\int_0^\infty dx\,\kappa_\eta(x)\,F\big(e^{i\phi-x}\big).
+```
+
+At the cusps $`x_1,x_3`$ the same holds with $`F(e^{-i\phi+x})`$.
+
+*Proof.* Insert the formula for $`\mathcal T_\eta(p)`$ and exchange the
+integrals. On the lines $`\operatorname{Re}p=\mp\sigma`$,
+$`|e^{p(i\phi-x)}|\le e^{\pi|\tau|+\sigma x}`$, $`\kappa_\eta`$ decays like
+$`e^{-(1-\eta)x}`$ and $`|c(p)|\le Ce^{-(W-\delta')|\tau|}`$ with
+$`W-\delta'>\pi`$, so the triple integral converges absolutely for
+$`\sigma<\min(1/m,1-\eta)`$. The points $`L=i\phi-x`$ have
+$`|\operatorname{Im}L|\le\pi<W`$, inside the strip of Lemma 3. By Lemma 3, $`\int c(p)e^{pL}dp=f(L)`$. $`\blacksquare`$
+
+**What it says.**
+
+- The cusp-local model is an integral of $`F`$ over the path between the
+  two lips of $`z=-1`$, here the unit circle, moved to $`|z|=e^{-x}`$ at the
+  cusps $`x_2,x_4`$ and to $`|z|=e^{x}`$ at $`x_1,x_3`$, with $`x`$
+  distributed by $`\kappa_\eta`$. Only the principal sheet enters.
+- $`\kappa_\eta`$ has mean $`\psi(1)-\psi(1-\eta)\approx\eta\pi^2/6`$, and
+  $`(1+e^{-i\phi})^{2\eta}\to1`$ with an integrable logarithm at
+  $`\phi=\pm\pi`$. If $`|f|+|f'|\le A(1+|L|)^k`$ on
+  $`|\operatorname{Im}L|\le\pi`$, $`\operatorname{Re}L\le0`$ (or $`\ge0`$ at
+  $`x_1,x_3`$), and $`\eta\le\eta_0<1`$, then
+
+```math
+\big|\mathcal T_\eta[F]-M[F]\big|\le C_{k,\eta_0}\,A\,\eta .
+```
+
+  The constant is not computed; it grows quickly with $`k`$.
+- So $`\eta^2\times`$(model) is bounded and tends to $`M[F]`$ for every such
+  weight, whatever its growth in $`\log z`$. "No pole beyond the second" is
+  meant in this sense; meromorphy in $`\eta`$ is not proved.
+- For the full integral, summing the vertex theorems against $`c(p)`$ gives
+  $`\epsilon^2st\,I_\eta[F]=\sum_j\mathcal T^{(j)}_\eta[F]+O(\eta)=4M[F]+O(\eta)`$.
+  This needs more than the theorem above: $`W>\Phi`$ for step A of
+  GATE_6_BOUNDS section 5, $`W-\delta'>2\pi`$ (spacelike) or
+  $`2\pi+\gamma'`$ (timelike), a square where the certificate passes,
+  Proposition 8 and the first half of Lemma 14. The three weights
+  $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ satisfy these. The difference
+  between the full integral and the sum of the four models is a genuine
+  single pole: $`(N_\eta-\sum_j\mathcal T^{(j)}_\eta)/\eta\to-0.86`$ at
+  $`p=0.3`$.
+
+**Review.** An independent review re-derived sections 6 and 7, found no
+error, and confirmed with its own code the rotated integral at
+$`\gamma=0.7,1.6,2.4`$ against Mellin–Barnes to $`10^{-6}`$, the double
+integral of this section against the closed form to $`10^{-15}`$, and the
+$`O(\eta)`$ rates for $`L,L^2+\pi^2,L^3,L^4,L^8`$. The qualifications it
+asked for are those stated here.
+
+**Status.** The formula is exact for the cusp-local model defined through
+its parametric form. That this equals the position-space integral with the
+far propagator frozen is the triangle analogue of Proposition 8, which has
+not been proved. The formula is derived from the closed form for powers,
+not by integrating over the Lorentzian domain.
+
+Numerical checks (`regulated_circle_formula`):
+
+| Weight | $`\eta`$ | Formula | Reference |
+| --- | --- | --- | --- |
+| $`z^{0.3}`$ | 0.2 | 1.04665719 | 1.04665717 (closed form) |
+| $`z^{0.2+i}`$ | 0.15 | $`2.9136875-0.7260480i`$ | $`2.9136869-0.7260478i`$ |
+| $`z^{-0.4}`$ | 0.05 | 0.77929882 | 0.77929878 |
+| $`\log^2z+\pi^2`$ | 0.2, 0.05, 0.0125 | 8.7060, 7.1154, 6.7163 | same from $`\partial_p^2`$ of the closed form; $`M[F]=6.5797`$ |
+
+For the last weight $`(\mathcal T_\eta[F]-M[F])/\eta`$ is 10.6, 10.7, 10.9.
