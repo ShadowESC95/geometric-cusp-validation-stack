@@ -33,7 +33,12 @@ def check_feynman_contour():
 
     result = fc.survey(contour, 6000, seed=3)
     assert result["max_im_near"] <= 0 and result["max_excursion"] < 0.01
-    assert result["min_ratio"] > 1e-7
+    assert result["min_ratio"] > 1e-9
+    for region in ("--", "+-", "-+"):
+        cert = fc.certificate(fc.Contour(region=region))
+        assert cert["all"], [k for k, v in cert.items() if isinstance(v, bool) and not v]
+        print(f"signs {region}: every condition of the proof holds; "
+              f"||dV|| <= {cert['jacobian_bound']:.3f}, excursion <= {cert['excursion_bound']:.3f} rad")
     print(f"{result['near_count']} near-cone pairs: largest Im x0i^2 = {result['max_im_near']:.1e}")
     print(f"largest excursion of arg x0i^2 beyond [-pi, 0]: {result['max_excursion']:.1e} rad")
     print(f"smallest |x0i^2| / min(1, dist_to_edges^2): {result['min_ratio']:.1e}")

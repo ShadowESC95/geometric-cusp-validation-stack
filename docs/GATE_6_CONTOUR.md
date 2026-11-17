@@ -7,11 +7,14 @@ integral and for the statement that only the edges produce poles. This
 document constructs such a contour, and replaces the appeal to Stirling's
 formula in Lemma 4 by elementary bounds.
 
-**Status.** The construction is explicit and implemented. Its central
-inequality is proved. Its global properties follow from that inequality, a
-compactness argument and a choice of constants; they are verified on a
-stress sample of 60 000 points, not proved estimate by estimate. It is
-carried out for spacelike diagonals (\(s,t<0\)). Nothing here has been
+**Status.** The construction is explicit and implemented, in all three real
+kinematic regions. Its central inequality is proved (Lemma 5). Its global
+properties are reduced in section 9 to a list of inequalities between named
+constants, each proved, and the list is evaluated for the contour used
+(`certificate`): every condition holds. The properties are also measured on
+stress samples and lie within the proved bounds. Section 10 identifies the
+regulated integral on the contour with the Mellin–Barnes form; one textbook
+representation is cited there and not re-derived. Nothing here has been
 reviewed by a specialist.
 
 Code: `src/geocusp/feynman_contour.py`. Tests: `tests/test_gate6_contour.py`.
@@ -42,7 +45,8 @@ cone: the invariant moves into the lower half plane.
 ## 2. Frame fields
 
 At the cusp \(x_j\) write \(x_0=x_j+\alpha p_{j-1}+\beta p_j+y_\perp\),
-\(D=2p_{j-1}\!\cdot p_j<0\), \(\rho=|y_\perp|^2\), \(P=(\beta,\alpha)\). Let
+\(D=2p_{j-1}\!\cdot p_j\), \(\rho=|y_\perp|^2\), \(P=(\beta,\alpha)\). Take
+\(D<0\) first (a spacelike diagonal at this cusp). Let
 
 \[
 T=\{\beta\ge0,\ \alpha\le0,\ \beta-\alpha\le1\}
@@ -90,6 +94,15 @@ rotation of the transverse plane used in GATE_6_BOUNDS, with
 
 The frame field does not control the fourth invariant \(x_{0,j+2}^2\).
 
+**Timelike diagonal.** If \(D>0\) at the cusp, replace \(\kappa\) by
+\(-\kappa\) in \(V_j\). The computation in the proof gives
+\((-\kappa D/2)\,d\cdot(P-v_i)-\nu\rho\), and the bound of Lemma 5 holds with
+\(|D|\). The transverse plane is spacelike for either sign of \(D\), since
+two independent null vectors span a Lorentzian plane. Nothing else changes:
+the far fields need only points in the common past and future, which always
+exist. In the regions \((s,t)=(+,-)\) and \((-,+)\) two of the four cusps
+have \(D>0\).
+
 ## 3. Far fields
 
 Let \(c_-\) lie in the common chronological past of the four cusps and
@@ -133,16 +146,18 @@ frames are \(j=i-1,i,i+1\), with weights
 \min_{x_0\in\mathbb R^4}\ \max_i|x_{0i}^2|\approx0.199
 \]
 
-for the square used here (numerical minimisation), and \(2\delta_0=0.1\).
+for the square used here (numerical minimisation), and \(2\delta_0=0.05\).
+Section 9 proves a weaker bound, 0.0897, which is still enough.
 This is the statement that the four cones have no common real point.
 
 **Constants.** \(R\) is chosen so that the far fields are admissible outside
-the ball. \(\delta_0\) is then chosen below the minimum above. Finally
-\(\kappa,\nu\ll\delta_0/R^2\), so that where a frame field is switched on but
-does not control an invariant, that invariant is at least \(\delta_0\) in
-modulus and moves by a small fraction of itself. The values used are
-\(R=8\), \(\delta_0=0.05\), \(\kappa=\nu=3\times10^{-6}\),
-\(\kappa'=2\times10^{-3}\).
+the ball. \(\delta_0\) is then chosen so that \(2\delta_0\) is below the
+minimum above. Finally \(\kappa,\nu\ll\delta_0/R^2\), so that where a frame
+field is switched on but does not control an invariant, that invariant is at
+least \(\delta_0\) in modulus and moves by a small fraction of itself. The
+values used are \(R=8\), \(\tau_0=8\) (the time offset of \(c_\pm\)),
+\(\delta_0=0.025\), \(\kappa=\nu=1.5\times10^{-7}\),
+\(\kappa'=2\times10^{-3}\). Section 9 states the precise conditions.
 
 ## 5. Properties
 
@@ -170,17 +185,23 @@ other two are the same. (5): the Jacobian is \(1+i\,\partial V\) with
 \(\partial V\) real, whose determinant vanishes only if \(\partial V\) has
 an eigenvalue of modulus 1; \(\|\partial V\|<1\).
 
-Measured on the sample (60 000 points: generic points at three scales,
-points within \(10^{-4}\) to \(10^{-1}\) of one cone, points near two cones,
-and points near the four null lines on and off the segments):
+Measured on stress samples of 30 000 points in each region (generic points
+at three scales, points within \(10^{-4}\) to \(10^{-1}\) of one cone, points
+near two cones, and points near the four null lines on and off the
+segments), next to the bounds proved in section 9:
 
-| Property | Measured |
-| --- | --- |
-| Largest \(\operatorname{Im}x_{0i}^2\) over 42 716 near-cone pairs | \(-5.5\times10^{-16}\) (never positive) |
-| Largest excursion of \(\arg x_{0i}^2\) beyond \([-\pi,0]\) | \(3.9\times10^{-3}\) rad |
-| Smallest \(\min_i|x_{0i}^2|/\min(1,\mathrm{dist}_{\rm edges}^2)\) | \(1.8\times10^{-6}\) |
-| Smallest ratio in item 4, in units of \(\nu\), at the four cusps | 213 to 1152 |
-| Largest \(\|\partial V\|\) over 8 000 points | 0.19 |
+| Property | \((-,-)\) | \((+,-)\) | \((-,+)\) | Proved bound |
+| --- | --- | --- | --- | --- |
+| Near-cone pairs tested | 19 520 | 19 369 | 19 441 | |
+| Largest \(\operatorname{Im}x_{0i}^2\) near a cone | \(-7\times10^{-17}\) | \(-2\times10^{-17}\) | \(-9\times10^{-17}\) | \(\le0\) |
+| Largest excursion of \(\arg x_{0i}^2\) beyond \([-\pi,0]\) | 0.0039 | 0.0039 | 0.0039 | 0.083, 0.049, 0.049 |
+| Smallest \(\min_i|x_{0i}^2|/\min(1,\mathrm{dist}_{\rm edges}^2)\) | \(4\times10^{-7}\) | \(5\times10^{-7}\) | \(5\times10^{-7}\) | \(>0\) |
+| Smallest ratio in item 4, units of \(\nu\) | 4 258 | 6 920 | 2 364 | \(\ge\tfrac12\) |
+| Largest \(\|\partial V\|\) | 0.018 | 0.018 | 0.018 | 0.37, 0.18, 0.18 |
+
+The imaginary parts near a cone are never positive; their size is set by
+\(\nu\) times the squared distance from the flat triangles, which is tiny for
+points placed within \(10^{-4}\) of a cone.
 
 ## 6. Consequences
 
@@ -262,24 +283,253 @@ uniformly in \(\eta\). The power of \(|\tau|\) is worse than in Lemma 4 and
 does not matter: \(c(p)\) decays like \(e^{-(2\pi+\delta')|\tau|}\). The
 test `test_elementary_gamma_bounds` checks the three inequalities on a grid.
 
-## 8. What remains
+## 8. Kinematic regions
 
-- The global properties in Proposition 6 are derived from Lemma 5 by a
-  compactness argument and a choice of constants, and checked by sampling.
-  A proof that tracks every constant, including the blend region between the
-  ball and the far field, is not written.
-- The construction is for \(s,t<0\). In the other two kinematic regions one
-  diagonal is timelike, the signs in Lemma 5 change at two of the cusps, and
-  the far field must be adapted. The local results of GATE_6_BOUNDS hold in
-  all three regions.
-- Dimensional regularisation is applied on the contour by continuing the
-  transverse measure. That the result agrees with the Mellin–Barnes
-  definition of the regulated integral is standard and not re-derived.
+Real null edges summing to zero have exactly one positive invariant among
+\(s,t,u\), so there are three regions. The construction is the same in all
+of them, with the sign change of section 2 at the cusps whose diagonal is
+timelike. In those regions two opposite cusps are timelike separated, and
+the future cone of one meets the past cone of the other in a sphere; that
+sphere lies inside the ball, where the two frame fields of the other two
+cusps control both invariants. The table of section 5 and the certificate of
+section 9 cover all three regions.
+
+## 9. Proof of Proposition 6 with explicit constants
+
+Norms \(|\cdot|\) are Euclidean in \(\mathbb R^4\), and
+\(|a\!\cdot b|\le|a||b|\) for the Minkowski product. Let \(c\) be the centre
+of the square, \(r=|x_0-c|\), and
+
+\[
+\Delta=\max_i|x_i-c|,\qquad P=\max_j|p_j|,\qquad
+A_1=\frac{2P}{\min_j|D_j|},\qquad A_2=1+2A_1P,\qquad
+\lambda_0=2\kappa A_1P+\nu A_2 .
+\]
+
+In the frame of \(x_j\): \(|\alpha|,|\beta|\le A_1|x_0-x_j|\),
+\(|y_\perp|\le A_2|x_0-x_j|\), and \(|d(P)|\le|P|\) because the vertex
+\((0,0)\) belongs to \(T\). Hence
+
+\[
+|V_j|\le\lambda_0|x_0-x_j|,\qquad\operatorname{Lip}(V_j)\le\lambda_0,
+\]
+
+the second because \(P\mapsto d(P)\) is 1-Lipschitz. Write
+\(n=x_0-x_i\), \(u^\mp=x_i-c_\mp\), and \((\tau,\xi)\) for the time and space
+parts of \(x_0-c\). The cutoff \(\chi\) is the cubic smoothstep, with
+\(|\chi'|\le\tfrac32\). The inner field is used for \(r\le R\), the outer for
+\(r\ge2R\), and \(V=(1-g)V_{\rm in}+gV_{\rm out}\) in between with
+\(|\nabla g|\le\tfrac3{2R}\). \(\Theta_\pm\) equals 1 for
+\(\pm\tau\ge\tfrac12|\xi|\) and 0 for \(\pm\tau\le\tfrac14|\xi|\).
+
+**(H1) A frame field is fully on near every cone.** If
+\(\max_i|x_{0i}^2|\le\epsilon\) then, in the frame of any cusp,
+\(|\beta D|,|\alpha D|\le2\epsilon\), \(|w|\le\epsilon\),
+\(\rho\le\epsilon+4\epsilon^2/|D|\), and by the exact formula for the far
+invariant
+
+\[
+\big|x_{0,j+2}^2-D'\big|\le\frac{4\epsilon|D'|}{|D|}+\epsilon
++2\sqrt{\frac{D'u}{D}\Big(\epsilon+\frac{4\epsilon^2}{|D|}\Big)} .
+\]
+
+If the right side is less than \(|D'|-\epsilon\) this contradicts
+\(|x_{0,j+2}^2|\le\epsilon\). Let \(\epsilon_*\) be the largest \(\epsilon\)
+for which it is. *Condition:* \(2\delta_0<\epsilon_*\). Then for
+\(|x_{0i}^2|\le\delta_0\) one of the three weights
+\(\chi(|x_{0,i\pm1}^2|/\delta_0)\), \(\chi(|x_{0,i+2}^2|/\delta_0)\) equals 1.
+(\(\epsilon_*\) is weaker than the true minimum 0.199 but is proved.)
+
+**(A) Inner field near a cone.** For \(|x_{0i}^2|\le\delta_0\) the weight of
+the frame \(i+2\) vanishes, and by Lemma 5
+
+\[
+V_{\rm in}\!\cdot n=\sum_{j\ne i+2}m_jV_j\!\cdot n
+\le-\sum_{j\ne i+2}m_j\Big(\frac{\kappa|D_j|}{2}|d_j|^2+\nu\rho_j\Big)\le0 .
+\]
+
+This is exact and needs no condition. By (H1) some \(m_j=1\), so equality
+forces \(x_0\) into the flat triangle of that frame, where its three
+invariants vanish only on the edges.
+
+**(C0) Centres.** *Condition:* \(\tau_0\ge3\Delta\). Then \(u^-\) is future
+timelike with \(u^-_0\ge\tau_0-\Delta\) and \(|\vec u^-|\le\Delta\).
+
+**(C2) Near a cone outside the ball, \(\Theta=1\).** If
+\(|n^2|\le\delta_0\) then \(|n_0|\ge|\vec n|-\sqrt{\delta_0}\), so
+\(|\tau|\ge|\xi|-(2\Delta+\sqrt{\delta_0})\). With
+\(\xi_0=2(2\Delta+\sqrt{\delta_0})\): if \(|\xi|\ge\xi_0\) then
+\(|\tau|\ge\tfrac12|\xi|\); if \(|\xi|<\xi_0\) then
+\(|\tau|\ge\sqrt{R^2-\xi_0^2}\). *Condition:*
+\(R\ge\tfrac{\sqrt5}{2}\xi_0\). Then \(|\tau|\ge\tfrac12|\xi|\) in both
+cases.
+
+**(C1) Outer field near a cone.** Take \(\tau\ge\tfrac12|\xi|\), \(r\ge R\),
+\(|n^2|\le\delta_0\). Then \(n_0\ge r/\sqrt{17}-\Delta\) and
+\(|\vec n|\le n_0+\sqrt{\delta_0}\), so
+
+\[
+n^2+u^-\!\cdot n\ \ge\ -\delta_0+(\tau_0-2\Delta)\Big(\frac{R}{\sqrt{17}}-\Delta\Big)-\Delta\sqrt{\delta_0}.
+\]
+
+*Condition:* the right side is positive. Then
+\(V_{\rm out}\!\cdot n=-\kappa'(n^2+u^-\!\cdot n)<0\); the past case is the
+mirror image. With (A), \(\operatorname{Im}x_{0i}^2\le0\) near every cone in
+all three zones, strictly so where \(g>0\).
+
+**(C3) The spacelike wedge.** For \(|\tau|\le\tfrac14|\xi|\) and \(r\ge R\),
+\(|\xi|\ge4R/\sqrt{17}\) and
+\(n^2\le(\tfrac14|\xi|+\Delta)^2-(|\xi|-\Delta)^2\). *Condition:* this is
+below \(-\delta_0\) at \(|\xi|=4R/\sqrt{17}\). So no cone comes within
+\(\delta_0\) where the outer field is switched off.
+
+**(D) Phases away from the cones.** Frames \(j\ne i+2\) contribute a
+non-positive imaginary part everywhere, which keeps the argument in
+\([-\pi,0]\). The frame \(i+2\) acts only where \(|x_{0i}^2|\ge\delta_0\) and
+\(r\le2R\), and there \(|2V_{i+2}\!\cdot n|\le2\lambda_0(2R+\Delta)^2\), while
+the real part moves by at most \(|V|^2\le v^2\) with
+\(v=4\lambda_0(2R+\Delta)+\kappa'(2R+\tau_0+\Delta)\). *Condition:*
+\(v^2<\delta_0/2\). The excursion from this term is at most
+\(\arctan[2\lambda_0(2R+\Delta)^2/(\delta_0-v^2)]\).
+
+For the outer field with \(\Theta=1\),
+\(x_{0i}^2\mapsto(1-i\kappa')^2n^2-2i\kappa'(1-i\kappa')\,n\!\cdot u-\kappa'^2u^2\).
+The imaginary part is positive only if \(n^2+n\!\cdot u<0\). If
+\(n\!\cdot u\ge0\) then \(n^2<0\), the imaginary part is at most
+\(2\kappa'|n^2|\) and the real part at most \(-(1-\kappa'^2)|n^2|\): excursion
+at most \(\arctan[2\kappa'/(1-\kappa'^2)]\). If \(n\!\cdot u<0\) then
+\(|\vec n|\ge2n_0\), \(|n^2|\ge\tfrac34|\vec n|^2\) and
+\(|n\!\cdot u|\le\Delta|\vec n|\): excursion at most
+\(\arctan[2\kappa'(1+2\Delta/(3(R/\sqrt{17}-\Delta)))]\). Where
+\(0<\Theta<1\), \(|\tau|\le\tfrac12|\xi|\), so
+\(-n^2\ge\tfrac34|\xi|(|\xi|-4\Delta)\) and \(|n|\le\tfrac{\sqrt5}{2}|\xi|+\Delta\):
+excursion at most
+\(\arctan\{2\kappa'[1+(\tfrac{\sqrt5}{2}+\Delta/|\xi|)(\tau_0+\Delta)/(\tfrac34(|\xi|-4\Delta))]\}\)
+with \(|\xi|\ge2R/\sqrt5\). *Condition:* \(2R/\sqrt5>4\Delta\). The total
+excursion bound is the sum of the frame term and the largest of the three
+far terms.
+
+**(E) Local diffeomorphism.**
+\(|\nabla m_j|\le\tfrac{3}{2\delta_0}\cdot2|x_0-x_{j+2}|\le3(2R+\Delta)/\delta_0\),
+so
+
+\[
+\|\partial V_{\rm in}\|\le4\Big[\frac{3(2R+\Delta)^2\lambda_0}{\delta_0}+\lambda_0\Big].
+\]
+
+For the outer field \(|\nabla\Theta_\pm|\le6|\nabla(\tau/|\xi|)|\le7.5/r\) on
+its support, so
+\(\|\partial V_{\rm out}\|\le\kappa'[1+7.5(1+(\tau_0+\Delta)/R)]\). The blend
+adds \(\tfrac3{2R}[4\lambda_0(2R+\Delta)+\kappa'(2R+\tau_0+\Delta)]\).
+*Condition:* the sum is below 1.
+
+**(F) Lower bounds near a cusp.** The frame at the cusp has weight 1 there.
+If \(\rho\ge\tfrac12|\alpha\beta D|\) the imaginary part of \(x_{0,j}^2\) is
+at least \(2\nu\rho\) in modulus; otherwise the real part is at least
+\(\tfrac12|\alpha\beta D|-|V|^2\). The other two invariants are treated in
+the same way. This gives item 4 with \(c=\tfrac12\) up to the negligible
+\(|V|^2\).
+
+**The conditions, evaluated.**
+
+| Condition | \((-,-)\) | \((+,-)\), \((-,+)\) |
+| --- | --- | --- |
+| (H1) \(\epsilon_*\) against \(2\delta_0=0.05\) | 0.0897 | 0.345 |
+| (C0) \(\tau_0\ge3\Delta\), with \(\Delta\) | 0.988 | 1.034 |
+| (C1) margin (must be positive) | 5.55 | 5.19 |
+| (C2), (C3), wedge margin | hold | hold |
+| (D) excursion bound, rad | 0.083 | 0.049 |
+| (E) bound on \(\|\partial V\|\) | 0.368 | 0.179 |
+
+`certificate` computes these from the geometry and the constants, and
+`test_every_explicit_condition_of_the_proof_holds` asserts all of them in
+each region. A further test checks that the measured excursion and Jacobian
+norm are below the proved bounds.
+
+With an earlier choice of constants (\(\kappa=\nu=3\times10^{-6}\),
+\(\delta_0=0.05\)) the sampled properties also held, but conditions (H1),
+(D) and (E) did not: the bounds here are not sharp, and the constants were
+reduced until every condition holds.
+
+## 10. The regulated integral on the contour
+
+**Dimensional regularisation as a shift.** In \(D=4+2\eta\) dimensions with
+\(\eta>0\) the integrand depends on the \(2\eta\) extra components of
+\(x_0\) only through their squared length \(\mu\), and every invariant
+becomes \(x_{0i}^2-\mu\). Integrating the extra directions,
+
+\[
+\int d^Dx_0\,(\cdots)=\frac{\pi^{\eta}}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}
+\int d^4x_0\,(\cdots)\big|_{x_{0i}^2\to x_{0i}^2-\mu}.
+\]
+
+The shift is real, so the contour of this document serves for every
+\(\mu\ge0\): imaginary parts are unchanged, and the bounds of item 4 hold
+with \(x_{0i}^2-\mu\) in place of \(x_{0i}^2\) by the same two-case
+argument. For \(\mu>0\) the shifted invariants also vanish at real points
+inside the flat triangles, where \(V=0\); these are isolated curves on which
+a single invariant vanishes, with an integrable singularity.
+
+**From the shifted integral to Feynman parameters.** The four-dimensional
+integral with shifted invariants and powers \(a_i\) (\(\sum a_i=4\)) has the
+Schwinger representation
+
+\[
+\int\frac{d^4x_0}{i\pi^2}\prod_i\frac{1}{(-x_{0i}^2+\mu-i0)^{a_i}}
+=\frac{\Gamma(2)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)
+\frac{\prod\alpha_i^{a_i-1}}{(\alpha_1\alpha_3|s|+\alpha_2\alpha_4|t|+\mu)^2}.
+\]
+
+This is the textbook parametric representation of a one-loop integral with
+a common mass shift. **It is cited, not re-derived here**, and it is the one
+input of this section taken from the literature.
+
+**Extra dimensions.** With \(A=\alpha_1\alpha_3|s|+\alpha_2\alpha_4|t|\),
+
+\[
+\frac{1}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}\frac{\Gamma(2)}{(A+\mu)^2}
+=\Gamma(2-\eta)\,A^{\eta-2},
+\]
+
+which turns the right side into the \(D\)-dimensional Feynman-parameter
+integral with exponent \(2-\eta=2+\epsilon\). Checked numerically.
+
+**Feynman parameters to Mellin–Barnes.** The Feynman-parameter integral for
+\(z^p\) (powers \(1\pm p\)) is evaluated directly, as three nested
+one-dimensional integrals, and compared with the one-fold Mellin–Barnes
+integral used in GATE_6_FUNCTIONAL and in Lemma 4:
+
+| \(p\) | \(\eta\) | \(s/t\) | Feynman parameters | Mellin–Barnes |
+| --- | --- | --- | --- | --- |
+| 0.2 | 0.4 | 1 | 3.520361875 | 3.520361876 |
+| \(-0.3\) | 0.3 | 2.5 | 3.893274… | 3.893274816 |
+| 0 | 0.25 | 1 | 4.004157042 | 4.004157043 |
+
+They agree to \(10^{-7}\) or better, normalisation included
+(`test_feynman_parameter_form_equals_the_mellin_barnes_form`).
+
+So the regulated integral on the contour equals the Mellin–Barnes form,
+given the Schwinger representation.
+
+## 11. What remains
+
+- The Schwinger representation in section 10 is cited. Deriving it for the
+  \(-i0\) integral means exchanging the parameter integrals with the
+  \(x_0\) integral; on the contour of this document the integrand is
+  absolutely integrable, which is what that exchange needs, but the
+  derivation is not written out.
+- The bounds of section 9 are proved for the stated construction. The
+  absolute integrability in section 6 uses item 4 and a power-counting
+  estimate that is given in outline.
+- The certificate is evaluated for one square in each region. The
+  conditions are inequalities between geometric constants and can be
+  re-evaluated for any other square with `certificate`.
 - Review by someone who works with these integrals.
 
-## 9. Reproduce
+## 12. Reproduce
 
 ```bash
 PYTHONPATH=src pytest -q tests/test_gate6_contour.py
 PYTHONPATH=src python -m examples.feynman_contour_survey
+PYTHONPATH=src python -m geocusp.solver contour --points 5000
 ```

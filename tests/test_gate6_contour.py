@@ -11,6 +11,9 @@ def contour():
     return fc.Contour()
 
 
+REGIONS = ("--", "+-", "-+")
+
+
 def test_projection_onto_the_triangle_has_the_obtuse_angle_property():
     """d = P - proj(P) satisfies d.(P - V) >= |d|^2 for every vertex V."""
     rng = np.random.default_rng(0)
@@ -47,6 +50,8 @@ def test_no_real_point_is_close_to_all_four_cones(contour):
                        options={"xatol": 1e-8, "fatol": 1e-10, "maxiter": 4000})
         best = min(best, res.fun)
     assert best > 2 * contour.delta0
+    # the analytic bound used in the proof is weaker than the true minimum but suffices
+    assert 2 * contour.delta0 < fc.four_cone_gap(contour) < best
 
 
 def test_global_properties_of_the_contour(contour):
@@ -54,7 +59,7 @@ def test_global_properties_of_the_contour(contour):
     assert result["near_count"] > 10000
     assert result["max_im_near"] <= 0.0                 # correct side of every cone
     assert result["max_excursion"] < 0.01               # |arg z| <= 2 pi + 0.04
-    assert result["min_ratio"] > 1e-7                   # zeros only on the edges
+    assert result["min_ratio"] > 1e-9                   # zeros only on the edges
 
 
 def test_displacement_is_small_and_the_map_is_a_local_diffeomorphism(contour):
@@ -94,3 +99,46 @@ def test_elementary_gamma_bounds():
     lhs = abs(mp.gamma(mp.mpc(a, y))) ** 2
     rhs = abs(mp.gamma(mp.mpc(1 + a, y))) ** 2 / (a**2 + y**2)
     assert abs(lhs - rhs) < mp.mpf("1e-12") * lhs
+
+
+@pytest.mark.parametrize("region", REGIONS)
+def test_every_explicit_condition_of_the_proof_holds(region):
+    """Section 9 of GATE_6_CONTOUR reduces Proposition 6 to a list of
+    inequalities between named constants. They hold for the contour used."""
+    result = fc.certificate(fc.Contour(region=region))
+    failed = [k for k, v in result.items() if isinstance(v, bool) and not v]
+    assert not failed, failed
+    assert result["jacobian_bound"] < 1 and result["excursion_bound"] < 0.2
+
+
+@pytest.mark.parametrize("region", REGIONS)
+def test_contour_in_every_kinematic_region(region):
+    """One sign changes where a diagonal is timelike; the properties are the same."""
+    C = fc.Contour(region=region)
+    rng = np.random.default_rng(6)
+    worst = -np.inf
+    for _ in range(2000):
+        x0 = C.centre + rng.normal(size=4) * 10 ** rng.uniform(-1, 1.5)
+        for j in range(4):
+            v, bound = C.frame_field(j, x0), C.frame_bound(j, x0)
+            for i in ((j - 1) % 4, j, (j + 1) % 4):
+                worst = max(worst, fc.mdot(v, x0 - C.x[i]) - bound)
+    assert worst < 1e-12
+    result = fc.survey(C, 8000, seed=8)
+    assert result["max_im_near"] <= 0.0 and result["near_count"] > 4000
+    assert result["max_excursion"] < fc.certificate(C)["excursion_bound"]
+    assert result["min_ratio"] > 1e-9
+
+
+def test_measured_values_respect_the_proved_bounds(contour):
+    cert = fc.certificate(contour)
+    worst = 0.0
+    for x0 in fc.sample_points(contour, 1500, seed=9):
+        if contour.distance_to_edges(x0) < 1e-3:
+            continue
+        h = 1e-6 * max(1.0, np.linalg.norm(x0))
+        jac = np.array([(contour.field(x0 + h * e) - contour.field(x0 - h * e)) / (2 * h)
+                        for e in np.eye(4)])
+        worst = max(worst, np.linalg.norm(jac, 2))
+    assert worst <= cert["jacobian_bound"]
+    assert fc.survey(contour, 6000, seed=10)["max_excursion"] <= cert["excursion_bound"]

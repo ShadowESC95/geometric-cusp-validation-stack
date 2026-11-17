@@ -224,3 +224,26 @@ def test_only_the_edges_can_pinch_the_contour():
     assert sp.simplify(first - s * (a - 1) ** 2) == 0 and sp.simplify(second - s * a**2) == 0
     assert result["triple_123"] == [{a: 0, c: 0}]             # only the cusp x2
     assert result["quadruple"] == []
+
+
+# ---- the regulated integral: Feynman parameters against Mellin-Barnes -----
+@pytest.mark.parametrize("p,eta,ratio", [(0.2, 0.4, 1.0), (-0.3, 0.3, 2.5), (0.0, 0.25, 1.0)])
+def test_feynman_parameter_form_equals_the_mellin_barnes_form(p, eta, ratio):
+    """Two representations of eps^2 s t times the regulated integral of z^p:
+    the Feynman-parameter integral in D = 4 + 2 eta, and the one-fold
+    Mellin-Barnes integral used elsewhere. They agree, normalisation included."""
+    parametric = le.parametric_double_pole(p, eta, ratio)
+    barnes = complex(le.regulated_double_pole(p, eta, ratio))
+    assert abs(barnes.imag) < 1e-12
+    assert parametric == pytest.approx(barnes.real, rel=1e-7)
+
+
+def test_extra_dimensions_integrate_to_the_dimensional_power():
+    """int_0^oo d mu mu^(eta-1)/Gamma(eta) * Gamma(2)/(A + mu)^2 = Gamma(2-eta) A^(eta-2):
+    integrating out the 2 eta extra dimensions is a shift x0i^2 -> x0i^2 - mu."""
+    for eta, A in ((0.3, 0.7), (0.05, 2.5)):
+        eta, A = mp.mpf(eta), mp.mpf(A)
+        # mu = v^(1/eta) removes the endpoint singularity: mu^(eta-1) d mu = dv / eta
+        lhs = mp.quad(lambda v: 1 / (A + v ** (1 / eta)) ** 2,
+                      [0, A**eta / 2, A**eta, 2 * A**eta, mp.inf]) / (eta * mp.gamma(eta))
+        assert abs(lhs - mp.gamma(2 - eta) * A ** (eta - 2)) < mp.mpf("1e-10")

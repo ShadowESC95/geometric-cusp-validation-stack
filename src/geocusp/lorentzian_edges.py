@@ -514,3 +514,55 @@ def landau_pinch_analysis():
         "quadruple": sp.solve([inv[1], inv[2], inv[3], inv[4]], [a, c, d], dict=True),
         "symbols": (a, c, d, s, t),
     }
+
+
+# --------------------------------------------------------------------------
+# Feynman-parameter form of the regulated integral
+# --------------------------------------------------------------------------
+def parametric_double_pole(p, eta, ratio=1):
+    """eps^2 s t times the regulated integral of z^p from Feynman parameters.
+
+    With propagator powers 1+p on legs 1, 3 and 1-p on legs 2, 4, in
+    D = 4 + 2 eta dimensions,
+
+        Gamma(2 - eta) / (Gamma(1+p)^2 Gamma(1-p)^2)
+          * int d^4a delta(1 - a2 - a4) (a1 a3)^p (a2 a4)^(-p)
+            (a1 + a2 + a3 + a4)^(-2 eta) / (a1 a3 s + a2 a4 t)^(2 - eta),
+
+    using the Cheng-Wu freedom to put the delta function on a2 + a4. The
+    extra-dimensional integral has already been done: it is
+        int_0^oo d mu mu^(eta-1)/Gamma(eta) * Gamma(2)/(A + mu)^2
+          = Gamma(2 - eta) A^(eta - 2).
+    Substituting a1 = sqrt(q) e^y, a3 = sqrt(q) e^(-y) leaves three nested
+    one-dimensional integrals. Agrees with `regulated_double_pole`, which is
+    the Mellin-Barnes form of the same quantity.
+    """
+    from scipy.integrate import quad
+    from scipy.interpolate import CubicSpline
+    from scipy.special import gamma as gamma_fn
+
+    p, eta, ratio = float(p), float(eta), float(ratio)
+
+    def h(q):
+        root = 2 * np.sqrt(q)
+        with np.errstate(over="ignore"):
+            value = quad(lambda y: (1 + root * np.cosh(y)) ** (-2 * eta), 0, np.inf,
+                         epsabs=0, epsrel=1e-11, limit=400)[0]
+        return 2 * value
+
+    grid = np.linspace(-34, 34, 681)                       # log q
+    spline = CubicSpline(grid, np.log([h(np.exp(g)) for g in grid]))
+
+    def over_q(X):
+        # q = X exp(v): the integrand in v decays like exp(-(1-p-eta)|v|) or faster
+        def integrand(v):
+            q = X * np.exp(v)
+            return q ** (1 + p) * np.exp(spline(np.log(q))) / (q * ratio + X) ** (2 - eta)
+        return quad(integrand, -30 - np.log(X), 30 - np.log(X), epsabs=0, epsrel=1e-10,
+                    limit=400, points=[0.0])[0]
+
+    total = 2 * quad(lambda x: (x * (1 - x)) ** (-p) * over_q(x * (1 - x)), 0, 0.5,
+                     epsabs=0, epsrel=1e-9, limit=200)[0]
+    # s t from the prefactor and (s/t)^p from the definition of z, with t = 1
+    return (eta**2 * ratio ** (1 + p) * gamma_fn(2 - eta)
+            / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)

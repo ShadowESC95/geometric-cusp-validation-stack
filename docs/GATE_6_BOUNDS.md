@@ -409,8 +409,10 @@ weight \(F\) to equal \(\int c(p)\times\)(regulated integral of
 \(z^p\))\(\,dp\). This holds on an integration contour on which the
 regulated integrand is absolutely integrable and \(|\arg z|\le2\pi+\delta''\)
 with \(\delta''<\delta'\). Such a contour is constructed in
-[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md) for \(s,t<0\); its properties are
-derived from one proved inequality and verified by sampling.
+[GATE_6_CONTOUR.md](GATE_6_CONTOUR.md) in all three kinematic regions; its
+properties are proved there with explicit constants, and section 10 of that
+document identifies the regulated integral on it with the Mellin–Barnes
+form.
 
 ## 6. Pinch surfaces (the regions away from the edges)
 
@@ -467,11 +469,12 @@ section 2.
 | Uniform bound \(e^{\pi|{\rm Im}\,p|}\) on the regulated integral (Lemma 4) | Proved, with elementary Gamma bounds (GATE_6_CONTOUR section 7) |
 | Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given the contour |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
-| Global absolutely convergent contour (Proposition 6) | Constructed for \(s,t<0\); key inequality proved; global properties verified by sampling |
+| Global absolutely convergent contour (Proposition 6) | Constructed in all three regions; proved with explicit constants, all conditions verified |
+| Regulated integral on the contour equals the Mellin–Barnes form | Shown, given the textbook Schwinger representation |
 
-**What would complete it.** (a) A proof of Proposition 6 that tracks every
-constant, and its extension to the two regions with a timelike diagonal.
-(b) Review by someone who works with these integrals.
+**What would complete it.** (a) Writing out the Schwinger representation
+for the \(-i0\) integral instead of citing it. (b) Review by someone who
+works with these integrals.
 
 ## 8. Reproduce
 

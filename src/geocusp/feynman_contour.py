@@ -8,7 +8,8 @@ purely imaginary vector field,
 so that  x0i^2 -> x0i^2 - V^2 + 2 i V.(x0 - x_i)  exactly. The imaginary part
 is linear in V, so any convex combination of admissible fields is admissible.
 
-Building blocks (spacelike diagonals, s < 0 and t < 0):
+Building blocks (written for D = 2 p_{j-1}.p_j < 0; where a diagonal is
+timelike the longitudinal part of the frame field changes sign):
 
 * Frame fields. At the cusp x_j write x0 = x_j + alpha p_{j-1} + beta p_j
   + yperp and let T be the triangle {beta >= 0, alpha <= 0, beta - alpha <= 1}
@@ -64,18 +65,19 @@ def project_to_triangle(P):
 
 @dataclass
 class Contour:
-    kappa: float = 3e-6          # longitudinal displacement of the frame fields
-    nu: float = 3e-6             # transverse displacement of the frame fields
+    kappa: float = 1.5e-7        # longitudinal displacement of the frame fields
+    nu: float = 1.5e-7           # transverse displacement of the frame fields
     kappa_far: float = 2e-3      # far field
-    delta0: float = 0.05         # width of the neighbourhood of a cone, inside the ball
+    delta0: float = 0.025        # width of the neighbourhood of a cone, inside the ball
     radius: float = 8.0          # frame fields inside, far fields outside 2*radius
     tau0: float = 8.0            # time offset of the far-field centres
     angle: float = 1.1
+    region: str = "--"           # signs of the diagonals (s, t)
     p: np.ndarray = field(init=False)
     x: np.ndarray = field(init=False)
 
     def __post_init__(self):
-        self.p, self.s, self.t = light_like_square("--", self.angle)
+        self.p, self.s, self.t = light_like_square(self.region, self.angle)
         pts = [np.zeros(4)]
         for k in range(3):
             pts.append(pts[-1] + self.p[k])
@@ -103,7 +105,8 @@ class Contour:
         pm, pp, D, alpha, beta, yperp, rho = self.frame(j, x0)
         P = np.array([beta, alpha])
         d = P - project_to_triangle(P)
-        return self.kappa * (d[0] * pm + d[1] * pp) + self.nu * yperp
+        # the longitudinal part needs (kappa D) < 0: reverse it where the diagonal is timelike
+        return -np.sign(D) * self.kappa * (d[0] * pm + d[1] * pp) + self.nu * yperp
 
     def frame_bound(self, j, x0):
         """-(kappa |D|/2) |d|^2 - nu rho: upper bound on V_j.(x0 - x_i), i = j-1, j, j+1."""
@@ -305,3 +308,101 @@ def gamma_product_bounds(a, v):
     ratio = mp.pi * v / mp.sinh(mp.pi * v) if v != 0 else mp.mpf(1)
     bound = mp.gamma(a) ** 2 * ratio * (1 if a <= 1 else 1 + v**2)
     return value, bound
+
+
+# --------------------------------------------------------------------------
+# Certificate: every constant used in the proof of Proposition 6
+# --------------------------------------------------------------------------
+def four_cone_gap(contour: Contour):
+    """A value eps such that no real point has all four |x0i^2| <= eps.
+
+    In the frame of a cusp, max_i |x0i^2| <= eps forces |beta D|, |alpha D|
+    <= 2 eps, |w| <= eps and rho <= eps + 4 eps^2/|D|, hence
+        |x0,far^2 - D'| <= 4 eps |D'|/|D| + eps + 2 sqrt((D' u/D)(eps + 4 eps^2/|D|)).
+    If the right side is below |D'| - eps this contradicts |x0,far^2| <= eps.
+    Returns the largest eps (to 1e-6) for which the contradiction holds in
+    some frame.
+    """
+    C = contour
+    u = -C.s - C.t
+    best = 0.0
+    for j in range(4):
+        D = 2 * mdot(C.p[(j - 1) % 4], C.p[j])
+        Dp = C.t if abs(D - C.s) < 1e-9 else C.s
+        lo, hi = 0.0, abs(Dp)
+
+        def contradiction(eps):
+            rho = eps + 4 * eps**2 / abs(D)
+            shift = 4 * eps * abs(Dp) / abs(D) + eps + 2 * np.sqrt(Dp * u / D * rho)
+            return shift < abs(Dp) - eps
+
+        for _ in range(60):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if contradiction(mid) else (lo, mid)
+        best = max(best, lo)
+    return best
+
+
+def certificate(contour: Contour) -> dict:
+    """Evaluate the explicit conditions of GATE_6_CONTOUR section 9.
+
+    Norms are Euclidean; |a.b| <= |a||b| for the Minkowski product. The
+    returned dict has the geometric constants, each bound, and a boolean per
+    condition. `all` is their conjunction.
+    """
+    C = contour
+    eu = np.linalg.norm
+    Delta = max(eu(x - C.centre) for x in C.x)
+    Pn = max(eu(p) for p in C.p)
+    Ds = [abs(2 * mdot(C.p[(j - 1) % 4], C.p[j])) for j in range(4)]
+    A1 = 2 * Pn / min(Ds)                 # |alpha|, |beta| <= A1 |x0 - x_j|
+    A2 = 1 + 2 * A1 * Pn                  # |yperp| <= A2 |x0 - x_j|
+    lam0 = 2 * C.kappa * A1 * Pn + C.nu * A2      # |V_j| <= lam0 |x0 - x_j|, Lip(V_j) <= lam0
+    R, d0, kf, tau0 = C.radius, C.delta0, C.kappa_far, C.tau0
+    out = {"Delta": Delta, "P": Pn, "A1": A1, "A2": A2, "lambda0": lam0}
+
+    # H1: some frame field is fully switched on near every cone
+    out["four_cone_gap"] = four_cone_gap(C)
+    out["H1_frame_on"] = bool(2 * d0 < out["four_cone_gap"])
+
+    # C0: far centres are in the common past and future with margin
+    out["C0_centres"] = bool(tau0 >= 3 * Delta)
+
+    # C1: far field strictly admissible on |x0i^2| <= delta0, r >= R
+    lhs = (tau0 - 2 * Delta) * (R / np.sqrt(17) - Delta)
+    out["C1_far_admissible"] = bool(R / np.sqrt(17) > Delta and lhs > d0 + Delta * np.sqrt(d0))
+    out["C1_margin"] = lhs - (d0 + Delta * np.sqrt(d0))
+
+    # C2: for r >= R, points with |x0i^2| <= delta0 have |time| >= |space|/2, so Theta = 1
+    xi0 = 2 * (2 * Delta + np.sqrt(d0))
+    out["C2_theta_is_one"] = bool(R >= np.sqrt(5) / 2 * xi0)
+
+    # C3: in the spacelike wedge |time| <= |space|/4, r >= R, no cone is within delta0
+    xi_min = R * 4 / np.sqrt(17)
+    worst = (xi_min / 4 + Delta) ** 2 - (xi_min - Delta) ** 2
+    out["C3_wedge_free"] = bool(xi_min > Delta and worst < -d0)
+
+    # D: excursion of the phases
+    reach = 2 * R + Delta
+    frame_term = 2 * lam0 * reach**2                       # |2 V_{i+2}.(x0 - x_i)|
+    v_inner = 4 * lam0 * reach + kf * (2 * R + tau0 + Delta)
+    out["excursion_frames"] = float(np.arctan(frame_term / (d0 - v_inner**2)))
+    # far field: three cases (see the proof): Im > 0 with n.u >= 0; with n.u < 0; partial Theta
+    xi = R * 2 / np.sqrt(5)                                  # |space| >= this where 0 < Theta < 1
+    case_a = 1 / (1 - kf**2)
+    case_b = 1 + 2 * Delta / (3 * (R / np.sqrt(17) - Delta))
+    case_c = 1 + (np.sqrt(5) / 2 + Delta / xi) * (tau0 + Delta) / (0.75 * (xi - 4 * Delta))
+    out["C4_wedge_margin"] = bool(xi > 4 * Delta)
+    out["excursion_far"] = float(np.arctan(2 * kf * max(case_a, case_b, case_c)))
+    out["excursion_bound"] = out["excursion_frames"] + out["excursion_far"]
+    out["D_excursion_small"] = bool(v_inner**2 < d0 / 2 and out["excursion_bound"] < 0.2)
+
+    # E: the map is a local diffeomorphism, ||dV|| < 1
+    j_inner = 4 * (3 * reach**2 * lam0 / d0 + lam0)        # sum_j |dm_j||V_j| + m_j |dV_j|
+    j_outer = kf * (1 + 7.5 * (1 + (tau0 + Delta) / R))
+    j_blend = 1.5 / R * (4 * lam0 * reach + kf * (2 * R + tau0 + Delta))
+    out["jacobian_bound"] = j_inner + j_outer + j_blend
+    out["E_local_diffeomorphism"] = bool(out["jacobian_bound"] < 1)
+
+    out["all"] = all(v for k, v in out.items() if isinstance(v, bool))
+    return out

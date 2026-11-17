@@ -307,9 +307,10 @@ are computed in GATE_6_BOUNDS section 2.
 
 **Constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md).**
 
-- An explicit global integration contour, for \(s,t<0\). Its key inequality
-  is proved; its global properties are verified by sampling, and a proof
-  tracking every constant is not written.
+- An explicit global integration contour in all three kinematic regions,
+  with its properties proved by explicit constants, and the identification
+  of the regulated integral on it with the Mellin–Barnes form (one textbook
+  representation cited).
 
 **Not addressed.**
 
