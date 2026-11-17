@@ -8,12 +8,16 @@ that extracts the cusp anomalous dimension.
 ## Status: what is established and what is not
 
 **Reproduced from the literature (not new results).** The chart, the forms,
-the finite functions \(F^{(0)}=-1\), \(F^{(1)}=\log^2z+\pi^2\) and the contour
-rule are taken from the papers in [docs/references.md](docs/references.md).
-Feeding them through the code returns the known coefficients
-\(\Gamma^{(1)}_{\rm cusp}=4\) and \(\Gamma^{(2)}_{\rm cusp}=-4\pi^2/3\). This
-checks the implementation and its conventions. It is not an independent
-derivation of those numbers, and no three-loop check is included.
+the finite functions \(F^{(0)}=-1\), \(F^{(1)}=\log^2z+\pi^2\), the weight-four
+\(F^{(2)}\) and the contour rule are taken from the papers in
+[docs/references.md](docs/references.md). The overall constant of the rule is
+calibrated at one loop (\(\Gamma^{(1)}_{\rm cusp}=4\)). With that constant
+fixed, the code returns \(\Gamma^{(2)}_{\rm cusp}=-4\pi^2/3\) and
+\(\Gamma^{(3)}_{\rm cusp}=44\pi^4/45\); the three-loop value agrees to twelve
+digits and was not used to set anything. These are checks of the rule and of
+the transcribed functions. They are not derivations: \(F^{(1)}\) is recomputed
+here from the finite parameter integral, but \(F^{(2)}\) is not recomputed
+from the three-loop integrand.
 
 **Computed here, exact in the stated charts.**
 
@@ -319,7 +323,7 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 25 pytest
+Run the benchmark with `make test && make examples`. The suite has 31 pytest
 tests and 60 example groups. See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)

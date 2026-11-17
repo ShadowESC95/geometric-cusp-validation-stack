@@ -13,6 +13,43 @@ def Fbar1(z):
     return np.log(z)**2 + np.pi**2
 
 
+def Fbar2(z, dps: int = 20):
+    """Two-loop finite function, arXiv:2112.06956 Eq. (2.23) ("Fweak2").
+
+    Transcribed from the paper's TeX source. It is an input from the
+    literature, not something this package derives. Returns an mpmath number.
+    """
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        z = mp.mpmathify(z)
+        pi, li = mp.pi, mp.polylog
+        log = mp.log(z)
+        a, b = 1/(z + 1), z/(z + 1)
+        s2 = li(2, a) + li(2, b)
+        return (-log**4/2
+                + log**2*(mp.mpf(2)/3*s2 - 19*pi**2/9)
+                + log*(4*li(3, a) - 4*li(3, b))
+                + mp.mpf(2)/3*(s2 - pi**2/6)**2
+                + mp.mpf(8)/3*pi**2*(s2 - pi**2/6)
+                + 8*li(4, a) + 8*li(4, b)
+                - 23*pi**4/18)
+
+
+def circle_mean_mp(func, dps: int = 20):
+    """Unit-circle mean on the principal sheet, by adaptive mpmath quadrature.
+
+    Handles the integrable logarithmic endpoint singularities at z=-1 that
+    the equally spaced `contour_mean` does not resolve.
+    """
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        nodes = mp.linspace(-mp.pi, mp.pi, 9)
+        total = mp.quad(lambda phi: func(mp.exp(1j*phi)), nodes)
+        return complex(total/(2*mp.pi))
+
+
 def insertion_F(g, z, order=0):
     """Wilson-loop insertion normalization inferred from the source's Eq. (2.34): F = -g^2 Fbar.
 
@@ -47,6 +84,12 @@ def cusp_coefficient_from_mean(loop_order: int, mean: complex) -> complex:
     Dixon et al., arXiv:2605.28926, Eqs. (2.30)–(2.31), (6.2)–(6.5).
     The contour contributes -g^2 times the mean. The coupling derivative
     multiplies the g^(2L) coefficient by 2L.
+
+    The overall constant is a convention: arXiv:2112.06956 prints
+    g d/dg Gamma = -2 I[F], which with its own F^(0) = -1 would give
+    Gamma^(1) = 1, not the 4 quoted in the same paper. The factor here (-8 I)
+    is the one that returns Gamma^(1) = 4. One loop therefore calibrates the
+    rule; two and three loops are checks that could fail.
     """
     if loop_order < 1:
         raise ValueError("loop_order must be positive")
