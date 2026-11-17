@@ -312,19 +312,86 @@ def solve_two_loop(edge: bool = True, position: float = .4) -> dict:
     return result
 
 
-def contour_survey(points: int = 5000, seed: int = 0) -> dict:
-    """Survey the explicit integration contour of docs/GATE_6_CONTOUR.md."""
+def _contour(region: str, angle: float):
     from . import feynman_contour as fc
 
+    if region not in REGIONS:
+        raise ValueError("region must be one of " + ", ".join(REGIONS))
+    if not .3 <= angle <= 2.8:
+        raise ValueError("angle must lie between 0.3 and 2.8")
+    return fc, fc.tuned_contour(region, angle)
+
+
+def contour_survey(points: int = 5000, seed: int = 0, region: str = "--",
+                   angle: float = 1.1) -> dict:
+    """Survey the explicit integration contour of docs/GATE_6_CONTOUR.md.
+
+    Besides the side of every cone and the zeros, it reports the range of
+    arg z at real points and on the contour (Lemmas P and Q) and the ratio
+    |V^2| / |Im x0i^2| near the cones, which Lemma Q bounds by mu_Q.
+    """
     if points < 100:
         raise ValueError("use at least 100 sample points")
-    contour = fc.Contour()
+    fc, contour = _contour(region, angle)
     result = {key: float(value) for key, value in fc.survey(contour, points, seed).items()}
     result["near_count"] = int(result["near_count"])
     result["points"] = points
+    result["region"] = region
     result["feynman_side_of_every_cone"] = bool(result["max_im_near"] <= 0)
     result["zeros_only_on_edges"] = bool(result["min_ratio"] > 0)
+    phase = fc.phase_survey(contour, points, seed)
+    timelike = region != "--"
+    proved = 3 - fc.PHASE_CORNER_MARGIN/pi if timelike else 2 + 4*.2/pi
+    result["arg_z_over_pi_real"] = [phase["real_min"], phase["real_max"]]
+    result["arg_z_over_pi_contour"] = [phase["contour_min"], phase["contour_max"]]
+    result["arg_z_over_pi_proved_bound"] = proved
+    result["phase_within_proved_bound"] = bool(
+        max(abs(phase["contour_min"]), abs(phase["contour_max"])) <= proved)
+    cert = fc.certificate(contour)
+    result["corner_ratio"] = fc.corner_ratio(contour, points, seed)
+    result["mu_Q"] = cert["mu_Q"]
+    result["corner_ratio_within_bound"] = bool(result["corner_ratio"] <= cert["mu_Q"])
+    result["certificate_passes"] = bool(cert["all"])
     return result
+
+
+def contour_certificate(region: str = "--", angle: float = 1.1) -> dict:
+    """The explicit conditions of GATE_6_CONTOUR section 9 for one square.
+
+    The arithmetic is floating point, not interval arithmetic.
+    """
+    fc, contour = _contour(region, angle)
+    cert = fc.certificate(contour)
+    conditions = {key: value for key, value in cert.items() if isinstance(value, bool) and key != "all"}
+    constants = {key: float(cert[key]) for key in
+                 ("Delta", "four_cone_gap", "C1_margin", "excursion_bound", "jacobian_bound",
+                  "theta", "mu_Q", "corner_angle")}
+    return {"region": region, "angle": angle, "s": float(contour.s), "t": float(contour.t),
+            "radius": float(contour.radius), "delta0": float(contour.delta0),
+            "kappa": float(contour.kappa), "nu": float(contour.nu),
+            "kappa_far": float(contour.kappa_far), "conditions": conditions,
+            "failed": [key for key, value in conditions.items() if not value],
+            "constants": constants, "all": bool(cert["all"])}
+
+
+def convergence_threshold(eta: float = .2, sigma: float = .1) -> dict:
+    """Does the integral of |z^p| converge near the edges, with Re p = sigma?
+
+    The strip bound of GATE_6_CONTOUR Lemma 8' is integrable if and only if
+    |sigma| < eta. The value is reported at three cutoffs: it settles when
+    the integral converges and keeps growing when it does not.
+    """
+    from . import feynman_contour as fc
+
+    if not 0 < eta < .5:
+        raise ValueError("eta must lie strictly between 0 and 0.5")
+    if not abs(sigma) < 1:
+        raise ValueError("|sigma| must be below 1")
+    cutoffs = (1e-12, 1e-24, 1e-48)
+    values = [fc.strip_power_integral(eta, sigma, cutoff) for cutoff in cutoffs]
+    return {"eta": eta, "sigma": sigma, "cutoffs": list(cutoffs), "values": values,
+            "growth": [values[1]-values[0], values[2]-values[1]],
+            "converges": bool(abs(sigma) < eta)}
 
 
 # ---------------------------------------------------------------- CD weight
@@ -451,6 +518,16 @@ def main(argv=None) -> None:
     con = sub.add_parser("contour", help="survey the explicit integration contour")
     con.add_argument("--points", type=int, default=5000)
     con.add_argument("--seed", type=int, default=0)
+    con.add_argument("--region", choices=tuple(REGIONS), default="--")
+    con.add_argument("--angle", type=float, default=1.1, help="shape of the square")
+
+    cer = sub.add_parser("certificate", help="the explicit conditions on the contour")
+    cer.add_argument("--region", choices=tuple(REGIONS), default="--")
+    cer.add_argument("--angle", type=float, default=1.1)
+
+    thr = sub.add_parser("threshold", help="convergence of |z^p| near the edges: needs |Re p| < eta")
+    thr.add_argument("--eta", type=float, default=.2)
+    thr.add_argument("--sigma", type=float, default=.1, help="Re p")
 
     cd = sub.add_parser("cd", help="integrate the CD weight at a complex z")
     cd.add_argument("z", type=complex, help="for example 0.35+0.8j")
@@ -467,7 +544,7 @@ def main(argv=None) -> None:
         except ImportError as error:
             parser.error(f"the desktop window needs Tk and Matplotlib ({error}); install your "
                          "platform's Tk package for Python, or use the functional, edge, "
-                         "two-loop, contour, cd and rim subcommands")
+                         "two-loop, contour, certificate, threshold, cd and rim subcommands")
         run()
         return
     try:
@@ -482,7 +559,11 @@ def main(argv=None) -> None:
         elif args.command == "two-loop":
             result = solve_two_loop(edge=not args.no_edge)
         elif args.command == "contour":
-            result = contour_survey(args.points, args.seed)
+            result = contour_survey(args.points, args.seed, args.region, args.angle)
+        elif args.command == "certificate":
+            result = contour_certificate(args.region, args.angle)
+        elif args.command == "threshold":
+            result = convergence_threshold(args.eta, args.sigma)
         elif args.command == "cd":
             result = solve_cd(args.z)
         else:

@@ -847,7 +847,8 @@ The remedy is to carry out the same construction in
 $`\mathbb R^{1,3+k}`$. The transverse space of each frame gains the
 coordinates $`e`$, so $`\rho\to\rho+e\!\cdot e`$; the frame field gains the
 component $`\nu e`$, the far fields the component $`-\kappa'e`$; the cutoffs
-use the $`D`$-dimensional invariants. Lemma 5 and sections 4, 9 and 10 hold
+use the $`D`$-dimensional invariants. Lemma 5, Lemmas P and Q of section 5 (with $`\rho`$ replaced by
+$`\rho+\mu`$ and $`\vec n`$ including $`e`$) and sections 4, 9 and 10 hold
 verbatim, with Euclidean norms taken in $`\mathbb R^{4+k}`$; section 10 was
 already written with the transverse measure of this picture. With this
 contour no point of any surface $`x_{0i}^2=\mu`$ is displaced to the wrong
@@ -860,8 +861,10 @@ $`x_0`$ and $`m=|e|`$ with weight $`m^{2\eta-1}`$, which is analytic in
 $`\eta`$.
 
 **Proposition 8 (parametric representation).** Let $`a_i`$ be complex with
-$`0<\operatorname{Re}a_i<2`$, $`\sum a_i=4`$, and, when the $`a_i`$ are
-$`1\pm p`$, $`|\operatorname{Re}p|<\eta`$. Let $`0<\eta<\tfrac12`$. The regulated integral of
+$`\sum a_i=4`$, in one of two cases: all $`a_i=1`$, or $`a_1=a_3=1+p`$,
+$`a_2=a_4=1-p`$ with $`|\operatorname{Re}p|<\eta`$. (Steps 1 to 5 hold for
+any $`0<\operatorname{Re}a_i<2`$; step 6 has a dominating function only in
+these two cases.) Let $`0<\eta<\tfrac12`$. The regulated integral of
 $`\prod(-X_i)^{-a_i}`$ over the contour equals
 
 ```math
@@ -1044,7 +1047,10 @@ Lemma 10(d), which gives the bound of Lemma 6 with $`c_J`$ in place of
 $`\tfrac12`$, so that Lemma 7 holds with a different constant and Lemma 8
 (unit powers) or Lemma 8′ (powers $`1\pm p`$, $`|\operatorname{Re}p|<\eta`$)
 applies; near the cones in the blend zone, which is compact and contains no
-edge, $`V\!\cdot n\le-c_1<0`$ by (C1) and (A), and Lemma 10(a) gives
+edge, $`V\!\cdot n\le-c_1<0`$: it is continuous and strictly negative
+there, by (C1) where $`g>0`$ and at $`r=R`$ by the strict case of (A),
+since by (H1) a frame is fully on and its flat triangle lies inside
+$`r\le\Delta<R`$. Lemma 10(a) then gives
 $`|Y|\ge2\cos\varphi\,c_1`$; away
 from the cones in the ball by $`|Y|\ge\delta_0/4`$; in the outer zone by
 $`|Y|\ge\cos\varphi\cdot2\kappa'|n^2+n\!\cdot u|`$ where $`V\!\cdot n\le0`$
@@ -1328,6 +1334,16 @@ timelike diagonal (Lemma Q). Still open:
 - **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
   is proved at real points (Lemma P) and observed on the contour. On the
   contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
+- **Condition (D) in the blend zone.** The far-field excursion is derived
+  for the pure outer field. In the blend zone the real part is $`n^2-V^2`$
+  and the bound $`e`$ may be larger than printed (an estimate gives 0.11
+  instead of 0.085). Lemma Q needs only $`c_0+3e<\pi/2`$ and has a wide
+  margin, but the constant in $`2\pi+4e`$ is not strictly proved as printed.
+- **The certificate is floating point**, evaluated at particular squares.
+  Within about $`10^{-9}`$ of an edge the float64 field loses the sign of
+  $`\operatorname{Im}x_{0i}^2`$ at the $`10^{-24}`$ level; a 60-digit
+  recomputation gives the right sign. The surveys exclude that
+  neighbourhood.
 - **Review** by someone who works with these integrals.
 
 What the argument takes from general analysis: Fubini's theorem and

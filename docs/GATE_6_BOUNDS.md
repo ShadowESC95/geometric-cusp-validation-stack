@@ -15,7 +15,9 @@ It also **corrects** one statement of that document (section 4 below).
 regularity of the two-loop weight at $`z=-1`$ is proved exactly. Item 1 has
 two lemmas with proofs and identifies a limitation of hard cutoffs. Item 2
 rests on the published Mellin–Barnes evaluation, a uniform bound (Lemma 4)
-and a pinch analysis (Proposition 5). The integration contour these need is
+and a Mellin superposition (Lemma 3); it does not use the pinch analysis of
+Proposition 5. It is conditional on the certificate of the contour, which
+is evaluated in floating point at particular squares. The integration contour these need is
 constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), which also gives an
 elementary proof of Lemma 4. Nothing here has been reviewed by a specialist.
 
@@ -374,7 +376,10 @@ $`\sigma'\to0`$, because $`f`$ does not decay.
 **The hypothesis for the three weights.** $`\bar F^{(0)}`$ and
 $`\bar F^{(1)}`$ are polynomials in $`L`$: the hypothesis holds for every
 $`W`$. $`\bar F^{(2)}`$ is holomorphic for $`|\operatorname{Im}L|<3\pi`$
-(section 2), so $`W=3\pi`$, and it satisfies the bound with $`k=4`$:
+(section 2) but unbounded near $`L=\pm3\pi i`$, so take
+$`W=3\pi-\delta`$ with $`\delta`$ small (below, $`\delta+\delta'<0.3`$ is
+needed, and $`m=3`$ works). On that strip it satisfies the bound with
+$`k=4`$:
 
 **Lemma 3′ (growth of the two-loop weight).** For every $`\delta>0`$ there
 is $`C`$ with $`|\bar F^{(2)}(e^L)|\le C(1+|L|)^4`$ on
@@ -390,7 +395,7 @@ On $`\operatorname{Re}L\ge1`$, $`|a|\le1/(e-1)<0.59`$. That region of the
 strip is simply connected and meets the principal sheet, so there
 $`A_n`$ is the power series of $`\mathrm{Li}_n`$ and
 $`|A_n|\le\mathrm{Li}_n(0.59)`$. The point $`b`$ stays in the disc
-$`|b-1|<0.59`$ and may wind around $`b=1`$, at most twice in the strip. Each
+$`|b-1|<0.59`$ and may wind around $`b=1`$, at most once in each direction in the strip. Each
 turn adds $`\mp2\pi i\log^{n-1}(b)/(n-1)!`$ to $`\mathrm{Li}_n(b)`$, and
 $`|\log b|\le0.9`$ on that disc, while $`\mathrm{Li}_n`$ with $`n\ge2`$ is
 bounded on bounded sets. So $`A_n`$ and $`B_n`$ are bounded and
@@ -404,12 +409,12 @@ is compact and $`\bar F^{(2)}(e^L)`$ is holomorphic on a neighbourhood of
 it (section 2), so it is bounded there. $`\blacksquare`$
 
 The test `test_two_loop_weight_is_polynomially_bounded_on_the_cover` finds
-$`|\bar F^{(2)}|/(1+|L|)^4\le70`$ for $`|\operatorname{Im}L|\le2.5\pi`$,
+$`|\bar F^{(2)}|/(1+|L|)^4\le130`$ for $`|\operatorname{Im}L|\le2.9\pi`$,
 $`|\operatorname{Re}L|\le40`$.
 
 **Correction.** An earlier version stated this lemma on lines
 $`0<\sigma<1`$ with $`W=2\pi+\delta`$. With the cutoff function used the
-strips have width $`1/4`$, not 1. More importantly the lines must lie in
+strips have width $`1/m`$ ($`1/4`$ or $`1/3`$), not 1. More importantly the lines must lie in
 $`|\operatorname{Re}p|<\eta`$ for the exchange of integrals below, which the
 earlier version did not require.
 
@@ -532,10 +537,18 @@ with weight $`F`$ is $`4M[F]`$.
 | $`(+,-)`$, $`(-,+)`$ | $`3\pi-0.3`$ (Lemma Q) | $`2\pi`$ |
 
 - $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: any $`W`$ is allowed.
-- $`\bar F^{(2)}`$: $`W=3\pi`$ (section 2 and Lemma 3′), which exceeds
+- $`\bar F^{(2)}`$: $`W=3\pi-\delta`$ (section 2 and Lemma 3′), which exceeds
   $`\Phi`$ in every region.
 
-So the conclusion is proved for all three weights in all three regions.
+So the conclusion holds for all three weights at every square for which the
+certificate of GATE_6_CONTOUR passes. It has been evaluated at 90 squares
+across the three regions. The certificate is floating-point arithmetic, not
+interval arithmetic, and no argument is given that its conditions (Q), (S),
+(I) and (G) can be met for an arbitrary square.
+
+**Terminology.** "Double pole" here means the limit of
+$`\epsilon^2st\,I_\eta[F]`$ as $`\eta\to0`$. Meromorphy in $`\eta`$ is not
+proved.
 
 **What this argument does and does not use.** Steps A to D use the contour,
 the Mellin–Barnes evaluation and the identity
@@ -600,16 +613,18 @@ section 2.
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
 | Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
-| Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved in all regions, given the contour |
+| Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes (90 evaluated, all three regions) |
 | The edge statement implies the double pole | **Not proved.** The proof of the double pole does not pass through the edge statement |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
-| Regulated integral on the contour equals the Mellin–Barnes form | Proved in all three regions (GATE_6_CONTOUR sections 11 and 12) |
+| Regulated integral of $`z^p`$ on the contour equals the Mellin–Barnes form | Proved for $`\vert {\rm Re}\,p\vert <\eta`$, where the certificate passes (GATE_6_CONTOUR sections 11 and 12) |
 
 **What would complete it.** Review by someone who works with these
 integrals. An internal review found gaps, which are repaired above; no step
-is now known to be unproved, but the repairs themselves have not been
-reviewed.
+is now known to be unproved. A second internal review of the repairs found
+them correct in substance and asked for the qualifications now stated: the
+dependence on the certificate, the strip width for $`\bar F^{(2)}`$, and the
+scope of Proposition 8.
 
 ## 8. Reproduce
 

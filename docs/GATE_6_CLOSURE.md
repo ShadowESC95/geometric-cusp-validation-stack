@@ -345,7 +345,33 @@ are computed in GATE_6_BOUNDS section 2.
   numerical checks with $`z^{0.3}`$ show the same rate but are not covered
   by those proofs.
 
-## 9. Reproduce
+## 9. Relation to the literature
+
+A literature check (full texts of the papers below, and web searches)
+compared four statements of these documents with what is published.
+Equation numbers are as reported by that check. Absence is "not found", not
+"does not exist".
+
+| Statement here | In the literature |
+| --- | --- |
+| The functional is the unit-circle mean, and the contour runs between the two lips of $`z=-1`$ | **Published.** arXiv:2112.06956 eq. (2.19) writes $`I[F]=\frac{1}{2\pi i}\oint dz\,F(z)/z`$ on a contour from just below to just above the real axis at $`z=-1`$, and eq. (2.20) the circle form. It is obtained by rewriting $`\sin\pi p/(\pi p)`$, which comes from Feynman or Schwinger parameters (arXiv:1301.0149 eqs. (4.6), (4.9), appendix A; arXiv:2112.06956 eqs. (2.12)–(2.18)). arXiv:2406.04294 relates the cusp anomalous dimension to the discontinuity of $`F`$ across the negative axis |
+| The edge statement: the transverse integral at a null edge gives $`-2\pi i\,M[F]`$ on the segment and 0 on the rest of the line | **Not found.** The published derivations are Euclidean or parametric |
+| $`\bar F^{(2)}`$ is regular at $`z=-1`$, with value $`11\pi^4/45`$ | **Partly.** arXiv:1911.10174 imposes finiteness at $`x=-1`$ as a boundary condition and expects no $`u`$-channel cut. An explicit statement of analyticity of the full two-loop function there, or the value, was not found. The value and the mean $`-11\pi^4/15`$ were confirmed from the independent expression in arXiv:2406.04294 |
+| The rule for a class of weights, with hypotheses | **Stated, not proved.** arXiv:2112.06956 assumes "a branch cut on the negative real axis only" and extends linearly from $`z^p`$; arXiv:2605.28926 eqs. (6.2)–(6.3) repeats this. No growth hypotheses and no theorem were found |
+| An explicit complex displacement of the real Minkowski domain | **Not found** for this integral. The published treatments Wick-rotate or work with parameters |
+
+So the circle between the lips of $`z=-1`$ is not a new observation. What
+these documents add is a Lorentzian position-space origin for it, an
+explicit contour, and hypotheses with a proof for the extension to a class
+of weights.
+
+**Normalisation.** arXiv:2112.06956 eq. (2.10) prints
+$`g\,\partial_g\Gamma=-2I[F]`$, which is a factor 4 below its own eq. (1.2).
+arXiv:2605.28926 eq. (6.4) has $`-8I(F)`$. The convention used here,
+$`\Gamma^{(L)}=-\tfrac4LM[\bar F^{(L-1)}]`$, agrees with the latter and with
+the known coefficients.
+
+## 10. Reproduce
 
 ```bash
 PYTHONPATH=src pytest -q tests/test_gate6_closure.py

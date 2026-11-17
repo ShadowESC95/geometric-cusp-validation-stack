@@ -276,11 +276,12 @@ def test_uniform_bound_at_a_timelike_diagonal(sigma):
 
 
 def test_two_loop_weight_is_polynomially_bounded_on_the_cover():
-    """|F2(e^L)| <= C (1 + |L|)^4 for |Im L| <= 2.5 pi (hypothesis of Lemma 3)."""
+    """|F2(e^L)| <= C (1 + |L|)^4 for |Im L| <= 2.9 pi (Lemma 3'). The ratio
+    is 128.7 at L = 0."""
     mp.mp.dps = 15
     rng = np.random.default_rng(0)
-    worst = 0.0
-    for _ in range(300):
-        L = mp.mpc(rng.uniform(-40, 40), rng.uniform(-2.5, 2.5) * np.pi)
-        worst = max(worst, float(abs(le.f2_cover(L)) / (1 + abs(L)) ** 4))
-    assert worst < 200
+    points = [mp.mpc(0, 0)] + [mp.mpc(rng.uniform(-40, 40), rng.uniform(-2.9, 2.9) * np.pi)
+                               for _ in range(300)]
+    points += [mp.mpc(x, y * np.pi) for x in (-1000, -3, 3, 1000) for y in (-2.9, -1.5, 0.5, 2.9)]
+    worst = max(float(abs(le.f2_cover(L)) / (1 + abs(L)) ** 4) for L in points)
+    assert 128 < worst < 135

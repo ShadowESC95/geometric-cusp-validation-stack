@@ -127,7 +127,9 @@ PYTHONPATH=src python -m geocusp.solver functional --logs 9.8696044 0 1 --loop-o
 PYTHONPATH=src python -m geocusp.solver edge --cusp 3 --edge prev --position 0.7 --region +-
 PYTHONPATH=src python -m geocusp.solver edge --two-loop --position 0.4
 PYTHONPATH=src python -m geocusp.solver two-loop        # about a minute; --no-edge is quick
-PYTHONPATH=src python -m geocusp.solver contour --points 5000
+PYTHONPATH=src python -m geocusp.solver contour --points 5000 --region=-+
+PYTHONPATH=src python -m geocusp.solver certificate --region=+-
+PYTHONPATH=src python -m geocusp.solver threshold --eta 0.2 --sigma 0.3
 PYTHONPATH=src python -m geocusp.solver cd 0.35+0.8j
 PYTHONPATH=src python -m geocusp.solver rim --t 1 --lam 470 --s 0.27
 ```
@@ -136,3 +138,12 @@ PYTHONPATH=src python -m geocusp.solver rim --t 1 --lam 470 --s 0.27
 null line through a cusp; the edge segment is `0 < x < 1`. The window has a
 "Lorentzian edge chain" tab with the same controls, a scan along the line,
 and a button for the two-loop weight.
+
+`contour` samples the explicit contour and reports the side of every cone,
+the range of $`\arg z`$ at real points and on the contour, and the ratio
+bounded in Lemma Q. `certificate` lists every inequality of
+GATE_6_CONTOUR section 9 with its value. `threshold` shows that the integral
+of $`|z^p|`$ near the edges converges only for
+$`|\operatorname{Re}p|<\eta`$. The window has an "Integration contour" tab
+with the same three actions. Write regions that begin with a minus sign as
+`--region=-+`.

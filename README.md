@@ -11,7 +11,7 @@ maps to a path between the two lips of $`z=-1`$, and the unit circle is one
 representative of it. This explains the known contour rule. It does not
 replace the existing derivation of that rule.
 
-- **242 tests** and **63 worked example groups**, all passing
+- **246 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -40,14 +40,15 @@ replace the existing derivation of that rule.
 | Two-loop weight is regular at $`z=-1`$ | Proved |
 | Explicit integration contour, all kinematic regions | Constructed; conditions checked by a certificate |
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
-| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, all regions |
+| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes (90 evaluated, all three regions; floating point) |
 | The edge statement implies the double pole | **Not proved** |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
 session. An internal review found one substantial gap and several smaller
-ones, which are repaired in the documents; the repairs have not themselves
-been reviewed. It has not been read by a specialist. Treat it as a proposed
+ones, which are repaired in the documents. A second internal review of the
+repairs found them correct in substance and added qualifications, which are
+stated. It has not been read by a specialist. Treat it as a proposed
 proof.
 
 ## Quick start
@@ -59,7 +60,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 242 tests, about ten minutes
+make test        # 246 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -70,7 +71,9 @@ PYTHONPATH=src python -m geocusp.solver                       # desktop window
 PYTHONPATH=src python -m geocusp.solver functional            # the four functionals on a weight
 PYTHONPATH=src python -m geocusp.solver edge --position 0.4   # Lorentzian edge chain
 PYTHONPATH=src python -m geocusp.solver two-loop              # three-loop coefficient
-PYTHONPATH=src python -m geocusp.solver contour               # survey of the contour
+PYTHONPATH=src python -m geocusp.solver contour --region=+-   # survey of the contour, with the range of arg z
+PYTHONPATH=src python -m geocusp.solver certificate           # the inequalities the contour proof needs
+PYTHONPATH=src python -m geocusp.solver threshold --sigma 0.3 # convergence of |z^p|: needs |Re p| < eta
 PYTHONPATH=src python -m examples.lorentzian_all_cusps        # one example group
 ```
 
@@ -193,8 +196,10 @@ four-dimensional contour.
 `geocusp.solver` evaluates four functionals of a weight
 $`F=\sum_kc_k\log^kz+Az^p`$: the circle mean, the period over the capped
 cycle on the weighted divisor, the Mellin–Barnes double pole, and the
-Lorentzian edge chain. It also handles the two-loop weight and surveys the
-integration contour. It runs locally, with no server and no network access.
+Lorentzian edge chain. It also handles the two-loop weight, surveys the
+integration contour in any of the three kinematic regions, evaluates the
+certificate of its conditions, and shows the convergence threshold for
+powers. It runs locally, with no server and no network access.
 The desktop window needs Tk; every function is also available from the
 command line as shown in [Quick start](#quick-start).
 
@@ -225,7 +230,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            242 tests
+tests/            246 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
@@ -239,6 +244,11 @@ external/         adapter templates for other packages (untested)
 - **The contour is selected by physics, not positivity.** It follows from
   the Lorentzian real structure and the Feynman prescription. It is not
   derived from positivity of the amplituhedron.
+- **The circle is already in the literature.** arXiv:2112.06956 eq. (2.19)
+  writes the functional as a contour between the two lips of $`z=-1`$. What
+  is added here is its Lorentzian origin at a light-like edge, an explicit
+  contour, and hypotheses with a proof for a class of weights. See
+  [GATE_6_CLOSURE](docs/GATE_6_CLOSURE.md) section 9.
 - **Reproduction is not derivation.** The three cusp coefficients test the
   rule and the transcribed weights against known values.
 - **The relation $`dz/z=d\eta/\eta`$ is immediate** from $`z=\eta z_0/x`$ and

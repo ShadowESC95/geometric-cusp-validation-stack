@@ -195,3 +195,37 @@ def test_desktop_window_computes_and_redraws():
         root.update()
     finally:
         root.destroy()
+
+
+def test_contour_survey_reports_the_phase_range_in_a_timelike_region():
+    result = solver.contour_survey(points=1200, seed=2, region="+-")
+    assert result["feynman_side_of_every_cone"] and result["zeros_only_on_edges"]
+    low, high = result["arg_z_over_pi_contour"]
+    assert -1.1 <= low and high <= 2.1
+    assert result["phase_within_proved_bound"] and result["corner_ratio_within_bound"]
+    assert result["certificate_passes"]
+
+
+def test_contour_certificate_lists_every_condition():
+    for region in solver.REGIONS:
+        result = solver.contour_certificate(region)
+        assert result["all"] and result["failed"] == []
+        assert {"Q1_corner_excluded", "Q3_corner_excluded_far", "Q4_outer_zone"} <= set(result["conditions"])
+    with pytest.raises(ValueError):
+        solver.contour_certificate("++")
+
+
+def test_convergence_threshold_is_the_regulator():
+    inside = solver.convergence_threshold(.2, .1)
+    outside = solver.convergence_threshold(.2, .3)
+    assert inside["converges"] and inside["growth"][1] < inside["growth"][0]
+    assert not outside["converges"] and outside["growth"][1] > outside["growth"][0]
+    with pytest.raises(ValueError):
+        solver.convergence_threshold(.7, .1)
+
+
+def test_new_subcommands_print_json(capsys):
+    solver.main(["certificate", "--region=-+"])
+    assert '"all": true' in capsys.readouterr().out
+    solver.main(["threshold", "--eta", "0.2", "--sigma", "0.3"])
+    assert '"converges": false' in capsys.readouterr().out

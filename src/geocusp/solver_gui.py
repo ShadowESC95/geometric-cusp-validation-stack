@@ -131,6 +131,7 @@ class SolverApp:
         book.pack(fill="both", expand=True, padx=8, pady=8)
         for title, build in (("Functional solver", self.build_functional),
                              ("Lorentzian edge chain", self.build_edge),
+                             ("Integration contour", self.build_contour),
                              ("CD weight at a point", self.build_cd),
                              ("Rim collision explorer", self.build_rim)):
             page = ttk.Frame(book, padding=12)
@@ -426,9 +427,125 @@ class SolverApp:
         ])
         self.e_verdict.configure(
             text=("With the two-loop weight the edge chain gives -11π⁴/15, hence the three-loop "
-                  "coefficient 44π⁴/45." if r["agree"] else
+                  "coefficient 44π⁴/45. By Cauchy's theorem this is the same number as the "
+                  "circle mean: it tests the continuation of F2 to its second sheet, not an "
+                  "independent quantity." if r["agree"] else
                   "The two-loop weight did not reproduce the expected values."),
             foreground=GOOD if r["agree"] else BAD)
+
+    # -- integration contour
+
+    def build_contour(self, page):
+        left, right = self.panel(page)
+        ttk.Label(left, text="The explicit contour x0 → x0 + iV(x0) of GATE_6_CONTOUR, with "
+                             "constants derived from the square.",
+                  wraplength=380, justify="left").grid(row=0, column=0, columnspan=3, sticky="w",
+                                                       pady=(0, 8))
+        self.k_region = tk.StringVar(value="--")
+        ttk.Label(left, text="signs of s and t").grid(row=1, column=0, sticky="w", padx=(0, 8), pady=2)
+        ttk.Combobox(left, textvariable=self.k_region, values=tuple(solver.REGIONS),
+                     state="readonly", width=8).grid(row=1, column=1, sticky="w", pady=2)
+        idle = lambda: None
+        self.k = {"angle": Control(left, 2, "shape of the square", .5, 2.4, 1.1, idle, digits=2),
+                  "points": Control(left, 3, "sample points", 500, 20000, 3000, idle, integer=True),
+                  "eta": Control(left, 4, "regulator η", .02, .45, .2, idle, digits=3),
+                  "sigma": Control(left, 5, "Re p", -.6, .6, .1, idle, digits=3)}
+        buttons = ttk.Frame(left)
+        buttons.grid(row=6, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        for column, (text, command) in enumerate((("Certificate", self.contour_certificate),
+                                                  ("Survey (slow)", self.contour_survey),
+                                                  ("Convergence", self.contour_threshold))):
+            ttk.Button(buttons, text=text, command=command).grid(row=0, column=column, padx=(0, 6))
+        ttk.Label(left, text="Certificate: the inequalities the proof needs, evaluated in floating "
+                             "point. Survey: the same properties measured on stress samples, with "
+                             "the range of arg z. Convergence: the integral of |z^p| near the edges "
+                             "is finite only for |Re p| < η.",
+                  style="Cap.TLabel", wraplength=380, justify="left").grid(
+            row=7, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        self.k_table = Table(right, ("Quantity", "Meaning", "Value"), (230, 400, 170), 18)
+        self.k_table.grid(row=0, column=0, sticky="nsew")
+        self.k_verdict = self.note(right, 1)
+        self.k_verdict.configure(text="Choose a region and press a button.")
+
+    def contour_run(self, message, action):
+        self.root.configure(cursor="watch")
+        self.k_verdict.configure(text=message, foreground="")
+        self.root.update_idletasks()
+        try:
+            return action()
+        except (ValueError, ArithmeticError) as error:
+            self.k_verdict.configure(text=f"Solver error: {error}", foreground=BAD)
+            return None
+        finally:
+            self.root.configure(cursor="")
+
+    def contour_certificate(self):
+        r = self.contour_run("Evaluating the certificate ...", lambda: solver.contour_certificate(
+            self.k_region.get(), self.k["angle"].get()))
+        if r is None:
+            return
+        self.results["certificate"] = r
+        rows = [(key, "condition", "holds" if value else "FAILS", "ok" if value else "bad")
+                for key, value in r["conditions"].items()]
+        rows += [(key, "constant", f"{value:.6g}", "") for key, value in r["constants"].items()]
+        self.k_table.fill(rows)
+        self.k_verdict.configure(
+            text=(f"All {len(r['conditions'])} conditions hold for s = {r['s']:.3f}, t = {r['t']:.3f}. "
+                  "The arithmetic is floating point, not interval arithmetic."
+                  if r["all"] else "Conditions fail: " + ", ".join(r["failed"])),
+            foreground=GOOD if r["all"] else BAD)
+
+    def contour_survey(self):
+        r = self.contour_run("Sampling the contour ...", lambda: solver.contour_survey(
+            self.k["points"].get(), 0, self.k_region.get(), self.k["angle"].get()))
+        if r is None:
+            return
+        self.results["contour"] = r
+        ok = lambda flag: "ok" if flag else "bad"
+        low, high = r["arg_z_over_pi_contour"]
+        real_low, real_high = r["arg_z_over_pi_real"]
+        self.k_table.fill([
+            ("Largest Im x0i² near a cone", "must not be positive", f"{r['max_im_near']:+.2e}",
+             ok(r["feynman_side_of_every_cone"])),
+            ("Near-cone pairs tested", "", str(r["near_count"]), ""),
+            ("Smallest |x0i²| / dist²", "zeros only on the edges", f"{r['min_ratio']:.2e}",
+             ok(r["zeros_only_on_edges"])),
+            ("Excursion of arg x0i²", "beyond [-π, 0], radians", f"{r['max_excursion']:.4f}", ""),
+            ("arg z / π at real points", "Lemma P", f"{real_low:+.3f} … {real_high:+.3f}", ""),
+            ("arg z / π on the contour", f"proved bound {r['arg_z_over_pi_proved_bound']:.3f}",
+             f"{low:+.3f} … {high:+.3f}", ok(r["phase_within_proved_bound"])),
+            ("|V²| / |Im x0i²| near cones", f"Lemma Q bound {r['mu_Q']:.4f}",
+             f"{r['corner_ratio']:.4f}", ok(r["corner_ratio_within_bound"])),
+            ("Certificate", "all conditions", "holds" if r["certificate_passes"] else "FAILS",
+             ok(r["certificate_passes"])),
+        ])
+        good = (r["feynman_side_of_every_cone"] and r["zeros_only_on_edges"]
+                and r["phase_within_proved_bound"] and r["corner_ratio_within_bound"])
+        self.k_verdict.configure(
+            text=("Every sampled point is on the Feynman side of every cone, and arg z stays "
+                  "inside the proved bound." if good else
+                  "A sampled point violates one of the properties."),
+            foreground=GOOD if good else BAD)
+
+    def contour_threshold(self):
+        r = self.contour_run("Integrating ...", lambda: solver.convergence_threshold(
+            self.k["eta"].get(), self.k["sigma"].get()))
+        if r is None:
+            return
+        self.results["threshold"] = r
+        rows = [(f"cutoff {cutoff:.0e}", "strip integral of Lemma 8′", f"{value:.5g}", "")
+                for cutoff, value in zip(r["cutoffs"], r["values"])]
+        rows.append(("Growth between cutoffs", "settles if convergent",
+                     f"{r['growth'][0]:.4g}, {r['growth'][1]:.4g}", ""))
+        self.k_table.fill(rows)
+        self.k_verdict.configure(
+            text=(f"|Re p| = {abs(r['sigma']):.3f} is below η = {r['eta']:.3f}: the integral of "
+                  "|z^p| converges, and the exchange of integrals is allowed on this line."
+                  if r["converges"] else
+                  f"|Re p| = {abs(r['sigma']):.3f} is not below η = {r['eta']:.3f}: the integral "
+                  "of |z^p| diverges near the cusps. The proof works on lines inside the "
+                  "regulator and moves them afterwards."),
+            foreground=GOOD if r["converges"] else BAD)
 
     # -- CD weight
 

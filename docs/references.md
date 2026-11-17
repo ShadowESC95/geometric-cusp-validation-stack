@@ -24,4 +24,10 @@
 
 12. OpenFOAM Foundation: OpenFOAM 14 released 14 July 2026. https://openfoam.org/release/14/
 
+13. L. F. Alday, J. M. Henn, J. Sikorowski, *Higher loop mixed correlators in N=4 SYM*, arXiv:1301.0149. Source of the integral of x^p giving sin(pi p)/(pi p).
+
+14. J. M. Henn, G. P. Korchemsky, B. Mistlberger, *The full four-loop cusp anomalous dimension in N=4 super Yang-Mills and QCD*, arXiv:1911.10174. Alphabet and boundary condition at x = -1.
+
+15. T. Bargheer, C. Bercini, A. Fernandes, V. Goncalves, J. Mann, arXiv:2406.04294. Relates the cusp anomalous dimension to the discontinuity of F across the negative axis; an independent expression for the two-loop function.
+
 The software adapters in this repository are capability mappings, not claims that each package is a direct proof tool for the amplituhedron itself.

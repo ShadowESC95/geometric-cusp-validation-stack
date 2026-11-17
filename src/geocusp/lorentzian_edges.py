@@ -253,6 +253,10 @@ def f2_cover(L, route: str = "inner"):
     where Li_n(1/(1+z)) crosses its cut) or across z < -1 ("outer", where
     Li_n(z/(1+z)) does). They agree if and only if the function is regular at
     z = -1 on the physical sheet. The upper sheets follow by conjugation.
+
+    Exactly on the lines Im L = +-pi the polylogarithms are evaluated on
+    their cuts and the value returned is that of one lip only; evaluate
+    slightly off the line.
     """
     L = mp.mpmathify(L)
     im = mp.im(L)
