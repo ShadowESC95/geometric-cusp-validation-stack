@@ -57,7 +57,7 @@ and uses the optional JAX dependency.
 | `PYTHONPATH=src python -m examples.cd_cap_endpoints` | Resolved faces at the two sweep endpoints |
 | `PYTHONPATH=src python -m examples.cd_principal_seam` | Principal contour deformation and shared CD meridian |
 | `PYTHONPATH=src python -m examples.cd_auxiliary_faces` | Unreduced auxiliary triangle and diagonal-cap corners |
-| `PYTHONPATH=src python -m examples.cd_regulated_auxiliary` | Regulated auxiliary edge at real \(z=1\) |
+| `PYTHONPATH=src python -m examples.cd_regulated_auxiliary` | Regulated auxiliary edge at real $`z=1`$ |
 | `PYTHONPATH=src python -m examples.cd_regulated_base_cap` | Two regulated roots in the complex base cap |
 | `PYTHONPATH=src python -m examples.cd_regulated_cap_meridians` | Rim crossings and the signed meridian balance |
 | `PYTHONPATH=src python -m examples.cd_regulated_meridian_sweep` | Lower-corner crossing surfaces across the auxiliary triangle |

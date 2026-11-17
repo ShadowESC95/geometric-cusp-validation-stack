@@ -1,6 +1,15 @@
 cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
 title: "Geometric Cusp Validation Stack"
-version: 3.1.0
-message: "Research software for adversarial numerical and symbolic tests of a geometric boundary/cusp framework."
+abstract: "Symbolic and numerical study of the four-point cusp geometry of the loop amplituhedron in planar N=4 super Yang-Mills: blow-ups and residues, the two-loop logarithm integrand, and the contour that extracts the cusp anomalous dimension."
 type: software
+authors:
+  - name: "ShadowESC95"
+version: 3.1.0
 license: MIT
+repository-code: "https://github.com/ShadowESC95/geometric-cusp-validation-stack"
+keywords:
+  - amplituhedron
+  - scattering amplitudes
+  - cusp anomalous dimension
+  - N=4 super Yang-Mills

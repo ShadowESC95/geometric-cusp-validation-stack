@@ -1,400 +1,256 @@
-# Geometric Cusp Validation Stack v3.1
-
-A symbolic and numerical test suite for the four-point cusp geometry of the
-loop amplituhedron in planar N=4 super Yang–Mills: blow-ups and residues of
-the one-loop canonical form, the two-loop logarithm integrand, and the contour
-that extracts the cusp anomalous dimension.
-
-## Status: what is established and what is not
-
-**Reproduced from the literature (not new results).** The chart, the forms,
-the finite functions \(F^{(0)}=-1\), \(F^{(1)}=\log^2z+\pi^2\), the weight-four
-\(F^{(2)}\) and the contour rule are taken from the papers in
-[docs/references.md](docs/references.md). The overall constant of the rule is
-calibrated at one loop (\(\Gamma^{(1)}_{\rm cusp}=4\)). With that constant
-fixed, the code returns \(\Gamma^{(2)}_{\rm cusp}=-4\pi^2/3\) and
-\(\Gamma^{(3)}_{\rm cusp}=44\pi^4/45\); the three-loop value agrees to twelve
-digits and was not used to set anything. These are checks of the rule and of
-the transcribed functions. They are not derivations: \(F^{(1)}\) is recomputed
-here from the finite parameter integral, but \(F^{(2)}\) is not recomputed
-from the three-loop integrand.
-
-**Computed here, exact in the stated charts.**
-
-- The blow-up of the adjacent-propagator intersection \(y=w=0\) carries a
-  simple radial pole with residue \(1/(x\,\eta\,z_0)\).
-- The homogeneous blow-up of the strict collinear line has zero radial
-  residue; the weighted blow-up with weights (1, 1, 2) has residue
-  \(-1/(a\,z\,D)\) and a variable cross-ratio.
-- The two-loop logarithm integrand scales as \(\rho^{-4}\) under the
-  collective scaling, and its iterated residues depend on the order taken.
-- Local contour analysis of a regulated lift of the finite integral
-  ([docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md)).
-- The contour of the Lorentzian chain at a light-like edge
-  ([docs/GATE_6_CLOSURE.md](docs/GATE_6_CLOSURE.md)).
-
-**Chain-level comparison (new, unreviewed).**
-[docs/GATE_6_CLOSURE.md](docs/GATE_6_CLOSURE.md) and
-[docs/GATE_6_BOUNDS.md](docs/GATE_6_BOUNDS.md) derive the unit-circle contour
-from the Lorentzian integral itself.
-
-- At every interior point of every light-like edge, the coefficient of the
-  collinear singularity is \(-2\pi i\) times the unit-circle mean of \(F\); on
-  the rest of the null line it is zero. Computed at all four cusps, on both
-  edges of each, in all three real kinematic regions, to \(10^{-8}\).
-- The real integration region, with the Feynman prescription, maps to a path
-  in the \(\log z\) plane that deforms to the unit circle. It leaves the
-  principal sheet, with \(|\arg z|\le2\pi\).
-- The two-loop weight is regular at \(z=-1\) on the physical sheet. This is
-  proved exactly from the polylogarithm inversion relations and Landen's
-  identity. The edge chain with it gives \(-11\pi^4/15\), the value behind
-  \(\Gamma^{(3)}_{\rm cusp}\).
-- The collinear limit and the effect of the exact fourth propagator are
-  proved with rates. The regulated integral of \(z^p\) is bounded uniformly
-  in the regulator, which carries the result from powers to general weights.
-- Only the four edge segments can pinch the integration contour.
-- A hard cutoff on the collinear invariants does **not** reproduce the
-  double pole for weights that grow at \(z\to0,\infty\). The double pole is
-  taken in dimensional regularisation.
-
-- An explicit integration contour is constructed
-  ([docs/GATE_6_CONTOUR.md](docs/GATE_6_CONTOUR.md)): the real domain is
-  displaced by an imaginary vector field built from four frame fields and
-  two far fields. It stays on the Feynman side of every light cone and meets
-  the cones only on the edges.
-
-  Its global properties are proved with explicit constants, for every
-  light-like square in all three kinematic regions, and a certificate checks
-  every condition. Absolute convergence on it is proved line by line.
-- The parametric representation of the regulated integral is derived by
-  rotating the metric, with absolutely convergent integrals, checked against
-  direct four-dimensional integration, and connected to the contour by a
-  written contour-independence and limiting argument.
-- The contour displaces the extra dimensions of dimensional regularisation
-  as well. Treating them as a real shift, as an earlier version did, passes
-  some singular surfaces on the wrong side.
-
-- The equality of the Feynman-parameter and Mellin–Barnes forms, the case of
-  a timelike diagonal, and non-integer dimension are proved.
-
-- The displacement is continuously differentiable, so only the ordinary
-  Stokes theorem is used, and every constant of the argument is evaluated by
-  the certificate.
-
-**Open.** None of this has been checked by a specialist.
-The weight \(F\) is still an input from
-the Lorentzian integral, and the cycle is selected by the Lorentzian real
-structure and the \(-i0\) prescription, not by positivity of the
-amplituhedron. The relation \(dz/z=d\eta/\eta\) on the exceptional divisor
-follows immediately from \(z=\eta z_0/x\) and is not evidence for any
-identification. The regulated-cap programme of
-[docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md) is bypassed, not resolved.
-
-**Speculative and not implemented as a connected calculation.** The project
-was motivated by a conjectured chain
-
-```text
-matrix model -> emergent geometry -> amplituhedron pushforward
-  -> cusp boundary / residues -> Gamma_cusp -> IR entropy source
-  -> continuum and quantum probes
-```
-
-Only the middle (amplituhedron, residues, contour) is computed. The other
-stages are separate sandboxes with no derived link between them:
-
-- `matrix_model.py` is a Langevin simulation of a small bosonic
-  Yang–Mills matrix integral (default \(N=8\), \(D=4\)). It has no fermions
-  and is not the IKKT model; nothing is passed from it to the geometry.
-- `continuum.py` solves a 1D diffusion equation with a source
-  \(\sigma=\Gamma_{\rm cusp}\log(w/\lambda)\) inserted by hand as an ansatz.
-- `physics_maps.py` holds declared ansätze (\(m_{\rm eff}\), \(g_{\rm eff}\)),
-  not results.
-- The `canonical_proxy` weight in the pushforward sampler is a visual aid,
-  not the canonical-form density.
-
-`scripts/` contains the runners, `src/geocusp/` the implementation, and
-`examples/` the 63 worked example groups with derivations.
-
-## 1. What is actually simulated
-
-### 1.1 User pushforward / amplituhedron experiment
-
-The kit implements a numerical support realization of the user's template
-
-\[
-\Omega^{(k,n)}\sim
-\int\frac{d^{k\times n}C}{\mathrm{Vol}[GL(k)]}
-\,\delta^{(4k)}(Y-CZ)\,I(C),
-\]
-
-using gauge-fixed samples from \(G_+(k,n)\) and the pushforward \(Y=CZ\).
-
-For \(k=1\), the package reconstructs the affine convex-hull slice explicitly.
-For \(k=2\), it works in Plücker coordinates and produces PCA, positivity and near-boundary diagnostics.
-
-The code separates the **support geometry** from an optional `canonical_proxy` weight. That proxy is never silently called the exact canonical-form density.
-
-### 1.2 Standard-style \(A_{6,2,4}\) pushforward
-
-The same machinery generates positive external data in a Vandermonde/moment-curve chart and performs
-
-\[
-Y=CZ,
-\qquad C\in G_+(2,6),
-\qquad Z\in M_{6\times 6}.
-\]
-
-The output is the 15-component normalized Plücker cloud of \(Y\in G(2,6)\).
-
-### 1.3 Exact one-loop four-point form
-
-The momentum-twistor chart is
-
-\[
-AB=
-\begin{pmatrix}
-1&x&0&-y\\
-0&z_0&1&w
-\end{pmatrix},
-\qquad x,y,z_0,w>0,
-\]
-
-with
-
-\[
-\langle AB12\rangle=y,\quad
-\langle AB23\rangle=w,\quad
-\langle AB34\rangle=z_0,\quad
-\langle AB14\rangle=x,
-\]
-
-\[
-\langle AB13\rangle=-(wx+yz_0),
-\qquad
-\langle AB24\rangle=-1.
-\]
-
-The canonical form is
-
-\[
-\Omega_4^{(1)}
-=
-\frac{dx}{x}\wedge\frac{dy}{y}\wedge\frac{dz_0}{z_0}\wedge\frac{dw}{w}.
-\]
-
-### 1.4 Exceptional divisor / projective normal direction
-
-For the adjacent propagator intersection,
-
-\[
-y=\rho\eta,
-\qquad
-w=\rho,
-\]
-
-so
-
-\[
-\frac{dy}{y}=\frac{d\rho}{\rho}+\frac{d\eta}{\eta},
-\qquad
-\frac{dw}{w}=\frac{d\rho}{\rho}.
-\]
-
-The residue coefficient becomes
-
-\[
-\boxed{
-\operatorname{Res}_{\rho=0}\Omega_4^{(1)}
-=
-\frac{dx}{x}\wedge\frac{d\eta}{\eta}\wedge\frac{dz_0}{z_0}
-}
-\]
-
-up to the orientation convention used by the implementation.
-
-The four-point cross-ratio is
-
-\[
-z
-=
-\frac{\langle AB12\rangle\langle AB34\rangle}
-{\langle AB23\rangle\langle AB14\rangle}
-=
-\frac{yz_0}{wx}
-=
-\frac{z_0}{x}\eta.
-\]
-
-Therefore
-
-\[
-\boxed{
-\frac{dz}{z}=\frac{d\eta}{\eta}
-}
-\]
-
-at fixed \(x,z_0\). This is the key geometric test relating the projectivized normal direction to the established \(z\)-contour.
-
-### 1.5 Strict cusp chart
-
-The strict collinear representation is
-
-\[
-Z_A=Z_i,
-\qquad
-Z_B=Z_{i-1}+\alpha Z_{i+1}.
-\]
-
-The homogeneous blow-up of the strict line gives zero radial residue at a generic point. The weighted chart `b=-rho, c=rho*C, d=rho^2*D` gives a nonzero residue and a variable cross-ratio `z=-1-C/(a*D)`. The one-loop audit reports both results and uses the radial-last orientation. These are local statements about the blow-ups. The physical integration cycle remains to be specified.
-
-### 1.6 Two-loop negative geometry
-
-The exact normalized two-loop log-integrand implemented is
-
-\[
-I_4^{(2)}
-=
--\frac{n_{12}}
-{D_1D_2\,X_{12}},
-\]
-
-where
-
-\[
-n_{12}
-=
- w_1x_1+w_2x_2+y_1z_1+y_2z_2,
-\]
-
-\[
-D_i=w_ix_iy_iz_i,
-\]
-
-and
-
-\[
-X_{12}
-=-(x_1-x_2)(w_1-w_2)-(y_1-y_2)(z_1-z_2).
-\]
-
-For the collective scaling
-
-\[
-y_1=\rho a,\ w_1=\rho b,\ y_2=\rho c,\ w_2=\rho d,
-\]
-
-the rational scalar scales as
-
-\[
-I_4^{(2)}\sim \rho^{-4}.
-\]
-
-The 4-variable radial Jacobian scales as
-
-\[
-\rho^3d\rho,
-\]
-
-so the full differential form has the logarithmic scaling
-
-\[
-\boxed{\Omega_4^{(2)}\sim \frac{d\rho}{\rho}\wedge\omega_{\rm exc}^{(2)}}.
-\]
-
-The code also scans the two-loop singular branch and records the mutual-bracket coupling.
-
-## 2. Figures generated
-
-The campaign produces:
-
-- 3D affine \(k=1\) amplituhedron hull with external vertices.
-- Plücker PCA cloud for user \(k=2,n=6\).
-- Standard-style \(A_{6,2,4}\) Plücker PCA.
-- Positivity-margin histograms.
-- Boundary-proximity vs Plücker-coordinate plots.
-- Canonical-proxy boundary concentration plots.
-- Exceptional-divisor \(\eta\to z\) images.
-- Complex linking/winding plots.
-- \(F^{(1)}(z)\) contour traces.
-- Exact two-loop radial scaling plots.
-- Bosonic matrix-model eigenvalue/commutator plots.
-- Continuum entropy-source and field-evolution plots.
-
-## 3. External adapters (templates, mostly untested)
-
-`external/` holds short adapter or template files for FEniCSx, Firedrake,
-deal.II, FiPy, Meep, COMSOL, Kwant, QuTiP, VASP, FORM, Geant4, OpenFOAM,
-SageMath, Macaulay2, Singular, Arb/python-flint, pySecDec, Cadabra and xAct.
-They are starting points for a user who has those packages. Most are a few
-lines, none is exercised by the test suite, and none has been run against
-the cusp calculation. The core results above need only NumPy, SciPy, SymPy
-and mpmath. `scripts/backend_report.py` reports which packages are present
-locally.
-
-## 4. Installation
-
-Core environment:
+# Geometric Cusp Validation Stack
+
+A symbolic and numerical study of the four-point cusp geometry of the loop
+amplituhedron in planar N=4 super Yang–Mills: blow-ups and residues of the
+canonical form, the two-loop logarithm integrand, and the contour that
+extracts the cusp anomalous dimension.
+
+Its main result is a derivation of that contour from the Lorentzian integral
+itself: the real integration region at a light-like edge, with the Feynman
+prescription, deforms to the unit circle in the cross-ratio plane.
+
+- **217 tests** and **63 worked example groups**, all passing
+- Core dependencies: NumPy, SciPy, SymPy, mpmath
+- MIT licensed
+
+## Contents
+
+- [Status at a glance](#status-at-a-glance)
+- [Quick start](#quick-start)
+- [What is computed](#what-is-computed)
+- [The contour result](#the-contour-result)
+- [Solver](#solver)
+- [Documentation](#documentation)
+- [Repository layout](#repository-layout)
+- [Scope and limits](#scope-and-limits)
+- [Other components](#other-components)
+- [Citation and licence](#citation-and-licence)
+
+## Status at a glance
+
+| Result | Status |
+| --- | --- |
+| One-loop chart, brackets and canonical form | Exact (computer algebra) |
+| Blow-up residues at the cusp, ordinary and weighted | Exact |
+| Two-loop integrand: scaling and order dependence of residues | Exact |
+| Cusp coefficients $`\Gamma^{(1)}, \Gamma^{(2)}, \Gamma^{(3)}`$ from the contour rule | Reproduced from published weights |
+| Lorentzian edge chain equals the unit-circle mean | Computed to $`10^{-8}`$ in every case tested |
+| Two-loop weight is regular at $`z=-1`$ | Proved |
+| Explicit integration contour, all kinematic regions | Constructed; conditions checked by a certificate |
+| Regulated integral equals the Mellin–Barnes form | Proved |
+| Independent review of the contour argument | **Not done** |
+
+The contour argument was produced and machine-checked in one working session
+and has not been read by a specialist. Treat it as a proposed proof.
+
+## Quick start
+
+Python 3.10 or later.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e '.[all,test]'
+python -m pip install -e '.[test]'
+
+make test        # 217 tests, about ten minutes
+make examples    # 63 example groups, about three minutes
 ```
 
-or
+Individual pieces:
 
 ```bash
-conda env create -f environment.yml
-conda activate geometric-cusp-v3
+PYTHONPATH=src python -m geocusp.solver                       # desktop window
+PYTHONPATH=src python -m geocusp.solver functional            # the four functionals on a weight
+PYTHONPATH=src python -m geocusp.solver edge --position 0.4   # Lorentzian edge chain
+PYTHONPATH=src python -m geocusp.solver two-loop              # three-loop coefficient
+PYTHONPATH=src python -m geocusp.solver contour               # survey of the contour
+PYTHONPATH=src python -m examples.lorentzian_all_cusps        # one example group
 ```
 
-For the heavy scientific backends, use your HPC/site installation and then run the adapters under `external/`.
+## What is computed
 
-## 5. Main runs
+### One-loop geometry
 
-Fast:
+In the momentum-twistor chart
 
-```bash
-PYTHONPATH=src python scripts/run_full_research.py --fast
+```math
+AB=\begin{pmatrix}1&x&0&-y\\0&z_0&1&w\end{pmatrix},\qquad x,y,z_0,w>0,
 ```
 
-Full:
+the canonical form is
 
-```bash
-PYTHONPATH=src python scripts/run_full_research.py
+```math
+\Omega_4^{(1)}=\frac{dx}{x}\wedge\frac{dy}{y}\wedge\frac{dz_0}{z_0}\wedge\frac{dw}{w},
 ```
 
-Include installed optional backends:
+and the four-point cross-ratio is
 
-```bash
-PYTHONPATH=src python scripts/run_full_research.py --with-optional
+```math
+z=\frac{\langle AB12\rangle\langle AB34\rangle}{\langle AB23\rangle\langle AB14\rangle}=\frac{y\,z_0}{w\,x}.
 ```
 
-Tests:
+- Blowing up the adjacent-propagator intersection $`y=w=0`$ with
+  $`y=\rho\eta`$, $`w=\rho`$ gives a simple radial pole with residue
+  $`1/(x\,\eta\,z_0)`$.
+- The ordinary blow-up of the strict collinear line has zero radial residue.
+  The weighted blow-up with weights (1, 1, 2) has residue $`-1/(a\,z\,D)`$
+  and a variable cross-ratio.
 
-```bash
-PYTHONPATH=src pytest -q
+### Two-loop logarithm integrand
+
+```math
+I_4^{(2)}=-\frac{n_{12}}{D_1D_2\,X_{12}},\qquad
+n_{12}=w_1x_1+w_2x_2+y_1z_1+y_2z_2,\qquad D_i=w_ix_iy_iz_i .
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 217 pytest
-tests and 63 example groups (about ten minutes for the tests). See the
-[benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
-expected output, and established results. The [example guide](examples/README.md)
-gives the individual commands and derivations. The remaining comparison to
-the Lorentzian contour is tracked in the [Gate 6 proof](docs/GATE_6_PROOF.md).
+- Under the collective scaling $`y_i,w_i\sim\rho`$ the integrand scales as
+  $`\rho^{-4}`$, so the form has a logarithmic radial pole.
+- The 24 orders of iterated residues give four distinct values. Independent
+  one-loop residues do not factorise at two loops.
 
-Dedicated amplituhedron experiment:
+### Cusp anomalous dimension
 
-```bash
-PYTHONPATH=src python scripts/run_amplituhedron_deep.py --samples-k2 20000 --samples-k1 12000
+With the finite weights $`\bar F^{(L-1)}(z)`$ and the unit-circle mean
+
+```math
+M[F]=\frac{1}{2\pi}\int_{-\pi}^{\pi}F(e^{i\phi})\,d\phi,\qquad
+\Gamma^{(L)}_{\rm cusp}=-\frac{4}{L}\,M\big[\bar F^{(L-1)}\big],
 ```
 
-## 6. Scientific interpretation
+the code returns
 
-A numerical match to \(\Gamma_{\rm cusp}\) is meaningful only if the geometric
-object producing it is defined independently of the known answer. At present
-the match comes from the published finite functions and contour rule, so it
-validates conventions, not the conjectured chain. The one-loop experiments
-show where a simple residue construction succeeds and where it fails; the
-two-loop experiments show that independent one-loop residues do not
-factorize.
+| Loop order | Weight | Mean | Coefficient |
+| --- | --- | --- | --- |
+| 1 | $`-1`$ | $`-1`$ | $`4`$ |
+| 2 | $`\log^2z+\pi^2`$ | $`2\pi^2/3`$ | $`-4\pi^2/3`$ |
+| 3 | published two-loop weight | $`-11\pi^4/15`$ | $`44\pi^4/45`$ |
+
+The overall constant of the rule is fixed at one loop. Orders two and three
+are checks that could have failed. The weights themselves are taken from the
+literature; the one-loop-lower weight is also recomputed here from its
+parameter integral.
+
+## The contour result
+
+Take the frozen-loop integral over the insertion point $`x_0`$, with every
+invariant carrying the Feynman $`-i0`$. Near the light-like edge through
+$`x_j`$ and $`x_{j+1}`$, the integral over the directions transverse to the
+edge produces a collinear singularity whose coefficient is
+
+```math
+\frac{d\beta}{\beta(1-\beta)}\times
+\begin{cases}-2\pi i\,M[F], & 0<\beta<1 \quad\text{(on the edge)}\\[2pt] 0, & \text{elsewhere on the null line.}\end{cases}
+```
+
+The factor $`M[F]`$ arises because the image of the real integration region
+in the $`\log z`$ plane is a path that deforms to the unit circle. The path
+leaves the principal sheet, with $`|\arg z|\le2\pi`$, and the weighted
+blow-up above is exactly the collinear scaling of the edge.
+
+What supports it:
+
+- exact identities for all four invariants in global coordinates;
+- the statement computed at all four cusps, on both edges of each, in all
+  three real kinematic regions;
+- the two-loop weight continued onto its second sheet, giving
+  $`-11\pi^4/15`$;
+- an explicit, continuously differentiable integration contour whose
+  properties reduce to inequalities evaluated by a certificate, for 90
+  squares across the three regions;
+- written proofs of absolute convergence and of the equality with the
+  Mellin–Barnes form of the regulated integral.
+
+Two earlier statements were found to be wrong while doing this, and are
+corrected in the documents: a hard cutoff on the collinear invariants does
+not reproduce the double pole for weights that grow at $`z\to0,\infty`$, and
+dimensional regularisation cannot be treated as a real shift on a
+four-dimensional contour.
+
+## Solver
+
+`geocusp.solver` evaluates four functionals of a weight
+$`F=\sum_kc_k\log^kz+Az^p`$: the circle mean, the period over the capped
+cycle on the weighted divisor, the Mellin–Barnes double pole, and the
+Lorentzian edge chain. It also handles the two-loop weight and surveys the
+integration contour. It runs locally, with no server and no network access.
+The desktop window needs Tk; every function is also available from the
+command line as shown in [Quick start](#quick-start).
+
+## Documentation
+
+| Document | Contents |
+| --- | --- |
+| [GATE_6_CLOSURE](docs/GATE_6_CLOSURE.md) | The edge statement and the comparison of the two integration chains |
+| [GATE_6_BOUNDS](docs/GATE_6_BOUNDS.md) | All cusps and regions, error bounds, the regulator, and a status table |
+| [GATE_6_CONTOUR](docs/GATE_6_CONTOUR.md) | The explicit contour, its certificate, convergence, and the regulated integral |
+| [GATE_6_FUNCTIONAL](docs/GATE_6_FUNCTIONAL.md) | The functionals on the Mellin family, and the solver |
+| [GATE_6_PROOF](docs/GATE_6_PROOF.md) | The earlier regulated-cap approach and its obstruction |
+| [MATHEMATICAL_MODEL](docs/MATHEMATICAL_MODEL.md) | Charts, forms and integrands used by the code |
+| [BENCHMARK_VALIDATION](docs/BENCHMARK_VALIDATION.md) | How to reproduce the suite, and what each check establishes |
+| [Example guide](examples/README.md) | The 63 example groups with their derivations |
+| [References](docs/references.md) | Papers and software |
+
+Start with GATE_6_CLOSURE, then section 7 of GATE_6_BOUNDS for the status of
+every statement.
+
+## Repository layout
+
+```text
+src/geocusp/      implementation
+  residue.py, negative_geometry.py      one- and two-loop algebra
+  benchmark.py, contours.py             weights and the contour rule
+  lorentzian_cusp.py, lorentzian_edges.py   the edge chain, all cusps and regions
+  feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
+  solver.py, solver_gui.py              command line and desktop window
+examples/         63 worked example groups (python -m examples.run_suite)
+tests/            217 tests
+docs/             derivations and status
+scripts/          runners for the wider campaign
+external/         adapter templates for other packages (untested)
+```
+
+## Scope and limits
+
+- **The weights are inputs.** $`\bar F^{(0)}`$, $`\bar F^{(1)}`$ and
+  $`\bar F^{(2)}`$ come from the literature. The geometry supplies the
+  contour, not the weight.
+- **The contour is selected by physics, not positivity.** It follows from
+  the Lorentzian real structure and the Feynman prescription. It is not
+  derived from positivity of the amplituhedron.
+- **Reproduction is not derivation.** The three cusp coefficients test the
+  rule and the transcribed weights against known values.
+- **The relation $`dz/z=d\eta/\eta`$ is immediate** from $`z=\eta z_0/x`$ and
+  is not evidence for any identification.
+- **The earlier regulated-cap programme** of GATE_6_PROOF is bypassed, not
+  resolved.
+- **No independent review.**
+
+## Other components
+
+The repository began as a wider programme linking a matrix model, emergent
+geometry, the amplituhedron and an entropy source. Only the amplituhedron and
+contour parts are developed. The rest are separate sandboxes with no derived
+link between them:
+
+- `matrix_model.py`: Langevin simulation of a small bosonic Yang–Mills matrix
+  integral. It has no fermions and is not the IKKT model.
+- `continuum.py`: a one-dimensional diffusion equation with a source inserted
+  by hand.
+- `amplituhedron.py`: samples the positive Grassmannian and pushes forward.
+  Positivity of the samples holds by construction, and the `canonical_proxy`
+  weight is a visual aid, not the canonical form.
+- `physics_maps.py`: declared ansätze, not results.
+- `external/`: short adapter templates for FEniCSx, Firedrake, deal.II, Meep,
+  QuTiP and others. None is exercised by the tests.
+
+`make full` runs that wider campaign.
+
+## Citation and licence
+
+Released under the [MIT licence](LICENSE). Citation metadata is in
+[CITATION.cff](CITATION.cff); GitHub's "Cite this repository" button uses it.
+
+The physics this builds on is in the papers listed in
+[docs/references.md](docs/references.md), in particular Arkani-Hamed, Henn
+and Trnka, *Nonperturbative Negative Geometries* (arXiv:2112.06956), and
+Dixon et al., *Multi-Loop Negative Geometries* (arXiv:2605.28926).

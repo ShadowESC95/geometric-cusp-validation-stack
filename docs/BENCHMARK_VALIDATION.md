@@ -32,12 +32,12 @@ dependencies and outputs.
 | Check | Result | Scope |
 | --- | --- | --- |
 | One-loop geometry and orientation | The adjacent-propagator exceptional divisor carries the logarithmic residue. The generic unweighted strict-cusp blow-up gives zero. The weighted strict-cusp chart recovers a nonzero residue and a variable cross-ratio. | Exact in the stated charts and orientations. |
-| Finite CD weight and contour | Independent quadrature reproduces the finite CD function on the tested sheet and the contour mean \(2\pi^2/3\). The capped weighted cycle has oriented quotient factor \(+1\). | The benchmark normalization gives \(\Gamma^{(1)}=4\) and \(\Gamma^{(2)}=-4\pi^2/3\). With the published \(F^{(2)}\) the same rule gives \(\Gamma^{(3)}=44\pi^4/45\). |
+| Finite CD weight and contour | Independent quadrature reproduces the finite CD function on the tested sheet and the contour mean $`2\pi^2/3`$. The capped weighted cycle has oriented quotient factor $`+1`$. | The benchmark normalization gives $`\Gamma^{(1)}=4`$ and $`\Gamma^{(2)}=-4\pi^2/3`$. With the published $`F^{(2)}`$ the same rule gives $`\Gamma^{(3)}=44\pi^4/45`$. |
 | Lorentzian prescription | Chart transport, energy residues, finite-frame integrals, and regulator limits agree in the cases exercised by the suite. | The checks use the specified prescription, frame, and limit paths. |
-| Regulated complex cap | The fixed auxiliary lift has regulated poles in the lower region. The diagonal cap with \(R=0.06\) has a uniform denominator gap for \(x\ge2500\epsilon\) when \(0<\epsilon\le10^{-4}\). | The bound applies to the diagonal product cap. The transverse rim has additional degeneracies. |
-| Integrated one-meridian band | At \(t=y/x=1\), the lower band has a nonzero counterclockwise coefficient per unit \(t\), approximately \(-11.2420175678-7.4161239685i\) times \(\epsilon\). | Example 60 integrates over the auxiliary triangle and the full band in the scaled \(x\) direction on this slice. |
+| Regulated complex cap | The fixed auxiliary lift has regulated poles in the lower region. The diagonal cap with $`R=0.06`$ has a uniform denominator gap for $`x\ge2500\epsilon`$ when $`0<\epsilon\le10^{-4}`$. | The bound applies to the diagonal product cap. The transverse rim has additional degeneracies. |
+| Integrated one-meridian band | At $`t=y/x=1`$, the lower band has a nonzero counterclockwise coefficient per unit $`t`$, approximately $`-11.2420175678-7.4161239685i`$ times $`\epsilon`$. | Example 60 integrates over the auxiliary triangle and the full band in the scaled $`x`$ direction on this slice. |
 
-| Lorentzian edge chain | On the edge segment the Lorentzian contour in the \(\log z\) plane deforms to the unit circle; off the segment it is contractible. | Local statement, exact identities plus numerics at \(10^{-7}\). See [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) for what is argued and not proved. |
+| Lorentzian edge chain | On the edge segment the Lorentzian contour in the $`\log z`$ plane deforms to the unit circle; off the segment it is contractible. | Local statement, exact identities plus numerics at $`10^{-7}`$. See [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) for what is argued and not proved. |
 
 The benchmark suite is complete at this snapshot. A chain-level comparison
 of the geometric and Lorentzian integration chains is given in

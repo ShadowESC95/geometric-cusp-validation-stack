@@ -6,12 +6,12 @@ This document defines the experiments that the Python stack is intended to orche
 
 For the user's support equation
 
-\[
+```math
 \Omega^{(k,n)}\sim \int \frac{d^{k\times n}C}{\mathrm{Vol}[GL(k)]}
 \,\delta^{(4k)}(Y-CZ)\,I(C),
-\]
+```
 
-the simulation samples a gauge-fixed positive chart, forms \(Y=CZ\), computes Plücker coordinates and visualizes the pushforward support.
+the simulation samples a gauge-fixed positive chart, forms $`Y=CZ`$, computes Plücker coordinates and visualizes the pushforward support.
 
 Run:
 
@@ -23,13 +23,13 @@ Primary failure conditions: negative ordered minors, pushforward inconsistencies
 
 ## B. Exact one-loop geometry
 
-The code evaluates the momentum-twistor brackets, canonical \(d\log\) form, adjacent-propagator blow-up, strict-cusp blow-up, cross-ratio map and complex linking path.
+The code evaluates the momentum-twistor brackets, canonical $`d\log`$ form, adjacent-propagator blow-up, strict-cusp blow-up, cross-ratio map and complex linking path.
 
 ```bash
 PYTHONPATH=src python -m geocusp.one_loop_cli --contour-points 4096
 ```
 
-Important outputs include the exceptional divisor residue, strict-cusp radial residue and winding of the induced \(z\)-path.
+Important outputs include the exceptional divisor residue, strict-cusp radial residue and winding of the induced $`z`$-path.
 
 ## C. Two-loop collective singularity
 
@@ -44,7 +44,7 @@ The two-loop test is specifically designed to detect an invalid assumption of in
 
 ## D. Established cusp benchmark
 
-The benchmark separates the normalized finite function and the insertion-normalized function before applying the contour functional. This prevents an accidental sign or \(g^2\) convention change from being mistaken for a physical result.
+The benchmark separates the normalized finite function and the insertion-normalized function before applying the contour functional. This prevents an accidental sign or $`g^2`$ convention change from being mistaken for a physical result.
 
 ```bash
 PYTHONPATH=src python scripts/run_benchmark.py
