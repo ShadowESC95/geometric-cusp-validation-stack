@@ -534,7 +534,12 @@ $`0<\Theta<1`$, $`|\tau|\le\tfrac12|\xi|`$, so
 $`-n^2\ge\tfrac34|\xi|(|\xi|-4\Delta)`$ and $`|n|\le\tfrac{\sqrt5}{2}|\xi|+\Delta`$:
 excursion at most
 $`\arctan\{2\kappa'[1+(\tfrac{\sqrt5}{2}+\Delta/|\xi|)(\tau_0+\Delta)/(\tfrac34(|\xi|-4\Delta))]\}`$
-with $`|\xi|\ge2R/\sqrt5`$. *Condition:* $`2R/\sqrt5>4\Delta`$. The total
+with $`|\xi|\ge2R/\sqrt5`$. *Condition:* $`2R/\sqrt5>4\Delta`$. In the blend zone the
+real part is $`n^2-V^2`$, of modulus at least $`|n^2|/2`$ because
+$`v^2<\delta_0/2\le|n^2|/2`$ there, so the far term is at most twice the
+pure outer one. The certificate therefore uses
+$`\arctan[4\kappa'\max(1,\cdot,\cdot)]`$ for the far term, which covers
+both zones; with it $`e\le0.11`$ for the contours evaluated. The total
 excursion bound is the sum of the frame term and the largest of the three
 far terms.
 
@@ -1334,11 +1339,6 @@ timelike diagonal (Lemma Q). Still open:
 - **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
   is proved at real points (Lemma P) and observed on the contour. On the
   contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
-- **Condition (D) in the blend zone.** The far-field excursion is derived
-  for the pure outer field. In the blend zone the real part is $`n^2-V^2`$
-  and the bound $`e`$ may be larger than printed (an estimate gives 0.11
-  instead of 0.085). Lemma Q needs only $`c_0+3e<\pi/2`$ and has a wide
-  margin, but the constant in $`2\pi+4e`$ is not strictly proved as printed.
 - **The certificate is floating point**, evaluated at particular squares.
   Within about $`10^{-9}`$ of an edge the float64 field loses the sign of
   $`\operatorname{Im}x_{0i}^2`$ at the $`10^{-24}`$ level; a 60-digit

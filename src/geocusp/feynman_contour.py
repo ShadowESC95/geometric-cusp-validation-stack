@@ -425,7 +425,9 @@ def certificate(contour: Contour) -> dict:
     case_b = 1 + 2 * Delta / (3 * (R / np.sqrt(17) - Delta))
     case_c = 1 + (np.sqrt(5) / 2 + Delta / xi) * (tau0 + Delta) / (0.75 * (xi - 4 * Delta))
     out["C4_wedge_margin"] = bool(xi > 4 * Delta)
-    out["excursion_far"] = float(np.arctan(2 * kf * max(case_a, case_b, case_c)))
+    # In the blend zone the real part is n^2 - V^2 >= |n^2|/2 instead of (1 - kf^2)|n^2|,
+    # so the far term is at most twice the pure outer one: 4 kf covers both zones.
+    out["excursion_far"] = float(np.arctan(4 * kf * max(1.0, case_b, case_c)))
     out["excursion_bound"] = out["excursion_frames"] + out["excursion_far"]
     out["D_excursion_small"] = bool(v_inner**2 < d0 / 2 and out["excursion_bound"] < 0.2)
 
