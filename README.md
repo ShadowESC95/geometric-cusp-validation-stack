@@ -63,13 +63,16 @@ from the Lorentzian integral itself.
   two far fields. It stays on the Feynman side of every light cone and meets
   the cones only on the edges.
 
-  Its global properties are proved with explicit constants in all three
-  kinematic regions, and every condition is checked by a certificate.
-- The regulated integral on that contour is identified with the
-  Mellin–Barnes form, given the standard Schwinger representation.
+  Its global properties are proved with explicit constants, for every
+  light-like square in all three kinematic regions, and a certificate checks
+  every condition. Absolute convergence on it is proved line by line.
+- The parametric representation of the regulated integral is derived by
+  rotating the metric, with absolutely convergent integrals, and checked
+  against direct four-dimensional integration.
 
-**Open.** One textbook representation is cited and not re-derived, and
-none of this has been checked by a specialist.
+**Open.** One limiting step in that derivation is the standard contour
+argument and is stated, not expanded; and none of this has been checked by a
+specialist.
 The weight \(F\) is still an input from
 the Lorentzian integral, and the cycle is selected by the Lorentzian real
 structure and the \(-i0\) prescription, not by positivity of the
@@ -364,8 +367,8 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 171 pytest
-tests and 63 example groups (about five minutes for the tests). See the
+Run the benchmark with `make test && make examples`. The suite has 199 pytest
+tests and 63 example groups (about eight minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
 gives the individual commands and derivations. The remaining comparison to

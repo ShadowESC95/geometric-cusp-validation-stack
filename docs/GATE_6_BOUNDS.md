@@ -469,11 +469,11 @@ section 2.
 | Uniform bound \(e^{\pi|{\rm Im}\,p|}\) on the regulated integral (Lemma 4) | Proved, with elementary Gamma bounds (GATE_6_CONTOUR section 7) |
 | Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given the contour |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
-| Global absolutely convergent contour (Proposition 6) | Constructed in all three regions; proved with explicit constants, all conditions verified |
-| Regulated integral on the contour equals the Mellin–Barnes form | Shown, given the textbook Schwinger representation |
+| Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved line by line |
+| Regulated integral on the contour equals the Mellin–Barnes form | Derived (GATE_6_CONTOUR section 11); one limiting step stated |
 
-**What would complete it.** (a) Writing out the Schwinger representation
-for the \(-i0\) integral instead of citing it. (b) Review by someone who
+**What would complete it.** (a) Expanding the contour-independence and
+limiting step in Proposition 8 of GATE_6_CONTOUR. (b) Review by someone who
 works with these integrals.
 
 ## 8. Reproduce

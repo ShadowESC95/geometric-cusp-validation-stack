@@ -406,3 +406,199 @@ def certificate(contour: Contour) -> dict:
 
     out["all"] = all(v for k, v in out.items() if isinstance(v, bool))
     return out
+
+
+# --------------------------------------------------------------------------
+# Constants chosen from the geometry
+# --------------------------------------------------------------------------
+def tuned_contour(region: str = "--", angle: float = 1.1, scale: float = 1.0,
+                  jacobian_target: float = 0.3) -> Contour:
+    """A contour whose constants are derived from the square, in this order.
+
+    1. tau0 = 3 Delta + 5 Delta: the far centres, condition (C0).
+    2. R: the smallest radius meeting (C1), (C2), (C3) and the wedge margin,
+       with delta0 provisionally bounded by the four-cone gap.
+    3. delta0 = four_cone_gap / 2.5: condition (H1).
+    4. kappa' : small enough for v^2 < delta0/2 in (D).
+    5. kappa = nu: small enough that the bound (E) on ||dV|| is
+       `jacobian_target`, which also makes the frame excursion in (D) small.
+
+    `scale` multiplies every length; the constants scale with it so that the
+    conditions, which are homogeneous, are unaffected.
+    """
+    base = Contour(region=region, angle=angle)
+    eu = np.linalg.norm
+    Delta = max(eu(x - base.centre) for x in base.x)
+    Pn = max(eu(p) for p in base.p)
+    Ds = [abs(2 * mdot(base.p[(j - 1) % 4], base.p[j])) for j in range(4)]
+    gap = four_cone_gap(base)
+    d0 = gap / 2.5
+    tau0 = 8 * Delta
+    R = max(8.0 * Delta, np.sqrt(5) * (2 * Delta + np.sqrt(d0)) * 1.05, 2.5 * np.sqrt(5) * Delta)
+    while True:
+        ok1 = R / np.sqrt(17) > Delta and \
+            (tau0 - 2 * Delta) * (R / np.sqrt(17) - Delta) > 1.5 * (d0 + Delta * np.sqrt(d0))
+        xi_min = R * 4 / np.sqrt(17)
+        ok3 = xi_min > Delta and (xi_min / 4 + Delta) ** 2 - (xi_min - Delta) ** 2 < -1.5 * d0
+        if ok1 and ok3:
+            break
+        R *= 1.25
+    reach = 2 * R + Delta
+    kf = min(2e-3, 0.4 * np.sqrt(d0 / 2) / (2 * R + tau0 + Delta))
+    A1 = 2 * Pn / min(Ds)
+    A2 = 1 + 2 * A1 * Pn
+    j_rest = kf * (1 + 7.5 * (1 + (tau0 + Delta) / R)) + 1.5 / R * kf * (2 * R + tau0 + Delta)
+    budget = max(jacobian_target - j_rest, 0.05)
+    lam0 = budget / (4 * (3 * reach**2 / d0 + 1) + 6 * reach / R)
+    amp = lam0 / (2 * A1 * Pn + A2)
+    out = Contour(kappa=amp, nu=amp, kappa_far=kf, delta0=d0, radius=R, tau0=tau0,
+                  angle=angle, region=region)
+    if scale != 1.0:
+        out.p = out.p * scale
+        out.x = out.x * scale
+        out.centre = out.centre * scale
+        out.c_past, out.c_future = out.c_past * scale, out.c_future * scale
+        out.s, out.t = out.s * scale**2, out.t * scale**2
+        out.delta0 *= scale**2
+        out.radius *= scale
+        out.tau0 *= scale
+    return out
+
+
+# --------------------------------------------------------------------------
+# Absolute integrability: constants and sampled checks (GATE_6_CONTOUR sec. 11)
+# --------------------------------------------------------------------------
+def transverse_norm(contour: Contour, j: int) -> float:
+    """B_j: the largest Euclidean norm of a transverse vector with yperp^2 = -1."""
+    pm, pp = contour.p[(j - 1) % 4], contour.p[j]
+    D = 2 * mdot(pm, pp)
+    basis = []
+    for seed_vec in np.eye(4):
+        v = seed_vec - 2 * mdot(seed_vec, pp) / D * pm - 2 * mdot(seed_vec, pm) / D * pp
+        for e in basis:
+            v = v + mdot(v, e) * e
+        norm = -mdot(v, v)
+        if norm > 1e-12:
+            basis.append(v / np.sqrt(norm))
+        if len(basis) == 2:
+            break
+    gram = np.array([[a @ b for b in basis] for a in basis])
+    return float(np.sqrt(np.linalg.eigvalsh(gram).max()))
+
+
+def theta_constant(contour: Contour) -> float:
+    """theta with |V^2| <= (theta/2) |Im x0i^2| wherever every active frame controls i.
+
+    |V|^2 <= 4 sum_j m_j (4 kappa^2 P^2 |d_j|^2 + 2 nu^2 B^2 rho_j)
+          <= theta sum_j m_j b_j,   b_j = (kappa |D_j|/2)|d_j|^2 + nu rho_j,
+    theta = max(32 kappa P^2 / min|D|, 8 nu B^2), and |Im x0i^2| >= 2 sum_j m_j b_j.
+    """
+    C = contour
+    Pn = max(np.linalg.norm(p) for p in C.p)
+    Dmin = min(abs(2 * mdot(C.p[(j - 1) % 4], C.p[j])) for j in range(4))
+    B = max(transverse_norm(C, j) for j in range(4))
+    return float(max(32 * C.kappa * Pn**2 / Dmin, 8 * C.nu * B**2))
+
+
+def lemma6_check(contour: Contour, n: int, seed: int = 0) -> dict:
+    """Sampled check of Lemma 6 in the inner zone.
+
+    For r <= R and |x0i^2| <= delta0:
+        |V^2| <= (theta/2) |Im x0i^2|   and   |x0i^2 displaced| >= (1/2) max(|x0i^2|, |Im|).
+    Returns the largest |V^2| / |Im| and the smallest |displaced| / max(|real|, |Im|).
+    """
+    C = contour
+    worst_v, worst_ratio, count = 0.0, np.inf, 0
+    for x0 in sample_points(C, n, seed):
+        if np.linalg.norm(x0 - C.centre) > C.radius or C.distance_to_edges(x0) < 1e-9:
+            continue
+        real = C.invariants(x0)
+        displaced, v = C.displaced_invariants(x0)
+        v2 = abs(mdot(v, v))
+        for i in range(4):
+            if abs(real[i]) <= C.delta0:
+                im = abs(displaced[i].imag)
+                if im == 0.0:
+                    continue
+                count += 1
+                worst_v = max(worst_v, v2 / im)
+                worst_ratio = min(worst_ratio, abs(displaced[i]) / max(abs(real[i]), im))
+    return {"count": count, "max_v2_over_im": worst_v, "min_ratio": worst_ratio,
+            "theta": theta_constant(C)}
+
+
+def strip_check(contour: Contour, n: int, seed: int = 0) -> dict:
+    """Sampled check of the bounds used on the strips around the edges.
+
+    In the frame of x_j, on the strip around the edge to x_{j+1}
+    (-a1 <= beta <= 1 - b0, |alpha| <= a1, rho <= rho1):
+        |x0,j^2|   >= nu rho
+        |x0,j+1^2| >= (nu/4) max(rho, |alpha D| b0 / 2)
+        |x0,j-1^2| >= (nu/4) max(rho, |beta D| / 2)
+        |x0,j+2^2| >= delta0
+    Returns the smallest ratio of each left side to its right side.
+    """
+    rng = np.random.default_rng(seed)
+    C = contour
+    Dall = [abs(2 * mdot(C.p[(j - 1) % 4], C.p[j])) for j in range(4)]
+    b0 = 4 * C.delta0 / min(Dall)
+    a1 = C.delta0 / (8 * max(Dall))
+    rho1 = (C.delta0 / 8) ** 2 / max(1.0, max(Dall) * abs(C.s + C.t) / min(Dall)) / 4
+    out = {"b0": b0, "a1": a1, "rho1": rho1, "j": np.inf, "next": np.inf, "prev": np.inf,
+           "far": np.inf, "frame_on": 1.0}
+    for _ in range(n):
+        j = int(rng.integers(0, 4))
+        pm, pp = C.p[(j - 1) % 4], C.p[j]
+        D = 2 * mdot(pm, pp)
+        basis = []
+        for seed_vec in np.eye(4):
+            v = seed_vec - 2 * mdot(seed_vec, pp) / D * pm - 2 * mdot(seed_vec, pm) / D * pp
+            for e in basis:
+                v = v + mdot(v, e) * e
+            norm = -mdot(v, v)
+            if norm > 1e-12:
+                basis.append(v / np.sqrt(norm))
+            if len(basis) == 2:
+                break
+        beta = rng.uniform(-a1, 1 - b0) if rng.random() < 0.6 else rng.choice([-1, 1]) * a1 * 10 ** rng.uniform(-6, 0)
+        beta = min(max(beta, -a1), 1 - b0)
+        alpha = rng.choice([-1, 1]) * a1 * 10 ** rng.uniform(-8, 0)
+        rho = rho1 * 10 ** rng.uniform(-10, 0)
+        th = rng.uniform(0, 2 * np.pi)
+        x0 = (C.x[j] + alpha * pm + beta * pp
+              + np.sqrt(rho) * (np.cos(th) * basis[0] + np.sin(th) * basis[1]))
+        X, _ = C.displaced_invariants(x0)
+        out["frame_on"] = min(out["frame_on"], C.weights(x0)[j])
+        out["j"] = min(out["j"], abs(X[j]) / (C.nu * rho))
+        out["next"] = min(out["next"], abs(X[(j + 1) % 4])
+                          / (C.nu / 4 * max(rho, abs(alpha * D) * b0 / 2)))
+        out["prev"] = min(out["prev"], abs(X[(j - 1) % 4])
+                          / (C.nu / 4 * max(rho, abs(beta * D) / 2)))
+        out["far"] = min(out["far"], abs(X[(j + 2) % 4]) / C.delta0)
+    return out
+
+
+def infinity_check(contour: Contour, n: int, seed: int = 0) -> float:
+    """Smallest |x0i^2 displaced| / (kappa' max(r, |(x0 - c)^2|)) for r >= 2R."""
+    rng = np.random.default_rng(seed)
+    C = contour
+    worst = np.inf
+    for _ in range(n):
+        r = 2 * C.radius * 10 ** rng.uniform(0, 3)
+        kind = rng.integers(0, 3)
+        direction = rng.normal(size=3)
+        direction /= np.linalg.norm(direction)
+        if kind == 0:                                   # generic direction
+            v = rng.normal(size=4)
+            y = r * v / np.linalg.norm(v)
+        else:                                           # close to the asymptotic cone
+            sign = rng.choice([-1.0, 1.0])
+            off = rng.normal() * 10 ** rng.uniform(-3, 1)
+            y = np.array([sign * (r / np.sqrt(2) + off), *(direction * r / np.sqrt(2))])
+        x0 = C.centre + y
+        rr = np.linalg.norm(y)
+        if rr < 2 * C.radius:
+            continue
+        X, _ = C.displaced_invariants(x0)
+        worst = min(worst, np.min(np.abs(X)) / (C.kappa_far * max(rr, abs(mdot(y, y)))))
+    return float(worst)

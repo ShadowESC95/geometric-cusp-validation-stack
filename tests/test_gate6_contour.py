@@ -142,3 +142,74 @@ def test_measured_values_respect_the_proved_bounds(contour):
         worst = max(worst, np.linalg.norm(jac, 2))
     assert worst <= cert["jacobian_bound"]
     assert fc.survey(contour, 6000, seed=10)["max_excursion"] <= cert["excursion_bound"]
+
+
+# ---- every square: constants chosen from the geometry ---------------------
+@pytest.mark.parametrize("region", REGIONS)
+def test_certificate_holds_across_the_family_of_squares(region):
+    """Up to Poincare transformations and scale a light-like square is fixed
+    by its region and one angle. With constants derived from the geometry
+    every condition of the proof holds across the range of angles."""
+    ratios = []
+    for angle in np.linspace(0.15, 2.99, 30):
+        C = fc.tuned_contour(region, angle)
+        result = fc.certificate(C)
+        failed = [k for k, v in result.items() if isinstance(v, bool) and not v]
+        assert not failed, (angle, failed)
+        assert result["jacobian_bound"] < 0.5 and result["excursion_bound"] < 0.1
+        ratios.append(C.s / C.t)
+    assert max(np.abs(ratios)) / min(np.abs(ratios)) > 150      # two decades of cross-ratio
+
+
+def test_certificate_is_scale_invariant():
+    for scale in (0.01, 37.0):
+        assert fc.certificate(fc.tuned_contour("--", 0.7, scale=scale))["all"]
+
+
+@pytest.mark.parametrize("region,angle", [("--", 0.2), ("--", 2.9), ("+-", 0.3), ("-+", 2.8)])
+def test_extreme_squares_have_the_same_properties(region, angle):
+    C = fc.tuned_contour(region, angle)
+    result = fc.survey(C, 5000, seed=5)
+    assert result["max_im_near"] <= 0 and result["min_ratio"] > 0
+    assert result["max_excursion"] <= fc.certificate(C)["excursion_bound"]
+
+
+# ---- absolute integrability, line by line ---------------------------------
+@pytest.mark.parametrize("region,angle", [("--", 1.1), ("+-", 1.1), ("-+", 1.1), ("--", 0.3)])
+def test_lemma_6_displaced_invariant_dominates_its_real_part_and_its_imaginary_part(region, angle):
+    """Near a cone, |V^2| <= (theta/2)|Im x0i^2| and so
+    |x0i^2 displaced| >= (1/2) max(|x0i^2|, |Im x0i^2|)."""
+    C = fc.tuned_contour(region, angle)
+    result = fc.lemma6_check(C, 8000, seed=1)
+    assert result["count"] > 2000 and result["theta"] < 1e-3
+    assert result["max_v2_over_im"] <= result["theta"] / 2
+    assert result["min_ratio"] >= 0.5
+
+
+@pytest.mark.parametrize("region,angle", [("--", 1.1), ("+-", 1.1), ("-+", 1.1), ("+-", 2.6)])
+def test_bounds_on_the_strips_around_the_edges(region, angle):
+    C = fc.tuned_contour(region, angle)
+    result = fc.strip_check(C, 8000, seed=2)
+    assert result["frame_on"] == 1.0                    # the cusp's frame is fully on
+    for key in ("j", "next", "prev", "far"):
+        assert result[key] >= 1.0, key
+    assert 0 < result["b0"] < 0.5                       # the two strips of an edge overlap
+
+
+def test_the_strip_integral_converges():
+    """int d alpha d beta d rho rho^(eta-1) / (max(rho,|alpha|) max(rho,|beta|))
+    <= C int d rho rho^(eta-1) (1 + log(1/rho))^2 < infinity, for eta > 0."""
+    import mpmath as mp
+
+    eta = mp.mpf("0.05")
+    inner = lambda rho: (2 * (1 + mp.log(1 / rho))) ** 2          # exact value of the two inner integrals
+    # rho = exp(-x) turns the endpoint singularity into exponential decay
+    total = mp.quad(lambda x: mp.exp(-eta * x) * inner(mp.exp(-x)), [0, 10, 100, 1000, mp.inf])
+    closed = 4 * (1 / eta + 2 / eta**2 + 2 / eta**3)             # int rho^(eta-1) 4 (1+L)^2
+    assert abs(total - closed) < 1e-8 * closed
+
+
+@pytest.mark.parametrize("region", REGIONS)
+def test_lower_bound_at_infinity(region):
+    """For r >= 2R, |x0i^2 displaced| >= c kappa' max(r, |(x0 - c)^2|)."""
+    assert fc.infinity_check(fc.tuned_contour(region, 1.1), 6000, seed=3) > 1.0

@@ -8,16 +8,18 @@ document constructs such a contour, and replaces the appeal to Stirling's
 formula in Lemma 4 by elementary bounds.
 
 **Status.** The construction is explicit and implemented, in all three real
-kinematic regions. Its central inequality is proved (Lemma 5). Its global
-properties are reduced in section 9 to a list of inequalities between named
-constants, each proved, and the list is evaluated for the contour used
-(`certificate`): every condition holds. The properties are also measured on
-stress samples and lie within the proved bounds. Section 10 identifies the
-regulated integral on the contour with the Mellin–Barnes form; one textbook
-representation is cited there and not re-derived. Nothing here has been
+kinematic regions and for every light-like square: the constants are derived
+from the geometry. Its central inequality is proved (Lemma 5). Its global
+properties are reduced in section 9 to inequalities between named constants,
+each proved, and a certificate evaluates them; they hold across the family of
+squares. Absolute integrability is proved line by line in section 10. The
+parametric representation of the regulated integral is derived in section
+11, not cited. Three steps there are the standard contour argument in
+several variables and are stated, not expanded. Nothing here has been
 reviewed by a specialist.
 
-Code: `src/geocusp/feynman_contour.py`. Tests: `tests/test_gate6_contour.py`.
+Code: `src/geocusp/feynman_contour.py`, `src/geocusp/schwinger.py`. Tests:
+`tests/test_gate6_contour.py`, `tests/test_schwinger.py`.
 Example 63: `examples/feynman_contour_survey.py`.
 
 ## 1. The form of the displacement
@@ -205,25 +207,8 @@ points placed within \(10^{-4}\) of a cone.
 
 ## 6. Consequences
 
-**Absolute integrability.** By item 4 the regulated integrand near a cusp
-is bounded by a constant times
-
-\[
-\frac{\rho^{\eta}\,d\alpha\,d\beta\,d\rho}
-{\max(\rho,|\alpha\beta|)\,\max(\rho,|\beta|)\,\max(\rho,|\alpha|)},
-\qquad\eta=-\epsilon>0,
-\]
-
-times a polynomial in logarithms. For \(\rho<|\alpha\beta|\) the \(\rho\)
-integral gives \(|\alpha\beta|^{\eta-1}\); for
-\(|\alpha\beta|<\rho<\min(|\alpha|,|\beta|)\) it gives
-\(\min(|\alpha|,|\beta|)^\eta/(\eta|\alpha\beta|)\); both are integrable in
-\((\alpha,\beta)\) for \(\eta>0\), and \(\rho>\min(|\alpha|,|\beta|)\) is
-easier. Along the interior of an edge the same bounds apply with one of
-\(\alpha,\beta\) of order one. Away from the edges the integrand is bounded
-by item 3, and at infinity it decays as \(|x_0|^{-8}\) with the cones
-resolved by the far field. So the regulated integrand is absolutely
-integrable on the contour for small \(\eta>0\).
+**Absolute integrability.** The regulated integrand is absolutely integrable
+on the contour for small \(\eta=-\epsilon>0\). The proof is section 10.
 
 **The Fubini step of GATE_6_BOUNDS section 5.** On the contour
 \(|z^p|\le|z|^{\operatorname{Re}p}e^{(2\pi+\delta'')|\operatorname{Im}p|}\)
@@ -451,48 +436,306 @@ With an earlier choice of constants (\(\kappa=\nu=3\times10^{-6}\),
 (D) and (E) did not: the bounds here are not sharp, and the constants were
 reduced until every condition holds.
 
-## 10. The regulated integral on the contour
+**Every square.** Up to Poincaré transformations and an overall scale, a
+light-like square is determined by its kinematic region and one angle, that
+is by the cross-ratio \(s/t\). `tuned_contour` chooses the constants from
+the geometry in a fixed order: \(\tau_0=8\Delta\); \(\delta_0=\epsilon_*/2.5\);
+the smallest \(R\) meeting (C1) to (C3); \(\kappa'\) small enough for (D);
+and \(\kappa=\nu\) such that the bound in (E) equals 0.3. Each step can
+always be carried out: \(\epsilon_*>0\) for a non-degenerate square because
+the right side of (H1) tends to zero with \(\epsilon\); (C1) to (C3) hold for
+large \(R\); (D) and (E) hold for small amplitudes. So the conditions can be
+met for every non-degenerate square. Evaluated on 30 angles in each region:
 
-**Dimensional regularisation as a shift.** In \(D=4+2\eta\) dimensions with
-\(\eta>0\) the integrand depends on the \(2\eta\) extra components of
-\(x_0\) only through their squared length \(\mu\), and every invariant
-becomes \(x_{0i}^2-\mu\). Integrating the extra directions,
+| Region | \(s/t\) covered | \(\epsilon_*\) | \(R\) | \(\kappa=\nu\) | (E) | (D), rad |
+| --- | --- | --- | --- | --- | --- | --- |
+| \((-,-)\) | 0.0057 to 173 | 0.0030 to 0.10 | 7.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-7}\) | 0.300 | 0.057 to 0.069 |
+| \((+,-)\) | \(-174\) to \(-1.01\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-6}\) | 0.300 | 0.057 to 0.069 |
+| \((-,+)\) | \(-0.994\) to \(-0.0057\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-6}\) | 0.300 | 0.057 to 0.069 |
+
+All conditions hold at all 90 squares, and for the same squares rescaled by
+0.01 and by 37. The amplitudes shrink as the square degenerates
+(\(s/t\to0,\infty\)), as they must: the four-cone gap closes. The sampled
+properties were also checked at four extreme squares.
+
+## 10. Absolute integrability, line by line
+
+Throughout, \(\eta=-\epsilon>0\) is small, the weight satisfies
+\(|f(L)|\le A(1+|L|)^k\), and in \(D=4+2\eta\) dimensions the transverse space
+has dimension \(2+2\eta\), so the transverse measure is
+\(\rho^{\eta}d\rho\) times a finite angular measure. The three invariants of
+a frame depend on the transverse coordinates only through \(\rho\); the
+frame field is \(\nu y_\perp\) in every transverse direction and Lemma 5 is
+unchanged.
+
+**Lemma 6.** Let \(r\le R\) and \(|x_{0i}^2|\le\delta_0\). Then
+
+\[
+|V^2|\le\frac\theta2\,\big|\operatorname{Im}x_{0i}^{2\,\rm def}\big|,
+\qquad
+\big|x_{0i}^{2\,\rm def}\big|\ \ge\ \tfrac12\max\Big(|x_{0i}^2|,\ \big|\operatorname{Im}x_{0i}^{2\,\rm def}\big|\Big),
+\qquad
+\theta=\max\Big(\frac{32\kappa P^2}{\min_j|D_j|},\ 8\nu B^2\Big),
+\]
+
+where \(B\) is the largest Euclidean norm of a transverse vector with
+\(y_\perp^2=-1\), and "def" denotes the value on the contour. Moreover
+\(|\operatorname{Im}x_{0i}^{2\,\rm def}|\ge2\nu\rho_{j}\) for any frame \(j\)
+with \(m_j=1\) that controls \(i\).
+
+*Proof.* Near the cone of \(x_i\) the frame \(i+2\) is off, so every active
+frame controls \(i\) and, with
+\(b_j=\tfrac{\kappa|D_j|}{2}|d_j|^2+\nu\rho_j\), Lemma 5 gives
+\(|\operatorname{Im}x_{0i}^{2\,\rm def}|=2|V\!\cdot n|\ge2\sum_jm_jb_j\). On
+the other hand \(|d_\beta p_{j-1}+d_\alpha p_j|\le\sqrt2P|d_j|\) and
+\(|y_\perp|\le B\sqrt{\rho_j}\), so
+\(|V_j|^2\le4\kappa^2P^2|d_j|^2+2\nu^2B^2\rho_j\). At most four frames are
+active and \(m_j\le1\), so
+
+\[
+|V^2|\le|V|^2\le4\sum_jm_j|V_j|^2
+\le\sum_jm_j\Big[\frac{32\kappa P^2}{|D_j|}\cdot\frac{\kappa|D_j|}{2}|d_j|^2+8\nu B^2\cdot\nu\rho_j\Big]
+\le\theta\sum_jm_jb_j .
+\]
+
+This is the first claim. The real part on the contour is
+\(x_{0i}^2-V^2\). If \(|\operatorname{Im}|\ge|x_{0i}^2|\) the modulus is at
+least \(|\operatorname{Im}|\); otherwise it is at least
+\(|x_{0i}^2|-\tfrac\theta2|\operatorname{Im}|\ge(1-\tfrac\theta2)|x_{0i}^2|\).
+With \(\theta\le1\) both are at least half the maximum.
+\(\blacksquare\)
+
+For the contours used \(\theta\) is between \(10^{-6}\) and \(3\times10^{-5}\).
+On samples the ratio \(|V^2|/|\operatorname{Im}|\) never exceeds
+\(\theta/2\) and the second ratio is 1.000.
+
+**Strips.** In the frame of \(x_j\) let
+
+\[
+S_j^+=\{-a_1\le\beta\le1-b_0,\ |\alpha|\le a_1,\ \rho\le\rho_1\},
+\]
+
+and let \(S_j^-\) be the same with the roles of \(\alpha\) and \(-\beta\)
+exchanged (the strip around the other edge at \(x_j\)). Choose
+\(b_0=4\delta_0/\min_j|D_j|\), and \(a_1,\rho_1\) small enough that on the
+strip \(|x_{0,j}^2|\le\delta_0\), \(|x_{0,j+1}^2|\le\delta_0\) and
+\(|x_{0,j+2}^2|\ge2\delta_0\); explicitly
+\(a_1=\delta_0/(8\max|D|)\) and
+\(\rho_1=\delta_0^2/(256\max(1,\max|D|\,|u|/\min|D|))\). Then
+\(b_0<\tfrac12\), so \(S_j^+\) and \(S_{j+1}^-\) together cover a
+neighbourhood of the edge from \(x_j\) to \(x_{j+1}\), and the eight strips
+cover a neighbourhood of all four edges.
+
+**Lemma 7.** On \(S_j^+\): the frame \(j\) is fully on, and
+
+\[
+|x_{0,j}^{2\,\rm def}|\ge\nu\rho,\qquad
+|x_{0,j+1}^{2\,\rm def}|\ge\frac\nu4\max\Big(\rho,\frac{|\alpha D|b_0}{2}\Big),\qquad
+|x_{0,j-1}^{2\,\rm def}|\ge\frac\nu4\max\Big(\rho,\frac{|\beta D|}{2}\Big),\qquad
+|x_{0,j+2}^{2\,\rm def}|\ge\delta_0 .
+\]
+
+*Proof.* \(m_j=\chi(|x_{0,j+2}^2|/\delta_0)=1\). The frames \(j-1\) and
+\(j+2\) are off because \(x_{0,j+1}^2\) and \(x_{0,j}^2\) are within
+\(\delta_0\) of zero; the frame \(j+1\) may be partly on and controls
+\(x_{0,j}^2\) and \(x_{0,j+1}^2\). So Lemma 6 applies to \(i=j\) and
+\(i=j+1\) with \(|\operatorname{Im}|\ge2\nu\rho\). This gives the first
+bound. For the second, \(x_{0,j+1}^2=\alpha D(\beta-1)-\rho\): if
+\(\rho\le\tfrac12|\alpha D|(1-\beta)\) its modulus is at least
+\(\tfrac12|\alpha D|b_0\), otherwise \(2\nu\rho\ge\nu|\alpha D|b_0\); with
+Lemma 6 the modulus on the contour is at least half of
+\(\max(|x_{0,j+1}^2|,2\nu\rho)\). For the third, if
+\(|x_{0,j-1}^2|\le\delta_0\) the same argument applies with
+\(x_{0,j-1}^2=\beta D(1+\alpha)-\rho\); if not, the modulus on the contour is
+at least \(\delta_0-v^2\ge\delta_0/2\), which exceeds the right side because
+\(\nu\) is small. The fourth follows from \(|x_{0,j+2}^2|\ge2\delta_0\) and
+\(v^2<\delta_0/2\). \(\blacksquare\)
+
+On samples of the strips the four left sides exceed the right sides by
+factors between 3.9 and \(5\times10^7\).
+
+**Lemma 8 (the strip integral).** For \(\eta'>0\),
+
+\[
+\int_{S_j^+}\frac{\rho^{\eta'}\,d\alpha\,d\beta\,d\rho}
+{\rho\,\max(\rho,|\alpha|)\,\max(\rho,|\beta|)}
+\le C\int_0^{\rho_1}\rho^{\eta'-1}\big(1+\log\tfrac1\rho\big)^2d\rho<\infty .
+\]
+
+*Proof.* \(\int_{-1}^{1}d\alpha/\max(\rho,|\alpha|)=2(1+\log(1/\rho))\) for
+\(\rho\le1\), and the same for \(\beta\). \(\blacksquare\)
+
+**Consequence on the strips.** By Lemma 7 the integrand is at most
+\(C\,\nu^{-3}\delta_0^{-1}\rho^{\eta}(1+|L|)^k/[\rho\max(\rho,|\alpha|)\max(\rho,|\beta|)]\).
+Each invariant on the contour lies between \(\nu\rho\) and a constant in
+modulus, so \(|L|\le C(1+\log(1/\rho))\) and
+\((1+|L|)^k\le C\rho^{-\eta/2}\). Lemma 8 with \(\eta'=\eta/2\) gives
+convergence.
+
+**The rest of the ball.** Let \(K\) be the set \(r\le2R\) with the open
+strips removed. On \(K\) no invariant vanishes: near a cone and inside \(R\)
+by (A), where equality in Lemma 5 forces the point onto an edge; near a cone
+in the blend zone by (C1); elsewhere because the modulus is at least
+\(\delta_0-v^2\). \(K\) is compact and the invariants are continuous, so
+they are bounded below on \(K\) and the integrand is bounded.
+
+**Lemma 9 (infinity).** For \(r\ge2R\) and \(y=x_0-c\),
+
+\[
+|x_{0i}^{2\,\rm def}|\ \ge\ c_\infty\,\kappa'\max\big(r,|y^2|\big).
+\]
+
+*Proof.* On this zone \(V=-\kappa'\Theta(n+u)\), so
+\(V^2=\kappa'^2\Theta^2(n^2+2n\!\cdot u+u^2)\) exactly. Let
+
+\[
+c_u=(\tau_0-2\Delta)\Big(\frac{1}{\sqrt{17}}-\frac{\Delta}{2R}\Big)-\Delta\sqrt{\frac{\omega}{2R}},
+\qquad\omega=\tfrac12c_u ,
+\]
+
+which is positive for the constants used (lengths are in units in which
+\(\Delta\) is of order one). If \(|n^2|\ge\omega r\), the real part on the
+contour is at least
+\(|n^2|(1-\kappa'^2)-\kappa'^2(2|n||u|+|u|^2)\ge\tfrac12|n^2|\), because
+\(\kappa'^2(2|n||u|+|u|^2)\le\tfrac14\omega r\) for small \(\kappa'\). If
+\(|n^2|<\omega r\), the argument of (C2) with \(\delta_0\) replaced by
+\(\omega r\) gives \(\Theta=1\), and that of (C1) gives
+\(n\!\cdot u\ge(\tau_0-2\Delta)(r/\sqrt{17}-\Delta)-\Delta\sqrt{\omega r}\ge c_ur\),
+so \(|\operatorname{Im}|=2\kappa'|n^2+n\!\cdot u|\ge2\kappa'(c_u-\omega)r=\kappa'c_ur\).
+In both cases the modulus is at least a constant times
+\(\kappa'\max(r,|n^2|)\). Finally \(|n^2-y^2|\le3\Delta r\), so
+\(\max(r,|n^2|)\ge\max(r,|y^2|)/(1+3\Delta)\). \(\blacksquare\)
+
+On samples the ratio is at least 5 in units of \(\kappa'\).
+
+With \(y=(\tau,\xi)\), \(|y^2|=\big||\tau|-|\xi|\big|(|\tau|+|\xi|)\ge|\varsigma|\,r\)
+where \(\varsigma=|\tau|-|\xi|\). Hence the integrand is at most
+\(C\,r^{-4}\max(1,|\varsigma|)^{-4}\) times powers of \(\log r\) and the
+factor \(r^{2\eta}\) from the transverse measure, and
+
+\[
+\int_{r\ge2R}\frac{d\tau\,d^3\xi\;r^{2\eta}(1+\log r)^k}{r^4\max(1,|\varsigma|)^4}
+\le C\int^\infty\frac{\xi^2\,d\xi}{\xi^{4-2\eta}}(1+\log\xi)^k<\infty
+\]
+
+for \(\eta<\tfrac12\), the \(\tau\) integral at fixed \(\xi\) being bounded
+by \(2\int d\varsigma/\max(1,|\varsigma|)^4\).
+
+Strips, the rest of the ball and infinity exhaust the contour, and the
+Jacobian is bounded by (E). So the regulated integrand is absolutely
+integrable. \(\blacksquare\)
+
+## 11. The regulated integral on the contour
+
+**Dimensional regularisation as a shift.** In \(D=4+2\eta\) dimensions the
+integrand depends on the \(2\eta\) extra components of \(x_0\) only through
+their squared length \(\mu\), and every invariant becomes \(x_{0i}^2-\mu\):
 
 \[
 \int d^Dx_0\,(\cdots)=\frac{\pi^{\eta}}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}
 \int d^4x_0\,(\cdots)\big|_{x_{0i}^2\to x_{0i}^2-\mu}.
 \]
 
-The shift is real, so the contour of this document serves for every
-\(\mu\ge0\): imaginary parts are unchanged, and the bounds of item 4 hold
-with \(x_{0i}^2-\mu\) in place of \(x_{0i}^2\) by the same two-case
-argument. For \(\mu>0\) the shifted invariants also vanish at real points
-inside the flat triangles, where \(V=0\); these are isolated curves on which
-a single invariant vanishes, with an integrable singularity.
+The shift is real, so the contour serves for every \(\mu\ge0\).
 
-**From the shifted integral to Feynman parameters.** The four-dimensional
-integral with shifted invariants and powers \(a_i\) (\(\sum a_i=4\)) has the
-Schwinger representation
+**Proposition 8 (parametric representation).** Let
+\(Y_i=\mu-x_{0i}^2\), \(\mu>0\), powers \(a_i>0\) with \(\sum a_i=4\). Then
+the integral of \(\prod Y_i^{-a_i}\) with the Feynman prescription
+(\(\operatorname{Im}Y_i\ge0\)) equals
 
 \[
-\int\frac{d^4x_0}{i\pi^2}\prod_i\frac{1}{(-x_{0i}^2+\mu-i0)^{a_i}}
-=\frac{\Gamma(2)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)
-\frac{\prod\alpha_i^{a_i-1}}{(\alpha_1\alpha_3|s|+\alpha_2\alpha_4|t|+\mu)^2}.
+-\,i\pi^2\,\frac{1}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)\,
+\frac{\prod\alpha_i^{a_i-1}}{\big(\mu-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2\big)^2}.
 \]
 
-This is the textbook parametric representation of a one-loop integral with
-a common mass shift. **It is cited, not re-derived here**, and it is the one
-input of this section taken from the literature.
+*Derivation.* For \(0<\varphi\le\pi/2\) replace every squared time
+difference by \(e^{-2i\varphi}\) times itself, in the integration variable
+and in the external points alike:
 
-**Extra dimensions.** With \(A=\alpha_1\alpha_3|s|+\alpha_2\alpha_4|t|\),
+\[
+Y_i(\varphi)=\mu+|\xi-\xi_i|^2-e^{-2i\varphi}(\tau-t_i)^2 .
+\]
+
+*Step 1 (a proper cone).* Each \(Y_i(\varphi)\) is a positive combination of
+\(1\) and \(e^{i(\pi-2\varphi)}\), so all four lie in a closed cone of
+opening \(\pi-2\varphi<\pi\), and
+\(|Y_i(\varphi)|\ge\sin\varphi\,(\mu+|x_0-x_i|_E^2)\). The integral over real
+\((\tau,\xi)\) is therefore absolutely convergent.
+
+*Step 2 (Feynman parameters).* For numbers in a common proper cone,
+\(\prod Y_i^{-a_i}=\frac{\Gamma(4)}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta(1-\sum\alpha)\prod\alpha_i^{a_i-1}(\sum\alpha_iY_i)^{-4}\),
+and \(|\sum\alpha_iY_i|\ge\sin\varphi\sum\alpha_i(\mu+|x_0-x_i|_E^2)\), so
+the double integral converges absolutely and the order can be exchanged.
+
+*Step 3 (completing the square).*
+\(\sum\alpha_iY_i=c_\alpha(\varphi)+|\xi-\bar\xi|^2-e^{-2i\varphi}(\tau-\bar t)^2\)
+with \(c_\alpha(\varphi)=\mu-\sum_{i<k}\alpha_i\alpha_kx_{ik}^2(\varphi)\) and
+\(x_{ik}^2(\varphi)=e^{-2i\varphi}(t_i-t_k)^2-|\xi_i-\xi_k|^2\).
+
+*Step 4 (rotating the time).* Put \(\tau-\bar t=e^{i\psi}\sigma\) and turn
+\(\psi\) from \(0\) to \(\varphi-\pi/2\). The term
+\(-e^{-2i\varphi}(\tau-\bar t)^2\) has argument \(\pi+2\psi-2\varphi\), which
+moves from \(\pi-2\varphi\) to \(0\): it stays in the cone, the denominator
+never vanishes, and the rotation is allowed. At the end the integral is
+Euclidean,
+\(\int d^4y\,(c+y^2)^{-4}=\pi^2/(6c^2)\), with Jacobian \(-ie^{i\varphi}\).
+Hence
+
+\[
+\int d\tau\,d^3\xi\prod Y_i(\varphi)^{-a_i}
+=-\,ie^{i\varphi}\,\frac{\pi^2}{\prod\Gamma(a_i)}\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)
+\frac{\prod\alpha_i^{a_i-1}}{c_\alpha(\varphi)^2}.
+\tag{$*$}
+\]
+
+Every integral in steps 1 to 4 is absolutely convergent.
+
+*Step 5 (the right side as \(\varphi\to0\)).*
+\(\operatorname{Re}c_\alpha(\varphi)\ge\mu-\sum\alpha_i\alpha_kx_{ik}^2\ge\mu\)
+when no diagonal is timelike, because \(\cos2\varphi\le1\). So the right
+side is continuous at \(\varphi=0\), where it is the stated formula.
+
+*Step 6 (the left side as \(\varphi\to0\)).* For \(\varphi>0\) consider
+\(Y_i\) on \(x_0+i\lambda V\), \(0\le\lambda\le1\). Its imaginary part is
+\(-2\lambda V\!\cdot n+\sin2\varphi\,(n_0^2-\lambda^2V_0^2)+2\lambda(1-\cos2\varphi)n_0V_0\),
+and no \(Y_i\) vanishes for \(\varphi>0\). The integral is therefore
+independent of \(\lambda\), and at \(\lambda=1\) it converges as
+\(\varphi\to0\) to the integral over the contour of this document, by
+dominated convergence with the bounds of section 10.
+
+Steps 5 and 6 give the proposition. \(\blacksquare\)
+
+*What is proved and what is stated.* Steps 1 to 4 are complete: they use
+only absolutely convergent integrals. Step 5 is complete for spacelike
+diagonals; with a timelike diagonal \(c_\alpha\) can vanish at \(\varphi=0\)
+for small \(\mu\) and the limit is a boundary value, which is the usual
+\(-i0\) of the Mandelstam invariant. In step 6 the non-vanishing is checked
+numerically (below) and the two limiting arguments are the standard ones.
+
+*Numerical checks.*
+
+| Check | Result |
+| --- | --- |
+| \(|Y_i|\ge\sin\varphi(\mu+|x_0-x_i|_E^2)\), \(0\le\arg Y_i\le\pi-2\varphi\) | holds at 24 000 points, three angles |
+| Both sides of \((*)\) at \(\varphi=\pi/2\), unit powers | \(1.4317\pm0.0008\) against \(1.43230\) |
+| Both sides at \(\varphi=1\), unit powers | \(1.0225-1.3751i\) against \(1.0235-1.3763i\) |
+| Both sides at \(\varphi=1\), powers \((1.2,0.8,1.2,0.8)\) | \(1.1356-1.4812i\) against \(1.1364-1.4820i\) |
+| Right side at \(\varphi=0.1,0.01,0.001\) | approaches the Minkowski formula linearly |
+| Step 6: \(|Y_i|/(\sin2\varphi\,(\tau-t_i)^2+\mu\sin\varphi)\) over the family | at least 0.70 |
+
+The left side is a four-dimensional quasi-Monte Carlo integral; the
+agreement is within its error.
+
+**Extra dimensions.** With \(A=-\sum\alpha_i\alpha_kx_{ik}^2\),
 
 \[
 \frac{1}{\Gamma(\eta)}\int_0^\infty d\mu\,\mu^{\eta-1}\frac{\Gamma(2)}{(A+\mu)^2}
 =\Gamma(2-\eta)\,A^{\eta-2},
 \]
 
-which turns the right side into the \(D\)-dimensional Feynman-parameter
-integral with exponent \(2-\eta=2+\epsilon\). Checked numerically.
+which turns the formula of Proposition 8 into the \(D\)-dimensional
+Feynman-parameter integral with exponent \(2-\eta=2+\epsilon\). Checked
+numerically.
 
 **Feynman parameters to Mellin–Barnes.** The Feynman-parameter integral for
 \(z^p\) (powers \(1\pm p\)) is evaluated directly, as three nested
@@ -505,31 +748,27 @@ integral used in GATE_6_FUNCTIONAL and in Lemma 4:
 | \(-0.3\) | 0.3 | 2.5 | 3.893274… | 3.893274816 |
 | 0 | 0.25 | 1 | 4.004157042 | 4.004157043 |
 
-They agree to \(10^{-7}\) or better, normalisation included
-(`test_feynman_parameter_form_equals_the_mellin_barnes_form`).
+They agree to \(10^{-7}\) or better, normalisation included.
 
-So the regulated integral on the contour equals the Mellin–Barnes form,
-given the Schwinger representation.
+So the regulated integral on the contour equals the Mellin–Barnes form.
 
-## 11. What remains
+## 12. What remains
 
-- The Schwinger representation in section 10 is cited. Deriving it for the
-  \(-i0\) integral means exchanging the parameter integrals with the
-  \(x_0\) integral; on the contour of this document the integrand is
-  absolutely integrable, which is what that exchange needs, but the
-  derivation is not written out.
-- The bounds of section 9 are proved for the stated construction. The
-  absolute integrability in section 6 uses item 4 and a power-counting
-  estimate that is given in outline.
-- The certificate is evaluated for one square in each region. The
-  conditions are inequalities between geometric constants and can be
-  re-evaluated for any other square with `certificate`.
+- In Proposition 8, step 6 uses the standard argument that an integral over
+  a family of contours does not change while no singularity is crossed, and
+  a dominated-convergence limit. Both are stated; the non-vanishing they
+  rest on is checked numerically, not proved.
+- With a timelike diagonal, step 5 is a boundary value in the Mandelstam
+  invariant and is not treated separately.
+- In section 10 the constant \(c_u>0\) of Lemma 9 and the choice of
+  \(a_1,\rho_1\) in the strips are verified for the contours used, by the
+  sampled checks, and are not added to the certificate.
 - Review by someone who works with these integrals.
 
-## 12. Reproduce
+## 13. Reproduce
 
 ```bash
-PYTHONPATH=src pytest -q tests/test_gate6_contour.py
+PYTHONPATH=src pytest -q tests/test_gate6_contour.py tests/test_schwinger.py
 PYTHONPATH=src python -m examples.feynman_contour_survey
 PYTHONPATH=src python -m geocusp.solver contour --points 5000
 ```

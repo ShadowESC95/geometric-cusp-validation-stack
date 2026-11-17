@@ -307,10 +307,10 @@ are computed in GATE_6_BOUNDS section 2.
 
 **Constructed in [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md).**
 
-- An explicit global integration contour in all three kinematic regions,
-  with its properties proved by explicit constants, and the identification
-  of the regulated integral on it with the Mellin–Barnes form (one textbook
-  representation cited).
+- An explicit global integration contour for every light-like square, with
+  its properties proved by explicit constants, absolute integrability proved
+  line by line, and the parametric representation of the regulated integral
+  derived (one limiting step stated).
 
 **Not addressed.**
 
