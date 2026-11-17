@@ -100,6 +100,8 @@ What this does not establish:
 - It compares numbers produced by two functionals. It gives no chain whose
   boundary is the difference of the capped cycle and the Feynman contour.
   The rim collisions and relative faces of GATE_6_PROOF.md are untouched.
+  [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) supplies such a chain on the fibre
+  of the weighted divisor by a different route.
 - It uses dimensional regularization. The finite-frame \(i\epsilon P^2\)
   regulator of the examples is tied to it only through regulator
   independence of the leading double logarithm.

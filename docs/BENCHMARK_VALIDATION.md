@@ -1,6 +1,6 @@
 # Cusp benchmark validation
 
-The benchmark snapshot contains **31 pytest tests and 60 example groups**.
+The benchmark snapshot contains **74 pytest tests and 61 example groups**.
 The 60th example group was added in commit
 `ab067d159aa92c3abef94b4eaf8cb69eaaaa3a33` on `main`. The example runner defines the coverage of this snapshot.
 
@@ -16,8 +16,8 @@ python -m pip install -e '.[test]'
 make test && make examples
 ```
 
-The expected final lines are `31 passed` (with elapsed time) and
-`PASS: all 60 example groups`. The user run on Linux reported both. The
+The expected final lines are `74 passed` (with elapsed time) and
+`PASS: all 61 example groups`. The user run on Linux reported both. The
 clean-checkout verification used Python 3.12.14, NumPy 2.3.5, SciPy 1.17.0,
 SymPy 1.14.0 and pytest 9.2.0. For a run record, save the full commit ID,
 dependency versions, and command output. The numerical examples include
@@ -37,7 +37,11 @@ dependencies and outputs.
 | Regulated complex cap | The fixed auxiliary lift has regulated poles in the lower region. The diagonal cap with \(R=0.06\) has a uniform denominator gap for \(x\ge2500\epsilon\) when \(0<\epsilon\le10^{-4}\). | The bound applies to the diagonal product cap. The transverse rim has additional degeneracies. |
 | Integrated one-meridian band | At \(t=y/x=1\), the lower band has a nonzero counterclockwise coefficient per unit \(t\), approximately \(-11.2420175678-7.4161239685i\) times \(\epsilon\). | Example 60 integrates over the auxiliary triangle and the full band in the scaled \(x\) direction on this slice. |
 
-The benchmark suite is complete at this snapshot. The identification of the
-geometric and Lorentzian integration chains is an open Gate 6 result. The
+| Lorentzian edge chain | On the edge segment the Lorentzian contour in the \(\log z\) plane deforms to the unit circle; off the segment it is contractible. | Local statement, exact identities plus numerics at \(10^{-7}\). See [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) for what is argued and not proved. |
+
+The benchmark suite is complete at this snapshot. A chain-level comparison
+of the geometric and Lorentzian integration chains is given in
+[GATE_6_CLOSURE.md](GATE_6_CLOSURE.md); it is unreviewed and one step is
+argued without error bounds. The
 [Gate 6 proof document](GATE_6_PROOF.md) records the mathematical claims,
 the transverse rim collision, and the two outstanding proof obligations.

@@ -30,12 +30,26 @@ from the three-loop integrand.
   collective scaling, and its iterated residues depend on the order taken.
 - Local contour analysis of a regulated lift of the finite integral
   ([docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md)).
+- The contour of the Lorentzian chain at a light-like edge
+  ([docs/GATE_6_CLOSURE.md](docs/GATE_6_CLOSURE.md)).
 
-**Open.** The identification of the geometric (weighted-divisor) integration
-chain with the Lorentzian Feynman chain is not proved. The relation
-\(dz/z=d\eta/\eta\) on the exceptional divisor follows immediately from
-\(z=\eta z_0/x\); it is consistent with that identification and is not
-evidence for it.
+**Chain-level comparison (new, unreviewed).**
+[docs/GATE_6_CLOSURE.md](docs/GATE_6_CLOSURE.md) derives the unit-circle
+contour from the Lorentzian integral itself. Near a light-like edge the real
+integration region, with the Feynman prescription, maps to a path in the
+\(\log z\) plane that deforms to the unit circle on the edge segment and to a
+point off it. The local statement rests on exact identities and is confirmed
+numerically to \(10^{-7}\). The step from it to the double pole of the full
+integral is argued without error bounds, and the whole derivation has not
+been checked by a specialist.
+
+**Open.** A proof with error bounds of that last step. The weight \(F\) is
+still an input from the Lorentzian integral, and the cycle is selected by
+the Lorentzian real structure and the \(-i0\) prescription, not by
+positivity of the amplituhedron. The relation \(dz/z=d\eta/\eta\) on the
+exceptional divisor follows immediately from \(z=\eta z_0/x\) and is not
+evidence for any identification. The regulated-cap programme of
+[docs/GATE_6_PROOF.md](docs/GATE_6_PROOF.md) is bypassed, not resolved.
 
 **Speculative and not implemented as a connected calculation.** The project
 was motivated by a conjectured chain
@@ -60,7 +74,7 @@ stages are separate sandboxes with no derived link between them:
   not the canonical-form density.
 
 `scripts/` contains the runners, `src/geocusp/` the implementation, and
-`examples/` the 60 worked example groups with derivations.
+`examples/` the 61 worked example groups with derivations.
 
 ## 1. What is actually simulated
 
@@ -323,8 +337,8 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 31 pytest
-tests and 60 example groups. See the
+Run the benchmark with `make test && make examples`. The suite has 74 pytest
+tests and 61 example groups. See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
 gives the individual commands and derivations. The remaining comparison to

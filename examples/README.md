@@ -1,6 +1,6 @@
 # Cusp validation examples
 
-Run all 60 example groups from the repository root with the core Python
+Run all 61 example groups from the repository root with the core Python
 dependencies installed. The [benchmark validation record](../docs/BENCHMARK_VALIDATION.md)
 records the expected test output and the checked environment.
 
@@ -1671,12 +1671,33 @@ As an inner boundary of the cap the meridian carries the
 opposite sign. Integrating the transverse coordinate and
 matching the complete Lorentzian boundary remain open.
 
+## 61. Lorentzian edge chain and its unit-circle contour
+
+```bash
+PYTHONPATH=src python -m examples.lorentzian_cusp_contour
+```
+
+Work in position space near the null edge through `x2` and `x3`. With
+`x0 = x2 + alpha*p1 + beta*p2 + yperp`, the three small invariants are
+`x02^2 = w`, `x01^2 = w + q1`, `x03^2 = w + q3` exactly, and the transverse
+integral is a one-dimensional integral over `w - i0`. The Feynman
+prescription fixes `arg z = pi*(tau2 + tau4 - tau1 - tau3)`, where `tau_i` is
+1 for a timelike `x0i^2`; the contour leaves the principal sheet. The
+coefficient of the collinear logarithm is the jump of the kernel across
+`x03^2 = 0`. On the edge segment that jump is the integral of `F dz/z` over a
+path from `z = -1` round to `z = -1` that deforms to the unit circle; off the
+segment the path closes on one sheet and the jump is zero. The example checks
+the four sheet sequences, the jump at two points of the edge and one point
+off it, and the quadrant sum at the cusp. The derivation and its limits are
+in [docs/GATE_6_CLOSURE.md](../docs/GATE_6_CLOSURE.md).
+
 ## Scope of the checks
 
 The CD parameter calculation reproduces the established two-loop coefficient.
 The chart checks establish local matching with a transported prescription at
 finite regulator. The parameter tail is an estimate in the reduced integral.
 The capped cycle realizes the benchmark scalar contour on the complex
-weighted divisor. The [Gate 6 proof](../docs/GATE_6_PROOF.md) records the open
-Lorentzian contour identity and the transverse rim collisions that constrain
-the comparison.
+weighted divisor. The [Gate 6 proof](../docs/GATE_6_PROOF.md) records the
+regulated-cap comparison and its transverse rim collisions.
+[GATE_6_CLOSURE.md](../docs/GATE_6_CLOSURE.md) compares the chains directly at
+a light-like edge.

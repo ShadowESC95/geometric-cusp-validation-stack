@@ -5,6 +5,12 @@ global identity between the independently constructed weighted-divisor chain
 and the Lorentzian Feynman chain remains open. The scope, baseline, and commands
 for the completed suite are recorded in [benchmark validation](BENCHMARK_VALIDATION.md).
 
+**Update.** [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md) compares the two chains by
+a different route, in position space at a light-like edge, without the
+regulated complex cap used below. It does not resolve the rim collisions of
+sections 2 to 5; it avoids introducing that lift. Read its section 8 for the
+level of rigor.
+
 ## 1. Scalar identity established by the benchmark
 
 Use \(\bar F^{(0)}=-1\) and \(\bar F^{(1)}=\log^2 z+\pi^2\), with the principal
