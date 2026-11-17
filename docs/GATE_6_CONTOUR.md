@@ -189,7 +189,8 @@ $`\kappa'=2\times10^{-3}`$. Section 9 states the precise conditions.
    contour, with equality only on the edges;
 2. the argument of each invariant stays within a small angle $`e`$ of
    $`[-\pi,0]`$, so on the contour $`|\arg z|\le2\pi+4e`$ for spacelike
-   diagonals and $`|\arg z|\le3\pi+4e`$ when one diagonal is timelike;
+   diagonals and $`|\arg z|\le3\pi-0.3`$ when one diagonal is timelike
+   (Lemma Q);
 3. the invariants vanish on the contour only on the four edge segments;
 4. near a cusp, in its frame,
    $`|x_{0,j}^2|\ge c\,\nu\max(\rho,|\alpha\beta D|)`$,
@@ -229,11 +230,100 @@ same holds with $`x_4`$ in place of $`x_2`$. So
 $`\tau_2+\tau_4-\tau_1-\tau_3\le1`$ and $`\arg z\le2\pi`$; the lower bound
 $`-\pi`$ is immediate. The case $`t>0`$ is the mirror image. $`\blacksquare`$
 
-On the contour this sharper bound is not proved when a diagonal is
-timelike: near two cones at once the arguments are not close to their real
-values. It is observed: `phase_survey` finds $`\arg z/\pi`$ in
-$`[-2,2]`$, $`[-1,2]`$ and $`[-2,1]`$ on the contour in the three regions,
-on 30 000 stress points each.
+On the contour the arguments are not close to their real values near two
+cones at once, and the bound $`2\pi`$ is not proved there. It is observed:
+`phase_survey` finds $`\arg z/\pi`$ in $`[-2,2]`$, $`[-1,2]`$ and
+$`[-2,1]`$ on the contour in the three regions, on 30 000 stress points
+each. What is needed in GATE_6_BOUNDS is less: a bound strictly below
+$`3\pi`$. That is proved.
+
+**Lemma Q (the corner is excluded).** Let one diagonal be timelike and let
+conditions (Q1) and (Q3) below hold. Then $`|\arg z|\le3\pi-c_0`$ on the
+contour, with $`c_0=0.3`$.
+
+*Proof.* Take $`s>0`$; the case $`t>0`$ is the mirror image. Write
+$`a_i\in[-\pi-e,e]`$ for the arguments on the contour, so
+$`\arg z=\pi+a_2+a_4-a_1-a_3\ge-\pi-4e`$. Suppose $`\arg z>3\pi-c_0`$. Then
+$`a_2>-\gamma`$ and $`a_1,a_3<-\pi+\gamma`$ with $`\gamma=c_0+3e<\pi/2`$, so
+on the contour
+
+```math
+\operatorname{Re}x_{02}^2>0,\qquad\operatorname{Re}x_{01}^2<0,\qquad\operatorname{Re}x_{03}^2<0,\qquad
+|\operatorname{Im}x_{02}^2|\le\tan\gamma\;\operatorname{Re}x_{02}^2 .
+```
+
+The real parts are the real invariants minus the same number $`V^2`$. In
+the frame of $`x_2`$, where $`D=s>0`$, the real invariants are $`w`$,
+$`w+A`$ and $`w+B`$ with $`A=\beta D`$, $`B=-\alpha D`$ and
+$`w=-AB/D-\rho`$. The three inequalities give $`A<V^2-w<0`$ and $`B<0`$, so
+$`AB>0`$ and $`w<0`$. Hence
+
+```math
+V^2<w<0,\qquad|x_{02}^2|<|V^2|,\qquad|\operatorname{Im}x_{02}^2|\le\tan\gamma\,|V^2| .
+```
+
+*Claim.* At every real point with $`V^2<0`$ and $`|x_{0i}^2|\le|V^2|`$,
+
+```math
+|V^2|\le\mu_Q\,|\operatorname{Im}x_{0i}^2|,\qquad\mu_Q\tan\gamma<1 .
+```
+
+Given the claim, $`|V^2|\le\mu_Q\tan\gamma\,|V^2|<|V^2|`$, a contradiction.
+
+*Proof of the claim for $`r\le2R`$.* By (D), $`|V^2|\le v^2<\delta_0/2`$, so
+$`|x_{0i}^2|\le\delta_0/2`$ and the frame $`i+2`$ is switched off. Each
+remaining frame has $`I_j:=-2V_j\!\cdot n\ge\kappa|D_j|\Psi_j+2\nu\rho_j`$ by
+Lemma 5. In Euclidean norm
+$`|V_j|^2\le4\kappa^2P^2|d|^2+2\nu^2B^2\rho_j\le64\kappa^2P^2\Psi_j+2\nu^2B^2\rho_j\le\mu I_j`$
+with
+
+```math
+\mu=\max\Big(\frac{64\kappa P^2}{\min_j|D_j|},\ \nu B^2\Big),
+```
+
+where $`|y_\perp|\le B\sqrt\rho`$. At most three frames are on and
+$`m_j\le1`$, so $`|V_{\rm in}|^2\le3\mu\,I_{\rm in}`$ with
+$`I_{\rm in}=-2V_{\rm in}\!\cdot n=\sum m_jI_j`$. For $`r\le R`$ this is the
+claim with $`\mu_Q\ge3\mu`$.
+
+For $`R<r<2R`$, $`V=(1-g)V_{\rm in}+gW`$ with $`W=-\kappa'(x_0-c_\mp)`$,
+because $`\Theta=1`$ near a cone by (C2). By (C1),
+$`I_W:=-2W\!\cdot n=2\kappa'(n^2+u\!\cdot n)\ge2\kappa'M`$, with $`M`$ the
+margin of (C1). Since $`(x_0-c_\mp)^2=n^2+2n\!\cdot u+u^2`$ and
+$`2|n\!\cdot u|\le I_W/\kappa'+\delta_0`$,
+
+```math
+|W^2|\le\kappa'^2\big(\tfrac32\delta_0+(\tau_0+\Delta)^2\big)+\kappa'I_W\le\mu_WI_W,\qquad
+\mu_W=\kappa'\Big(1+\frac{\tfrac32\delta_0+(\tau_0+\Delta)^2}{2M}\Big).
+```
+
+For the cross term, $`|W|\le K=\kappa'(2R+\tau_0+\Delta)`$ and
+$`2|V_{\rm in}||W|\le\sqrt{3\mu}\,I_{\rm in}+\sqrt{3\mu}\,K^2`$. Adding the
+three terms of $`V^2`$,
+
+```math
+|V^2|\le\mu_Q\big[(1-g)I_{\rm in}+gI_W\big]=\mu_Q|\operatorname{Im}x_{0i}^2|,\qquad
+\mu_Q=\max\Big(3\mu+\sqrt{3\mu},\ \mu_W+\frac{\sqrt{3\mu}\,K^2}{2\kappa'M}\Big).
+```
+
+*Proof of the claim for $`r\ge2R`$.* Here $`V=bW`$ with $`0\le b\le1`$, and
+$`b>0`$ requires $`\tau>\tfrac14|\xi|`$, so $`n_0\ge2R/\sqrt{17}-\Delta>0`$.
+We show that $`V^2<0`$ and $`|n^2|\le|V^2|`$ cannot both hold. Put
+$`q=\sqrt{|n^2|}`$, so $`|\vec n|\le n_0+q`$ and
+$`n\!\cdot u\ge n_0(u_0-|\vec u|)-q|\vec u|\ge n_0(\tau_0-2\Delta)-q\Delta`$.
+If $`n\!\cdot u\ge0`$ then $`|(x_0-c)^2|=-n^2-2n\!\cdot u-u^2\le|n^2|`$, so
+$`|n^2|\le\kappa'^2|n^2|`$, $`n^2=0`$ and $`(x_0-c)^2>0`$. If
+$`n\!\cdot u<0`$ then $`|n\!\cdot u|\le q\Delta`$ and
+$`q^2\le\kappa'^2(q^2+2q\Delta)`$, so $`q\le2\kappa'^2\Delta/(1-\kappa'^2)`$,
+while $`n_0(\tau_0-2\Delta)\le q\Delta`$. This contradicts (Q3).
+$`\blacksquare`$
+
+*Conditions.* (Q1): $`c_0+3e<\pi/2`$ and $`\mu_Q\tan(c_0+3e)<1`$. (Q3):
+$`(2R/\sqrt{17}-\Delta)(\tau_0-2\Delta)>2\kappa'^2\Delta^2/(1-\kappa'^2)`$.
+The certificate evaluates both. For the contours of section 9,
+$`\mu_Q`$ is between 0.017 and 0.019 and $`\tan(c_0+3e)\le0.62`$. On samples
+the ratio $`|V^2|/|\operatorname{Im}x_{0i}^2|`$ near a cone is at most 0.003
+(`corner_ratio`).
 
 Measured on stress samples of 30 000 points in each region (generic points
 at three scales, points within $`10^{-4}`$ to $`10^{-1}`$ of one cone, points
@@ -879,12 +969,28 @@ $`2\varphi(2R+\Delta+1)^2\le\delta_0/4`$. So $`|Y|\ge\delta_0/4`$. In the
 outer zone $`V\!\cdot n=-\kappa'(n^2+n\!\cdot u)>0`$ means
 $`n^2<-n\!\cdot u`$. Then
 $`\operatorname{Re}Y=-(n^2-\lambda^2V^2)+(1-\cos2\varphi)(n_0^2-\lambda^2V_0^2)-2\lambda\sin2\varphi\,n_0V_0`$.
-The last two terms are non-negative because $`V_0=-\kappa'(n_0+u_0)`$ has
-the sign opposite to $`n_0`$ and $`|V_0|<|n_0|`$. For the first,
-$`V^2=\kappa'^2(n^2+2n\!\cdot u+u^2)`$: if $`n\!\cdot u\ge0`$ then
-$`n^2<0`$ and $`n^2-\lambda^2V^2<0`$ once $`|n^2|\ge n\!\cdot u\ge c_ur`$
-exceeds $`\kappa'^2(2n\!\cdot u+u^2)`$; if $`n\!\cdot u<0`$ then
-$`n^2\le-\tfrac34|\vec n|^2`$ and the same holds. So $`\operatorname{Re}Y>0`$.
+Here $`\Theta>0`$, so $`n_0\ge R/\sqrt{17}-\Delta>0`$ (the past case is the
+mirror image). The last two terms are non-negative because
+$`V_0=-\kappa'\Theta(n_0+u_0)`$ has the sign opposite to $`n_0`$ and
+$`|V_0|<|n_0|`$ by (Q4). For the first, put
+$`\varepsilon=\lambda\kappa'\Theta\le\kappa'`$, so that
+
+```math
+n^2-\lambda^2V^2=(1-\varepsilon^2)\,n^2-\varepsilon^2\,(2n\!\cdot u+u^2).
+```
+
+If $`n\!\cdot u\ge0`$ then $`n^2<-n\!\cdot u\le0`$ and $`u^2>0`$, so this is
+negative. If $`n\!\cdot u<0`$ then $`|\vec n||\vec u|>n_0u_0`$, so
+$`|\vec n|>n_0(\tau_0-\Delta)/\Delta\ge2n_0`$ by (C0). Hence
+$`n^2\le-\tfrac34|\vec n|^2`$ and $`|n\!\cdot u|\le\Delta|\vec n|`$, and the
+expression is at most
+$`-\tfrac34(1-\varepsilon^2)|\vec n|^2+2\varepsilon^2\Delta|\vec n|`$, which
+is negative because $`|\vec n|\ge2n_0`$ and (Q4). So
+$`\operatorname{Re}Y>0`$.
+
+(Q4): $`\kappa'(\tau_0+\Delta)<(1-\kappa')(R/\sqrt{17}-\Delta)`$ and
+$`2(R/\sqrt{17}-\Delta)>8\kappa'^2\Delta/(3(1-\kappa'^2))`$; the certificate
+evaluates it.
 
 (d) Put $`X=X_i`$, $`I=|\operatorname{Im}X_i^{\rm def}|=2|V\!\cdot n|`$; here
 $`V\!\cdot n\le0`$. From (a),
@@ -1215,16 +1321,13 @@ rotation invariance and that $`|\sigma|<0.01`$.
 An internal review of this document found gaps, which are repaired above:
 absolute integrability for the powers $`1\pm p`$ (Lemma 8′, and the
 restriction $`|\operatorname{Re}p|<\eta`$), complex powers in
-Proposition 8, the excision of the cusp points in Lemma 11, and the blend
-zone in Lemma 12. Still open:
+Proposition 8, the outer zone in Lemma 10(c), the excision of the cusp
+points in Lemma 11, the blend zone in Lemma 12, and the phase bound with a
+timelike diagonal (Lemma Q). Still open:
 
-- **The phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$ is
-  proved at real points (Lemma P) and observed on the contour. On the
-  contour only $`3\pi+4e`$ is proved. This suffices for $`\bar F^{(0)}`$ and
-  $`\bar F^{(1)}`$ but not for $`\bar F^{(2)}`$.
-- **Lemma 10(c), outer zone.** The sentence using $`n\!\cdot u\ge c_ur`$ is
-  not justified where it stands. The conclusion $`\operatorname{Re}Y>0`$
-  should be re-derived.
+- **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
+  is proved at real points (Lemma P) and observed on the contour. On the
+  contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
 - **Review** by someone who works with these integrals.
 
 What the argument takes from general analysis: Fubini's theorem and

@@ -294,3 +294,33 @@ def test_strip_integral_with_powers_converges_only_below_the_regulator():
     outside = [fc.strip_power_integral(eta, 0.3, c) for c in (1e-12, 1e-24, 1e-48)]
     assert inside[2] - inside[1] < 0.2 * (inside[1] - inside[0])      # increments shrink
     assert outside[2] - outside[1] > 5 * (outside[1] - outside[0])    # increments grow
+
+
+@pytest.mark.parametrize("region,angle", [("+-", 1.1), ("-+", 1.1), ("+-", 0.7), ("--", 1.1)])
+def test_corner_of_the_phase_is_excluded(region, angle):
+    """Lemma Q: near a cone |V^2| <= mu_Q |Im x0i^2|, and mu_Q tan(gamma) < 1,
+    so arg z stays below 3 pi - 0.3 with a timelike diagonal."""
+    C = fc.tuned_contour(region, angle)
+    cert = fc.certificate(C)
+    assert cert["Q1_corner_excluded"] and cert["Q3_corner_excluded_far"] and cert["Q4_outer_zone"]
+    assert fc.corner_ratio(C, 5000, seed=2) <= cert["mu_Q"]
+    out = fc.phase_survey(C, 3000, seed=9)
+    assert max(abs(out["contour_min"]), abs(out["contour_max"])) <= 3 - fc.PHASE_CORNER_MARGIN / np.pi
+
+
+def test_outer_zone_real_part_in_lemma_10c():
+    """Where the outer field is on and V.n > 0, n^2 - lambda^2 V^2 < 0."""
+    C = fc.tuned_contour("+-", 1.1)
+    rng = np.random.default_rng(4)
+    checked = 0
+    for _ in range(40000):
+        x0 = C.centre + rng.normal(size=4) * rng.choice([20.0, 60.0, 200.0])
+        if np.linalg.norm(x0 - C.centre) < 2 * C.radius:
+            continue
+        v = C.field(x0)
+        for i in range(4):
+            n = x0 - C.x[i]
+            if fc.mdot(v, n) > 0:
+                checked += 1
+                assert fc.mdot(n, n) - fc.mdot(v, v) < 0
+    assert checked > 500

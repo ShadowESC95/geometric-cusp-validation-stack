@@ -11,7 +11,7 @@ maps to a path between the two lips of $`z=-1`$, and the unit circle is one
 representative of it. This explains the known contour rule. It does not
 replace the existing derivation of that rule.
 
-- **237 tests** and **63 worked example groups**, all passing
+- **242 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -40,15 +40,15 @@ replace the existing derivation of that rule.
 | Two-loop weight is regular at $`z=-1`$ | Proved |
 | Explicit integration contour, all kinematic regions | Constructed; conditions checked by a certificate |
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
-| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)}`$ | Written proof, all regions |
-| The same for $`\bar F^{(2)}`$ | Written proof for spacelike diagonals; otherwise rests on a measured bound |
+| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, all regions |
 | The edge statement implies the double pole | **Not proved** |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
 session. An internal review found one substantial gap and several smaller
-ones, which are repaired or marked as open in the documents. It has not been
-read by a specialist. Treat it as a proposed proof.
+ones, which are repaired in the documents; the repairs have not themselves
+been reviewed. It has not been read by a specialist. Treat it as a proposed
+proof.
 
 ## Quick start
 
@@ -59,7 +59,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 237 tests, about ten minutes
+make test        # 242 tests, about ten minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -177,8 +177,9 @@ What it does not do:
   weights.
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
-- With a timelike diagonal, the bound $`|\arg z|\le2\pi`$ on the contour is
-  measured, not proved.
+- With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
+  contour is measured, not proved. The weaker bound the argument needs,
+  below $`3\pi`$, is proved.
 
 Earlier statements found to be wrong and corrected in the documents: the
 exchange of integrals was claimed on lines where the integral does not
@@ -224,7 +225,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            237 tests
+tests/            242 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

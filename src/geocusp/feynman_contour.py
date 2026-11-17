@@ -474,8 +474,52 @@ def certificate(contour: Contour) -> dict:
     out["I2_theta_is_one"] = bool(2 * (2 * Delta + np.sqrt(omega * r0)) <= 2 / np.sqrt(5) * r0
                                   and r0 > 5 * omega / 4)
 
+    # Q: the corner arg z -> 3 pi (Lemma Q). Near a cone, |V^2| <= mu_Q |Im x0i^2|.
+    mu = max(64 * C.kappa * Pn**2 / Dmin, C.nu * B**2)        # |V_j|^2 <= mu (kappa |D| Psi + 2 nu rho)
+    M = out["C1_margin"]
+    K = kf * (2 * R + tau0 + Delta)                           # |V_out| in the ball of radius 2R
+    if M > 0:
+        mu_far = kf * (1 + (1.5 * d0 + (tau0 + Delta) ** 2) / (2 * M))
+        mu_q = max(3 * mu + np.sqrt(3 * mu), mu_far + np.sqrt(3 * mu) * K**2 / (2 * kf * M))
+    else:
+        mu_q = np.inf
+    gamma = PHASE_CORNER_MARGIN + 3 * out["excursion_bound"]
+    out["mu_Q"], out["corner_angle"] = float(mu_q), float(gamma)
+    out["Q1_corner_excluded"] = bool(gamma < np.pi / 2 and np.tan(gamma) * mu_q < 1)
+    out["Q3_corner_excluded_far"] = bool(
+        (2 * R / np.sqrt(17) - Delta) * (tau0 - 2 * Delta) > 2 * kf**2 * Delta**2 / (1 - kf**2))
+
+    # Q4: used in Lemma 10(c): |V_0| < |n_0| and |n| large enough in the outer zone
+    n0_min = R / np.sqrt(17) - Delta
+    out["Q4_outer_zone"] = bool(kf * (tau0 + Delta) < (1 - kf) * n0_min
+                                and 2 * n0_min > 8 * kf**2 * Delta / (3 * (1 - kf**2)))
+
     out["all"] = all(v for k, v in out.items() if isinstance(v, bool))
     return out
+
+
+PHASE_CORNER_MARGIN = 0.3      # with a timelike diagonal, |arg z| <= 3 pi - this on the contour
+
+
+def corner_ratio(contour: Contour, n: int, seed: int = 0) -> float:
+    """Largest |V^2| / |Im x0i^2| over sampled points with |x0i^2| <= delta0/2
+    inside the ball of radius 2R. Lemma Q bounds it by mu_Q."""
+    C = contour
+    worst = 0.0
+    for x0 in sample_points(C, n, seed):
+        if np.linalg.norm(x0 - C.centre) > 2 * C.radius:
+            continue
+        real = C.invariants(x0)
+        v = C.field(x0)
+        v2 = abs(mdot(v, v))
+        for i in range(4):
+            if abs(real[i]) <= C.delta0 / 2:
+                im = abs(2 * mdot(v, x0 - C.x[i]))
+                if im > 0:
+                    worst = max(worst, v2 / im)
+                elif v2 > 0:
+                    return np.inf
+    return float(worst)
 
 
 # --------------------------------------------------------------------------

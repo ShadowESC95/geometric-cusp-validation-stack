@@ -374,11 +374,36 @@ $`\sigma'\to0`$, because $`f`$ does not decay.
 **The hypothesis for the three weights.** $`\bar F^{(0)}`$ and
 $`\bar F^{(1)}`$ are polynomials in $`L`$: the hypothesis holds for every
 $`W`$. $`\bar F^{(2)}`$ is holomorphic for $`|\operatorname{Im}L|<3\pi`$
-(section 2), so $`W=3\pi`$. Its polynomial bound with $`k=4`$ is not written
-out here. The reason is that it is a combination of logarithms and
-polylogarithms of total weight four, each of which grows at most like a
-power of $`L`$ at $`z\to0`$ and $`z\to\infty`$ on every sheet. The test
-`test_two_loop_weight_is_polynomially_bounded_on_the_cover` finds
+(section 2), so $`W=3\pi`$, and it satisfies the bound with $`k=4`$:
+
+**Lemma 3′ (growth of the two-loop weight).** For every $`\delta>0`$ there
+is $`C`$ with $`|\bar F^{(2)}(e^L)|\le C(1+|L|)^4`$ on
+$`|\operatorname{Im}L|\le3\pi-\delta`$.
+
+*Proof.* $`\bar F^{(2)}`$ is a polynomial in $`L`$,
+$`A_n=\mathrm{Li}_n(a)`$ and $`B_n=\mathrm{Li}_n(b)`$, $`n=2,3,4`$, with
+$`a=1/(1+z)`$, $`b=z/(1+z)=1-a`$, in which every term has total degree at
+most 4 when $`L`$ counts 1 and $`A_n,B_n`$ count $`n`$. Its continuation is
+the same polynomial in the continuations of $`A_n`$ and $`B_n`$.
+
+On $`\operatorname{Re}L\ge1`$, $`|a|\le1/(e-1)<0.59`$. That region of the
+strip is simply connected and meets the principal sheet, so there
+$`A_n`$ is the power series of $`\mathrm{Li}_n`$ and
+$`|A_n|\le\mathrm{Li}_n(0.59)`$. The point $`b`$ stays in the disc
+$`|b-1|<0.59`$ and may wind around $`b=1`$, at most twice in the strip. Each
+turn adds $`\mp2\pi i\log^{n-1}(b)/(n-1)!`$ to $`\mathrm{Li}_n(b)`$, and
+$`|\log b|\le0.9`$ on that disc, while $`\mathrm{Li}_n`$ with $`n\ge2`$ is
+bounded on bounded sets. So $`A_n`$ and $`B_n`$ are bounded and
+$`|\bar F^{(2)}|\le C(1+|L|)^4`$.
+
+On $`\operatorname{Re}L\le-1`$ the same holds with $`a`$ and $`b`$
+exchanged, since $`z\to1/z`$ exchanges them.
+
+The set $`|\operatorname{Re}L|\le1`$, $`|\operatorname{Im}L|\le3\pi-\delta`$
+is compact and $`\bar F^{(2)}(e^L)`$ is holomorphic on a neighbourhood of
+it (section 2), so it is bounded there. $`\blacksquare`$
+
+The test `test_two_loop_weight_is_polynomially_bounded_on_the_cover` finds
 $`|\bar F^{(2)}|/(1+|L|)^4\le70`$ for $`|\operatorname{Im}L|\le2.5\pi`$,
 $`|\operatorname{Re}L|\le40`$.
 
@@ -504,14 +529,13 @@ with weight $`F`$ is $`4M[F]`$.
 | Region | Bound on $`\Phi`$ proved | $`\Phi`$ measured |
 | --- | --- | --- |
 | $`(-,-)`$ | $`2\pi+4e`$, $`e\le0.085`$ | $`2\pi`$ |
-| $`(+,-)`$, $`(-,+)`$ | $`3\pi+4e`$, $`e\le0.05`$ | $`2\pi`$ |
+| $`(+,-)`$, $`(-,+)`$ | $`3\pi-0.3`$ (Lemma Q) | $`2\pi`$ |
 
-- $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: any $`W`$ is allowed, so the
-  conclusion is proved in all three regions.
-- $`\bar F^{(2)}`$: $`W=3\pi`$. The conclusion is proved for spacelike
-  diagonals. With a timelike diagonal it needs $`\Phi<3\pi`$, which is
-  proved at real points (Lemma P) and observed on the contour, but not
-  proved on the contour.
+- $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: any $`W`$ is allowed.
+- $`\bar F^{(2)}`$: $`W=3\pi`$ (section 2 and Lemma 3′), which exceeds
+  $`\Phi`$ in every region.
+
+So the conclusion is proved for all three weights in all three regions.
 
 **What this argument does and does not use.** Steps A to D use the contour,
 the Mellin–Barnes evaluation and the identity
@@ -570,22 +594,22 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals, $`3\pi+4e`$ otherwise. Measured: $`2\pi`$ in all regions |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals, $`3\pi-0.3`$ otherwise (Lemma Q). Measured: $`2\pi`$ in all regions |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
-| Extension to $`\bar F^{(0)},\bar F^{(1)}`$ (Lemma 3, steps A to D) | Proved in all regions, given the contour |
-| Extension to $`\bar F^{(2)}`$ | Proved for spacelike diagonals; with a timelike diagonal it rests on the measured phase bound. Its polynomial bound is checked numerically, not written out |
+| Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
+| Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved in all regions, given the contour |
 | The edge statement implies the double pole | **Not proved.** The proof of the double pole does not pass through the edge statement |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
 | Regulated integral on the contour equals the Mellin–Barnes form | Proved in all three regions (GATE_6_CONTOUR sections 11 and 12) |
 
-**What would complete it.** A proof of the phase bound on the contour with
-a timelike diagonal; the polynomial bound on $`\bar F^{(2)}`$ written out;
-and review by someone who works with these integrals. An internal review
-found the gaps now repaired or marked above.
+**What would complete it.** Review by someone who works with these
+integrals. An internal review found gaps, which are repaired above; no step
+is now known to be unproved, but the repairs themselves have not been
+reviewed.
 
 ## 8. Reproduce
 
