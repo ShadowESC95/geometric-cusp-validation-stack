@@ -78,3 +78,57 @@ def iterated_residue_order_scan() -> dict:
         "spectator_values": {"x1": "11/10", "z1": "4/5", "x2": "17/10", "z2": "13/10"},
         "order_results": {" -> ".join(k): str(v) for k, v in values.items()},
     }
+
+
+# --------------------------------------------------------------------------
+# The two-loop form derived from the inequalities
+# --------------------------------------------------------------------------
+def two_loop_form_from_inequalities():
+    """Canonical form of the two-loop negative geometry, from its inequalities alone.
+
+    The region is
+        x_i, y_i, z_i, w_i > 0   and   Q = (x1-x2)(w1-w2) + (y1-y2)(z1-z2) > 0,
+    that is <AB_1 AB_2> < 0 in the chart of `symbolic_two_loop_integrand`.
+    With A = x1 - x2 and c = (y1-y2)(z1-z2), Q = A (w1 - w2) + c is linear in
+    w1 and in w2, so the region is cut into pieces on each of which w1 and
+    then w2 run over an interval with endpoints rational in the remaining
+    variables, over a base that is a product of simplices. The form of each
+    piece is the product of the d log forms of its intervals. Nothing about
+    the integrand is used.
+
+    Returns (variables, list of (label, density), their sum).
+    """
+    x1, y1, z1, w1, x2, y2, z2, w2 = v = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    A, c = x1 - x2, (y1 - y2) * (z1 - z2)
+    Q = A * (w1 - w2) + c
+    # bases: the orderings of (x1, x2) and of (y1, y2), (z1, z2)
+    x_gt, x_lt = 1 / (x2 * (x1 - x2)), 1 / (x1 * (x2 - x1))
+    y_gt, y_lt = 1 / (y2 * (y1 - y2)), 1 / (y1 * (y2 - y1))
+    z_gt, z_lt = 1 / (z2 * (z1 - z2)), 1 / (z1 * (z2 - z1))
+    c_pos = y_gt * z_gt + y_lt * z_lt            # c > 0
+    c_neg = y_gt * z_lt + y_lt * z_gt            # c < 0
+    pieces = [
+        # A > 0: w1 > w2 - c/A
+        ("A>0, c>0, 0<w2<c/A, w1>0", x_gt * c_pos * c / (w2 * (c - A * w2)) / w1),
+        ("A>0, c>0, w2>c/A, w1>w2-c/A", x_gt * c_pos * A / (A * w2 - c) * A / Q),
+        ("A>0, c<0, w2>0, w1>w2-c/A", x_gt * c_neg / w2 * A / Q),
+        # A < 0: 0 < w1 < w2 - c/A
+        ("A<0, c>0, w2>0, 0<w1<w2-c/A", x_lt * c_pos / w2 * (c - A * w2) / (w1 * Q)),
+        ("A<0, c<0, w2>c/A, 0<w1<w2-c/A", x_lt * c_neg * A / (A * w2 - c) * (c - A * w2) / (w1 * Q)),
+    ]
+    return v, pieces, sp.factor(sp.together(sum(d for _, d in pieces)))
+
+
+def region_piece(label_index: int, point: dict) -> bool:
+    """Is `point` (a dict of the eight variables) in piece number `label_index`?"""
+    A = point["x1"] - point["x2"]
+    c = (point["y1"] - point["y2"]) * (point["z1"] - point["z2"])
+    w1, w2 = point["w1"], point["w2"]
+    if A == 0 or c == 0:
+        return False
+    star = w2 - c / A
+    return [A > 0 and c > 0 and w2 < c / A,
+            A > 0 and c > 0 and w2 > c / A and w1 > star,
+            A > 0 and c < 0 and w1 > star,
+            A < 0 and c > 0 and w1 < star,
+            A < 0 and c < 0 and w2 > c / A and w1 < star][label_index]

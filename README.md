@@ -11,7 +11,7 @@ maps to a path between the two lips of $`z=-1`$, and the unit circle is one
 representative of it. This explains the known contour rule. It does not
 replace the existing derivation of that rule.
 
-- **246 tests** and **63 worked example groups**, all passing
+- **254 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -35,6 +35,8 @@ replace the existing derivation of that rule.
 | One-loop chart, brackets and canonical form | Exact (computer algebra) |
 | Blow-up residues at the cusp, ordinary and weighted | Exact |
 | Two-loop integrand: scaling and order dependence of residues | Exact |
+| Two-loop integrand derived from the inequalities of its region | Exact (re-derivation of a published form) |
+| Sampler tested by the sign-flip characterisation, $`k=1,2`$ | Passes; agrees with linear programming at $`k=1`$ |
 | Cusp coefficients $`\Gamma^{(1)}, \Gamma^{(2)}, \Gamma^{(3)}`$ from the contour rule | Reproduced from published weights |
 | Lorentzian edge chain equals the unit-circle mean | Computed to $`10^{-8}`$ in every case tested |
 | Two-loop weight is regular at $`z=-1`$ | Proved |
@@ -60,7 +62,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 246 tests, about twenty minutes
+make test        # 254 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -113,6 +115,10 @@ I_4^{(2)}=-\frac{n_{12}}{D_1D_2\,X_{12}},\qquad
 n_{12}=w_1x_1+w_2x_2+y_1z_1+y_2z_2,\qquad D_i=w_ix_iy_iz_i .
 ```
 
+- This integrand is derived here from the inequalities of the region
+  $`\langle AB_1AB_2\rangle<0`$, by cutting it into five generalised
+  simplices and adding their forms
+  ([FROM_GEOMETRY](docs/FROM_GEOMETRY.md)).
 - Under the collective scaling $`y_i,w_i\sim\rho`$ the integrand scales as
   $`\rho^{-4}`$, so the form has a logarithmic radial pole.
 - The 24 orders of iterated residues give four distinct values. Independent
@@ -211,6 +217,7 @@ command line as shown in [Quick start](#quick-start).
 | [GATE_6_BOUNDS](docs/GATE_6_BOUNDS.md) | All cusps and regions, error bounds, the regulator, and a status table |
 | [GATE_6_CONTOUR](docs/GATE_6_CONTOUR.md) | The explicit contour, its certificate, convergence, and the regulated integral |
 | [GATE_6_FUNCTIONAL](docs/GATE_6_FUNCTIONAL.md) | The functionals on the Mellin family, and the solver |
+| [FROM_GEOMETRY](docs/FROM_GEOMETRY.md) | The two-loop form from its inequalities; the membership test for the sampler |
 | [GATE_6_PROOF](docs/GATE_6_PROOF.md) | The earlier regulated-cap approach and its obstruction |
 | [MATHEMATICAL_MODEL](docs/MATHEMATICAL_MODEL.md) | Charts, forms and integrands used by the code |
 | [BENCHMARK_VALIDATION](docs/BENCHMARK_VALIDATION.md) | How to reproduce the suite, and what each check establishes |
@@ -230,7 +237,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            246 tests
+tests/            254 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
@@ -238,9 +245,10 @@ external/         adapter templates for other packages (untested)
 
 ## Scope and limits
 
-- **The weights are inputs.** $`\bar F^{(0)}`$, $`\bar F^{(1)}`$ and
-  $`\bar F^{(2)}`$ come from the literature. The geometry supplies the
-  contour, not the weight.
+- **The top weight is an input.** $`\bar F^{(2)}`$ comes from the
+  literature. At one order lower the chain is computed here: the two-loop
+  form from its inequalities, then $`\bar F^{(1)}`$ by quadrature. The same
+  has not been done at three loops.
 - **The contour is selected by physics, not positivity.** It follows from
   the Lorentzian real structure and the Feynman prescription. It is not
   derived from positivity of the amplituhedron.
@@ -269,8 +277,9 @@ link between them:
 - `continuum.py`: a one-dimensional diffusion equation with a source inserted
   by hand.
 - `amplituhedron.py`: samples the positive Grassmannian and pushes forward.
-  Positivity of the samples holds by construction, and the `canonical_proxy`
-  weight is a visual aid, not the canonical form.
+  The samples are now tested by the sign-flip characterisation, which does
+  not use the construction. The `canonical_proxy` weight is a visual aid,
+  not the canonical form.
 - `physics_maps.py`: declared ansätze, not results.
 - `external/`: short adapter templates for FEniCSx, Firedrake, deal.II, Meep,
   QuTiP and others. None is exercised by the tests.

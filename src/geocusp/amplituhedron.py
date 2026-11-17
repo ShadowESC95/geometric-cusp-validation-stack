@@ -139,3 +139,34 @@ def barycentric_reconstruction_residual(result: PushforwardResult) -> np.ndarray
     C = result.C[:, 0, :]
     Y = result.Y[:, 0, :]
     return np.max(np.abs(Y - C @ result.Z), axis=1)
+
+
+# --------------------------------------------------------------------------
+# An independent membership test: sign flips
+# --------------------------------------------------------------------------
+def _bracket(Y: np.ndarray, Z: np.ndarray, indices) -> float:
+    return float(np.linalg.det(np.vstack([Y, Z[list(indices)]])))
+
+
+def sign_flip_membership(Y: np.ndarray, Z: np.ndarray, k: int) -> dict:
+    """Test whether Y (k x (k+4)) lies in the m = 4 amplituhedron of Z without
+    using a matrix C: the sign-flip characterisation of Arkani-Hamed, Thomas
+    and Trnka (arXiv:1704.05069).
+
+      <Y i i+1 j j+1> > 0 for i < j < n,   (-1)^(k-1) <Y i i+1 n 1> > 0,
+      and the sequence <Y 1 2 3 i>, i = 4..n, has exactly k sign flips.
+
+    This is independent of the construction Y = C Z, so it is a real test of
+    the sampler, and it rejects points outside the amplituhedron.
+    """
+    n = Z.shape[0]
+    boundary = True
+    for i in range(n - 1):
+        for j in range(i + 2, n - 1):
+            boundary &= _bracket(Y, Z, (i, i + 1, j, j + 1)) > 0
+        if 1 <= i <= n - 3:
+            boundary &= (-1) ** (k - 1) * _bracket(Y, Z, (i, i + 1, n - 1, 0)) > 0
+    seq = [_bracket(Y, Z, (0, 1, 2, i)) for i in range(3, n)]
+    flips = sum(1 for a, b in zip(seq, seq[1:]) if a * b < 0)
+    return {"boundary_positive": bool(boundary), "flips": flips,
+            "inside": bool(boundary and flips == k)}
