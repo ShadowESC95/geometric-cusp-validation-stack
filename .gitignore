@@ -13,3 +13,6 @@ __pycache__/
 /results/
 /figures/
 /external/openfoam/generated/
+
+# private drafts, not for the public repository
+notes/
