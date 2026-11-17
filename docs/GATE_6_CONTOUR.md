@@ -9,15 +9,15 @@ formula in Lemma 4 by elementary bounds.
 
 **Status.** The construction is explicit and implemented, in all three real
 kinematic regions and for every light-like square: the constants are derived
-from the geometry. Its central inequality is proved (Lemma 5). Its global
-properties are reduced in section 9 to inequalities between named constants,
-each proved, and a certificate evaluates them; they hold across the family of
-squares. Absolute integrability is proved line by line in section 10. The
-regulated integral on the contour is identified with the Mellin–Barnes form
-in sections 11 and 12, with proofs: the parametric representation, the
-contour-independence and limiting step, the equality of the
-Feynman-parameter and Mellin–Barnes forms, the timelike diagonal, and
-non-integer dimension. Nothing here has been reviewed by a specialist.
+from the geometry. The displacement is continuously differentiable. Its
+central inequality is proved (Lemma 5). Its global properties, the strips
+and the bound at infinity are reduced in section 9 to inequalities between
+named constants, each proved, and a certificate evaluates all of them; they
+hold across the family of squares. Absolute integrability is proved in
+section 10. The regulated integral on the contour is identified with the
+Mellin–Barnes form in sections 11 and 12, with proofs, including a direct
+proof of the one Fourier inversion that is needed. Nothing here has been
+reviewed by a specialist.
 
 Code: `src/geocusp/feynman_contour.py`, `src/geocusp/schwinger.py`. Tests:
 `tests/test_gate6_contour.py`, `tests/test_schwinger.py`.
@@ -56,9 +56,19 @@ T=\{\beta\ge0,\ \alpha\le0,\ \beta-\alpha\le1\}
 \]
 
 be the triangle with vertices \((0,0)\), \((0,-1)\), \((1,0)\), which are
-the images of \(x_j\), \(x_{j-1}\), \(x_{j+1}\). Let
-\(d(P)=P-\pi_T(P)\), where \(\pi_T\) is the nearest-point projection onto
-\(T\). Define
+the images of \(x_j\), \(x_{j-1}\), \(x_{j+1}\). Write
+\(T=\{\ell_1\le0,\ell_2\le0,\ell_3\le0\}\) with \(\ell_1=-\beta\),
+\(\ell_2=\alpha\), \(\ell_3=\beta-\alpha-1\), and let
+
+\[
+\Psi(P)=\sum_{k=1}^3\phi(\ell_k(P)),\qquad
+\phi(t)=\begin{cases}0,&t\le0\\ t^3/3,&0\le t\le1\\ t^2-t+\tfrac13,&t\ge1.\end{cases}
+\]
+
+\(\phi\) is convex and twice continuously differentiable with
+\(0\le\phi''\le2\). So \(\Psi\) is convex and \(C^2\), it vanishes exactly on
+\(T\), and its Hessian is at most \(2\sum_k|\nabla\ell_k|^2=8\). Let
+\(d(P)=\nabla\Psi(P)\) and define
 
 \[
 V_j=\kappa\,(d_\beta\,p_{j-1}+d_\alpha\,p_j)+\nu\,y_\perp,\qquad\kappa,\nu>0 .
@@ -67,7 +77,8 @@ V_j=\kappa\,(d_\beta\,p_{j-1}+d_\alpha\,p_j)+\nu\,y_\perp,\qquad\kappa,\nu>0 .
 **Lemma 5.** For \(i\in\{j-1,j,j+1\}\) and every real \(x_0\),
 
 \[
-V_j\!\cdot(x_0-x_i)\ \le\ -\frac{\kappa|D|}{2}\,|d(P)|^2-\nu\rho\ \le\ 0 .
+V_j\!\cdot(x_0-x_i)\ \le\ -\frac{\kappa|D|}{2}\,\Psi(P)-\nu\rho\ \le\ 0,
+\qquad\text{and}\qquad|d(P)|^2\le16\,\Psi(P).
 \]
 
 *Proof.* A direct computation with \(p_{j-1}^2=p_j^2=0\) and
@@ -77,11 +88,19 @@ V_j\!\cdot(x_0-x_i)\ \le\ -\frac{\kappa|D|}{2}\,|d(P)|^2-\nu\rho\ \le\ 0 .
 V_j\!\cdot(x_0-x_i)=\frac{\kappa D}{2}\;d\cdot(P-v_i)-\nu\rho ,
 \]
 
-where \(v_i\) is the vertex of \(T\) belonging to \(x_i\). For the
-projection onto a closed convex set, \((P-\pi_T(P))\cdot(v-\pi_T(P))\le0\)
-for every \(v\in T\). Hence
-\(d\cdot(P-v)=|d|^2-d\cdot(v-\pi_T(P))\ge|d|^2\), and \(D<0\).
-\(\blacksquare\)
+where \(v_i\) is the vertex of \(T\) belonging to \(x_i\). By convexity
+\(\Psi(v)\ge\Psi(P)+d\cdot(v-P)\), and \(\Psi(v)=0\) for \(v\in T\), so
+\(d\cdot(P-v)\ge\Psi(P)\); and \(D<0\). For the second claim, a non-negative
+function whose Hessian is at most \(L\) satisfies
+\(|\nabla\Psi|^2\le2L\Psi\): otherwise the Taylor bound
+\(\Psi(P-\nabla\Psi/L)\le\Psi(P)-|\nabla\Psi|^2/(2L)\) would make \(\Psi\)
+negative. \(\blacksquare\)
+
+An earlier version used \(d=P-\pi_T(P)\), the vector from the nearest point
+of \(T\). That field is Lipschitz but not differentiable. The present one is
+continuously differentiable, and so is the whole displacement \(V\): the
+cutoffs are \(C^1\) and are locally constant where their arguments are not
+smooth. Only the ordinary Stokes theorem for a \(C^1\) map is needed below.
 
 So \(V_j\) is admissible for its three invariants everywhere, and strictly
 so unless \(\rho=0\) and \(P\in T\), that is unless \(x_0\) lies in the flat
@@ -91,9 +110,9 @@ three invariants are \(\alpha\beta D\), \(\beta D(1+\alpha)\) and
 triangle is exactly the set on which the Landau conditions fail to give a
 displacement direction for all three invariants at once.
 
-Near the edge through \(x_j\) and \(x_{j+1}\) this field reduces to the
-rotation of the transverse plane used in GATE_6_BOUNDS, with
-\(\rho\to(1+i\nu)^2\rho\).
+Near the edge through \(x_j\) and \(x_{j+1}\) the longitudinal part
+vanishes to second order and the field reduces to the rotation of the
+transverse plane used in GATE_6_BOUNDS, with \(\rho\to(1+i\nu)^2\rho\).
 
 The frame field does not control the fourth invariant \(x_{0,j+2}^2\).
 
@@ -159,7 +178,7 @@ minimum above. Finally \(\kappa,\nu\ll\delta_0/R^2\), so that where a frame
 field is switched on but does not control an invariant, that invariant is at
 least \(\delta_0\) in modulus and moves by a small fraction of itself. The
 values used are \(R=8\), \(\tau_0=8\) (the time offset of \(c_\pm\)),
-\(\delta_0=0.025\), \(\kappa=\nu=1.5\times10^{-7}\),
+\(\delta_0=0.025\), \(\kappa=2\times10^{-8}\), \(\nu=1.5\times10^{-7}\),
 \(\kappa'=2\times10^{-3}\). Section 9 states the precise conditions.
 
 ## 5. Properties
@@ -196,11 +215,11 @@ segments), next to the bounds proved in section 9:
 | Property | \((-,-)\) | \((+,-)\) | \((-,+)\) | Proved bound |
 | --- | --- | --- | --- | --- |
 | Near-cone pairs tested | 19 520 | 19 369 | 19 441 | |
-| Largest \(\operatorname{Im}x_{0i}^2\) near a cone | \(-7\times10^{-17}\) | \(-2\times10^{-17}\) | \(-9\times10^{-17}\) | \(\le0\) |
-| Largest excursion of \(\arg x_{0i}^2\) beyond \([-\pi,0]\) | 0.0039 | 0.0039 | 0.0039 | 0.083, 0.049, 0.049 |
-| Smallest \(\min_i|x_{0i}^2|/\min(1,\mathrm{dist}_{\rm edges}^2)\) | \(4\times10^{-7}\) | \(5\times10^{-7}\) | \(5\times10^{-7}\) | \(>0\) |
+| Largest \(\operatorname{Im}x_{0i}^2\) near a cone | \(-2\times10^{-17}\) | \(-2\times10^{-17}\) | \(-7\times10^{-17}\) | \(\le0\) |
+| Largest excursion of \(\arg x_{0i}^2\) beyond \([-\pi,0]\) | 0.0039 | 0.0039 | 0.0039 | 0.085, 0.050, 0.050 |
+| Smallest \(\min_i|x_{0i}^2|/\min(1,\mathrm{dist}_{\rm edges}^2)\) | \(3\times10^{-7}\) | \(1\times10^{-7}\) | \(2\times10^{-7}\) | \(>0\) |
 | Smallest ratio in item 4, units of \(\nu\) | 4 258 | 6 920 | 2 364 | \(\ge\tfrac12\) |
-| Largest \(\|\partial V\|\) | 0.018 | 0.018 | 0.018 | 0.37, 0.18, 0.18 |
+| Largest \(\|\partial V\|\) | 0.018 | 0.018 | 0.018 | 0.38, 0.18, 0.18 |
 
 The imaginary parts near a cone are never positive; their size is set by
 \(\nu\) times the squared distance from the flat triangles, which is tiny for
@@ -289,18 +308,18 @@ of the square, \(r=|x_0-c|\), and
 \[
 \Delta=\max_i|x_i-c|,\qquad P=\max_j|p_j|,\qquad
 A_1=\frac{2P}{\min_j|D_j|},\qquad A_2=1+2A_1P,\qquad
-\lambda_0=2\kappa A_1P+\nu A_2 .
+\lambda_0=16\kappa A_1P+\nu A_2 .
 \]
 
 In the frame of \(x_j\): \(|\alpha|,|\beta|\le A_1|x_0-x_j|\),
-\(|y_\perp|\le A_2|x_0-x_j|\), and \(|d(P)|\le|P|\) because the vertex
-\((0,0)\) belongs to \(T\). Hence
+\(|y_\perp|\le A_2|x_0-x_j|\), and \(|d(P)|\le8|P|\) because \(d\) vanishes
+at the vertex \((0,0)\) and has Lipschitz constant 8. Hence
 
 \[
 |V_j|\le\lambda_0|x_0-x_j|,\qquad\operatorname{Lip}(V_j)\le\lambda_0,
 \]
 
-the second because \(P\mapsto d(P)\) is 1-Lipschitz. Write
+the second for the same reason. Write
 \(n=x_0-x_i\), \(u^\mp=x_i-c_\mp\), and \((\tau,\xi)\) for the time and space
 parts of \(x_0-c\). The cutoff \(\chi\) is the cubic smoothstep, with
 \(|\chi'|\le\tfrac32\). The inner field is used for \(r\le R\), the outer for
@@ -331,7 +350,7 @@ the frame \(i+2\) vanishes, and by Lemma 5
 
 \[
 V_{\rm in}\!\cdot n=\sum_{j\ne i+2}m_jV_j\!\cdot n
-\le-\sum_{j\ne i+2}m_j\Big(\frac{\kappa|D_j|}{2}|d_j|^2+\nu\rho_j\Big)\le0 .
+\le-\sum_{j\ne i+2}m_j\Big(\frac{\kappa|D_j|}{2}\Psi_j+\nu\rho_j\Big)\le0 .
 \]
 
 This is exact and needs no condition. By (H1) some \(m_j=1\), so equality
@@ -416,6 +435,33 @@ at least \(2\nu\rho\) in modulus; otherwise the real part is at least
 the same way. This gives item 4 with \(c=\tfrac12\) up to the negligible
 \(|V|^2\).
 
+**(G) Lemma 6.** *Condition:* \(\theta\le1\), with \(\theta\) as in section
+10.
+
+**(S) The strips of Lemma 7.** With \(b_0=4\delta_0/\min|D|\),
+\(a_1=\delta_0/(8\max|D|)\) and
+\(\rho_1=\delta_0^2/(256\max(1,\max|D|\,|u|/\min|D|))\): on a strip
+\(|x_{0,j}^2|\) and \(|x_{0,j+1}^2|\) are at most
+\(a_1\max|D|(1+a_1)+\rho_1\), and
+
+\[
+|x_{0,j+2}^2|\ \ge\ \min|D|\,(b_0-a_1)-a_1\max|D|-\rho_1-2\sqrt{\rho_1\max|D|\,|u|/\min|D|}.
+\]
+
+*Conditions:* the first is at most \(\delta_0\); the second is at least
+\(2\delta_0\); \(b_0<\tfrac12\); and
+\(\Delta+a_1P+B\sqrt{\rho_1}\le R\), so that the strips lie in the inner
+zone.
+
+**(I) Lemma 9.** \(\omega=c_u/2\) is the fixed point of
+\(c_u=(\tau_0-2\Delta)(1/\sqrt{17}-\Delta/(2R))-\Delta\sqrt{\omega/(2R)}\).
+*Conditions:* \(c_u>0\);
+\(\kappa'^2[2(2R+\Delta)(\tau_0+\Delta)+(\tau_0+\Delta)^2]\le\omega R/2\)
+and \(2\kappa'^2(\tau_0+\Delta)\le\omega/4\), which give
+\(\kappa'^2(2|n||u|+|u|^2)\le\omega r/4\) for all \(r\ge2R\);
+and \(2(2\Delta+\sqrt{2\omega R})\le4R/\sqrt5\) with \(2R>5\omega/4\), which
+give \(|\tau|\ge\tfrac12|\xi|\) whenever \(|n^2|<\omega r\), \(r\ge2R\).
+
 **The conditions, evaluated.**
 
 | Condition | \((-,-)\) | \((+,-)\), \((-,+)\) |
@@ -424,8 +470,11 @@ the same way. This gives item 4 with \(c=\tfrac12\) up to the negligible
 | (C0) \(\tau_0\ge3\Delta\), with \(\Delta\) | 0.988 | 1.034 |
 | (C1) margin (must be positive) | 5.55 | 5.19 |
 | (C2), (C3), wedge margin | hold | hold |
-| (D) excursion bound, rad | 0.083 | 0.049 |
-| (E) bound on \(\|\partial V\|\) | 0.368 | 0.179 |
+| (D) excursion bound, rad | 0.085 | 0.050 |
+| (E) bound on \(\|\partial V\|\) | 0.378 | 0.183 |
+| (G) \(\theta\) | \(1.9\times10^{-5}\) | \(7\times10^{-6}\) |
+| (S) \(b_0\); margin of the far invariant over \(2\delta_0\) | 0.092; 0.043 | 0.034; 0.041 |
+| (I) \(c_u\) | 0.921 | 0.884 |
 
 `certificate` computes these from the geometry and the constants, and
 `test_every_explicit_condition_of_the_proof_holds` asserts all of them in
@@ -450,11 +499,11 @@ met for every non-degenerate square. Evaluated on 30 angles in each region:
 
 | Region | \(s/t\) covered | \(\epsilon_*\) | \(R\) | \(\kappa=\nu\) | (E) | (D), rad |
 | --- | --- | --- | --- | --- | --- | --- |
-| \((-,-)\) | 0.0057 to 173 | 0.0030 to 0.10 | 7.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-7}\) | 0.300 | 0.057 to 0.069 |
-| \((+,-)\) | \(-174\) to \(-1.01\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-6}\) | 0.300 | 0.057 to 0.069 |
-| \((-,+)\) | \(-0.994\) to \(-0.0057\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(10^{-10}\) to \(4\times10^{-6}\) | 0.300 | 0.057 to 0.069 |
+| \((-,-)\) | 0.0057 to 173 | 0.0030 to 0.10 | 7.0 to 8.9 | \(3\times10^{-11}\) to \(10^{-7}\) | 0.300 | 0.057 to 0.069 |
+| \((+,-)\) | \(-174\) to \(-1.01\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(3\times10^{-11}\) to \(10^{-6}\) | 0.300 | 0.057 to 0.069 |
+| \((-,+)\) | \(-0.994\) to \(-0.0057\) | 0.0031 to 0.62 | 8.0 to 8.9 | \(3\times10^{-11}\) to \(10^{-6}\) | 0.300 | 0.057 to 0.069 |
 
-All conditions hold at all 90 squares, and for the same squares rescaled by
+All conditions, including (G), (S) and (I), hold at all 90 squares, and for the same squares rescaled by
 0.01 and by 37. The amplitudes shrink as the square degenerates
 (\(s/t\to0,\infty\)), as they must: the four-cone gap closes. The sampled
 properties were also checked at four extreme squares.
@@ -476,7 +525,7 @@ unchanged.
 \qquad
 \big|x_{0i}^{2\,\rm def}\big|\ \ge\ \tfrac12\max\Big(|x_{0i}^2|,\ \big|\operatorname{Im}x_{0i}^{2\,\rm def}\big|\Big),
 \qquad
-\theta=\max\Big(\frac{32\kappa P^2}{\min_j|D_j|},\ 8\nu B^2\Big),
+\theta=\max\Big(\frac{512\kappa P^2}{\min_j|D_j|},\ 8\nu B^2\Big),
 \]
 
 where \(B\) is the largest Euclidean norm of a transverse vector with
@@ -486,16 +535,17 @@ with \(m_j=1\) that controls \(i\).
 
 *Proof.* Near the cone of \(x_i\) the frame \(i+2\) is off, so every active
 frame controls \(i\) and, with
-\(b_j=\tfrac{\kappa|D_j|}{2}|d_j|^2+\nu\rho_j\), Lemma 5 gives
+\(b_j=\tfrac{\kappa|D_j|}{2}\Psi_j+\nu\rho_j\), Lemma 5 gives
 \(|\operatorname{Im}x_{0i}^{2\,\rm def}|=2|V\!\cdot n|\ge2\sum_jm_jb_j\). On
 the other hand \(|d_\beta p_{j-1}+d_\alpha p_j|\le\sqrt2P|d_j|\) and
 \(|y_\perp|\le B\sqrt{\rho_j}\), so
-\(|V_j|^2\le4\kappa^2P^2|d_j|^2+2\nu^2B^2\rho_j\). At most four frames are
-active and \(m_j\le1\), so
+\(|V_j|^2\le4\kappa^2P^2|d_j|^2+2\nu^2B^2\rho_j\le64\kappa^2P^2\Psi_j+2\nu^2B^2\rho_j\)
+by the second part of Lemma 5. At most four frames are active and
+\(m_j\le1\), so
 
 \[
 |V^2|\le|V|^2\le4\sum_jm_j|V_j|^2
-\le\sum_jm_j\Big[\frac{32\kappa P^2}{|D_j|}\cdot\frac{\kappa|D_j|}{2}|d_j|^2+8\nu B^2\cdot\nu\rho_j\Big]
+\le\sum_jm_j\Big[\frac{512\kappa P^2}{|D_j|}\cdot\frac{\kappa|D_j|}{2}\Psi_j+8\nu B^2\cdot\nu\rho_j\Big]
 \le\theta\sum_jm_jb_j .
 \]
 
@@ -506,7 +556,7 @@ least \(|\operatorname{Im}|\); otherwise it is at least
 With \(\theta\le1\) both are at least half the maximum.
 \(\blacksquare\)
 
-For the contours used \(\theta\) is between \(10^{-6}\) and \(3\times10^{-5}\).
+For the contours used \(\theta\) is between \(10^{-6}\) and \(3\times10^{-4}\).
 On samples the ratio \(|V^2|/|\operatorname{Im}|\) never exceeds
 \(\theta/2\) and the second ratio is 1.000.
 
@@ -520,7 +570,7 @@ and let \(S_j^-\) be the same with the roles of \(\alpha\) and \(-\beta\)
 exchanged (the strip around the other edge at \(x_j\)). Choose
 \(b_0=4\delta_0/\min_j|D_j|\), and \(a_1,\rho_1\) small enough that on the
 strip \(|x_{0,j}^2|\le\delta_0\), \(|x_{0,j+1}^2|\le\delta_0\) and
-\(|x_{0,j+2}^2|\ge2\delta_0\); explicitly
+\(|x_{0,j+2}^2|\ge2\delta_0\) (conditions (S) of section 9); explicitly
 \(a_1=\delta_0/(8\max|D|)\) and
 \(\rho_1=\delta_0^2/(256\max(1,\max|D|\,|u|/\min|D|))\). Then
 \(b_0<\tfrac12\), so \(S_j^+\) and \(S_{j+1}^-\) together cover a
@@ -594,8 +644,8 @@ c_u=(\tau_0-2\Delta)\Big(\frac{1}{\sqrt{17}}-\frac{\Delta}{2R}\Big)-\Delta\sqrt{
 \qquad\omega=\tfrac12c_u ,
 \]
 
-which is positive for the constants used (lengths are in units in which
-\(\Delta\) is of order one). If \(|n^2|\ge\omega r\), the real part on the
+which is positive by condition (I) of section 9 (lengths are in units in
+which \(\Delta\) is of order one). If \(|n^2|\ge\omega r\), the real part on the
 contour is at least
 \(|n^2|(1-\kappa'^2)-\kappa'^2(2|n||u|+|u|^2)\ge\tfrac12|n^2|\), because
 \(\kappa'^2(2|n||u|+|u|^2)\le\tfrac14\omega r\) for small \(\kappa'\). If
@@ -745,7 +795,7 @@ the terms in \(\sin\varphi\) collect to
 
 (b) \(V\) vanishes at each cusp \(x_i\): the three frames that contain
 \(x_i\) in their flat triangle have \(V_j(x_i)=0\), and the fourth is
-switched off there. \(V\) is \(J\)-Lipschitz, so
+switched off there. \(\|\partial V\|\le J\), so
 \(|V(x)|=|V(x)-V(x_i)|\le J|x-x_i|\).
 
 (c) By (a) and (b), if \(V\!\cdot n\le0\) then
@@ -786,8 +836,8 @@ depend on \(\lambda\in[0,1]\).
 *Proof.* The integrand is a holomorphic function \(h\) on the open set
 where no \(Y_i\) vanishes, with its powers continued from \(\lambda=0\),
 where the \(Y_i\) lie in the cone of step 1. The form \(h\,dz_1\cdots dz_D\)
-is closed. The map \((\lambda,x)\mapsto x+i\lambda V(x)\) is Lipschitz and
-by Lemma 10(c) takes \([0,1]\times\mathbb R^D\) into that set. Apply Stokes'
+is closed. The map \((\lambda,x)\mapsto x+i\lambda V(x)\) is continuously
+differentiable (section 2) and by Lemma 10(c) takes \([0,1]\times\mathbb R^D\) into that set. Apply Stokes'
 theorem on \([0,1]\times\{|x|\le\rho\}\): the difference of the integrals
 at \(\lambda=1\) and \(\lambda=0\) over the ball is the integral over the
 side \([0,1]\times\{|x|=\rho\}\). On the side, for fixed \(\varphi>0\), every
@@ -876,9 +926,34 @@ the contour being \(\operatorname{Re}w=-1-\operatorname{Re}p+\eta/2\). With
 the prefactor \(\Gamma(2-\eta)/\prod\Gamma(a_i)\) this is the Mellin–Barnes
 form of GATE_6_FUNCTIONAL with \(\epsilon=-\eta\).
 
-*Proof.* For \(0<c<\lambda\) the Beta integral gives
-\(\int_0^\infty x^{c-1}(1+x)^{-\lambda}dx=\Gamma(c)\Gamma(\lambda-c)/\Gamma(\lambda)\).
-By Mellin inversion, with \(w=-c\) and \(x=A/B\),
+*Proof.* Fix \(0<c<\lambda\) and put \(f(v)=e^{cv}(1+e^v)^{-\lambda}\) for
+real \(v\). It is continuous, bounded and integrable, and the Beta integral
+gives its Fourier transform:
+
+\[
+\hat f(y)=\int_{-\infty}^\infty f(v)e^{iyv}dv
+=\int_0^\infty x^{c+iy-1}(1+x)^{-\lambda}dx=\frac{\Gamma(c+iy)\Gamma(\lambda-c-iy)}{\Gamma(\lambda)} ,
+\]
+
+which is integrable in \(y\) by the product bounds of section 7.
+
+*Inversion, proved directly.* For \(\delta>0\), by Fubini (the integrand is
+absolutely integrable) and the Gaussian integral
+\(\int e^{-\delta y^2}e^{iyx}dy=\sqrt{\pi/\delta}\,e^{-x^2/4\delta}\),
+
+\[
+\frac1{2\pi}\int\hat f(y)e^{-iyv}e^{-\delta y^2}dy
+=\int f(u)\,\frac{e^{-(u-v)^2/4\delta}}{\sqrt{4\pi\delta}}\,du .
+\]
+
+As \(\delta\to0\) the left side tends to
+\(\frac1{2\pi}\int\hat f(y)e^{-iyv}dy\) by dominated convergence, since
+\(\hat f\) is integrable. The right side is an average of \(f\) against a
+probability density that concentrates at \(v\), and tends to \(f(v)\)
+because \(f\) is continuous and bounded. Hence
+\(f(v)=\frac1{2\pi}\int\hat f(y)e^{-iyv}dy\).
+
+With \(e^v=A/B\) and \(w=-c-iy\) this reads
 
 \[
 (A+B)^{-\lambda}=\frac{1}{\Gamma(\lambda)}\int\frac{dw}{2\pi i}\,\Gamma(-w)\Gamma(\lambda+w)\,A^{w}B^{-\lambda-w},
@@ -1058,12 +1133,14 @@ rotation invariance and that \(|\sigma|<0.01\).
 
 ## 13. What remains
 
-- In section 10 the constant \(c_u>0\) of Lemma 9 and the choice of
-  \(a_1,\rho_1\) in the strips are verified for the contours used, by the
-  sampled checks, and are not added to the certificate.
-- Two classical facts are used without proof: Mellin inversion (Lemma 13)
-  and Stokes' theorem for a Lipschitz map (Lemmas 11 and 15).
 - Review by someone who works with these integrals.
+
+What the argument takes from general analysis is now only this: Fubini's
+theorem and dominated convergence, Cauchy's theorem in one variable, the
+ordinary Stokes theorem for a continuously differentiable map, the Beta and
+Dirichlet integrals, the Weierstrass product for the Gamma function, and
+the identity theorem for analytic functions. Every inequality specific to
+the problem is either proved here or evaluated by the certificate.
 
 ## 14. Reproduce
 

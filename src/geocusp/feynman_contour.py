@@ -14,12 +14,14 @@ timelike the longitudinal part of the frame field changes sign):
 * Frame fields. At the cusp x_j write x0 = x_j + alpha p_{j-1} + beta p_j
   + yperp and let T be the triangle {beta >= 0, alpha <= 0, beta - alpha <= 1}
   in the (beta, alpha) plane, the projection of conv(x_{j-1}, x_j, x_{j+1}).
-  With d = P - proj_T(P), P = (beta, alpha),
+  With d = grad Psi(P), P = (beta, alpha), Psi a C^2 convex function that
+  vanishes exactly on T,
       V_j = kappa (d_beta p_{j-1} + d_alpha p_j) + nu yperp
   satisfies, for i in {j-1, j, j+1},
       V_j.(x0 - x_i) = (kappa D/2) d.(P - vertex_i) - nu rho
-                     <= -(kappa |D|/2) |d|^2 - nu rho <= 0,
-  by the obtuse-angle property of the projection onto a convex set.
+                     <= -(kappa |D|/2) Psi(P) - nu rho <= 0,
+  by convexity: Psi(v) >= Psi(P) + d.(v - P) and Psi(v) = 0. The field is
+  continuously differentiable, so the ordinary Stokes theorem applies.
 
 * Far fields. V = -kappa' (x0 - c) with c in the common past of the four
   cusps is admissible near every future nappe, and with c in the common
@@ -63,9 +65,41 @@ def project_to_triangle(P):
     return best
 
 
+def _phi(tv):
+    """C^2 convex function: t^3/3 on [0, 1], t^2 - t + 1/3 beyond, 0 for t <= 0."""
+    tv = max(tv, 0.0)
+    return tv**3 / 3 if tv <= 1 else tv * tv - tv + 1.0 / 3
+
+
+def _dphi(tv):
+    """Its derivative: t^2 on [0, 1], 2t - 1 beyond; C^1, with 0 <= phi'' <= 2."""
+    tv = max(tv, 0.0)
+    return tv * tv if tv <= 1 else 2 * tv - 1
+
+
+# T = {l_k <= 0}: l_1 = -beta, l_2 = alpha, l_3 = beta - alpha - 1, in coordinates (beta, alpha)
+_FACES = (np.array([-1.0, 0.0]), np.array([0.0, 1.0]), np.array([1.0, -1.0]))
+_OFFSETS = (0.0, 0.0, -1.0)
+HESSIAN_BOUND = 2 * sum(float(n @ n) for n in _FACES)          # = 8
+
+
+def triangle_potential(P):
+    """Psi(P) = sum_k phi(l_k(P)): convex, C^2, zero exactly on the triangle T."""
+    return sum(_phi(float(n @ P) + c) for n, c in zip(_FACES, _OFFSETS))
+
+
+def triangle_gradient(P):
+    """d(P) = grad Psi(P): C^1, zero exactly on T, Lipschitz with constant 8.
+
+    By convexity d.(P - v) >= Psi(P) for every v in T, and because the
+    Hessian is at most 8, |d|^2 <= 16 Psi.
+    """
+    return sum(_dphi(float(n @ P) + c) * n for n, c in zip(_FACES, _OFFSETS))
+
+
 @dataclass
 class Contour:
-    kappa: float = 1.5e-7        # longitudinal displacement of the frame fields
+    kappa: float = 2e-8          # longitudinal displacement of the frame fields
     nu: float = 1.5e-7           # transverse displacement of the frame fields
     kappa_far: float = 2e-3      # far field
     delta0: float = 0.025        # width of the neighbourhood of a cone, inside the ball
@@ -103,17 +137,14 @@ class Contour:
 
     def frame_field(self, j, x0):
         pm, pp, D, alpha, beta, yperp, rho = self.frame(j, x0)
-        P = np.array([beta, alpha])
-        d = P - project_to_triangle(P)
+        d = triangle_gradient(np.array([beta, alpha]))
         # the longitudinal part needs (kappa D) < 0: reverse it where the diagonal is timelike
         return -np.sign(D) * self.kappa * (d[0] * pm + d[1] * pp) + self.nu * yperp
 
     def frame_bound(self, j, x0):
-        """-(kappa |D|/2) |d|^2 - nu rho: upper bound on V_j.(x0 - x_i), i = j-1, j, j+1."""
+        """-(kappa |D|/2) Psi(P) - nu rho: upper bound on V_j.(x0 - x_i), i = j-1, j, j+1."""
         pm, pp, D, alpha, beta, yperp, rho = self.frame(j, x0)
-        P = np.array([beta, alpha])
-        d = P - project_to_triangle(P)
-        return -(self.kappa * abs(D) / 2) * (d @ d) - self.nu * rho
+        return -(self.kappa * abs(D) / 2) * triangle_potential(np.array([beta, alpha])) - self.nu * rho
 
     # ---- the field --------------------------------------------------------
     def weights(self, x0):
@@ -357,7 +388,8 @@ def certificate(contour: Contour) -> dict:
     Ds = [abs(2 * mdot(C.p[(j - 1) % 4], C.p[j])) for j in range(4)]
     A1 = 2 * Pn / min(Ds)                 # |alpha|, |beta| <= A1 |x0 - x_j|
     A2 = 1 + 2 * A1 * Pn                  # |yperp| <= A2 |x0 - x_j|
-    lam0 = 2 * C.kappa * A1 * Pn + C.nu * A2      # |V_j| <= lam0 |x0 - x_j|, Lip(V_j) <= lam0
+    # |d| <= 8 |P| and Lip(d) <= 8 (Hessian bound), |P| <= sqrt(2) A1 |x0 - x_j|
+    lam0 = 2 * HESSIAN_BOUND * C.kappa * A1 * Pn + C.nu * A2   # |V_j| <= lam0 |x0 - x_j|, Lip(V_j) <= lam0
     R, d0, kf, tau0 = C.radius, C.delta0, C.kappa_far, C.tau0
     out = {"Delta": Delta, "P": Pn, "A1": A1, "A2": A2, "lambda0": lam0}
 
@@ -403,6 +435,44 @@ def certificate(contour: Contour) -> dict:
     j_blend = 1.5 / R * (4 * lam0 * reach + kf * (2 * R + tau0 + Delta))
     out["jacobian_bound"] = j_inner + j_outer + j_blend
     out["E_local_diffeomorphism"] = bool(out["jacobian_bound"] < 1)
+
+    # F: Lemma 6 needs theta <= 1
+    out["theta"] = theta_constant(C)
+    out["F_theta_small"] = bool(out["theta"] <= 1)
+
+    # S: the strips of Lemma 7 (same widths as `strip_check`)
+    Dmin, Dmax = min(Ds), max(Ds)
+    u_abs = abs(C.s + C.t)
+    b0 = 4 * d0 / Dmin
+    a1 = d0 / (8 * Dmax)
+    rho1 = (d0 / 8) ** 2 / max(1.0, Dmax * u_abs / Dmin) / 4
+    B = max(transverse_norm(C, j) for j in range(4))
+    out.update({"b0": b0, "a1": a1, "rho1": rho1})
+    out["S0_strips_overlap"] = bool(b0 < 0.5)
+    # |x0,j^2| = |alpha beta D - rho| and |x0,j+1^2| = |alpha D (beta - 1) - rho| on the strip
+    out["S2_near_invariants"] = bool(a1 * Dmax * (1 + a1) + rho1 <= d0)
+    # |x0,j+2^2| >= |D'|(b0 - a1) - a1 |D| - rho1 - 2 sqrt(rho1 |D' u / D|)
+    far_lower = Dmin * (b0 - a1) - a1 * Dmax - rho1 - 2 * np.sqrt(rho1 * Dmax * u_abs / Dmin)
+    out["S1_far_margin"] = far_lower - 2 * d0
+    out["S1_frame_fully_on"] = bool(far_lower >= 2 * d0)
+    # the strips lie in the inner zone
+    out["S3_strips_inside"] = bool(Delta + a1 * Pn + B * np.sqrt(rho1) <= R)
+
+    # I: Lemma 9, the bound at infinity
+    omega = 0.0
+    for _ in range(50):                                   # fixed point of omega = c_u / 2
+        c_u = (tau0 - 2 * Delta) * (1 / np.sqrt(17) - Delta / (2 * R)) - Delta * np.sqrt(omega / (2 * R))
+        omega = c_u / 2
+    out["c_u"], out["omega"] = float(c_u), float(omega)
+    out["I0_c_u_positive"] = bool(c_u > 0)
+    r0 = 2 * R
+    # kappa'^2 (2 |n||u| + |u|^2) <= omega r / 4 for r >= 2R (the left side grows linearly, so check at 2R
+    # and compare slopes)
+    lhs = kf**2 * (2 * (r0 + Delta) * (tau0 + Delta) + (tau0 + Delta) ** 2)
+    out["I1_real_part"] = bool(lhs <= omega * r0 / 4 and 2 * kf**2 * (tau0 + Delta) <= omega / 4)
+    # |n^2| < omega r forces |time| >= |space|/2: 2(2 Delta + sqrt(omega r)) <= (2/sqrt 5) r for r >= 2R
+    out["I2_theta_is_one"] = bool(2 * (2 * Delta + np.sqrt(omega * r0)) <= 2 / np.sqrt(5) * r0
+                                  and r0 > 5 * omega / 4)
 
     out["all"] = all(v for k, v in out.items() if isinstance(v, bool))
     return out
@@ -450,7 +520,7 @@ def tuned_contour(region: str = "--", angle: float = 1.1, scale: float = 1.0,
     j_rest = kf * (1 + 7.5 * (1 + (tau0 + Delta) / R)) + 1.5 / R * kf * (2 * R + tau0 + Delta)
     budget = max(jacobian_target - j_rest, 0.05)
     lam0 = budget / (4 * (3 * reach**2 / d0 + 1) + 6 * reach / R)
-    amp = lam0 / (2 * A1 * Pn + A2)
+    amp = lam0 / (2 * HESSIAN_BOUND * A1 * Pn + A2)
     out = Contour(kappa=amp, nu=amp, kappa_far=kf, delta0=d0, radius=R, tau0=tau0,
                   angle=angle, region=region)
     if scale != 1.0:
@@ -491,13 +561,14 @@ def theta_constant(contour: Contour) -> float:
 
     |V|^2 <= 4 sum_j m_j (4 kappa^2 P^2 |d_j|^2 + 2 nu^2 B^2 rho_j)
           <= theta sum_j m_j b_j,   b_j = (kappa |D_j|/2)|d_j|^2 + nu rho_j,
-    theta = max(32 kappa P^2 / min|D|, 8 nu B^2), and |Im x0i^2| >= 2 sum_j m_j b_j.
+    With the smooth potential, |d_j|^2 <= 16 Psi_j and b_j = (kappa |D_j|/2) Psi_j + nu rho_j,
+    so theta = max(512 kappa P^2 / min|D|, 8 nu B^2), and |Im x0i^2| >= 2 sum_j m_j b_j.
     """
     C = contour
     Pn = max(np.linalg.norm(p) for p in C.p)
     Dmin = min(abs(2 * mdot(C.p[(j - 1) % 4], C.p[j])) for j in range(4))
     B = max(transverse_norm(C, j) for j in range(4))
-    return float(max(32 * C.kappa * Pn**2 / Dmin, 8 * C.nu * B**2))
+    return float(max(512 * C.kappa * Pn**2 / Dmin, 8 * C.nu * B**2))
 
 
 def lemma6_check(contour: Contour, n: int, seed: int = 0) -> dict:

@@ -174,3 +174,23 @@ def test_extended_field_is_radial_in_the_extra_dimensions():
         np.testing.assert_allclose(ve, sigma * e, rtol=0, atol=1e-14)
         largest_sigma = max(largest_sigma, abs(sigma))
     assert largest_sigma < 0.01                         # m(1 + i sigma) stays in Re > 0
+
+
+def test_fourier_inversion_used_in_lemma_13():
+    """f(v) = e^{cv}(1+e^v)^(-lam) has transform Gamma(c+iy)Gamma(lam-c-iy)/Gamma(lam),
+    and is recovered from it; the Gaussian-regularised identity holds for delta > 0."""
+    import mpmath as mp
+
+    c, lam, v = mp.mpf("0.6"), mp.mpf("1.7"), mp.mpf("0.4")
+    f = lambda u: mp.exp(c * u) * (1 + mp.exp(u)) ** (-lam)
+    fhat = lambda y: mp.gamma(c + 1j * y) * mp.gamma(lam - c - 1j * y) / mp.gamma(lam)
+    direct = mp.quad(lambda u: f(u) * mp.exp(1j * mp.mpf("0.9") * u), [-mp.inf, -5, 0, 5, mp.inf])
+    assert abs(direct - fhat(mp.mpf("0.9"))) < mp.mpf("1e-10")
+    recovered = mp.quad(lambda y: fhat(y) * mp.exp(-1j * y * v), [-mp.inf, -4, 0, 4, mp.inf]) / (2 * mp.pi)
+    assert abs(recovered - f(v)) < mp.mpf("1e-10")
+    delta = mp.mpf("0.05")
+    left = mp.quad(lambda y: fhat(y) * mp.exp(-1j * y * v - delta * y * y),
+                   [-mp.inf, -4, 0, 4, mp.inf]) / (2 * mp.pi)
+    right = mp.quad(lambda u: f(u) * mp.exp(-(u - v) ** 2 / (4 * delta)) / mp.sqrt(4 * mp.pi * delta),
+                    [-mp.inf, v - 3, v, v + 3, mp.inf])
+    assert abs(left - right) < mp.mpf("1e-10")

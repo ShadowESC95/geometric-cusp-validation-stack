@@ -2,7 +2,7 @@
 
 See docs/GATE_6_CONTOUR.md. The real domain is displaced by x0 -> x0 + i V
 with V built from four frame fields and two far fields. The example checks
-the projection inequality behind the construction and surveys the contour on
+the convexity inequality behind the construction and surveys the contour on
 a stress sample: correct side of every cone, small excursion of the phases,
 and zeros only on the edges.
 """
@@ -18,8 +18,9 @@ def check_feynman_contour():
     vertices = np.array([[0.0, 0.0], [0.0, -1.0], [1.0, 0.0]])
     for _ in range(5000):
         P = rng.normal(size=2) * 2
-        d = P - fc.project_to_triangle(P)
-        assert min(d @ (P - v) - d @ d for v in vertices) > -1e-12
+        d, psi = fc.triangle_gradient(P), fc.triangle_potential(P)
+        assert min(d @ (P - v) for v in vertices) >= psi - 1e-12      # convexity
+        assert d @ d <= 16 * psi + 1e-12                              # bounded Hessian
 
     worst = -np.inf
     for _ in range(2000):

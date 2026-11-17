@@ -14,18 +14,30 @@ def contour():
 REGIONS = ("--", "+-", "-+")
 
 
-def test_projection_onto_the_triangle_has_the_obtuse_angle_property():
-    """d = P - proj(P) satisfies d.(P - V) >= |d|^2 for every vertex V."""
+def test_potential_is_convex_smooth_and_vanishes_exactly_on_the_triangle():
+    """d = grad Psi satisfies d.(P - V) >= Psi for every vertex V and
+    |d|^2 <= 16 Psi; Psi = 0 exactly on T; and d is continuously differentiable."""
     rng = np.random.default_rng(0)
     vertices = np.array([[0.0, 0.0], [0.0, -1.0], [1.0, 0.0]])
     for _ in range(20000):
+        P = rng.normal(size=2) * 10 ** rng.uniform(-3, 1.2)
+        d, psi = fc.triangle_gradient(P), fc.triangle_potential(P)
+        assert min(d @ (P - v) for v in vertices) >= psi - 1e-12
+        assert d @ d <= 16 * psi + 1e-12
+        inside = P[0] >= 0 and P[1] <= 0 and P[0] - P[1] <= 1
+        assert (psi == 0) == inside
+    jac = lambda P, h=1e-7: np.array([(fc.triangle_gradient(P + h * e) - fc.triangle_gradient(P - h * e))
+                                      / (2 * h) for e in np.eye(2)])
+    worst = 0.0
+    for _ in range(3000):
         P = rng.normal(size=2) * 2
-        d = P - fc.project_to_triangle(P)
-        assert min(d @ (P - v) - d @ d for v in vertices) > -1e-12
+        worst = max(worst, np.abs(jac(P) - jac(P + rng.normal(size=2) * 1e-5)).max())
+    assert worst < 1e-3                                # no jump in the derivative
+    assert np.linalg.norm(jac(np.array([3.0, 4.0])), 2) <= fc.HESSIAN_BOUND + 1e-6
 
 
 def test_frame_field_controls_its_three_invariants_everywhere(contour):
-    """V_j.(x0 - x_i) <= -(kappa|D|/2)|d|^2 - nu rho for i = j-1, j, j+1."""
+    """V_j.(x0 - x_i) <= -(kappa|D|/2) Psi - nu rho for i = j-1, j, j+1."""
     rng = np.random.default_rng(1)
     worst = -np.inf
     for _ in range(5000):
@@ -213,3 +225,35 @@ def test_the_strip_integral_converges():
 def test_lower_bound_at_infinity(region):
     """For r >= 2R, |x0i^2 displaced| >= c kappa' max(r, |(x0 - c)^2|)."""
     assert fc.infinity_check(fc.tuned_contour(region, 1.1), 6000, seed=3) > 1.0
+
+
+@pytest.mark.parametrize("region", REGIONS)
+def test_certificate_covers_the_strips_and_the_bound_at_infinity(region):
+    """The widths of the strips of Lemma 7 and the constant of Lemma 9 are
+    conditions of the certificate, and the sampled bounds agree with them."""
+    C = fc.tuned_contour(region, 1.1)
+    cert = fc.certificate(C)
+    for key in ("F_theta_small", "S0_strips_overlap", "S1_frame_fully_on", "S2_near_invariants",
+                "S3_strips_inside", "I0_c_u_positive", "I1_real_part", "I2_theta_is_one"):
+        assert cert[key], key
+    strips = fc.strip_check(C, 3000, seed=2)
+    assert strips["b0"] == pytest.approx(cert["b0"]) and strips["a1"] == pytest.approx(cert["a1"])
+    assert strips["far"] >= 2.0                         # |x0,j+2^2| >= 2 delta0, as (S) asserts
+    assert fc.lemma6_check(C, 3000, seed=1)["max_v2_over_im"] <= cert["theta"] / 2
+
+
+def test_field_is_continuously_differentiable(contour):
+    """The Jacobian of V has no jumps: its change over a short step is small
+    everywhere on a stress sample, including near the triangles and cutoffs."""
+    rng = np.random.default_rng(12)
+    worst = 0.0
+    for x0 in fc.sample_points(contour, 600, seed=12):
+        if contour.distance_to_edges(x0) < 1e-3:
+            continue
+        scale = max(1.0, np.linalg.norm(x0))
+        h = 1e-6 * scale
+        jac = lambda x: np.array([(contour.field(x + h * e) - contour.field(x - h * e)) / (2 * h)
+                                  for e in np.eye(4)])
+        step = rng.normal(size=4) * 1e-4 * scale
+        worst = max(worst, np.abs(jac(x0) - jac(x0 + step)).max())
+    assert worst < 5e-3
