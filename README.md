@@ -74,8 +74,12 @@ from the Lorentzian integral itself.
   as well. Treating them as a real shift, as an earlier version did, passes
   some singular surfaces on the wrong side.
 
-**Open.** One limit is not adapted to a timelike diagonal, and none of this
-has been checked by a specialist.
+- The equality of the Feynman-parameter and Mellin–Barnes forms, the case of
+  a timelike diagonal, and non-integer dimension are proved.
+
+**Open.** None of this has been checked by a specialist. Two classical
+theorems are used without proof, and a few constants of the convergence
+argument are verified by sampling.
 The weight \(F\) is still an input from
 the Lorentzian integral, and the cycle is selected by the Lorentzian real
 structure and the \(-i0\) prescription, not by positivity of the
@@ -370,8 +374,8 @@ Tests:
 PYTHONPATH=src pytest -q
 ```
 
-Run the benchmark with `make test && make examples`. The suite has 207 pytest
-tests and 63 example groups (about eight minutes for the tests). See the
+Run the benchmark with `make test && make examples`. The suite has 212 pytest
+tests and 63 example groups (about ten minutes for the tests). See the
 [benchmark validation record](docs/BENCHMARK_VALIDATION.md) for the environment,
 expected output, and established results. The [example guide](examples/README.md)
 gives the individual commands and derivations. The remaining comparison to

@@ -566,3 +566,80 @@ def parametric_double_pole(p, eta, ratio=1):
     # s t from the prefactor and (s/t)^p from the definition of z, with t = 1
     return (eta**2 * ratio ** (1 + p) * gamma_fn(2 - eta)
             / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)
+
+
+# --------------------------------------------------------------------------
+# Complex cross-ratio: the timelike diagonal
+# --------------------------------------------------------------------------
+def regulated_double_pole_complex(p, eta, modulus=1, theta=0):
+    """The Mellin-Barnes form at S/T = modulus * exp(i theta), 0 <= theta <= pi.
+
+    The integrand is |Gamma(eta/2 + i y)|^4 (S/T)^(eta/2 + i y) times two
+    Gamma functions. The Gamma factors decay like exp(-3 pi |y|) in total,
+    and |(S/T)^(i y)| = exp(-theta y), so the integral converges absolutely
+    for |theta| < 3 pi and is continuous in theta up to theta = pi, which is
+    the timelike diagonal s -> s - i0. Returns eps^2 S T (S/T)^p times the
+    regulated integral with T = 1.
+    """
+    p, eta = mp.mpmathify(p), mp.mpf(eta)
+    log_ratio = mp.log(mp.mpf(modulus)) + 1j * mp.mpf(theta)
+
+    def integrand(y):
+        weight = abs(mp.gamma(eta / 2 + 1j * y)) ** 4 * mp.exp((eta / 2 + 1j * y) * log_ratio)
+        return weight * mp.gamma(1 + p - eta / 2 - 1j * y) * mp.gamma(1 - p - eta / 2 + 1j * y)
+
+    knots = [-mp.inf, -5, -1, -eta, 0, eta, 1, 5, mp.inf]
+    integral = mp.quad(integrand, knots) / (2 * mp.pi)
+    return eta**2 * mp.rgamma(2 * eta) * mp.rgamma(1 + p) ** 2 * mp.rgamma(1 - p) ** 2 * integral
+
+
+def parametric_double_pole_rotated(p, eta, modulus=1, theta=np.pi, gamma=0.5):
+    """The Feynman-parameter form with S = modulus exp(i theta), T = 1, on a rotated contour.
+
+    In the Cheng-Wu gauge a2 + a4 = 1 with q = a1 a3,
+        F = q S + X,  X = a2 a4.
+    For theta = pi (timelike diagonal) F vanishes at the real point q = X/|S|.
+    Rotating q -> r exp(-i gamma) puts every term of F in the cone
+    0 <= arg <= pi - gamma, so |F| >= sin(gamma/2)(X + r |S|) and the integral
+    converges absolutely; by Cauchy's theorem it equals the boundary value
+    from theta < pi. The y integral defines h(q) for complex q.
+    """
+    from scipy.integrate import quad
+    from scipy.interpolate import CubicSpline
+    from scipy.special import gamma as gamma_fn
+
+    p, eta = float(p), float(eta)
+    S = modulus * np.exp(1j * theta)
+    rot = np.exp(-1j * gamma)
+
+    def h(r):
+        root = 2 * np.sqrt(r) * np.exp(-0.5j * gamma)
+        with np.errstate(over="ignore", invalid="ignore"):
+            f = lambda y: (1 + root * np.cosh(y)) ** (-2 * eta)
+            re = quad(lambda y: f(y).real, 0, 60, epsabs=0, epsrel=1e-11, limit=600)[0]
+            im = quad(lambda y: f(y).imag, 0, 60, epsabs=0, epsrel=1e-11, limit=600)[0]
+        return 2 * (re + 1j * im)
+
+    grid = np.linspace(-34, 34, 681)                         # log r
+    values = np.array([h(np.exp(g)) for g in grid])
+    spline_re, spline_im = CubicSpline(grid, values.real), CubicSpline(grid, values.imag)
+
+    def over_q(X):
+        def integrand(v):
+            r = X * np.exp(v)
+            q = r * rot
+            hq = spline_re(np.log(r)) + 1j * spline_im(np.log(r))
+            return r * rot * q**p * hq * (q * S + X) ** (eta - 2)     # dq = r rot dv
+        lo, hi = -30 - np.log(X), 30 - np.log(X)
+        re = quad(lambda v: integrand(v).real, lo, hi, epsabs=0, epsrel=1e-10, limit=600, points=[0.0])[0]
+        im = quad(lambda v: integrand(v).imag, lo, hi, epsabs=0, epsrel=1e-10, limit=600, points=[0.0])[0]
+        return re + 1j * im
+
+    def outer(x):
+        return (x * (1 - x)) ** (-p) * over_q(x * (1 - x))
+
+    re = quad(lambda x: outer(x).real, 0, 0.5, epsabs=0, epsrel=1e-9, limit=200)[0]
+    im = quad(lambda x: outer(x).imag, 0, 0.5, epsabs=0, epsrel=1e-9, limit=200)[0]
+    total = 2 * (re + 1j * im)
+    return (eta**2 * S ** (1 + p) * gamma_fn(2 - eta)
+            / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)

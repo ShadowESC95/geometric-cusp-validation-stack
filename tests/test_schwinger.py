@@ -95,3 +95,82 @@ def test_step_6_also_holds_at_larger_rotation_angles():
     C = fc.tuned_contour("--", 1.1)
     result = sw.step6_check(C, 2500, seed=5, phi_max=0.3)
     assert result["identity"] < 1e-9 and result["nonvanishing"] > 0.5
+
+
+# ---- Feynman parameters to Mellin-Barnes, the timelike diagonal, non-integer D
+def test_dirichlet_exponents_of_the_mellin_barnes_derivation():
+    """After the Mellin-Barnes split of (a1 a3 S + a2 a4 T)^(eta-2) the
+    parameter integral is a Dirichlet integral whose exponents sum to 2 eta,
+    and the contour Re w = -1 - Re p + eta/2 keeps every exponent positive."""
+    import sympy as sp
+
+    p, w, eta = sp.symbols("p w eta")
+    b13 = 1 + p + w                       # exponents of a1, a3 (power a - 1 = p, plus w)
+    b24 = (1 - p) + (eta - 2 - w)         # exponents of a2, a4 (power -p, plus eta - 2 - w)
+    assert sp.simplify(2 * b13 + 2 * b24 - 2 * eta) == 0
+    on_contour = {w: -1 - p + eta / 2}
+    assert sp.simplify(b13.subs(on_contour) - eta / 2) == 0
+    assert sp.simplify(b24.subs(on_contour) - eta / 2) == 0
+    # the split itself needs -(2 - eta) < Re w < 0: true for |Re p| < 1 and small eta
+    for pv in (-0.9, 0.0, 0.9):
+        centre = -1 - pv + 0.05 / 2
+        assert -(2 - 0.05) < centre < 0
+
+
+def test_beta_integral_behind_the_mellin_barnes_split():
+    """int_0^oo x^(c-1) (1+x)^(-lam) dx = Gamma(c) Gamma(lam-c)/Gamma(lam), 0 < c < lam."""
+    import mpmath as mp
+
+    for c, lam in ((0.3, 1.6), (1.1, 1.95)):
+        c, lam = mp.mpf(c), mp.mpf(lam)
+        lhs = mp.quad(lambda v: mp.exp(c * v) * (1 + mp.exp(v)) ** (-lam), [-mp.inf, 0, mp.inf])
+        assert abs(lhs - mp.gamma(c) * mp.gamma(lam - c) / mp.gamma(lam)) < mp.mpf("1e-12")
+
+
+def test_mellin_barnes_form_is_continuous_up_to_the_timelike_point():
+    import mpmath as mp
+
+    from geocusp import lorentzian_edges as le
+
+    with mp.workdps(15):
+        real = le.regulated_double_pole(0.2, 0.4, 2.5)
+        assert abs(le.regulated_double_pole_complex(0.2, 0.4, 2.5, 0) - real) < 1e-10
+        at_pi = le.regulated_double_pole_complex(0.2, 0.4, 1.0, mp.pi)
+        gaps = [abs(le.regulated_double_pole_complex(0.2, 0.4, 1.0, mp.pi - d) - at_pi)
+                for d in (0.1, 0.01, 0.001)]
+    assert gaps[0] > 5 * gaps[1] > 25 * gaps[2] and gaps[2] < 1e-3
+    assert abs(at_pi.imag) > 1                         # the absorptive part appears
+
+
+def test_timelike_diagonal_rotated_parameter_integral_equals_mellin_barnes():
+    """With S = |s| e^{i pi} the Feynman denominator vanishes inside the
+    simplex. On the rotated contour it does not, and the integral equals the
+    Mellin-Barnes form at the same point."""
+    import mpmath as mp
+
+    from geocusp import lorentzian_edges as le
+
+    with mp.workdps(15):
+        barnes = complex(le.regulated_double_pole_complex(-0.3, 0.3, 2.5, mp.pi))
+    rotated = le.parametric_double_pole_rotated(-0.3, 0.3, 2.5, np.pi, 0.5)
+    assert abs(rotated - barnes) < 1e-6 * abs(barnes)
+
+
+def test_extended_field_is_radial_in_the_extra_dimensions():
+    """V4 depends on e only through |e| and Ve is a multiple of e: the
+    D-dimensional integral reduces to one over x0 and m = |e|."""
+    C = fc.tuned_contour("--", 1.1)
+    rng = np.random.default_rng(7)
+    largest_sigma = 0.0
+    for _ in range(300):
+        x0 = C.centre + rng.normal(size=4) * 10 ** rng.uniform(-1, 1.3)
+        e = rng.normal(size=3) * 10 ** rng.uniform(-3, 1)
+        q, _ = np.linalg.qr(rng.normal(size=(3, 3)))
+        v4, ve = fc.field_extended(C, x0, e)
+        v4r, ver = fc.field_extended(C, x0, q @ e)
+        np.testing.assert_allclose(v4r, v4, rtol=0, atol=1e-12 * (1 + np.abs(v4).max()))
+        np.testing.assert_allclose(ver, q @ ve, rtol=0, atol=1e-12 * (1 + np.abs(ve).max()))
+        sigma = ve @ e / (e @ e)
+        np.testing.assert_allclose(ve, sigma * e, rtol=0, atol=1e-14)
+        largest_sigma = max(largest_sigma, abs(sigma))
+    assert largest_sigma < 0.01                         # m(1 + i sigma) stays in Re > 0

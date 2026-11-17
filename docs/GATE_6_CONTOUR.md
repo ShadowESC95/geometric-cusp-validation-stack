@@ -13,11 +13,11 @@ from the geometry. Its central inequality is proved (Lemma 5). Its global
 properties are reduced in section 9 to inequalities between named constants,
 each proved, and a certificate evaluates them; they hold across the family of
 squares. Absolute integrability is proved line by line in section 10. The
-parametric representation of the regulated integral is derived in section
-11, including the contour-independence and limiting step (Lemmas 10 to 12).
-Section 11 also corrects an earlier statement: the contour must displace the
-extra dimensions of dimensional regularisation, not treat them as a real
-shift. Nothing here has been reviewed by a specialist.
+regulated integral on the contour is identified with the Mellin–Barnes form
+in sections 11 and 12, with proofs: the parametric representation, the
+contour-independence and limiting step, the equality of the
+Feynman-parameter and Mellin–Barnes forms, the timelike diagonal, and
+non-integer dimension. Nothing here has been reviewed by a specialist.
 
 Code: `src/geocusp/feynman_contour.py`, `src/geocusp/schwinger.py`. Tests:
 `tests/test_gate6_contour.py`, `tests/test_schwinger.py`.
@@ -818,11 +818,11 @@ dominating function is integrable by section 10. \(\blacksquare\)
 
 Steps 5 and 6 give the proposition. \(\blacksquare\)
 
-*Timelike diagonal.* With \(s>0\), \(A_\alpha(0)\) can vanish inside the
-simplex and step 5 is a boundary value: the right side at \(\varphi\to0^+\)
-is the formula with \(s\to s-i0\). Step 6 does not use the sign of the
-diagonals. The dominated-convergence argument of step 5 is not adapted to
-that case here.
+*Timelike diagonal.* With \(s>0\), \(A_\alpha(0)\) vanishes inside the
+simplex and the dominated-convergence argument of step 5 does not apply.
+Lemma 14 of section 12 replaces it: the limit exists and is the
+Mellin–Barnes form at \(s\to s-i0\). Step 6 does not use the sign of the
+diagonals.
 
 *Numerical checks.*
 
@@ -857,23 +857,215 @@ They agree to \(10^{-7}\) or better, normalisation included.
 
 So the regulated integral on the contour equals the Mellin–Barnes form.
 
-## 12. What remains
+## 12. Three remaining steps
 
-- With a timelike diagonal, step 5 of Proposition 8 is a boundary value in
-  the Mandelstam invariant, and its dominated-convergence argument is not
-  adapted to that case. Steps 1 to 4 and 6 hold in all regions.
-- The equality of the Feynman-parameter and Mellin–Barnes forms is checked
-  numerically to \(10^{-7}\); it is a standard identity and is not proved
-  here.
+### A. Feynman parameters to Mellin–Barnes
+
+**Lemma 13.** Let \(a_1=a_3=1+p\), \(a_2=a_4=1-p\) with
+\(|\operatorname{Re}p|<1\), \(0<\eta<1-|\operatorname{Re}p|\), and let
+\(S,T\) be non-zero complex numbers with \(|\arg S-\arg T|<\pi\). Then
+
+\[
+\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)\prod\alpha_i^{a_i-1}
+\big(\alpha_1\alpha_3S+\alpha_2\alpha_4T\big)^{\eta-2}
+=\frac{1}{\Gamma(2-\eta)\Gamma(2\eta)}\int\frac{dw}{2\pi i}\,
+\Gamma(-w)\Gamma(2-\eta+w)\,\Gamma(1+p+w)^2\,\Gamma(-1-p+\eta-w)^2\,S^{w}T^{\eta-2-w},
+\]
+
+the contour being \(\operatorname{Re}w=-1-\operatorname{Re}p+\eta/2\). With
+the prefactor \(\Gamma(2-\eta)/\prod\Gamma(a_i)\) this is the Mellin–Barnes
+form of GATE_6_FUNCTIONAL with \(\epsilon=-\eta\).
+
+*Proof.* For \(0<c<\lambda\) the Beta integral gives
+\(\int_0^\infty x^{c-1}(1+x)^{-\lambda}dx=\Gamma(c)\Gamma(\lambda-c)/\Gamma(\lambda)\).
+By Mellin inversion, with \(w=-c\) and \(x=A/B\),
+
+\[
+(A+B)^{-\lambda}=\frac{1}{\Gamma(\lambda)}\int\frac{dw}{2\pi i}\,\Gamma(-w)\Gamma(\lambda+w)\,A^{w}B^{-\lambda-w},
+\qquad-\lambda<\operatorname{Re}w<0,
+\]
+
+for \(A,B>0\). Both sides are analytic in \(A/B\) on
+\(|\arg(A/B)|<\pi\): the right side converges there because
+\(|\Gamma(-w)\Gamma(\lambda+w)|\) decays like \(e^{-\pi|\operatorname{Im}w|}\)
+while \(|A^wB^{-\lambda-w}|\) grows at most like
+\(e^{|\arg(A/B)||\operatorname{Im}w|}\). So the formula holds for
+\(|\arg(A/B)|<\pi\).
+
+Apply it with \(A=\alpha_1\alpha_3S\), \(B=\alpha_2\alpha_4T\),
+\(\lambda=2-\eta\). The parameter integral becomes a Dirichlet integral with
+exponents \(b_1=b_3=1+p+w\) and \(b_2=b_4=-1-p+\eta-w\), whose sum is
+\(2\eta\):
+
+\[
+\int d^4\alpha\,\delta\big(1-\textstyle\sum\alpha\big)\prod\alpha_i^{b_i-1}
+=\frac{\Gamma(1+p+w)^2\,\Gamma(-1-p+\eta-w)^2}{\Gamma(2\eta)} .
+\]
+
+On the contour all four exponents have real part \(\eta/2>0\), and
+\(-(2-\eta)<\operatorname{Re}w<0\) because \(|\operatorname{Re}p|<1\). The
+exchange of the \(w\) and \(\alpha\) integrals is justified by absolute
+convergence: the modulus of the \(\alpha\) integrand is a Dirichlet
+integrand with real exponents \(\eta/2\), independent of
+\(\operatorname{Im}w\) apart from the factor
+\(e^{|\arg(S/T)||\operatorname{Im}w|}\), which the decay
+\(e^{-\pi|\operatorname{Im}w|}\) dominates. \(\blacksquare\)
+
+The numerical agreement of the two forms to \(10^{-7}\) (section 11) is now a
+check of this lemma, not a substitute for it.
+
+**Continuity up to \(|\arg(S/T)|=\pi\).** On the contour the two Dirichlet
+Gamma functions add a further decay: by the product bounds of section 7,
+\(|\Gamma(\eta/2+iy)|^4\le Ce^{-2\pi|y|}(1+|y|)^{2+2\eta}(\eta^2/4+y^2)^{-2}\).
+The whole integrand therefore decays like \(e^{-3\pi|y|}\) against a growth
+\(e^{|\arg(S/T)||y|}\). The Mellin–Barnes integral converges absolutely for
+\(|\arg(S/T)|<3\pi\) and is analytic there; in particular it is continuous
+at \(|\arg(S/T)|=\pi\), where the parameter integral itself is singular.
+
+### B. The timelike diagonal
+
+Let \(s>0\), \(t<0\). Work in the gauge \(\alpha_2+\alpha_4=1\) (allowed
+because the integrand is homogeneous of degree \(-4\)), with
+\(X=\alpha_2\alpha_4\). For \(\varphi>0\),
+
+\[
+A_\alpha(\varphi)=A_\alpha(0)+\zeta\,Q_\alpha,\qquad
+A_\alpha(0)=-s\,\alpha_1\alpha_3+|t|\,X,\qquad
+Q_\alpha=\sum_{i<k}\alpha_i\alpha_k(t_i-t_k)^2,\qquad
+\zeta=1-e^{-2i\varphi},
+\]
+
+and \(\arg\zeta=\pi/2-\varphi\). \(A_\alpha(0)\) changes sign inside the
+domain.
+
+**Lemma 14.** As \(\varphi\to0\) the right side of \((*)\) tends to the
+Mellin–Barnes form of Lemma 13 at \(S=s\,e^{i\pi}\), \(T=|t|\), that is at
+\(s\to s-i0\).
+
+*Proof.* \(Q_\alpha\) is linear in \(\alpha_1\): \(Q_\alpha=\alpha_1Q_1+Q_0\)
+with \(Q_1>0\), \(Q_0\ge0\) independent of \(\alpha_1\). Hence
+\(A_\alpha(\varphi)=b_0-\alpha_1b_1\) with \(b_0=|t|X+\zeta Q_0\),
+\(b_1=s\alpha_3-\zeta Q_1\). Rotate the \(\alpha_1\) contour:
+\(\alpha_1=re^{-i\gamma}\), \(0<\gamma<\pi/4\). Then
+
+\[
+A_\alpha(\varphi)=|t|X+\zeta Q_0+r\,s\,\alpha_3\,e^{i(\pi-\gamma)}+r\,\zeta\,Q_1e^{-i\gamma}.
+\]
+
+For \(\varphi\le\pi/4\) the four terms have arguments \(0\),
+\(\pi/2-\varphi\), \(\pi-\gamma\) and \(\pi/2-\varphi-\gamma\), all in
+\([0,\pi-\gamma]\): a cone of opening less than \(\pi\). Therefore
+
+\[
+|A_\alpha(\varphi)|\ \ge\ \sin(\gamma/2)\,\big(|t|X+r\,s\,\alpha_3\big),
+\]
+
+uniformly in \(\varphi\in[0,\pi/4]\). The rotation is legitimate for
+\(\varphi>0\): at every intermediate angle \(\gamma'\in[0,\gamma]\) the four
+terms have arguments in \([0,\pi]\) and the term \(r\zeta Q_1e^{-i\gamma'}\)
+has a strictly positive imaginary part (\(Q_1>0\) because the two ends of
+the timelike diagonal have different times), so \(A_\alpha\) does not
+vanish; the weight \(\alpha_1^{p}(1+\alpha_1+\alpha_3)^{-2\eta}\) is analytic in the
+sector, and the integrand decays like \(r^{\operatorname{Re}p-2-\eta}\) at
+infinity and vanishes like \(r^{\operatorname{Re}p+1}\) at the origin.
+
+On the rotated contour the integrand converges pointwise as \(\varphi\to0\)
+and is dominated by \(\sin(\gamma/2)^{\eta-2}\) times the integrand of the
+spacelike case with \(|s|\) in place of \(-s\), which is integrable for
+\(\eta>0\). So the limit is the integral of
+\(\prod\alpha_i^{a_i-1}(|t|X-s\alpha_1\alpha_3)^{\eta-2}\) over the rotated
+contour.
+
+The same rotation applied to the two-term integral of Lemma 13 with
+\(S=se^{i\theta}\), \(\theta<\pi\), is legitimate for the same reason, and
+by the same domination its limit as \(\theta\to\pi\) is that same rotated
+integral. By Lemma 13 and the continuity statement after it, that limit is
+the Mellin–Barnes form at \(\theta=\pi\). \(\blacksquare\)
+
+With Lemmas 10 to 12, which do not use the sign of the diagonals,
+Proposition 8 holds in all three regions, the right side being read at
+\(s\to s-i0\) or \(t\to t-i0\) when that diagonal is timelike.
+
+Numerically, at \(S/T=e^{i\pi}\), \(p=0.2\), \(\eta=0.4\): the rotated
+parameter integral is \(2.99934861+2.42990491i\) with \(\gamma=0.5\) and
+\(2.99934849+2.42990482i\) with \(\gamma=0.9\); the Mellin–Barnes form is
+\(2.99934849+2.42990482i\). At \(S/T=2.5\,e^{i\pi}\), \(p=-0.3\),
+\(\eta=0.3\) they agree to \(2\times10^{-9}\). The Mellin–Barnes form at
+\(\theta=\pi-0.1,\pi-0.01,\pi-0.001\) approaches its value at \(\pi\)
+linearly. The imaginary part is the absorptive part that appears when a
+diagonal is timelike.
+
+### C. Non-integer dimension
+
+For integer \(k\) the integrand and the displacement are invariant under
+rotations of \(e\in\mathbb R^k\): \(V_4\) depends on \(e\) only through
+\(m=|e|\), and \(V_e=\sigma(x_0,m)\,e\) with
+
+\[
+\sigma=(1-g)\,\nu\sum_jm_j-g\,\kappa'(\Theta_++\Theta_-),\qquad|\sigma|\le\max(4\nu,\kappa').
+\]
+
+The map \(e\mapsto e(1+i\lambda\sigma)\) preserves rays, so the integral over
+\(e\) reduces to one over \(m\):
+
+\[
+\int d^ke\,(\cdots)=\frac{2\pi^{k/2}}{\Gamma(k/2)}\int_0^\infty(\cdots)\,w^{k-1}\,dw,
+\qquad w=m\,(1+i\lambda\sigma).
+\]
+
+**Definition.** For \(k=2\eta\) the regulated integral over the contour is
+the integral of the holomorphic five-form
+
+\[
+\Omega=\frac{2\pi^{\eta}}{\Gamma(\eta)}\;h(z,w)\;w^{2\eta-1}\,dw\wedge dz_1\wedge\cdots\wedge dz_4
+\]
+
+over the image of \((x_0,m)\mapsto(x_0+i\lambda V_4,\ m(1+i\lambda\sigma))\) at
+\(\lambda=1\), where \(h\) is the integrand with \(e\!\cdot e\) replaced by
+\(w^2\) and \(w^{2\eta-1}\) is the principal power on \(\operatorname{Re}w>0\).
+It agrees with the \(D\)-dimensional integral for integer \(k\).
+
+**Lemma 15.** For \(0<\varphi\le\varphi_0\) and \(0<\eta<\tfrac12\) the
+integral of \(\Omega\) does not depend on \(\lambda\in[0,1]\).
+
+*Proof.* \(\Omega\) is a holomorphic form of top degree on the open set
+\(\{\operatorname{Re}w>0,\ Y_i\ne0\}\) of \(\mathbb C^5\), hence closed, and
+by Lemma 10(c), which was proved for points \((x_0,e)\) and uses \(e\) only
+through \(m\), the map takes \([0,1]\times\mathbb R^4\times(0,\infty)\) into
+that set; \(\operatorname{Re}w=m>0\) because \(\sigma\) is real. Apply
+Stokes' theorem on
+\([0,1]\times\{|x_0|\le\rho\}\times[\varepsilon,M]\). The boundary consists
+of the two ends \(\lambda=0,1\) and three sides.
+
+- \(|x_0|=\rho\): as in Lemma 11, \(|h|\le C(\rho^2+m^2)^{-4}\) for fixed
+  \(\varphi>0\), so the side is at most
+  \(C\rho^{3}\cdot\kappa'\rho\int_0^\infty m^{2\eta-1}(\rho^2+m^2)^{-4}dm=O(\rho^{2\eta-4})\).
+- \(m=M\): at most \(C\,M^{2\eta-1}\cdot\kappa'M\int d^4x\,(|x|^2+M^2)^{-4}=O(M^{2\eta-4})\).
+- \(m=\varepsilon\): on this side \(dw=i\varepsilon(\sigma\,d\lambda+\lambda\,d\sigma)\),
+  so the form is at most
+  \(C\varepsilon^{2\eta-1}\cdot\varepsilon\,(|\sigma|+|\nabla\sigma||V_4|)\,|h|\).
+  For \(\varphi>0\), \(|h|\le C\prod_i|x_0-x_i|^{-2a_i}\) near the cusps by
+  Lemma 10, which is integrable in four dimensions because \(2a_i<4\), and
+  \(|h|\le C|x|^{-8}\) at infinity. The side is \(O(\varepsilon^{2\eta})\).
+
+All three tend to zero as \(\rho,M\to\infty\) and \(\varepsilon\to0\).
+\(\blacksquare\)
+
+Lemma 12 then applies with the same dominating function, the weight
+\(m^{2\eta-1}\) being the transverse measure already used in section 10. The
+test `test_extended_field_is_radial_in_the_extra_dimensions` checks the
+rotation invariance and that \(|\sigma|<0.01\).
+
+## 13. What remains
+
 - In section 10 the constant \(c_u>0\) of Lemma 9 and the choice of
   \(a_1,\rho_1\) in the strips are verified for the contours used, by the
   sampled checks, and are not added to the certificate.
-- The non-integer dimension is handled by the usual reduction to the radial
-  variable of the extra dimensions; the corresponding Stokes argument is
-  indicated in Lemma 11, not written separately.
+- Two classical facts are used without proof: Mellin inversion (Lemma 13)
+  and Stokes' theorem for a Lipschitz map (Lemmas 11 and 15).
 - Review by someone who works with these integrals.
 
-## 13. Reproduce
+## 14. Reproduce
 
 ```bash
 PYTHONPATH=src pytest -q tests/test_gate6_contour.py tests/test_schwinger.py

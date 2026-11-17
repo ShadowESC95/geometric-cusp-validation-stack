@@ -470,10 +470,12 @@ section 2.
 | Extension to \(\bar F^{(0,1,2)}\) (Lemmas 3, 4) | Proved, given the contour |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved line by line |
-| Regulated integral on the contour equals the Mellin–Barnes form | Derived, including the contour-independence and limiting step (GATE_6_CONTOUR section 11); timelike diagonal not adapted |
+| Regulated integral on the contour equals the Mellin–Barnes form | Proved in all three regions (GATE_6_CONTOUR sections 11 and 12) |
 
-**What would complete it.** (a) The boundary-value version of one limit for
-a timelike diagonal. (b) Review by someone who works with these integrals.
+**What would complete it.** Review by someone who works with these
+integrals. Two classical theorems (Mellin inversion, Stokes for a Lipschitz
+map) are used without proof, and a few constants of the convergence section
+are verified by sampling.
 
 ## 8. Reproduce
 
