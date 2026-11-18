@@ -59,6 +59,10 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
 9. With a timelike diagonal the integral is again a sum of keyholes
    supported in a null slab, and one of the two edge pieces is treated as
    before and carries two units (section 14).
+10. Each edge piece is a single integral of a hypergeometric function
+    (section 11.5). Its continuation to a timelike diagonal converges
+    absolutely and carries two units, for $`z^p`$ and, by superposition,
+    for the benchmark weights. The two continued pieces add up to the box.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -1862,6 +1866,42 @@ continued function; it follows only because the sum is fixed. So the
 identification of the total in the timelike regions still passes through
 the contour and the parametric form, and what is new is that each piece
 is then an explicit convergent integral with a proved remainder.
+
+**General weights, by superposition.** Let $`F`$ be in the class of
+Lemma 3 of GATE_6_BOUNDS with $`W`$ larger than the range $`\Phi`$ of
+$`\arg z`$ on the contour, as for the three benchmark weights. By steps A
+to C of GATE_6_BOUNDS section 5, with a timelike diagonal,
+
+```math
+I_\eta[F]=\int_{\operatorname{Re}p=-\sigma_0}c_+(p)\,I_\eta[z^p]\,dp+\int_{\operatorname{Re}p=\sigma_0}c_-(p)\,I_\eta[z^p]\,dp ,
+```
+
+and by the above $`I_\eta[z^p]`$ is, up to the fixed phase, the sum of the
+two continued pieces $`A(p;\varrho)`$ and $`T^\eta A(-p;1-\varrho)`$. Define
+for each piece
+
+```math
+E_1[F]=\int c(p)\,A(p;\varrho)\,dp,\qquad E_2[F]=\int c(p)\,T^\eta A(-p;1-\varrho)\,dp .
+```
+
+By the theorem of section 11.5 each $`A`$ is
+$`-2i\pi^2\cdot2\sin\pi p/(\pi p)/\eta^2`$ plus a remainder bounded by
+$`C(1+|\tau|)^ke^{3\pi|\tau|/2}/\eta`$, and
+$`|c(p)|\le Ce^{-(W-\delta')|\tau|}`$ with $`W-\delta'>3\pi/2`$, so both
+integrals converge and, since $`\int c(p)\sin\pi p/(\pi p)\,dp=M[F]`$,
+
+```math
+E_j[F]=-2i\pi^2\,\frac{2\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big),\qquad j=1,2 .
+```
+
+So for the three benchmark weights and a timelike diagonal the regulated
+integral is a sum of two explicit edge functionals, each carrying
+$`2M[F]`$, with a single-pole remainder. The same holds for spacelike
+diagonals, where it is the theorem of section 12 for each piece. The
+condition $`W>\Phi`$ is needed only for the first display, that is for
+the identification with the Feynman integral through the contour; the
+estimate itself needs only $`W>3\pi/2`$. This paragraph was written after
+the review of this section.
 
 **The Feynman integral with a timelike diagonal.** The proof of
 Theorem 13.3 does not use the sign of the diagonals except through the
