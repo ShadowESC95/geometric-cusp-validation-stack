@@ -594,3 +594,59 @@ def quadric_full_recursion_check():
                     frontier.append((a2, b2, rest2))
     return {"quadric_residues": first, "quadric_faces_in_charts": initial, "all_depths": len(pairs),
             "residues": compared, "nonzero": int(nonzero), "mismatches": mismatches}
+
+
+def _unexpected_poles(form, allowed):
+    """Denominator factors of a form that are not simple or not in `allowed`
+    (compared up to sign)."""
+    if form == 0:
+        return []
+    _, denominator = sp.fraction(sp.cancel(form))
+    _, factors = sp.factor_list(denominator)
+    permitted = set()
+    for a in allowed:
+        a = sp.expand(a)
+        if a.is_number:
+            continue
+        for f, _m in sp.factor_list(a)[1]:
+            permitted.add(sp.expand(f))
+            permitted.add(sp.expand(-f))
+    return [(f, m) for f, m in factors if m != 1 or sp.expand(f) not in permitted]
+
+
+def pole_check():
+    """No face form has a pole other than a simple one on its own boundary.
+
+    For every face of `full_recursion_check` the denominator of its form
+    must consist of remaining coordinates and factors of its inequality,
+    each to the first power; for every quadric face of
+    `quadric_full_recursion_check`, of remaining coordinates and factors of
+    alpha and beta. Returns the numbers of forms examined and the offenders.
+    """
+    offenders, faces, quadric = [], 0, 0
+    pairs = set()
+    for c, remaining in _all_coordinate_faces():
+        form = _face_form(c, remaining)
+        faces += 1
+        if _unexpected_poles(form, list(remaining) + ([c] if c not in (1, -1) else [])):
+            offenders.append(("face", c, remaining))
+        if c in (1, -1):
+            continue
+        for u in remaining:
+            chart = _quadric_face_form(c, remaining, u)
+            if chart is not None:
+                pairs.add((chart[1], chart[2], chart[3]))
+    frontier = list(pairs)
+    while frontier:
+        alpha, beta, rest = frontier.pop()
+        quadric += 1
+        if _unexpected_poles(_pair_form(alpha, beta, rest), list(rest) + [alpha, beta]):
+            offenders.append(("quadric", alpha, beta, rest))
+        for v in rest:
+            rest2 = tuple(w for w in rest if w != v)
+            for at_infinity in (False, True):
+                nxt = (_leading(alpha, v, at_infinity), _leading(beta, v, at_infinity), rest2)
+                if rest2 and nxt not in pairs:
+                    pairs.add(nxt)
+                    frontier.append(nxt)
+    return {"face_forms": faces, "quadric_forms": quadric, "offenders": offenders}

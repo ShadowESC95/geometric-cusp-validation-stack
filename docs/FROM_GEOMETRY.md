@@ -153,10 +153,11 @@ form derived from the inequalities has, at every boundary reached by
 coordinates going to zero or infinity and by the quadric, in every order
 and to every depth checked, a residue equal to the form derived from the
 inequalities of that boundary. A check on coordinate residues alone could
-not see a term such as $`k/Q`$; the quadric residues exclude it. An
-independent review found no spurious poles: every denominator factor of
-every face form is a remaining coordinate or a factor of that face's own
-constraint.
+not see a term such as $`k/Q`$; the quadric residues exclude it. There
+are no stray poles (`pole_check`): the denominator of each of the 1323
+face forms consists of remaining coordinates and factors of that face's
+own inequality, each to the first power, and the same holds for the 4328
+quadric-face forms with the factors of $`\alpha`$ and $`\beta`$.
 
 It is not a proof that the form is the canonical form of the region.
 That needs one of two things. Either each interval piece is a positive

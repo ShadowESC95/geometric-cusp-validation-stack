@@ -159,3 +159,9 @@ def test_region_form_declines_what_it_cannot_do():
     x, y, z = sp.symbols("x y z")
     with pytest.raises(NotImplementedError):
         ng.region_form((x - y, x - 2 * y + z), (x, y, z))
+
+
+def test_no_face_form_has_a_stray_pole():
+    result = ng.pole_check()
+    assert result["face_forms"] == 1323 and result["quadric_forms"] == 4328
+    assert result["offenders"] == []
