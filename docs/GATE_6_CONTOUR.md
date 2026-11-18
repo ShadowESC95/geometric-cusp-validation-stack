@@ -929,7 +929,8 @@ of which is unchanged or improved.
   $`w=\alpha\beta D-\rho-\mu`$ and the square root involving the
   four-dimensional $`\rho\le\rho+\mu`$. The bound of (H1) and the strip
   bounds (S) use only an upper bound on that square root.
-- Euclidean norms: $`|(y_\perp,e)|\le A_2|x_0-x_j|`$ because $`A_2\ge1`$, and
+- Euclidean norms, with $`|x_0-x_j|`$ now the norm of $`(x_0-x_j,e)`$ in
+  $`\mathbb R^{4+k}`$: $`|(y_\perp,e)|\le A_2|x_0-x_j|`$ because $`A_2\ge1`$, and
   the largest Euclidean norm $`B`$ of a transverse vector of unit Minkowski
   length is unchanged because $`B\ge1`$. Hence $`|V_j|\le\lambda_0|x_0-x_j|`$
   and $`\operatorname{Lip}(V_j)\le\lambda_0`$ still hold: the new block of
@@ -946,10 +947,18 @@ For non-integer $`k=2\eta`$ the integrand and the field depend on $`e`$
 only through $`m=|e|`$, and the integral is the one over $`(x_0,m)`$,
 $`m\ge0`$, with the weight $`m^{2\eta-1}dm`$. Its field and invariants are
 those of $`k=1`$ restricted to $`e\ge0`$, so the case $`k=1`$ gives every
-property used. $`\blacksquare`$
+pointwise property, the bound on the Jacobian and the dominating
+functions. $`\blacksquare`$
 
-This is a proof by inspection of the derivations in section 9, and it has
-not been independently reviewed. The
+One thing the case $`k=1`$ does not give: an application of Stokes'
+theorem in the variables $`(x_0,m)`$ has a boundary face at $`m=0`$, which
+has to be shown to contribute nothing. Lemma 15 does this for the
+integrand of Proposition 8; for the family used in CUSP_LOCAL_MODEL
+section 13 it is done there.
+
+This is a proof by inspection of the derivations in section 9. A second
+automated review went through it condition by condition and agreed, and
+confirmed that `field_extended` implements what is described. The
 certificate evaluates the four-dimensional constants; by the proposition
 they are the constants in every dimension. The survey in $`4+1`$
 dimensions is a numerical check of the conclusion.
@@ -1439,7 +1448,7 @@ timelike diagonal (Lemma Q). Still open:
 - **The $`D`$-dimensional contour.** Proposition 7 of section 11 argues,
   condition by condition, that the certificate's constants are those of
   every dimension, and reduces non-integer $`k`$ to $`k=1`$. It is a proof
-  by inspection and has **not** been independently reviewed. Theorem 13.3 of
+  by inspection; one automated review agreed with it. Theorem 13.3 of
   CUSP_LOCAL_MODEL, which identifies the contour integral with the Feynman
   integral, depends on it.
 - **Review** by someone who works with these integrals.

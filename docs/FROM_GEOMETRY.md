@@ -58,14 +58,20 @@ standard. Checked here are the tiling, the cancellation of spurious poles,
 positivity, and one level of the residue recursion: the residue of the form
 at the facet $`w_1=0`$ equals, exactly, the canonical form of that facet
 computed independently by the same interval rule in $`w_2`$
-(`two_loop_boundary_check`). By the symmetries of the form the same holds
-at all eight coordinate facets. At the ninth facet, $`Q=0`$, eliminate
+(`two_loop_boundary_check`). The form, $`Q`$ and the region are invariant
+under the exchange of the two loops and, applied to both loops at once,
+under $`x\leftrightarrow w`$, $`y\leftrightarrow z`$ and
+$`(x,w)\leftrightarrow(y,z)`$. These are even permutations, so they
+preserve orientation, and together they reach all eight coordinate facets,
+where the same therefore holds. At the ninth facet, $`Q=0`$, eliminate
 $`w_1=w_2-c/A`$: the residue equals, exactly, the form of the facet
 computed by the interval rule in $`w_2`$, with the pieces having $`A<0`$
 taken with the opposite sign because $`dw_1=dQ/A`$ reverses the induced
 orientation there (`two_loop_mutual_facet_check`). So the first level of
-the recursion holds at every facet, given that sign rule, which has not
-been independently reviewed. At the second level, the further residues of
+the recursion holds at every facet. The sign rule is the induced boundary
+orientation, not an adjustment: an independent review found the residue
+negative at every one of 2385 sampled facet points with $`A<0`$, and
+reproduced it in a second chart. At the second level, the further residues of
 the facet $`w_1=0`$ at $`w_2=0`$, $`x_1=0`$ and $`x_2=0`$ equal, exactly, the
 forms of those three faces computed from their inequalities
 (`two_loop_second_level_check`). The remaining faces of codimension two

@@ -1368,8 +1368,13 @@ $`\frac{2\pi i}{\beta}M[F_\beta]`$:
 | 0.7 | $`\log^2z+\pi^2`$ | $`72.07070961\,i`$ | $`72.07070961\,i`$ |
 
 So the edge jump and the collinear pole of the cusp derivation are the same
-quantity, not only the same mechanism. The numerical agreement is exact to
-the digits shown; the proof above has not been independently reviewed.
+quantity, not only the same mechanism. The proposition is for $`f`$
+polynomially bounded on the strip, or $`e^{pL}`$ with
+$`\eta-1<\operatorname{Re}p<1+\eta`$; the error constant and the part
+$`|\alpha|>\delta`$ are uniform in small $`\eta`$. An independent review
+re-derived the scaling, the Fubini step and the translation, and confirmed
+the identity to about $`10^{-29}`$ for five weights at two values of
+$`\beta`$.
 
 Not treated: a timelike diagonal; removing the displacement after the
 outer integrals; the order with the transverse integral first for the full
@@ -1517,9 +1522,15 @@ shifts by $`\lambda^2V^2=O(\kappa'^2\varrho_0)`$, but the imaginary part is
 at least $`\varepsilon+c\lambda\kappa'\varrho_0`$ in modulus there), the form
 contributes $`|V|\le C\varrho_0`$, and the side has measure
 $`\varrho_0^{D-3}`$ per unit of $`x_{0i}^2`$: in total
-$`\varrho_0^{2\eta-1}`$ up to logarithms, which tends to zero. So the
-integral over the contour of the $`\varepsilon`$-displaced integrand is
-$`I_\varepsilon[F]`$. On the contour, near a cone
+$`\varrho_0^{2\eta-1}`$ up to logarithms, which tends to zero. In
+non-integer dimension the integral is over $`(x_0,m)`$ with the weight
+$`m^{2\eta-1}`$, and there is one more face, $`m=\varepsilon'\to0`$. For
+fixed $`\varepsilon>0`$ the integrand restricted to that face is integrable
+over the four remaining variables (the four-dimensional case of
+Lemma 13.1), the form contributes $`|V_e|\le C\varepsilon'`$, and the weight
+is $`\varepsilon'^{2\eta-1}`$: the face contributes $`O(\varepsilon'^{2\eta})`$,
+which tends to zero. So the integral over the contour of the
+$`\varepsilon`$-displaced integrand is $`I_\varepsilon[F]`$. On the contour, near a cone
 $`\operatorname{Im}x_{0i}^2\le0`$, so $`|x_{0i}^2-i\varepsilon|\ge|x_{0i}^2|`$;
 elsewhere, where the imaginary part may be positive, $`|x_{0i}^2|`$ is at
 least about $`\delta_0/2`$ in every zone (in the outer zone by (C1) to (C3)
@@ -1543,7 +1554,7 @@ side at radius $`\varrho_0`$ the two invariants with the power
 $`1+|\sigma|`$ may be small together, as in Lemma 13.1, and the side term is
 at most $`\varrho_0^{2\eta-1+2|\sigma|}`$ up to logarithms, which tends to
 zero because $`|\sigma|<\tfrac12-\eta`$. On the contour the integrand is
-dominated, as before, by $`2^{4+2|\sigma|}`$ times the integrand at
+dominated, as before, by $`2^{4}`$ times the integrand at
 $`\varepsilon=0`$, and that is absolutely integrable for $`|\sigma|<\eta`$ by
 Lemma 8′ of GATE_6_CONTOUR. $`\blacksquare`$
 
@@ -1564,17 +1575,22 @@ Lemma 8′ of GATE_6_CONTOUR. $`\blacksquare`$
    The interval certificate gives a contour for every $`T`$ in an interval,
    and both sides are analytic in $`T>0`$, so the identity holds for all
    $`T>0`$. This is the identity found numerically to 12 digits in section
-   11.4. It rests on the four-dimensional interval certificate, on
-   Proposition 7 of GATE_6_CONTOUR for the passage to $`D`$ dimensions, and
-   on Proposition 8.
+   11.4. It needs $`0<\eta<\tfrac12`$ and rests on: the four-dimensional
+   interval certificate; Proposition 7 of GATE_6_CONTOUR for the passage to
+   $`D`$ dimensions; Proposition 8 with its Lemmas 10 to 12 and 15;
+   Theorems 13.2, 13.3 and 13.4; and sections 11.1 to 11.3, including the
+   relabelling and the continuation lemma.
 3. **Meromorphy in $`\eta`$ for $`z^p`$.** By 2 the Feynman integral for
    $`z^p`$ is the box function, whose Mellin–Barnes form continues
    meromorphically in $`\eta`$; that standard fact is not re-proved here.
    For a general weight nothing beyond the bound of section 12 is shown.
 
-Theorem 13.4, consequences 2 and 3, and Proposition 7 of GATE_6_CONTOUR on
-which they rest were written after the last independent review and have
-not been reviewed. Treat them as unverified.
+Theorem 13.4, consequences 2 and 3, and Proposition 7 of GATE_6_CONTOUR
+were refereed separately, by a different model from the earlier reviews.
+It found no wrong constant, sign or exponent, re-derived the normalisation
+of consequence 2 from its own Mellin–Barnes integral (ratio 1 to
+$`10^{-15}`$ at two points), and pointed out the missing face at $`m=0`$ in
+Stokes' theorem, which is now treated in the proof of Theorem 13.3.
 
 ## 14. A timelike diagonal
 
@@ -1665,8 +1681,10 @@ $`A(p;T)`$ is analytic in complex $`T`$ wherever $`\varrho=T/(T+1)`$ is not
 a negative real number. Along $`T=|T|e^{i\theta}`$, $`0\le\theta\le\pi`$,
 with $`|T|>1`$, $`\arg\varrho\in[0,\pi/2)`$ and
 $`|\xi\beta+\varrho b\mu|\ge\cos(\pi/4)\,(\xi\beta+|\varrho|b\mu)`$, so the
-bounds of section 11.2 hold uniformly along the path. That gives the piece
-that works a second time, by continuation. For the other piece the
+bounds of section 11.2 should hold uniformly along the path, which would
+give the piece that works a second time, by continuation. This is not
+shown: with complex $`\varrho`$ the substitutions in that proof need
+rotated contours. For the other piece the
 argument is $`1/T`$, with $`|1/T|<1`$, and $`\arg\varrho\to-\pi`$ as
 $`\theta\to\pi`$: the bounds degenerate like
 $`\cos(\tfrac12\arg\varrho)^{\eta-2}`$ exactly at the endpoint. The limit
@@ -1675,14 +1693,29 @@ exists, but no bound on the remainder survives.
 **The Feynman integral with a timelike diagonal.** The proof of
 Theorem 13.3 does not use the sign of the diagonals except through the
 strip of the weight: it needs $`|\operatorname{Im}L|`$ along the family and
-on the contour to stay below $`W`$. For $`\bar F^{(0)}`$ and
-$`\bar F^{(1)}`$ any $`W`$ is allowed, so for these the contour integral
-equals $`\lim_{\varepsilon\to0}I_\varepsilon`$ in the timelike regions too,
-and its double pole is $`4M[F]`$ by the contour route of GATE_6_BOUNDS
-(conditional on the certificate and Proposition 7). For $`\bar F^{(2)}`$
-one needs the bound of Lemma Q along the whole family and with
-$`\varepsilon>0`$; the proof of Lemma Q appears to extend, but that is not
-written. This paragraph has not been reviewed.
+on the contour to stay below $`W`$. Lemma 13.1 also carries over: for the
+timelike pair the two cones meet in a compact sphere, which is harmless.
+
+- For $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ any $`W`$ is allowed, and (D)
+  gives $`|\operatorname{Im}L|\le3\pi+4e`$.
+- For $`\bar F^{(2)}`$, $`W=3\pi-\delta`$, and the bound of Lemma Q is needed
+  along the whole family and with $`\varepsilon>0`$. It holds. Replace
+  $`V`$ by $`\lambda V`$, $`0<\lambda\le1`$: if the corner configuration
+  occurred, then as in Lemma Q $`V^2<0`$, $`|x_{02}^2|<\lambda^2|V^2|`$ and
+  $`|2\lambda V\!\cdot n|+\varepsilon\le\tan\gamma\,\lambda^2|V^2|`$, since
+  $`V\!\cdot n\le0`$ near the cone and $`\varepsilon`$ only adds to the
+  modulus of the imaginary part. By the claim of Lemma Q,
+  $`\lambda^2|V^2|\le\lambda\,\mu_Q\,|2\lambda V\!\cdot n|`$, so
+  $`|2\lambda V\!\cdot n|\le\mu_Q\tan\gamma\,|2\lambda V\!\cdot n|`$, which
+  forces $`V\!\cdot n=0`$ and then $`V^2=0`$, a contradiction. So
+  $`|\arg z|\le3\pi-0.3`$ along the family and with $`\varepsilon>0`$.
+
+So for the three benchmark weights the contour integral equals
+$`\lim_{\varepsilon\to0}I_\varepsilon`$ in the timelike regions as well.
+Its double pole is $`4M[F]`$ by the contour route. That route rests on
+the certificate, Proposition 7, Proposition 8 with Lemma 14, and steps A
+to D of GATE_6_BOUNDS section 5. The bullet for $`\bar F^{(2)}`$ was written
+after the review of this section and has not itself been reviewed.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above

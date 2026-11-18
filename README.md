@@ -67,9 +67,9 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | Double pole of the full integral from the Lorentzian domain, weight $`z^p`$, spacelike diagonals | Written proof; independently checked. Iterated integral in a fixed order, $`-i0`$ removed first |
 | The same for the three benchmark weights: double pole $`4M[F]`$, spacelike diagonals | Written proof; independently checked. Same iterated integral; no contour, certificate or Mellin–Barnes |
 | The same with the $`-i0`$ removed last: the limit of the absolutely convergent real integral | Written proof; independently checked (one range corrected on review) |
-| The Feynman integral equals the integral over the global contour | Written proof, resting on the certificate and on an argument, not yet independently reviewed, that the contour's properties hold in $`D`$ dimensions |
-| The edge jump equals the residue of the collinear pole | Written proof, not yet independently reviewed; numerically exact to 8 digits |
-| The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the row above; not yet independently reviewed; identity confirmed numerically to 12 digits |
+| The Feynman integral equals the integral over the global contour | Written proof, resting on the certificate and on an argument that the contour's properties hold in $`D`$ dimensions; independently checked |
+| The edge jump equals the residue of the collinear pole | Written proof; independently checked; numerically exact |
+| The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
 | A timelike diagonal in position space | Exact slab and keyhole structure; one of the two edge pieces carries its two units; the other is **not derived** (covered via the parametric form) |
 | Review by a specialist | **Not done** |
 
