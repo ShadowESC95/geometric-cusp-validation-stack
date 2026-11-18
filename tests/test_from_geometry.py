@@ -75,3 +75,10 @@ def test_sign_flip_test_agrees_with_linear_programming_for_k1():
         inside += flips
     assert agree == trials
     assert 20 < inside < trials - 20
+
+
+def test_residue_on_a_facet_is_the_form_of_the_facet():
+    """One level of the residue recursion at w1 = 0."""
+    residue, facet, difference = ng.two_loop_boundary_check()
+    assert difference == 0
+    assert residue != 0

@@ -48,11 +48,22 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    for the three benchmark weights: the double pole is $`4M[F]`$
    (section 12).
 
-Conditions and what is **not** proved: the result is for the iterated
-integral in a fixed order with the displacement removed first, and for
-spacelike diagonals. A timelike diagonal is not treated in position space,
-and the equality of the iterated integral with the integral over the
-global contour is not proved.
+8. For these weights the iterated integral is the Feynman integral in the
+   usual sense: the limit $`\varepsilon\to0`$ of the absolutely convergent
+   integral over real $`x_0`$ with $`-i\varepsilon`$ on every invariant. It
+   also equals the integral over the global contour of GATE_6_CONTOUR,
+   given the $`D`$-dimensional properties of that contour (section 13).
+9. With a timelike diagonal the integral is again a sum of keyholes
+   supported in a null slab, and one of the two edge pieces is treated as
+   before and carries two units (section 14).
+
+What is **not** proved: with a timelike diagonal the second edge piece is
+not a positive integral and its two units are not derived in position
+space (section 14). The link to the global contour is conditional on the
+$`D`$-dimensional properties of that contour, which GATE_6_CONTOUR asserts
+but does not prove (section 13). An independent review of sections 13 and
+14 found two wrong statements, both corrected: the range of powers in
+Lemma 13.1, and the scope of the second consequence in section 13.
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -1323,3 +1334,269 @@ uniform in $`\varepsilon`$, the Cauchy estimate, the transfer of the
 relabelling) and for the qualifier on "What this replaces". It reproduced
 the numerical check with an independent three-dimensional quadrature:
 17.8808, 15.7035, 14.4813 at $`T=1`$.
+
+## 13. The displacement removed last, and the global contour
+
+So far the displacement $`\varepsilon`$ was removed in the innermost
+integral. Here it is removed last, which is the usual definition of the
+Feynman integral. Spacelike diagonals, $`0<\eta<\tfrac12`$. Put
+
+```math
+I_\varepsilon[F]=st\int_{\mathbb R^{D}}d^Dx_0\;\frac{F(z_\varepsilon)}{\prod_i(x_{0i}^2-i\varepsilon)},\qquad D=4+2\eta,
+```
+
+with $`z_\varepsilon`$ built from the displaced invariants. In the
+coordinates of section 9, $`d^Dx_0=\tfrac12\,d\alpha\,d\beta\,d^{2+2\eta}y`$
+(for $`|s|=1`$), and the displacement amounts to $`\rho\to\rho+i\varepsilon`$
+in all four invariants, the measure being unchanged.
+
+**Lemma 13.1 (absolute convergence).** For $`\varepsilon>0`$ the integral
+$`I_\varepsilon[F]`$ converges absolutely, for $`F`$ polynomially bounded
+in $`\log z`$ and for $`F=z^p`$ with $`|\operatorname{Re}p|<\tfrac12-\eta`$.
+
+*Proof.* No invariant vanishes. At infinity, away from the cones, the
+integrand is $`O(r^{-8})`$ against $`r^{3+2\eta}dr`$. Near one cone use
+$`x_{01}^2`$ as a coordinate: $`d^Dx_0\propto dx_{01}^2\,r^{D-3}dr\,d\Omega`$,
+the other three invariants are of order $`r`$, and
+$`\int dx_{01}^2/|x_{01}^2-i\varepsilon|`$ over $`|x_{01}^2|\lesssim r`$ is a
+logarithm, so the radial integrand is $`r^{2\eta-2}`$ up to logarithms.
+Each further invariant that is small trades a factor $`1/r`$ of the
+measure for a logarithm, with the same power. For $`z^p`$ the powers are
+$`1\pm\sigma`$ and the worst region is where the two invariants with the
+power $`1+|\sigma|`$ are small together. Their cones meet in a non-compact
+surface; there $`d\alpha\,d\rho=dx_{01}^2\,dx_{03}^2`$ at fixed $`\beta`$, the
+two small invariants integrate to $`C\varepsilon^{-2|\sigma|}`$, and what
+is left is $`\int d\beta\,\beta^{2\eta-2+2|\sigma|}`$, which converges exactly
+when $`|\sigma|<\tfrac12-\eta`$. $`\blacksquare`$
+
+An earlier version of this lemma claimed the range
+$`|\operatorname{Re}p|<1-2\eta`$. That was wrong: the integral diverges for
+$`|\sigma|\ge\tfrac12-\eta`$. The error was found on review.
+
+**Theorem 13.2 (the displacement last).** For $`F`$ as in section 12,
+
+```math
+\lim_{\varepsilon\to0}I_\varepsilon[F]=\tfrac12\big(A[F]+B[F]\big)
+=-\pi^2i\,\frac{4\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big),
+```
+
+where $`A[F]`$, $`B[F]`$ are the two edge pieces of sections 11 and 12. The
+same holds for $`F=z^p`$, $`|\operatorname{Re}p|<\tfrac12-\eta`$, with
+$`M[z^p]=\sin\pi p/(\pi p)`$.
+
+*Proof.* *Powers.* For $`\varepsilon>0`$ the integral is absolutely
+convergent, so by Fubini it may be done in the order $`\alpha`$,
+$`y_\perp`$, $`\beta`$. The zeros in $`\alpha`$ are those of section 9 with
+$`\rho\to\rho+i\varepsilon`$; they lie in the same half planes, so
+$`I_\varepsilon=\tfrac12(A_\varepsilon+B_\varepsilon)`$ with
+$`A_\varepsilon=st\int_0^1d\beta\int d^{2+2\eta}y\,K_\varepsilon(\beta,y)`$ and
+$`K_\varepsilon`$ the keyhole at displacement $`\varepsilon`$. As in the
+continuation lemma,
+
+```math
+K_\varepsilon=\frac{2i\sin\pi p}{p}\int_0^\infty u_3^{-p}\,\varphi_\varepsilon'(u_3)\,du_3\times(\text{constants}),
+```
+
+where $`\varphi_\varepsilon`$ is $`\varphi`$ with $`\rho\to\rho+i\varepsilon`$
+and $`(T+1)|y-y_*|^2\to(T+1)|y-y_*|^2+i(T+1)\varepsilon`$. Each of the
+three bases is a positive number plus $`i`$ times a positive number. All
+exponents in the three terms of $`\varphi_\varepsilon'`$ have negative real
+part, so the modulus of each base to its power is at most the value at
+$`\varepsilon=0`$; and the phases contribute
+$`e^{-\tau(\theta_1-\theta_2+\theta_3)}`$ with
+$`\theta_i\in[0,\pi/2)`$, at most $`e^{\pi|\tau|}`$. Hence
+
+```math
+|K_\varepsilon(\beta,y)|\le e^{\pi|\tau|}\;\mathcal M(\beta,y),
+```
+
+with $`\mathcal M`$ the majorant of the continuation lemma, which does not
+depend on $`\varepsilon`$ and is integrable. $`K_\varepsilon\to K_0`$
+pointwise for $`\rho>0`$, $`y\ne y_*`$. By dominated convergence
+$`A_\varepsilon\to A`$, and likewise $`B_\varepsilon\to B`$. (This last
+step holds on the whole strip $`|\sigma|<1-\eta`$; the restriction to
+$`|\sigma|<\tfrac12-\eta`$ comes only from the first step, the absolute
+convergence that allows any order.)
+
+*General weights.* For $`\varepsilon>0`$ all four displaced invariants are
+in the lower half plane on the real domain, so
+$`|\operatorname{Im}L|<2\pi`$ and $`|z_\varepsilon^p|\le|z_\varepsilon|^{\pm\sigma}e^{2\pi|\tau|}`$.
+Take the lines of Lemma 3 with $`\sigma<\min(1/m,\tfrac12-\eta)`$. By
+Lemma 13.1 and the decay of $`c_\pm`$,
+$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$. By the
+bound above, $`|I_\varepsilon[z^p]|\le C(1+|\tau|)e^{2\pi|\tau|}`$ uniformly
+in $`\varepsilon`$, so the limit passes under the $`p`$ integral, and the
+right side becomes $`\tfrac12\sum_\pm\int c_\pm(A(p)+B(p))dp`$, which is
+$`\tfrac12(A[F]+B[F])`$ by section 12. $`\blacksquare`$
+
+For $`\varepsilon>0`$ the order of integration is immaterial. So the order
+dependence noted earlier is entirely a matter of when $`\varepsilon`$ is
+removed, and the two natural choices, innermost and last, give the same
+result.
+
+**Theorem 13.3 (the global contour).** Suppose the square admits the
+contour of GATE_6_CONTOUR in $`D=4+2\eta`$ dimensions, that is: the
+conditions (A), (C0) to (C3), (D), (E) and (Q4) of that document, the
+continuous differentiability of $`V`$, and Lemmas 6 to 9 and the absolute
+integrability of its section 10, all for the $`D`$-dimensional field. Let
+$`F`$ be as in section 12 with $`W>2\pi+4e`$, where $`e`$ is the excursion
+bound of (D). Then the integral of $`F(z)/\prod x_{0i}^2`$ over that
+contour equals $`\lim_{\varepsilon\to0}I_\varepsilon[F]`$.
+
+The $`D`$-dimensional versions of those conditions are asserted in
+GATE_6_CONTOUR section 11 ("hold verbatim") and supported by a survey in
+$`4+1`$ dimensions; the certificate itself is four-dimensional. So this
+theorem is conditional on them. The three benchmark weights satisfy
+$`W>2\pi+4e`$.
+
+*Proof.* Fix $`\varepsilon>0`$ and consider the family $`x_0+i\lambda V`$,
+$`0\le\lambda\le1`$. The displaced invariant is
+$`x_{0i}^2-\lambda^2V^2+2i\lambda V\!\cdot n-i\varepsilon`$. It can vanish
+only if $`2\lambda V\!\cdot n=\varepsilon>0`$. In the inner and blend zones
+$`V\!\cdot n>0`$ occurs only where $`|x_{0i}^2|\ge\delta_0`$, and there the
+real part has modulus at least $`\delta_0-v^2>0`$. In the outer zone
+$`V\!\cdot n>0`$ forces $`n^2-\lambda^2V^2<0`$ (proof of Lemma 10(c)). So no
+invariant vanishes along the family. By (D), which is monotone in
+$`\lambda`$, the argument of each displaced invariant stays in
+$`[-\pi-e,e]`$, and subtracting $`i\varepsilon`$ keeps it there, so
+$`|\operatorname{Im}L|\le2\pi+4e<W`$ and $`F`$ is evaluated inside its
+strip. The integrand is holomorphic on the region swept, and by Stokes'
+theorem the integrals at $`\lambda=0`$ and
+$`\lambda=1`$ differ by the integral over the side at radius
+$`\varrho_0\to\infty`$. On the side the integrand is at most
+$`C\varrho_0^{-3}/|x_{0i}^2-i\varepsilon|`$ near a cone (the real part
+shifts by $`\lambda^2V^2=O(\kappa'^2\varrho_0)`$, but the imaginary part is
+at least $`\varepsilon+c\lambda\kappa'\varrho_0`$ in modulus there), the form
+contributes $`|V|\le C\varrho_0`$, and the side has measure
+$`\varrho_0^{D-3}`$ per unit of $`x_{0i}^2`$: in total
+$`\varrho_0^{2\eta-1}`$ up to logarithms, which tends to zero. So the
+integral over the contour of the $`\varepsilon`$-displaced integrand is
+$`I_\varepsilon[F]`$. On the contour, near a cone
+$`\operatorname{Im}x_{0i}^2\le0`$, so $`|x_{0i}^2-i\varepsilon|\ge|x_{0i}^2|`$;
+elsewhere, where the imaginary part may be positive, $`|x_{0i}^2|`$ is at
+least about $`\delta_0/2`$ in every zone (in the outer zone by (C1) to (C3)
+and the proof of Lemma 10(c)), so
+$`|x_{0i}^2-i\varepsilon|\ge\tfrac12|x_{0i}^2|`$ once
+$`\varepsilon\le\delta_0/4`$. The integrand is therefore dominated by
+$`16A(1+\sum_i|\log|x_{0i}^2||+C)^k/\prod|x_{0i}^2|`$, which is absolutely
+integrable on the contour (GATE_6_CONTOUR section 10). Dominated
+convergence gives the claim. $`\blacksquare`$
+
+**Consequences.**
+
+1. For spacelike diagonals, wherever the contour exists in the sense of
+   Theorem 13.3, the two routes of this repository compute the same
+   number: the contour integral equals the iterated Lorentzian integral,
+   and its double pole is $`\tfrac12\cdot(-2\pi^2i)\,4M[F]/\eta^2`$ by
+   section 12. This does not use the Mellin–Barnes form, Proposition 8 or
+   the sharper phase bounds; it does use condition (D), which is what makes
+   the integrand on the contour well defined.
+2. The identity $`A(p;T)+T^\eta A(-p;1/T)=`$ (the box), found numerically
+   to 12 digits in section 11.4, would follow analytically if Theorem 13.3
+   were also proved for $`F=z^p`$. The proof adapts for
+   $`|\sigma|<\min(\eta,\tfrac12-\eta)`$, using Lemma 8′ of GATE_6_CONTOUR
+   and a side term $`\varrho_0^{2\eta-1+2|\sigma|}`$, but that is not written
+   out. It would give the identity at each $`T`$ for which the contour
+   exists, and for all $`p`$ in the strip at that $`T`$ by analyticity in
+   $`p`$; to reach all $`T>0`$ by analyticity in $`T`$ one needs the contour
+   on a set of $`T`$ with an accumulation point, which the interval
+   certificate provides in four dimensions. So this consequence is not
+   established.
+3. Meromorphy in $`\eta`$: if the identity of 2 holds, the integral for
+   $`z^p`$ is the standard box function, whose Mellin–Barnes form is
+   meromorphic in $`\eta`$. For a general weight nothing beyond the bound
+   of section 12 is shown.
+
+## 14. A timelike diagonal
+
+Let one diagonal be timelike. The four invariants are still linear in
+$`\alpha`$, and the argument of section 9 applies with a different table.
+With $`s=\pm1`$ and $`t`$ of the opposite sign
+(`general_alpha_zeros`, `general_keyhole_sum`):
+
+| Region | $`\beta`$ range | Zeros apart | The $`\alpha`$ integral |
+| --- | --- | --- | --- |
+| $`s=-1`$, $`t=T>1`$ | $`\beta<0`$ or $`\beta>T`$ | none | 0 |
+| | $`0<\beta<1`$ | $`x_{03}^2`$ and $`x_{04}^2`$ | two keyholes |
+| | $`1<\beta<T`$ | $`x_{04}^2`$ | one keyhole |
+| $`s=1`$, $`t=-T`$, $`T<1`$ | $`\beta<0`$ or $`\beta>1`$ | none | 0 |
+| | $`0<\beta<T`$ | $`x_{03}^2`$ and $`x_{04}^2`$ | two keyholes |
+| | $`T<\beta<1`$ | $`x_{03}^2`$ | one keyhole |
+
+So the integral is supported in the slab between the null hyperplane
+containing the edge $`(1,2)`$ and the farther of those through $`x_3`$ and
+$`x_4`$, and it is the sum of a keyhole around the zero of $`x_{03}^2`$ on
+$`0<\beta<1`$, the edge $`(2,3)`$, and a keyhole around the zero of
+$`x_{04}^2`$ on $`0<\beta<|t/s|`$, the edge $`(4,1)`$. The two pieces now
+overlap in $`\beta`$. Where both keyholes sit in the same half plane only
+their sum is canonical: $`z^p`$ is a function of a Möbius variable in
+$`\alpha`$ there, and moving the cuts shifts a factor $`e^{\pm2\pi ip}`$
+between the two pieces. Throughout this section the cut from the zero of
+$`x_{03}^2`$ is taken along $`u_3>0`$, with $`\arg z=\mp\pi`$ on its lips;
+"the edge $`(2,3)`$ piece" means the keyhole with that cut. Numerically, with the weight $`\log^2z+\pi^2`$,
+$`\rho=0.35`$, $`\kappa=0.3`$, $`\varepsilon=0.02`$: the $`\alpha`$ integral
+is below $`10^{-11}`$ outside the slab in both regions, and inside it
+agrees with the sum of keyholes to 6 digits at
+$`\beta=0.2,0.4,0.8,1.5,2.0`$ ($`t=2.2`$) and $`\beta=0.2,0.4,0.8`$
+($`s=1`$, $`t=-0.45`$).
+
+**The piece that works.** Take $`s=-1`$, $`t=T>1`$ and the edge
+$`(2,3)`$. On the cut $`x_{02}^2,x_{01}^2<0`$ as before, and
+
+```math
+x_{04}^2=\frac{(T-\beta)\,u_3+(T-1)\,|y_\perp+y_*|^2}{b}>0,\qquad|y_*|^2=b^2\,\frac{T}{T-1}.
+```
+
+Every factor has a definite sign and $`\arg z=\mp\pi`$ on the two lips, so
+the reduction of section 11.1 goes through with $`T+1`$ replaced by
+$`T-1`$:
+
+```math
+\mathcal J^{-}=\frac{1}{T-1}\int_0^1d\beta\,b^{\eta-p}\int_0^1d\xi\int_0^1d\mu\;
+(1-\xi)^{-p}\xi^{p}\mu^{-p}(1-\mu)^{\eta-1}\big(\xi\beta+\varrho'b\mu\big)^{\eta-2}\big((T-1)\beta+Tb\mu\big)^{p},
+\qquad\varrho'=\frac{T}{T-1}.
+```
+
+The proof of the theorem of section 11.2 uses only that the integrand is
+of this form with positive constants, so this piece equals its two end
+terms up to $`O(1/\eta)`$ and carries two units. The constants are not
+uniform as $`T\to1`$, where the third invariant $`u`$ vanishes.
+Numerically $`\eta(A-A_{\rm near}-A_{\rm far})/(-2\pi^2i)`$ converges:
+$`-1.549,-1.086,-0.895,-0.806`$ at $`p=-0.3`$, $`T=2.2`$ for
+$`\eta=0.2,0.1,0.05,0.025`$, and similarly at three other points. By the
+relabelling of section 11.3 the piece that works in the other region is
+the edge $`(4,1)`$.
+
+**The piece that does not.** The other piece is the edge $`(2,3)`$ piece
+of a square with $`s>0`$. There, on the cut,
+
+```math
+x_{01}^2=-\frac{\beta u_3+\rho-\beta b}{b},
+```
+
+which changes sign: part of the domain has $`x_0`$ timelike from $`x_1`$.
+For $`0<\beta<T`$ the far invariant changes sign on the cut as well,
+$`x_{04}^2=[(T-\beta)u_3-(1-T)|y_\perp-y_*|^2]/b`$ with
+$`|y_*|^2=b^2T/(1-T)`$, so the zero of $`x_{04}^2`$ lies within
+$`O(\varepsilon)`$ of the cut. The integrand is then a positive function
+times a phase that takes several values, with a non-integrable
+singularity where $`x_{04}^2`$ vanishes, and the transverse integral is
+over regions, not all of $`\mathbb R^{2+2\eta}`$. The reduction to a cube
+fails. Equivalently,
+continuing the cube formula to $`T\in(-1,0)`$ makes $`\varrho`$ negative
+and puts the zero set of $`\xi\beta+\varrho b\mu`$ inside the cube with the
+non-integrable exponent $`\eta-2`$. The integral then exists only as an
+analytic continuation and bounds on moduli are not available. Rotating
+$`\mu`$ off the real axis does not help as it stands: at the end
+$`\mu=1`$ the singular set still meets the contour, with exponent
+$`2\eta-2`$.
+
+**Position.** With a timelike diagonal the position-space argument gives
+the exact slab and keyhole structure and, with the cut convention above
+and for the weight $`z^p`$, two of the four units (the continuation lemma
+of section 11.3 is used for $`\mathcal J^-`$ in the same way and has not
+been restated). The other
+two are not derived. The full statement in those regions still rests on
+the parametric form (section 6) and the global contour. A complete
+position-space treatment would need an oscillatory estimate in place of
+positivity; I do not have one.

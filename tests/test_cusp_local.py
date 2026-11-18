@@ -270,3 +270,60 @@ def test_far_end_factor_tends_to_one_uniformly_on_a_line():
         p = mp.mpc(0.1, tau)
         factor = eta**2 * mp.gamma(eta) ** 2 / mp.gamma(1 + 2 * eta) * mp.gamma(1 - p - eta) / mp.gamma(1 - p)
         assert abs(factor - 1) < 10 * eta * (1 + mp.log(2 + tau))
+
+
+# ---- any region: support and keyholes (section 14) -------------------------
+REGIONS14 = {"--": (-1, -1.7), "-+": (-1, 2.2), "+-": (1, -0.45)}
+LOGW = lambda L: L**2 + np.pi**2
+
+
+@pytest.mark.parametrize("region,beta", [("--", -2.5), ("--", 1.5), ("-+", -0.3), ("-+", 2.6), ("+-", -0.3), ("+-", 1.5)])
+def test_alpha_integral_vanishes_outside_the_slab_in_every_region(region, beta):
+    s, t = REGIONS14[region]
+    assert abs(cl.general_light_cone_integral(LOGW, beta, 0.35, 0.3, s, t)) < 1e-9
+    assert cl.general_keyhole_sum(LOGW, beta, 0.35, 0.3, s, t)[1] == []
+
+
+@pytest.mark.parametrize("region,beta,apart", [
+    ("--", -1.0, {"u4"}), ("--", 0.4, {"u3"}),
+    ("-+", 0.4, {"u3", "u4"}), ("-+", 1.5, {"u4"}),
+    ("+-", 0.2, {"w", "u1"}), ("+-", 0.8, {"u3"})])
+def test_alpha_integral_is_a_sum_of_keyholes_in_every_region(region, beta, apart):
+    s, t = REGIONS14[region]
+    direct = cl.general_light_cone_integral(LOGW, beta, 0.35, 0.3, s, t)
+    value, group, _ = cl.general_keyhole_sum(LOGW, beta, 0.35, 0.3, s, t)
+    assert set(group) == apart
+    assert abs(direct) > 1e-3 and direct == pytest.approx(value, rel=1e-5)
+
+
+def test_far_invariant_is_positive_on_the_cut_with_a_timelike_diagonal():
+    """s = -1, t = T > 1: x04^2 = [(T - beta) u3 + (T - 1)|y + y*|^2]/b on the cut."""
+    T, beta, rho, kappa, u3 = 2.2, 0.4, 0.35, 0.3, 0.7
+    b = 1 - beta
+    _, coeff, const = cl.general_alpha_zeros(beta, rho, kappa, -1, T, 0.0)
+    alpha = (u3 + rho) / b
+    ystar = b * np.sqrt(T / (T - 1))
+    formula = ((T - beta) * u3 + (T - 1) * (rho + 2 * kappa * ystar + ystar**2)) / b
+    assert (coeff["u4"] * alpha + const["u4"]).real == pytest.approx(formula, rel=1e-12)
+    assert formula > 0 and (coeff["w"] * alpha + const["w"]).real < 0 and (coeff["u1"] * alpha + const["u1"]).real < 0
+
+
+def test_first_invariant_changes_sign_on_the_cut_when_s_is_positive():
+    """s = +1: on the cut around the zero of x03^2, x01^2 takes both signs."""
+    T, beta, rho, kappa = 0.45, 0.6, 0.05, 0.02
+    _, coeff, const = cl.general_alpha_zeros(beta, rho, kappa, 1, -T, 0.0)
+    values = []
+    for u3 in (0.01, 2.0):
+        alpha = (u3 + rho) / (coeff["u3"])                        # u3 = coeff * alpha - rho
+        values.append((coeff["u1"] * alpha + const["u1"]).real)
+    assert values[0] * values[1] < 0
+
+
+@pytest.mark.parametrize("p,T", [(-0.3, 2.2), (0.3, 2.2)])
+def test_timelike_edge_piece_minus_end_terms_is_a_single_pole(p, T):
+    values = []
+    for eta in (0.1, 0.05, 0.025):
+        r = cl.edge_piece(p, eta, T, sign=-1) - cl.edge_near_term(p, eta) - cl.edge_far_term(p, eta, T, sign=-1)
+        values.append((eta * r / (-2j * np.pi**2)).real)
+    assert max(abs(v) for v in values) < 2
+    assert abs(values[2] - values[1]) < abs(values[1] - values[0])

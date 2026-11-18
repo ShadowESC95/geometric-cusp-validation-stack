@@ -439,25 +439,31 @@ def _edge_inner_terms(lbeta, lg, p, eta):
             ((eta - 1 + p) * lg - (1 + p) * lbeta + np.log(abs(c2)), np.sign(c2))]
 
 
-def edge_cube_integral(p, eta, T, rel: float = 1e-9):
+def edge_cube_integral(p, eta, T, rel: float = 1e-9, sign: int = 1):
     """J = (T+1)^(-1) int_0^1 d beta b^(eta-p) int_0^1 d xi int_0^1 d mu
              (1-xi)^(-p) xi^p mu^(-p) (1-mu)^(eta-1)
              (xi beta + tau b mu)^(eta-2) ((T+1) beta + T b mu)^p,
     b = 1 - beta, tau = T/(T+1); real p with |p| < 1 - eta and p + eta not an
     integer. The xi integral is done in closed form; beta and mu are
-    integrated in logit variables."""
+    integrated in logit variables.
+
+    `sign = -1` replaces T + 1 by T - 1 (T > 1): the edge (2,3) piece when
+    the diagonal t = +T is timelike."""
     import numpy as np
     from scipy.integrate import quad
 
     p, eta, T = float(p), float(eta), float(T)
-    tau = T / (T + 1)
+    if sign == -1 and T <= 1:
+        raise ValueError("sign = -1 needs T > 1")
+    T1 = T + sign
+    tau = T / T1
     R = 44 / eta
 
     def integrand(xb, xm):
         lbeta, lb = -np.logaddexp(0, -xb), -np.logaddexp(0, xb)
         lmu, l1mu = -np.logaddexp(0, -xm), -np.logaddexp(0, xm)
         lg = np.log(tau) + lb + lmu
-        lc = np.logaddexp(np.log(T + 1) + lbeta, np.log(T) + lb + lmu)
+        lc = np.logaddexp(np.log(T1) + lbeta, np.log(T) + lb + lmu)
         base = (eta - p) * lb - p * lmu + (eta - 1) * l1mu + p * lc + lbeta + lb + lmu + l1mu
         return sum(s * np.exp(base + l) for l, s in _edge_inner_terms(lbeta, lg, p, eta))
 
@@ -468,20 +474,22 @@ def edge_cube_integral(p, eta, T, rel: float = 1e-9):
 
     pts = [-R, -30, -5, 0, 5, 30, R] if R > 30 else [-R, -5, 0, 5, R]
     total = sum(quad(outer, lo, hi, epsabs=0, epsrel=20 * rel, limit=400)[0] for lo, hi in zip(pts[:-1], pts[1:]))
-    return total / (T + 1)
+    return total / T1
 
 
-def edge_piece(p, eta, T):
+def edge_piece(p, eta, T, sign: int = 1):
     """The edge piece A(p; T) of the full integral, with s = -1, t = -T,
     prefactor s t and measure d alpha d beta d^(2+2 eta) y:
 
         A = -2 i pi^(2+eta) Gamma(2-eta) T^(1-p) / (Gamma(1-p)^2 Gamma(1+p)^2) * J.
+
+    With `sign = -1` it is the edge (2,3) piece for t = +T > 1.
     """
     import numpy as np
     from scipy.special import gamma
 
     return (-2j * np.pi ** (2 + eta) * gamma(2 - eta) * T ** (1 - p)
-            / (gamma(1 - p) ** 2 * gamma(1 + p) ** 2) * edge_cube_integral(p, eta, T))
+            / (gamma(1 - p) ** 2 * gamma(1 + p) ** 2) * edge_cube_integral(p, eta, T, sign=sign))
 
 
 def edge_near_term(p, eta):
@@ -490,10 +498,10 @@ def edge_near_term(p, eta):
     return -2j * np.pi ** (2 + eta) * gamma(eta) ** 2 * gamma(1 + p - eta) / (gamma(1 + p) ** 2 * gamma(1 + 2 * eta - p))
 
 
-def edge_far_term(p, eta, T):
+def edge_far_term(p, eta, T, sign: int = 1):
     import numpy as np
     from scipy.special import gamma
-    return (-2j * np.pi ** (2 + eta) * (T / (1 + T)) ** eta * gamma(eta) ** 2 * gamma(1 - p - eta)
+    return (-2j * np.pi ** (2 + eta) * (T / (T + sign)) ** eta * gamma(eta) ** 2 * gamma(1 - p - eta)
             / (gamma(1 + p) * gamma(1 - p) ** 2 * gamma(1 + 2 * eta)))
 
 
@@ -501,3 +509,86 @@ def box_from_two_edges(p, eta, T):
     """A(p; T) + T^eta A(-p; 1/T): the second piece is the first with the two
     diagonals exchanged and z -> 1/z."""
     return edge_piece(p, eta, T) + T ** eta * edge_piece(-p, eta, 1 / T)
+
+
+# --------------------------------------------------------------------------
+# Any kinematic region: zeros, half planes and keyholes (section 14)
+# --------------------------------------------------------------------------
+def general_alpha_zeros(beta, rho, kappa, s, t, eps):
+    """Zeros in alpha of the four invariants for diagonals s = +-1 and t, each
+    with -i eps, and the coefficient of alpha in each:
+
+        w  = alpha beta s - rho,        u1 = w + beta s,
+        u3 = w - alpha s,               u4 = t (1 + alpha - beta) + w + c kappa,
+        c = 2 sqrt(t u / s),  u = -s - t.
+
+    A zero lies in the upper half plane exactly when its coefficient is positive.
+    """
+    import numpy as np
+    u = -s - t
+    if t * u / s <= 0:
+        raise ValueError("exactly one of s, t, u must be positive")
+    c = 2 * np.sqrt(t * u / s)
+    r = rho + 1j * eps
+    coeff = {"w": beta * s, "u1": beta * s, "u3": s * (beta - 1), "u4": t + beta * s}
+    const = {"w": -r, "u1": -r + beta * s, "u3": -r, "u4": t * (1 - beta) - r + c * kappa}
+    return {k: -const[k] / coeff[k] for k in coeff}, coeff, const
+
+
+def _general_integrand(f, alpha, coeff, const, s, t):
+    import numpy as np
+    val = {k: coeff[k] * alpha + const[k] for k in coeff}
+    L = (_feynman_log(val["w"]) + _feynman_log(val["u4"]) - _feynman_log(val["u1"]) - _feynman_log(val["u3"])
+         + _feynman_log(complex(s)) - _feynman_log(complex(t)))
+    return f(L) / (val["w"] * val["u1"] * val["u3"] * val["u4"])
+
+
+def general_light_cone_integral(f, beta, rho, kappa, s, t, eps=2e-2):
+    """int over real alpha of F(z)/(x01^2 x02^2 x03^2 x04^2) in any region."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    zeros, coeff, const = general_alpha_zeros(beta, rho, kappa, s, t, eps)
+    g = lambda a: _general_integrand(f, a, coeff, const, s, t)
+    marks = sorted({float(np.real(z)) for z in zeros.values()} | {0.0})
+    edges = [-np.inf] + marks + [np.inf]
+    total = 0j
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        total += quad(lambda a: g(a).real, lo, hi, limit=600, epsabs=0, epsrel=1e-10)[0]
+        total += 1j * quad(lambda a: g(a).imag, lo, hi, limit=600, epsabs=0, epsrel=1e-10)[0]
+    return total
+
+
+def general_keyhole_sum(f, beta, rho, kappa, s, t, eps=2e-2):
+    """The same integral as a sum of keyholes around the zeros in the half
+    plane that holds fewer of them. Returns (value, names of those zeros,
+    'U'/'L' pattern for w, u1, u3, u4)."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    zeros, coeff, const = general_alpha_zeros(beta, rho, kappa, s, t, eps)
+    pattern = "".join("U" if zeros[k].imag > 0 else "L" for k in ("w", "u1", "u3", "u4"))
+    upper = [k for k in zeros if zeros[k].imag > 0]
+    lower = [k for k in zeros if zeros[k].imag < 0]
+    if not upper or not lower:
+        return 0j, [], pattern
+    group, up = (upper, True) if len(upper) <= len(lower) else (lower, False)
+    g = lambda a: _general_integrand(f, a, coeff, const, s, t)
+    step, tiny = (1j if up else -1j), 1e-12
+    total = 0j
+    for name in group:
+        a0 = zeros[name]
+        r0 = 0.4 * min(abs(a0 - v) for k, v in zeros.items() if k != name)
+
+        def sides(tt, a0=a0, r0=r0):
+            dist = r0 * np.exp(tt)
+            a = a0 + step * dist
+            return (g(a + tiny) - g(a - tiny)) * step * dist
+
+        total += quad(lambda tt: sides(tt).real, 0, 60, limit=800, epsabs=0, epsrel=1e-10)[0]
+        total += 1j * quad(lambda tt: sides(tt).imag, 0, 60, limit=800, epsabs=0, epsrel=1e-10)[0]
+        lo, hi = (np.pi / 2 + 1e-9, 5 * np.pi / 2 - 1e-9) if up else (3 * np.pi / 2 - 1e-9, -np.pi / 2 + 1e-9)
+        circle = lambda chi, a0=a0, r0=r0: g(a0 + r0 * np.exp(1j * chi)) * 1j * r0 * np.exp(1j * chi)
+        total += quad(lambda ch: circle(ch).real, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+        total += 1j * quad(lambda ch: circle(ch).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
+    return total, group, pattern

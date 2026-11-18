@@ -187,3 +187,22 @@ def test_complex_points_violate_the_reality_conditions():
     Z, x = lc.real_square_twistors("--", 1.1)
     a, b, c, d = lc.chart_of_real_point(x[1] + np.array([0.3, 0.1j, 0.2, -0.1]), Z)
     assert abs(a.imag) > 1e-3 or abs(c + np.conj(b)) > 1e-3
+
+
+def test_phase_of_b_is_the_transverse_angle_only_to_leading_order():
+    """arg b - theta is constant up to O(lambda) in the collinear scaling."""
+    from geocusp.lorentzian_edges import light_like_square, _transverse_basis
+    Z, x = lc.real_square_twistors("--", 1.1)
+    pp, _, _ = light_like_square("--", 1.1)
+    e1, e2 = _transverse_basis(pp[0], pp[1])
+    spreads = []
+    for lam in (1e-1, 1e-2, 1e-3):
+        args = []
+        for th in (0.3, 1.7, 3.1, 4.9):
+            x0 = x[1] + 0.4 * lam**2 * pp[0] + 0.3 * pp[1] + lam * (np.cos(th) * e1 + np.sin(th) * e2)
+            b = lc.chart_of_real_point(x0, Z)[1]
+            args.append(np.angle(b * np.exp(-1j * th)))
+        spreads.append(np.ptp(np.unwrap(args)))
+    assert spreads[0] > 0.1                                   # not exact
+    assert spreads[1] == pytest.approx(spreads[0] / 10, rel=0.1)
+    assert spreads[2] == pytest.approx(spreads[0] / 100, rel=0.1)

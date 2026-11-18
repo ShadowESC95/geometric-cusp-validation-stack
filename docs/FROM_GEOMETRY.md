@@ -54,8 +54,13 @@ in any; each piece's form is positive on its piece.
 
 **Assumptions.** That the sum is the canonical form assumes that the region
 is a positive geometry and that forms add under triangulation, which is
-standard. Checked here are the tiling, the cancellation of spurious poles
-and positivity, not the residue recursion. The inequalities themselves are
+standard. Checked here are the tiling, the cancellation of spurious poles,
+positivity, and one level of the residue recursion: the residue of the form
+at the facet $`w_1=0`$ equals, exactly, the canonical form of that facet
+computed independently by the same interval rule in $`w_2`$
+(`two_loop_boundary_check`). By the symmetries of the form the same holds
+at all eight coordinate facets. The facet $`Q=0`$ and the deeper levels of
+the recursion are not checked. The inequalities themselves are
 taken from the literature. An independent review rebuilt the five forms and
 confirmed the identity, the tiling on 20 000 points, and that
 $`\langle AB_1AB_2\rangle=-Q`$.

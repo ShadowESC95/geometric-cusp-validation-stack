@@ -1370,6 +1370,12 @@ timelike diagonal (Lemma Q). Still open:
   re-evaluates the inner field in 100-digit arithmetic with exactly null
   edges at points $`10^{-6}`$ to $`10^{-30}`$ from the edges, and every
   near-cone imaginary part is negative, in all three regions.
+- **The $`D`$-dimensional contour.** Section 11 says that Lemma 5 and
+  sections 4, 9 and 10 hold verbatim in $`\mathbb R^{1,3+k}`$, and a survey
+  in $`4+1`$ dimensions supports it, but the certificate is evaluated in
+  four dimensions and nothing is written out for non-integer $`k`$.
+  Theorem 13.3 of CUSP_LOCAL_MODEL, which identifies the contour integral
+  with the Feynman integral, is conditional on this.
 - **Review** by someone who works with these integrals.
 
 What the argument takes from general analysis: Fubini's theorem and

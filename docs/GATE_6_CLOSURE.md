@@ -167,9 +167,18 @@ $`c=-\bar b`$ and $`bc=-|b|^2`$: the real section has two real parameters
 $`a,d`$ and one complex parameter $`b`$, whose modulus squared is
 proportional to $`\rho`$ and whose phase is the remaining angle.
 (`real_square_twistors`, `twistor_form`, `chart_of_real_point`; checked on
-300 real points in each region.) That the phase of $`b`$ is the angle
-$`\theta`$ of $`y_\perp`$ up to origin and orientation, and the
-coordinates $`(a,z,\theta)`$ on $`E`$, are still asserted, not proved.
+300 real points in each region.)
+
+**The phase of $`b`$.** It is not the transverse angle exactly: at fixed
+$`(\alpha,\beta)`$, $`b`$ is not linear in $`y_\perp`$ and $`|b|^2/\rho`$ is
+not constant. It is so to leading order in the collinear scaling. With
+$`y_\perp\sim\lambda`$, $`\alpha\sim\lambda^2`$ and $`\theta`$ varied over a
+full turn, $`\arg b-\theta`$ varies by $`0.25,\,0.025,\,0.0025`$ at
+$`\lambda=10^{-1},10^{-2},10^{-3}`$, and $`|b|^2/\rho`$ and
+$`d/\lambda^2`$ tend to constants depending on $`\beta`$. So on the
+exceptional divisor the phase of $`b`$ is $`\theta`$ up to a constant, and
+$`(a,z,\theta)`$ are coordinates there; this is a numerical statement
+about the leading order, not a proof.
 
 ## 4. The measure (exact)
 

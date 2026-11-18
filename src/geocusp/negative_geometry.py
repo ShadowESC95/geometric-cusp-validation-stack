@@ -132,3 +132,27 @@ def region_piece(label_index: int, point: dict) -> bool:
             A > 0 and c < 0 and w1 > star,
             A < 0 and c > 0 and w1 < star,
             A < 0 and c < 0 and w2 > c / A and w1 < star][label_index]
+
+
+def two_loop_boundary_check():
+    """One level of the residue recursion for the two-loop negative geometry.
+
+    The residue of the form at the facet w1 = 0 must be the canonical form
+    of that facet, the region
+        x_i, y_i, z_i > 0, w2 > 0,  Q0 = -(x1-x2) w2 + (y1-y2)(z1-z2) > 0.
+    That form is computed independently, by the same interval rule in w2:
+        A > 0, c > 0: 0 < w2 < c/A;   A < 0, c > 0: w2 > 0;   A < 0, c < 0: w2 > c/A.
+    Returns (residue, form of the facet, their difference).
+    """
+    (x1, y1, z1, w1, x2, y2, z2, w2), integrand, _, _ = symbolic_two_loop_integrand()
+    residue = sp.factor(sp.limit(w1 * integrand, w1, 0))
+    A, c = x1 - x2, (y1 - y2) * (z1 - z2)
+    x_gt, x_lt = 1 / (x2 * (x1 - x2)), 1 / (x1 * (x2 - x1))
+    y_gt, y_lt = 1 / (y2 * (y1 - y2)), 1 / (y1 * (y2 - y1))
+    z_gt, z_lt = 1 / (z2 * (z1 - z2)), 1 / (z1 * (z2 - z1))
+    c_pos, c_neg = y_gt * z_gt + y_lt * z_lt, y_gt * z_lt + y_lt * z_gt
+    facet = (x_gt * c_pos * c / (w2 * (c - A * w2))
+             + x_lt * c_pos / w2
+             + x_lt * c_neg * A / (A * w2 - c))
+    facet = sp.factor(sp.together(facet))
+    return residue, facet, sp.simplify(residue - facet)
