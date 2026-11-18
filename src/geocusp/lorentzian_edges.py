@@ -652,3 +652,42 @@ def parametric_double_pole_rotated(p, eta, modulus=1, theta=np.pi, gamma=0.5):
     total = 2 * (re + 1j * im)
     return (eta**2 * S ** (1 + p) * gamma_fn(2 - eta)
             / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)
+
+
+def box_continued(p, eta, modulus=1, theta=0):
+    """N_eta(p) continued in eta to -1/2 < Re eta < 1/2 - |Re p|.
+
+    The Mellin-Barnes line Re zeta = eta/2 of `regulated_double_pole` is moved
+    to Re zeta = -1/2 across the double pole of Gamma(zeta)^2 at zeta = 0:
+
+        N = eta^2 / (Gamma(2 eta) Gamma(1+p)^2 Gamma(1-p)^2) * (R + J),
+        R = Gamma(eta)^2 Gamma(1+p) Gamma(1-p-eta)
+            * (log(S/T) - 2 psi(eta) - 2 gamma - psi(1+p) + psi(1-p-eta)),
+        J = (1/2 pi) int dy  G(-1/2 + i y),
+        G(zeta) = Gamma(zeta)^2 Gamma(eta-zeta)^2 (S/T)^zeta
+                  Gamma(1+p-zeta) Gamma(1-p-eta+zeta).
+
+    J is analytic for Re eta > -1/2, and the zero of eta^2/Gamma(2 eta) cancels
+    the triple pole of R at eta = 0, so N is analytic in the whole region,
+    including eta = 0, where it equals 4 sin(pi p)/(pi p). S/T = modulus *
+    exp(i theta), 0 <= theta <= pi; theta = pi is a timelike diagonal.
+    """
+    p, eta = mp.mpmathify(p), mp.mpmathify(eta)
+    log_ratio = mp.log(mp.mpf(modulus)) + 1j * mp.mpf(theta)
+    if not -0.5 < mp.re(eta) < 0.5 - abs(mp.re(p)):
+        raise ValueError("need -1/2 < Re eta < 1/2 - |Re p|")
+
+    def G(y):
+        zeta = mp.mpf(-0.5) + 1j * y
+        return (mp.gamma(zeta) ** 2 * mp.gamma(eta - zeta) ** 2 * mp.exp(zeta * log_ratio)
+                * mp.gamma(1 + p - zeta) * mp.gamma(1 - p - eta + zeta))
+
+    centre = mp.im(p)
+    knots = sorted({-mp.inf, -6, -1, 0, 1, 6, mp.inf, centre})
+    J = mp.quad(G, knots) / (2 * mp.pi)
+    front = mp.rgamma(1 + p) ** 2 * mp.rgamma(1 - p) ** 2
+    if abs(eta) < mp.mpf(10) ** (-mp.mp.dps // 2):
+        return 4 * mp.gamma(1 + p) * mp.gamma(1 - p) * front
+    R = (mp.gamma(eta) ** 2 * mp.gamma(1 + p) * mp.gamma(1 - p - eta)
+         * (log_ratio - 2 * mp.psi(0, eta) - 2 * mp.euler - mp.psi(0, 1 + p) + mp.psi(0, 1 - p - eta)))
+    return eta ** 2 * mp.rgamma(2 * eta) * front * (R + J)

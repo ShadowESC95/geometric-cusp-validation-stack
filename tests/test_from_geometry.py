@@ -92,5 +92,6 @@ def test_residue_on_the_mutual_facet_is_the_form_of_that_facet():
 
 def test_second_level_of_the_residue_recursion():
     differences = ng.two_loop_second_level_check()
-    assert set(differences) == {"w1=w2=0", "w1=x1=0", "w1=x2=0"}
+    assert set(differences) == {"w1=w2=0", "w1=x1=0", "w1=x2=0", "w1=y1=0", "w1=y2=0",
+                                "w1=z1=0", "w1=z2=0", "w1=Q=0"}
     assert all(d == 0 for d in differences.values())

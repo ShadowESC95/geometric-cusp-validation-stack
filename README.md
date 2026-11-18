@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **380 tests** and **63 worked example groups**, all passing
+- **383 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -70,6 +70,7 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | The Feynman integral equals the integral over the global contour | Written proof, resting on the certificate and on an argument that the contour's properties hold in $`D`$ dimensions; independently checked |
 | The edge jump equals the residue of the collinear pole | Written proof; independently checked; numerically exact |
 | The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
+| Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
 | A timelike diagonal in position space | Exact slab and keyhole structure; one of the two edge pieces carries its two units; the other is **not derived** (covered via the parametric form) |
 | Review by a specialist | **Not done** |
 
@@ -89,7 +90,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 380 tests, about twenty minutes
+make test        # 383 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -338,7 +339,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            380 tests
+tests/            383 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

@@ -53,8 +53,9 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    integral over real $`x_0`$ with $`-i\varepsilon`$ on every invariant. It
    also equals the integral over the global contour of GATE_6_CONTOUR,
    where that contour exists (section 13). As a consequence the two edge
-   pieces add up to the box function for all $`T>0`$, and for $`z^p`$ the
-   integral is meromorphic in $`\eta`$.
+   pieces add up to the box function for all $`T>0`$, and the integral is
+   meromorphic in $`\eta`$ near 0, for $`z^p`$ and for the benchmark
+   weights (Theorem M of GATE_6_BOUNDS).
 9. With a timelike diagonal the integral is again a sum of keyholes
    supported in a null slab, and one of the two edge pieces is treated as
    before and carries two units (section 14).
@@ -1582,8 +1583,11 @@ Lemma 8′ of GATE_6_CONTOUR. $`\blacksquare`$
    relabelling and the continuation lemma.
 3. **Meromorphy in $`\eta`$ for $`z^p`$.** By 2 the Feynman integral for
    $`z^p`$ is the box function, whose Mellin–Barnes form continues
-   meromorphically in $`\eta`$; that standard fact is not re-proved here.
-   For a general weight nothing beyond the bound of section 12 is shown.
+   meromorphically in $`\eta`$. The continuation is written out in
+   Theorem M of GATE_6_BOUNDS section 5, which also gives meromorphy for
+   every weight of the class of Lemma 3 there, the three benchmark weights
+   included, in all three regions: the only singularity near $`\eta=0`$ is
+   a pole of order at most two.
 
 Theorem 13.4, consequences 2 and 3, and Proposition 7 of GATE_6_CONTOUR
 were refereed separately, by a different model from the earlier reviews.
@@ -1675,6 +1679,34 @@ analytic continuation and bounds on moduli are not available. Rotating
 $`\mu`$ off the real axis does not help as it stands: at the end
 $`\mu=1`$ the singular set still meets the contour, with exponent
 $`2\eta-2`$.
+
+**One variable.** Since
+$`((T+1)\beta+Tb\mu)^p=(T+1)^p(\beta+\varrho b\mu)^p`$, the edge piece
+depends on $`T`$ only through $`\varrho=T/(T+1)`$:
+
+```math
+A(p;T)=-\frac{2i\pi^{2+\eta}\Gamma(2-\eta)}{\Gamma(1-p)^2\Gamma(1+p)^2}\;\varrho^{\,1-p}K_p(\varrho),\qquad
+K_p(\varrho)=\int_{[0,1]^3}b^{\eta-p}(1-\xi)^{-p}\xi^{p}\mu^{-p}(1-\mu)^{\eta-1}(\xi\beta+\varrho b\mu)^{\eta-2}(\beta+\varrho b\mu)^{p},
+```
+
+and the second piece $`T^\eta A(-p;1/T)`$ has the argument
+$`1/(T+1)=1-\varrho`$. For $`T>0`$ both arguments lie in $`(0,1)`$. For a
+timelike diagonal, $`T<0`$, one of $`\varrho`$ and $`1-\varrho`$ is larger
+than 1 and the other is negative, whichever region it is: the piece with
+the argument above 1 is the one that works, and the other would be a
+boundary value of $`\varrho^{1-p}K_p(\varrho)`$ on the negative axis (I
+have not proved that the keyhole piece equals it, nor fixed the side),
+where the
+factor $`(\xi\beta+\varrho b\mu)^{\eta-2}`$ is singular inside the cube.
+I tried to write $`K_p`$ as a single Mellin–Barnes integral with Gamma
+functions only, which would have given bounds on the negative axis. It
+does not reduce by this route: the Mellin transform of $`K_p`$ in
+$`\varrho`$ is two Gamma functions times a Barnes integral of five Gamma
+functions over one, with parameters that miss the condition of Barnes'
+second lemma ($`\eta`$ where 1 is needed), so it is a $`{}_3F_2`$ at unit
+argument and not a product. Four trial forms with trigonometric factors
+disagree with the numerical edge piece. An independent review re-derived
+the Barnes integral and reproduced $`K_p`$ from it to $`3\times10^{-7}`$.
 
 **Why the bounds cannot simply be continued.** The cube function
 $`A(p;T)`$ is analytic in complex $`T`$ wherever $`\varrho=T/(T+1)`$ is not

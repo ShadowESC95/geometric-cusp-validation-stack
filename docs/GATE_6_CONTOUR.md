@@ -234,8 +234,21 @@ On the contour the arguments are not close to their real values near two
 cones at once, and the bound $`2\pi`$ is not proved there. It is observed:
 `phase_survey` finds $`\arg z/\pi`$ in $`[-2,2]`$, $`[-1,2]`$ and
 $`[-2,1]`$ on the contour in the three regions, on 30 000 stress points
-each. What is needed in GATE_6_BOUNDS is less: a bound strictly below
-$`3\pi`$. That is proved.
+each. A search aimed at the cusps gives the same: in the frame of each
+cusp, with the two null coordinates and the transverse distance spread
+over ten decades and both signs, 6000 points and 25 local maximisations
+on each of six squares with a timelike diagonal find
+$`\max|\arg z|/\pi`$ between $`1.9999994`$ and $`2.0000000`$. Along the
+deformation family with $`\varepsilon`$ up to $`10^{-3}`$ a review found
+$`2.000003\pi`$, which may be due to $`\varepsilon`$. Since each argument
+can leave its real value by $`e`$, the statement to aim for is
+$`2\pi+4e`$. A proof would need, in the quadrant beyond a cusp where the
+invariants of that cusp and of both neighbours are negative, an upper
+bound $`|\operatorname{Im}x_{0j}^2|\le c\,|\operatorname{Re}x_{0j}^2|`$ in
+every zone, and the conditions of section 9 give only lower bounds on the
+imaginary parts. I have not found it. What is needed in GATE_6_BOUNDS is
+less: a bound strictly below $`3\pi`$. That is proved where the
+certificate verifies (Q1) and (Q3).
 
 **Lemma Q (the corner is excluded).** Let one diagonal be timelike and let
 conditions (Q1) and (Q3) below hold. Then $`|\arg z|\le3\pi-c_0`$ on the

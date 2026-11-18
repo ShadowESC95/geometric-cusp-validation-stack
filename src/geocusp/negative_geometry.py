@@ -189,25 +189,43 @@ def two_loop_mutual_facet_check():
 
 
 def two_loop_second_level_check():
-    """Second level of the residue recursion at three faces of codimension two.
+    """Second level of the residue recursion at every face of codimension two.
 
     Starting from the facet w1 = 0 (whose form is already matched), take the
-    further residue at w2 = 0, x1 = 0 and x2 = 0 and compare with the form of
-    each face computed from its inequalities:
-        w1 = w2 = 0:  x1, x2 > 0 free and c > 0;
-        w1 = x1 = 0:  x2 w2 + c > 0  (c > 0: w2 > 0;  c < 0: w2 > -c/x2);
-        w1 = x2 = 0:  -x1 w2 + c > 0  (c > 0 and 0 < w2 < c/x1).
-    Returns the three differences, which should vanish.
+    further residue at each of the other seven coordinates and at Q = 0, and
+    compare with the form of the face computed from its inequalities. On
+    w1 = 0 the region is  -A w2 + c > 0  with A = x1 - x2, c = (y1-y2)(z1-z2):
+        w2 = 0:  x1, x2 > 0 free and c > 0;
+        x1 = 0:  x2 w2 + c > 0;      x2 = 0:  -x1 w2 + c > 0;
+        y1 = 0:  c = -y2 (z1 - z2);  y2 = 0:  c = y1 (z1 - z2);
+        z1 = 0:  c = -z2 (y1 - y2);  z2 = 0:  c = z1 (y1 - y2);
+        Q = 0:   w2 = c/A, which needs sign(A) = sign(c); since dw2 = -dQ/A
+                 the piece with A > 0 enters with a minus sign.
+    The symmetries of the form carry w1 = 0 to every coordinate facet, so
+    these eight faces represent all faces of codimension two. Returns the
+    eight differences, which should vanish.
     """
     x1, y1, z1, w1, x2, y2, z2, w2 = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
     residue, _, _ = two_loop_boundary_check()
-    c = (y1 - y2) * (z1 - z2)
+    A, c = x1 - x2, (y1 - y2) * (z1 - z2)
+    x_gt, x_lt = 1 / (x2 * (x1 - x2)), 1 / (x1 * (x2 - x1))
     y_gt, y_lt = 1 / (y2 * (y1 - y2)), 1 / (y1 * (y2 - y1))
     z_gt, z_lt = 1 / (z2 * (z1 - z2)), 1 / (z1 * (z2 - z1))
     c_pos, c_neg = y_gt * z_gt + y_lt * z_lt, y_gt * z_lt + y_lt * z_gt
+
+    def face(cc, positive, negative, free):
+        """Interval rule in w2 for -A w2 + cc > 0; `positive` is the form of cc > 0."""
+        return free * (x_gt * positive * cc / (w2 * (cc - A * w2)) + x_lt * positive / w2
+                       + x_lt * negative * A / (A * w2 - cc))
+
     faces = {
         "w1=w2=0": (sp.limit(w2 * residue, w2, 0), c_pos / (x1 * x2)),
         "w1=x1=0": (sp.limit(x1 * residue, x1, 0), (c_pos / w2 + c_neg * x2 / (x2 * w2 + c)) / x2),
         "w1=x2=0": (sp.limit(x2 * residue, x2, 0), (c_pos * c / (w2 * (c - x1 * w2))) / x1),
+        "w1=y1=0": (sp.limit(y1 * residue, y1, 0), face(-y2 * (z1 - z2), z_lt, z_gt, 1 / y2)),
+        "w1=y2=0": (sp.limit(y2 * residue, y2, 0), face(y1 * (z1 - z2), z_gt, z_lt, 1 / y1)),
+        "w1=z1=0": (sp.limit(z1 * residue, z1, 0), face(-z2 * (y1 - y2), y_lt, y_gt, 1 / z2)),
+        "w1=z2=0": (sp.limit(z2 * residue, z2, 0), face(z1 * (y1 - y2), y_gt, y_lt, 1 / z1)),
+        "w1=Q=0": (sp.limit((w2 - c / A) * residue, w2, c / A), -x_gt * c_pos + x_lt * c_neg),
     }
     return {name: sp.simplify(a - b) for name, (a, b) in faces.items()}

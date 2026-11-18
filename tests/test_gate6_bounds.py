@@ -285,3 +285,37 @@ def test_two_loop_weight_is_polynomially_bounded_on_the_cover():
     points += [mp.mpc(x, y * np.pi) for x in (-1000, -3, 3, 1000) for y in (-2.9, -1.5, 0.5, 2.9)]
     worst = max(float(abs(le.f2_cover(L)) / (1 + abs(L)) ** 4) for L in points)
     assert 128 < worst < 135
+
+
+# ---- meromorphy in eta (Theorem M) -------------------------------------------
+def test_continued_box_agrees_with_the_mellin_barnes_form():
+    import mpmath as mp
+    from geocusp import lorentzian_edges as le
+    for p, eta, ratio in ((0.2, 0.1, 2.5), (0.1 + 0.7j, 0.2, 0.4)):
+        a, b = le.regulated_double_pole(p, eta, ratio), le.box_continued(p, eta, ratio, 0)
+        assert abs(a - b) < 1e-12 * abs(a)
+    a = le.regulated_double_pole_complex(0.2, 0.1, 1.7, mp.pi)
+    assert abs(a - le.box_continued(0.2, 0.1, 1.7, mp.pi)) < 1e-12 * abs(a)
+
+
+def test_continued_box_is_analytic_through_eta_zero():
+    import mpmath as mp
+    from geocusp import lorentzian_edges as le
+    p = 0.2
+    limit = 4 * mp.sin(mp.pi * p) / (mp.pi * p)
+    above, below = le.box_continued(p, 1e-4, 2.5), le.box_continued(p, -1e-4, 2.5)
+    assert abs(above - limit) < 1e-3 and abs(below - limit) < 1e-3
+    assert abs((above + below) / 2 - limit) < 1e-6          # no pole, no jump
+    assert abs(le.box_continued(p, 0, 2.5) - limit) < 1e-12
+    for eta in (-0.2, 0.1j, -0.3 + 0.2j):
+        assert mp.isfinite(le.box_continued(p, eta, 2.5))
+    with pytest.raises(ValueError):
+        le.box_continued(0.2, 0.4, 2.5)
+
+
+def test_continued_box_grows_no_faster_than_the_bound():
+    import mpmath as mp
+    from geocusp import lorentzian_edges as le
+    for eta in (-0.2, 0.15j):
+        scaled = [abs(le.box_continued(0.1 + 1j * t, eta, 2.5)) * (1 + t) * mp.exp(-mp.pi * t) for t in (2, 4, 8)]
+        assert max(scaled) < 5 and min(scaled) > 0.1

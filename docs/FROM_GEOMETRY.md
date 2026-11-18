@@ -71,11 +71,24 @@ orientation there (`two_loop_mutual_facet_check`). So the first level of
 the recursion holds at every facet. The sign rule is the induced boundary
 orientation, not an adjustment: an independent review found the residue
 negative at every one of 2385 sampled facet points with $`A<0`$, and
-reproduced it in a second chart. At the second level, the further residues of
-the facet $`w_1=0`$ at $`w_2=0`$, $`x_1=0`$ and $`x_2=0`$ equal, exactly, the
-forms of those three faces computed from their inequalities
-(`two_loop_second_level_check`). The remaining faces of codimension two
-and all deeper levels are not checked. The inequalities themselves are
+reproduced it in a second chart. At the second level, the further residues
+of the facet $`w_1=0`$ at each of the other seven coordinates and at
+$`Q=0`$ equal, exactly, the forms of those eight faces computed from their
+inequalities (`two_loop_second_level_check`); at $`Q=0`$ the piece with
+$`A>0`$ enters with a minus sign, by the same orientation rule. The
+symmetries above carry $`w_1=0`$ to every coordinate facet, and residues
+at two facets can be taken in either order up to sign, so these eight
+represent every face of codimension two among the nine finite facets
+(the 36 pairs of facets fall into eight orbits, each containing one of
+these): the second level holds on all of them. Not counted are the poles
+at infinity in this chart, which the form also has: at $`w_1=\infty`$, at
+$`w_2=\infty`$ on the facet $`w_1=0`$, and at $`x_1=x_2`$ on the facet
+$`Q=0`$. They are not checked. The face $`w_1=w_2=0`$ is the union of two
+products of orthants and ordered pairs that meet in codimension two; its
+form is the sum of two known forms, given additivity. Below the other
+faces the third and deeper levels are not checked. An independent review
+rebuilt all eight face forms by solving for a different variable and
+found exact agreement. The inequalities themselves are
 taken from the literature. An independent review rebuilt the five forms and
 confirmed the identity, the tiling on 20 000 points, and that
 $`\langle AB_1AB_2\rangle=-Q`$.

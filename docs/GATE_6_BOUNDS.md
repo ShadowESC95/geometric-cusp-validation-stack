@@ -570,10 +570,122 @@ I_\eta[F]=\frac{4\,M[F]}{\eta^2\,st}+O\Big(\frac1\eta\Big)\qquad(s,t<0).
 ```
 
 Here $`\delta'`$ must be chosen with $`W-\delta'>2\pi`$. The corollary has
-been checked by an independent review. Meromorphy in $`\eta`$
-is not proved. With a timelike diagonal the same rate holds, by section 6 of
+been checked by an independent review. Meromorphy in $`\eta`$ is
+Theorem M below. With a timelike diagonal the same rate holds, by section 6 of
 CUSP_LOCAL_MODEL, with $`W-\delta'>2\pi+\gamma'`$; that section and the
 exact formula of its section 7 have been checked by an independent review.
+
+**Theorem M (meromorphy in $`\eta`$).** Let $`F`$ satisfy the hypothesis
+of Lemma 3 with $`W>\Phi`$ and $`W>\pi`$, at a square where steps A to C
+apply, and let $`\sigma_0=1/(2m)`$. Then $`\epsilon^2st\,I_\eta[F]`$,
+defined for small $`\eta>0`$ by the integral over the contour, is the
+restriction of a function analytic in the region
+
+```math
+\Omega=\{-\tfrac12<\operatorname{Re}\eta<\tfrac12-\sigma_0\}.
+```
+
+So $`I_\eta[F]`$ continues meromorphically to $`\Omega`$. Its only
+singularity there is at $`\eta=0`$, a pole of order at most two with
+coefficient $`4M[F]/(st)`$. This holds for the three benchmark weights in
+all three regions.
+
+*Proof.* (i) *Continuation of the box.* Write $`\zeta=\eta/2+iy`$ in the
+formula of Lemma 4, so that
+$`|\Gamma(\eta/2+iy)|^4=\Gamma(\zeta)^2\Gamma(\eta-\zeta)^2`$:
+
+```math
+N_\eta(p)=\frac{\eta^2}{\Gamma(2\eta)\Gamma(1+p)^2\Gamma(1-p)^2}\int_{\operatorname{Re}\zeta=\eta/2}\frac{d\zeta}{2\pi i}\,G(\zeta),\qquad
+G=\Gamma(\zeta)^2\Gamma(\eta-\zeta)^2\Big(\frac st\Big)^{\zeta}\Gamma(1+p-\zeta)\Gamma(1-p-\eta+\zeta).
+```
+
+Take $`0<\eta<\tfrac12-\sigma_0`$ and $`|\operatorname{Re}p|\le\sigma_0`$.
+Between $`\operatorname{Re}\zeta=-\tfrac12`$ and
+$`\operatorname{Re}\zeta=\eta/2`$ the only pole of $`G`$ is the double pole
+of $`\Gamma(\zeta)^2`$ at $`\zeta=0`$: the poles of
+$`\Gamma(1-p-\eta+\zeta)`$ have
+$`\operatorname{Re}\zeta\le\operatorname{Re}p+\eta-1<-\tfrac12`$ and the
+others lie to the right. $`G`$ decays exponentially in $`y`$, so the line
+can be moved:
+
+```math
+N_\eta(p)=\frac{\eta^2}{\Gamma(2\eta)\Gamma(1+p)^2\Gamma(1-p)^2}\,\big(R+J\big),\qquad
+J=\int_{\operatorname{Re}\zeta=-1/2}\frac{d\zeta}{2\pi i}\,G(\zeta),
+```
+
+```math
+R=\Gamma(\eta)^2\,\Gamma(1+p)\,\Gamma(1-p-\eta)\Big[\log\frac st-2\psi(\eta)-2\gamma_E-\psi(1+p)+\psi(1-p-\eta)\Big].
+```
+
+$`R`$ is the residue at $`\zeta=0`$: $`\Gamma(\zeta)^2=\zeta^{-2}-2\gamma_E\zeta^{-1}+\dots`$,
+and the bracket is $`-2\gamma_E`$ plus the logarithmic derivative of the
+other factors. For complex $`\eta\in\Omega`$ the poles of the integrand of
+$`J`$ stay off the line ($`\operatorname{Re}\eta+\tfrac12>0`$ and
+$`\tfrac12-\operatorname{Re}p-\operatorname{Re}\eta>0`$), so $`J`$ is
+analytic in $`\eta`$ on $`\Omega`$. $`R`$ is analytic on $`\Omega`$ except
+for a triple pole at $`\eta=0`$, which the triple zero of
+$`\eta^2/\Gamma(2\eta)`$ cancels. So the right side defines $`N_\eta(p)`$
+as an analytic function of $`\eta\in\Omega`$, for every $`p`$ with
+$`|\operatorname{Re}p|\le\sigma_0`$, and it is analytic in $`p`$ there. At
+$`\eta=0`$ it equals $`4\sin\pi p/(\pi p)`$: $`\eta^2\Gamma(\eta)^2/\Gamma(2\eta)\cdot(-2\psi(\eta))\to4`$
+and the term with $`J`$ vanishes.
+
+(ii) *Bound.* For $`\eta`$ in a compact subset $`K`$ of
+$`\Omega\setminus\{0\}`$ and $`p=\sigma+i\tau`$, $`|\sigma|\le\sigma_0`$:
+on $`\operatorname{Re}\zeta=-\tfrac12`$, by Stirling's bound,
+$`|\Gamma(\zeta)^2\Gamma(\eta-\zeta)^2|\le C(1+|y|)^ae^{-2\pi|y|}`$,
+$`|(s/t)^\zeta|\le Ce^{\pi|y|}`$ (the case of a timelike diagonal,
+$`\arg(s/t)=\pi`$, included) and
+$`|\Gamma(1+p-\zeta)\Gamma(1-p-\eta+\zeta)|\le C(1+|\tau-y|)^{a}e^{-\pi|\tau-y|}`$.
+As in Lemma 4, $`e^{-\pi|y|-\pi|\tau-y|}\le e^{-\pi|\tau|}`$ with exponential
+decay away from the interval between 0 and $`\tau`$, so
+$`|J|\le C(1+|\tau|)^{a'}e^{-\pi|\tau|}`$. Also
+$`|R|\le C(1+|\tau|)^{a'}e^{-\pi|\tau|}`$, and
+$`|\Gamma(1+p)\Gamma(1-p)|^{-2}\le Ce^{2\pi|\tau|}`$. Hence
+
+```math
+|N_\eta(p)|\le C_K\,(1+|\tau|)^{a'}\,e^{\pi|\tau|}.
+```
+
+The same bound holds on a disc about $`\eta=0`$ by the maximum principle,
+applied in $`\eta`$ at fixed $`p`$ on a circle $`|\eta|=r`$.
+
+(iii) *The weight.* By steps A to C, for real $`0<\eta<\eta_0`$,
+
+```math
+\epsilon^2st\,I_\eta[F]=\int_{\operatorname{Re}p=-\sigma_0}c_+(p)\,N_\eta(p)\,dp+\int_{\operatorname{Re}p=\sigma_0}c_-(p)\,N_\eta(p)\,dp .
+```
+
+By (ii) and $`|c_\pm|\le Ce^{-(W-\delta')|\tau|}`$ with $`W-\delta'>\pi`$,
+the right side converges uniformly for $`\eta`$ in compact subsets of
+$`\Omega`$, and the integrand is analytic in $`\eta`$. So the right side is
+analytic on $`\Omega`$. Its value at $`\eta=0`$ is $`4M[F]`$ by step D.
+$`\blacksquare`$
+
+The theorem has the same conditions as steps A to D: the contour and its
+certificate, Proposition 8 and Lemma 14. `box_continued` evaluates the
+formula of (i). It agrees with the Mellin–Barnes form to $`10^{-21}`$ at
+five points, two of them with a timelike diagonal; it is continuous
+through $`\eta=0`$ ($`3.74236`$ at $`\eta=10^{-4}`$, $`3.74155`$ at
+$`-10^{-4}`$, against $`4\sin\pi p/(\pi p)=3.74196`$ at $`p=0.2`$,
+$`s/t=2.5`$); and
+$`|N_\eta|(1+\tau)e^{-\pi\tau}`$ stays between 0.7 and 1 for
+$`\tau=2,4,8`$ at $`\eta=-0.2`$ and $`\eta=0.15i`$. "Coefficient" means
+the coefficient of $`\eta^{-2}`$; the order is exactly two unless
+$`M[F]=0`$. An independent review checked every step: it confirmed the
+residue against a numerical small-circle residue to 12 digits, compared
+`box_continued` with its own quadrature at five points with $`\eta>0`$
+and, on a different contour, at six points with $`\eta`$ negative or
+complex (differences below $`10^{-22}`$), and found equal one-sided
+derivatives at $`\eta=0`$.
+
+A consequence is that the coefficient of the single pole is also a linear
+functional of the weight, obtained from
+$`\int c(p)\,\partial_\eta N_\eta(p)|_{\eta=0}\,dp`$. Its value depends on
+conventions that do not affect the double pole: the form of Lemma 4 is in
+units $`t=1`$ with the measure $`d^Dx_0/(i\pi^{D/2})`$, and other choices
+multiply $`N_\eta`$ by an entire non-vanishing function of $`\eta`$, which
+shifts the single pole by a multiple of $`M[F]`$.
 
 **What this argument does and does not use.** Steps A to D use the contour,
 the Mellin–Barnes evaluation and the identity
