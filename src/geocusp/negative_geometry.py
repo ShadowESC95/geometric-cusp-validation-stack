@@ -734,3 +734,68 @@ def orientation_flip_residues():
                     pairs.add(nxt)
                     frontier.append(nxt)
     return dict(tally)
+
+
+def quadric_other_boundaries_check():
+    """Inside each quadric face, the boundaries that are not coordinates of
+    its chart.
+
+    In the chart eliminating u the face alpha u + beta = 0 also ends where
+    u = 0 (a factor of beta vanishes) and where u = infinity (a factor of
+    alpha vanishes). In a chart that eliminates a variable t of that factor
+    instead, these are the ends u = 0 and u = infinity of a coordinate, whose
+    forms are given by the leading coefficients in u. The residue in the
+    first chart must equal that form up to the sign relating the two charts:
+    minus at u = 0, plus at u = infinity. Factors common to alpha and beta
+    are left to `orientation_flip_residues`. Returns a tally.
+    """
+    import collections
+
+    u_symbol = sp.Symbol("u_chart")
+    pairs = set()
+    for c, remaining in _all_coordinate_faces():
+        if c in (1, -1):
+            continue
+        for u in remaining:
+            chart = _quadric_face_form(c, remaining, u)
+            if chart is not None:
+                pairs.add((chart[1], chart[2], chart[3]))
+    frontier, tally = list(pairs), collections.Counter()
+    while frontier:
+        alpha, beta, rest = frontier.pop()
+        form = _pair_form(alpha, beta, rest)
+        common = sp.gcd(alpha, beta)
+        constraint = sp.expand(alpha * u_symbol + beta)
+        for at_infinity, poly in ((False, beta), (True, alpha)):
+            if form == 0:
+                break
+            for h, _m in sp.factor_list(poly)[1]:
+                if h in rest or not any(h.has(v) for v in rest):
+                    continue
+                if not common.is_number and sp.rem(common, h) == 0:
+                    continue
+                outcome = "no chart"
+                for t in sorted(h.free_symbols, key=str):
+                    a_t = _leading(sp.expand(constraint.coeff(t, 1)), u_symbol, at_infinity)
+                    b_t = _leading(sp.expand(constraint.coeff(t, 0)), u_symbol, at_infinity)
+                    if a_t == 0 or b_t == 0:
+                        continue
+                    residue = _residue(form, t, sp.solve(h, t)[0])
+                    expected = _pair_form(a_t, b_t, tuple(v for v in rest if v != t))
+                    sign = 1 if at_infinity else -1
+                    if residue == 0 and expected == 0:
+                        outcome = "both zero"
+                    elif sp.cancel(residue - sign * expected) == 0:
+                        outcome = "agree"
+                    else:
+                        outcome = "mismatch"
+                    break
+                tally[("u=infinity" if at_infinity else "u=0", outcome)] += 1
+        for v in rest:
+            rest2 = tuple(q for q in rest if q != v)
+            for end in (False, True):
+                nxt = (_leading(alpha, v, end), _leading(beta, v, end), rest2)
+                if rest2 and nxt not in pairs:
+                    pairs.add(nxt)
+                    frontier.append(nxt)
+    return dict(tally)

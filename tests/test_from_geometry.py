@@ -185,3 +185,8 @@ def test_chart_coordinates_are_twistor_brackets():
 def test_orientation_flip_poles_have_residue_two():
     tally = ng.orientation_flip_residues()
     assert tally == {2: 92, -2: 92}
+
+
+def test_quadric_faces_at_their_other_boundaries():
+    tally = ng.quadric_other_boundaries_check()
+    assert tally == {("u=0", "agree"): 1056, ("u=infinity", "agree"): 752, ("u=0", "both zero"): 32}

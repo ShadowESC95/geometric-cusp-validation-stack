@@ -158,9 +158,19 @@ it. The denominators are as expected (`pole_check`): each of the 1323
 face forms has only simple poles, at remaining coordinates and at factors
 of that face's own inequality, and each of the 4328 quadric-face states
 only at remaining coordinates and at factors of $`\alpha`$ and $`\beta`$.
-Of the 4328 states, 872 have zero form. Inside a quadric face the code
-takes residues at coordinates only, not at the other divisors of that
-face.
+Of the 4328 states, 872 have zero form.
+
+Inside a quadric face in the chart eliminating $`u`$ there are two more
+kinds of boundary, which are not coordinates of that chart: where a
+factor of $`\beta`$ vanishes ($`u=0`$) and where a factor of $`\alpha`$
+vanishes ($`u=\infty`$). In a chart that eliminates a variable of that
+factor instead, they are the two ends of the coordinate $`u`$, with forms
+given by the leading coefficients in $`u`$. The residue in the first
+chart equals that form with the sign relating the two charts, minus at
+$`u=0`$ and plus at $`u=\infty`$, in all 1808 non-trivial cases; in 32
+more both sides vanish (`quadric_other_boundaries_check`). With the
+orientation-flip poles below, every pole of every quadric-face form is
+now accounted for.
 
 **The region is not a positive geometry in the strict sense.** I had left
 open whether these checks could be completed into a proof that the form
