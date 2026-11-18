@@ -165,3 +165,12 @@ def test_no_face_form_has_a_stray_pole():
     result = ng.pole_check()
     assert result["face_forms"] == 1323 and result["quadric_forms"] == 4328
     assert result["offenders"] == []
+
+
+def test_an_iterated_residue_equals_two():
+    """The region is not a positive geometry in the strict sense."""
+    x1, y1, z1, w1, x2, y2, z2, w2 = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    on_diagonal, through_crossing, coordinates_only = ng.leading_singularity_two()
+    assert sp.cancel(on_diagonal - (z1 + z2) / (w1 * w2 * y2 * z1 * z2 * (z1 - z2))) == 0
+    assert through_crossing == 2
+    assert coordinates_only == 1

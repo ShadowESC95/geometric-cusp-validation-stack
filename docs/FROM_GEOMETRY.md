@@ -141,42 +141,74 @@ $`\{\alpha>0,\beta<0\}`$ minus that of $`\{\alpha<0,\beta>0\}`$, the
 orientation rule above (1112 residues). Each such quadric face is then
 followed down: at each end of each remaining coordinate $`v`$ the residue
 equals the same expression with $`\alpha`$ and $`\beta`$ replaced by their
-leading coefficients in $`v`$ at that end, which say where $`u`$ stays
-positive in the limit. This one rule covers the steps at which the chart
+leading coefficients in $`v`$ at that end, which give the sign of the
+ratio $`-\beta/\alpha`$ in the limit. This one rule covers the steps at which the chart
 degenerates ($`u\to0`$ or $`u\to\infty`$ on the deeper face), which an
-earlier version skipped. Followed to the bottom there are 4328 quadric
-faces in charts and 29 920 comparisons, 22 688 with a non-zero residue,
+earlier version skipped. Followed to the bottom there are 4328 states
+and 29 920 comparisons, 22 688 with a non-zero residue,
 and all agree exactly.
 
 **What this shows.** In this chart, compactified as $`[0,\infty]^8`$, the
 form derived from the inequalities has, at every boundary reached by
-coordinates going to zero or infinity and by the quadric, in every order
-and to every depth checked, a residue equal to the form derived from the
-inequalities of that boundary. A check on coordinate residues alone could
-not see a term such as $`k/Q`$; the quadric residues exclude it. There
-are no stray poles (`pole_check`): the denominator of each of the 1323
-face forms consists of remaining coordinates and factors of that face's
-own inequality, each to the first power, and the same holds for the 4328
-quadric-face forms with the factors of $`\alpha`$ and $`\beta`$.
+coordinates going to zero or infinity in any order, and at the quadric
+followed by coordinates in any order, a residue equal to the form derived
+from the inequalities of that boundary. A check on coordinate residues
+alone could not see a term such as $`k/Q`$; the quadric residues exclude
+it. The denominators are as expected (`pole_check`): each of the 1323
+face forms has only simple poles, at remaining coordinates and at factors
+of that face's own inequality, and each of the 4328 quadric-face states
+only at remaining coordinates and at factors of $`\alpha`$ and $`\beta`$.
+Of the 4328 states, 872 have zero form. Inside a quadric face the code
+takes residues at coordinates only, not at the other divisors of that
+face.
 
-It is not a proof that the form is the canonical form of the region.
-That needs one of two things. Either each interval piece is a positive
-geometry whose form is the product form and forms add over subdivisions,
-in which case `region_form` is canonical by construction; or the
-boundary divisors of the region in its natural compactification, the
-product of two Grassmannians, are all among those checked here, in which
-case uniqueness gives it. I have not shown either. Two boundaries of a
-quadric face in a chart are not coordinates of that chart, $`u=0`$ and
-$`u=\infty`$; they are coordinates of other charts and are reached there.
+**The region is not a positive geometry in the strict sense.** I had left
+open whether these checks could be completed into a proof that the form
+is the canonical form of the region. They cannot, and an independent
+review found why. In the strict definition every chain of residues down
+to a point gives $`\pm1`$. Here one gives 2
+(`leading_singularity_two`). Set $`x_1=0`$ and $`x_2=0`$: the face is
+$`\{(y_1-y_2)(z_1-z_2)>0\}`$, with form
+
+```math
+\frac{y_1z_1+y_2z_2}{w_1w_2\,y_1y_2z_1z_2\,(y_1-y_2)(z_1-z_2)} .
+```
+
+Its residue at $`y_1=y_2`$ is
+$`(z_1+z_2)/(w_1w_2\,y_2z_1z_2(z_1-z_2))`$, on the whole orthant, and the
+residue of that at $`z_1=z_2`$ is $`2/(w_1w_2y_2z_2)`$. The two pieces of
+the face, $`y_1>y_2,z_1>z_2`$ and $`y_1<y_2,z_1<z_2`$, meet along
+$`y_1=y_2`$, $`z_1=z_2`$ and each contributes 1. The chain through the
+eight coordinates gives 1. The same happens on a quadric face wherever
+$`\alpha`$ and $`\beta`$ have a common factor: the face is the whole
+orthant as a set, its orientation flips across the common factor, and the
+form has a pole there with residue twice an orthant form (184 states).
+The review found a second example at the chart's infinity, which may be
+an artefact of this compactification; the one above uses finite
+hyperplanes only.
+
+So the right statement is weaker and is the one the checks support: the
+form is the sum of the forms of the pieces of a subdivision, each piece
+taken with its orientation, and its residues are the corresponding sums
+on the boundaries. It is a weighted object, not a positive geometry with
+unit leading singularities. That agrees with how the form arises: the
+logarithm of the amplitude is a combination of forms of positive
+geometries, not the form of one. Whether the chart's hyperplanes
+$`x_i=0`$ are restrictions of boundary divisors of the product of two
+Grassmannians, so that the example is a statement about the geometry and
+not about the chart, I have not checked.
 
 An independent review of the routine and of the coordinate and first
 quadric traversals wrote its own version, which eliminates a different
 variable and builds each interval from its end points. It agreed on all
 396 non-trivial faces, matched 98 random polytopes and cones against the
 dual-volume formula, reproduced all the counts, and supplied the
-breakdown into trivial and non-trivial comparisons quoted above. The
-traversals with infinities and the following of quadric faces to every
-depth were written after that review. The inequalities themselves are
+breakdown into trivial and non-trivial comparisons quoted above. A second
+review, of the traversals with infinities and of the quadric faces
+followed to every depth, reproduced all their counts with its own code
+(1323 states: 399 proper faces, 462 orthants, 462 empty), confirmed the
+sign conventions at infinity and across charts, and supplied the
+counter-example above. The inequalities themselves are
 taken from the literature. An independent review rebuilt the five forms and
 confirmed the identity, the tiling on 20 000 points, and that
 $`\langle AB_1AB_2\rangle=-Q`$.

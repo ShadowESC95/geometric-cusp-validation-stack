@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **392 tests** and **63 worked example groups**, all passing
+- **393 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -50,7 +50,8 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | Blow-up residues at the cusp, ordinary and weighted | Exact |
 | Two-loop integrand: scaling and order dependence of residues | Exact |
 | Two-loop integrand derived from the inequalities of its region | Exact (re-derivation of a published form) |
-| Residue recursion for that form: coordinates to zero or infinity in every order, and the quadric, to every depth | Exact: 10 080 and 29 920 residues compared with the forms of the faces from their inequalities, no mismatch; not a proof of canonicity |
+| Residue recursion for that form: coordinates to zero or infinity in every order, and the quadric, to every depth | Exact: 10 080 and 29 920 residues compared with the forms of the faces from their inequalities, no mismatch |
+| The two-loop region as a positive geometry in the strict sense | Falsified: one chain of residues gives 2, not $`\pm1`$. The form is a signed sum over pieces, as expected for the logarithm of the amplitude |
 | Sampler tested by the sign-flip characterisation, $`k=1,2`$ | Passes; agrees with linear programming at $`k=1`$ |
 | Cusp coefficients $`\Gamma^{(1)}, \Gamma^{(2)}, \Gamma^{(3)}`$ from the contour rule | Reproduced from published weights |
 | Lorentzian edge chain equals the unit-circle mean | Computed to $`10^{-8}`$ in every case tested |
@@ -91,7 +92,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 392 tests, about twenty minutes
+make test        # 393 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -340,7 +341,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            392 tests
+tests/            393 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

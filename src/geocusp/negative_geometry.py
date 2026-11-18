@@ -650,3 +650,25 @@ def pole_check():
                     pairs.add(nxt)
                     frontier.append(nxt)
     return {"face_forms": faces, "quadric_forms": quadric, "offenders": offenders}
+
+
+def leading_singularity_two():
+    """An iterated residue of the two-loop form equal to 2.
+
+    Take x1 = 0, x2 = 0: the face is {(y1-y2)(z1-z2) > 0}, two pieces that
+    meet along y1 = y2, z1 = z2. Then the residues at y1 = y2 and z1 = z2,
+    and the remaining coordinates to zero. Each piece contributes 1. For
+    comparison the chain through the eight coordinates gives 1. Returns
+    (the form on y1 = y2, the residue through the crossing, the residue
+    through coordinates only).
+    """
+    (x1, y1, z1, w1, x2, y2, z2, w2), form, _, _ = symbolic_two_loop_integrand()
+    r = _end_residue(_end_residue(form, x1), x2)
+    on_diagonal = sp.cancel(sp.cancel((y1 - y2) * r).subs(y1, y2))
+    r = sp.cancel(sp.cancel((z1 - z2) * on_diagonal).subs(z1, z2))
+    for v in (y2, z2, w1, w2):
+        r = _end_residue(r, v)
+    plain = form
+    for v in (w1, w2, x1, x2, y1, z1, y2, z2):
+        plain = _end_residue(plain, v)
+    return sp.factor(on_diagonal), r, plain
