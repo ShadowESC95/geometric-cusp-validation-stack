@@ -63,12 +63,15 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     (section 11.5). Its continuation to a timelike diagonal converges
     absolutely and carries two units, for $`z^p`$ and, by superposition,
     for the benchmark weights. The two continued pieces add up to the box.
-11. For $`z^p`$ in the timelike region $`s<0<t`$ the integral is also
-    computed directly in those kinematics, and shown there to be the sum
-    of the two continued pieces: the second keyhole piece is carried onto
-    the second edge piece by an explicit change of variables (section
-    14). The algebra is exact and checked numerically step by step; some
-    exchanges of integrals are formal.
+11. For $`z^p`$ with $`0<\operatorname{Re}p<1-\eta`$ in the timelike
+    region $`s<0<t`$ the iterated integral is shown, in those
+    kinematics, to be the sum of the two continued pieces: the second
+    keyhole piece is carried onto the second edge piece by an explicit
+    change of variables (section 14). The algebra is exact and checked
+    numerically step by step; some exchanges of integrals are formal.
+    For $`\operatorname{Re}p\le0`$ the iterated integral with the
+    displacement removed first does not exist there, because two
+    opposite light cones meet.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -2091,8 +2094,8 @@ $`u_1=-\tilde P`$, $`w=\beta-\tilde P`$, $`u_3=-\tilde R`$. The three forms
 have quadratic parts of the same sign and the same $`+i0`$, so two
 Feynman parameters $`\zeta,\chi`$ combine them, the transverse integral
 is elementary, the $`\tau`$ integral is a Beta function
-(for $`\operatorname{Re}p>0`$; both sides are analytic in $`p`$) and the
-$`\zeta`$ integral is Euler's. With $`\omega=1-\beta-\chi`$,
+(for $`\operatorname{Re}p>0`$, which is also where the left side exists;
+see "Range of $`p`$" below) and the $`\zeta`$ integral is Euler's. With $`\omega=1-\beta-\chi`$,
 
 ```math
 P_{41}=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\,\mathcal P,\qquad
@@ -2100,9 +2103,12 @@ P_{41}=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\,\mathcal P,\q
 (\omega+i0)^{-p}(g+i0)^{\eta-2}\,{}_2F_1\Big(2-\eta,1+p;2;\frac{-\beta}{g+i0}\Big),
 ```
 
-$`g=T\omega/(T-1+\chi)`$. Both the coefficient of $`\tau`$ and the constant
-term are proportional to $`\omega`$, which is why one variable carries
-the whole prescription.
+$`g=T\omega/(T-1+\chi)`$. The coefficient of $`\tau`$ is $`\omega`$ and the
+part of the constant term that does not depend on $`\zeta`$ is
+proportional to $`\omega`$, which is why one variable carries the whole
+prescription. Here $`y_0=\beta\sqrt{(T-1)/T}\,e`$ and $`y_1=-y_*`$,
+$`y_*=(1-\beta)\sqrt{T/(T-1)}\,e`$, with $`e`$ the direction that defines
+$`\kappa`$.
 
 *Step 3: Pfaff's transformation.* With $`z=-\beta/(g+i0)`$,
 $`1-z=(1-\chi)(T-\beta)/(T(\omega+i0))`$ and
@@ -2159,11 +2165,13 @@ on the side $`t-i0`$, exactly as in `timelike_two_edges`. The integral
 for $`K_{-p}(\varrho_2-i0)`$ is the boundary value of the analytic function
 $`K_{-p}(\varrho)`$ from $`\operatorname{Im}\varrho<0`$: for
 $`\operatorname{Im}\varrho<0`$ nothing vanishes, and at the boundary the
-only singularity is where $`\beta'+\varrho b'\mu=0`$, with the combined
-exponent $`\eta-1`$, which is integrable uniformly. So by section 11.5
+singularities are the line $`\beta'+\varrho b'\mu=0`$, with the combined
+exponent $`\eta-1`$, the corner $`(0,0)`$ through which it passes, its
+crossing with $`\mu=1`$, and $`b'^{2\eta-1}`$; all are integrable
+uniformly. So by section 11.5, for $`0<\operatorname{Re}p<1-\eta`$,
 
 ```math
-st\int\frac{z^p}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=A\big(p;\tfrac{T}{T-1}\big)+T_r^{\eta}A\big(-p;\tfrac{1}{T_r}\big)\Big|_{t-i0}
+st\int\frac{z^p}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=A(p;T_r)+T_r^{\eta}A\big(-p;\tfrac{1}{T_r}\big)\Big|_{T_r=Te^{i\pi}}
 =-2\pi^2i\,\frac{4}{\eta^2}\,\frac{\sin\pi p}{\pi p}+O\Big(\frac1\eta\Big)\qquad(s<0<-s<t),
 ```
 
@@ -2177,14 +2185,66 @@ $`(p,\eta,T)=(0.3,0.31,2.2)`$, $`(0.15,0.2,3.0)`$, $`(0.45,0.35,1.6)`$,
 $`(0.2,0.1,5.0)`$, $`(-0.4,0.2,3.0)`$ and $`(-0.2,0.35,1.8)`$, and the total
 of the direct computation minus it equals the first piece.
 
-What this covers. The iterated integral (the null direction first, then
-the transverse space, then $`\beta`$) for $`z^p`$ in the region
-$`s<0<t`$ with $`t>|s|`$. The first piece uses the continuation lemma of
-section 11.3 in $`p`$, as before. The other timelike region, $`s>0`$,
-follows by the relabelling of section 11.3, which exchanges the two
-pieces; I have not written it out separately. The benchmark weights
-follow by the superposition above. The steps were checked numerically
-piece by piece, and the proof has not yet been independently reviewed.
+**Range of $`p`$: the iterated integral exists only for
+$`\operatorname{Re}p>0`$.** An independent review of this proof found
+that the statement cannot hold for $`\operatorname{Re}p\le0`$, because the
+left side does not exist there. The cones of $`x_2`$ and $`x_4`$, which
+are timelike separated, meet in a sphere $`S`$,
+$`|y-y_0|^2=\beta(T-\beta)/T`$, for every $`\beta`$ in the slab. On $`S`$
+the zeros of $`x_{02}^2`$ and $`x_{04}^2`$ coincide at
+$`\alpha=-\rho/\beta`$, one in each half plane, and pinch the $`\alpha`$
+line. Near $`S`$ the $`\alpha`$ integral behaves like $`|d|^{2p-1}`$ in the
+distance $`d`$ to $`S`$, with different constants on the two sides, and
+that is integrable over the transverse space only for
+$`\operatorname{Re}p>0`$. The review saw the scaling to five digits. So
+with the displacement removed first, the iterated integral in this
+region exists exactly for $`0<\operatorname{Re}p<1-\eta`$, and there it
+equals the right side. For $`\operatorname{Re}p\le0`$ the right side is
+the continuation in $`p`$; the checks at $`p=-0.4`$ and $`-0.2`$ above
+compare two continued formulas, not an iterated integral. In the other
+timelike region the timelike pair is $`(1,3)`$, whose invariants carry
+the exponent $`-1-p`$, and the range flips to
+$`\operatorname{Re}p<0`$.
+
+This is the same sphere that Lemma 13.1 calls harmless, and there is no
+conflict: with $`\varepsilon>0`$ the integral over real $`x_0`$ converges
+absolutely for every $`p`$ in its strip, and the Feynman integral is its
+limit. What fails for $`\operatorname{Re}p\le0`$ is taking
+$`\varepsilon\to0`$ before the transverse integral. For spacelike
+diagonals no two opposite cones meet and the order does not matter.
+
+**What this covers.**
+
+- For $`z^p`$ with $`0<\operatorname{Re}p<1-\eta`$ in the region
+  $`s<0<t`$: the iterated integral (the null direction first with the
+  displacement removed, then the transverse space, then $`\beta`$)
+  equals the sum of the two continued pieces, and its double pole is
+  four units.
+- The first piece is identified for $`\operatorname{Re}p<0`$ by the
+  analogue of section 11.1 and continued to $`\operatorname{Re}p>0`$ by
+  the lemma of section 11.3, which is used here as before and not
+  re-proved for these kinematics.
+- The exchanges of integrals in Step 2 are formal as written: with
+  $`+i0`$ the $`\tau`$ integral is not absolutely convergent. The review
+  indicates the valid route, which is to keep $`\varepsilon>0`$, where
+  the integrals over $`(y,\tau)`$ and over the Feynman parameters
+  converge absolutely, and then let $`\varepsilon\to0`$ by dominated
+  convergence after rotating $`\tau`$; it checked numerically that the
+  two orders agree at finite displacement. I have not written the
+  estimate.
+- The benchmark weights do **not** follow in this sense. Their
+  superposition uses both lines $`\operatorname{Re}p=\pm\sigma_0`$, and
+  on one of them the iterated integral does not exist in each timelike
+  region. For them the statement in the timelike regions is about the
+  Feynman integral with the displacement removed last, as in the
+  paragraph "General weights, by superposition", and its identification
+  with the edge functionals goes through the contour.
+- The other timelike region is not written out.
+
+The review verified Steps 1, 3, 4 and 5 by its own derivation and
+numerics (Step 1 on 42 configurations to $`10^{-9}`$ or better; the
+identity of Step 4 pointwise to $`10^{-22}`$), and Step 2 up to the two
+points above.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above
@@ -2198,5 +2258,7 @@ total. No
 oscillatory estimate is needed: I had thought one was, because the cube
 integrand is singular there, but the singularity disappears once two of
 the three integrals are done. The identification of the total with the
-two continued pieces is proved above for the region $`s<0<t`$, and
-confirmed there by a direct computation organised differently.
+two continued pieces is shown above for $`z^p`$ with
+$`0<\operatorname{Re}p<1-\eta`$ in the region $`s<0<t`$, which is where
+the iterated integral exists, and confirmed there by a direct
+computation organised differently.
