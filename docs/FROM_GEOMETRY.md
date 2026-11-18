@@ -90,10 +90,92 @@ $`w_1=\infty`$ the condition $`Q>0`$ forces $`x_1>x_2`$ and leaves the other
 variables free. The remaining pairs involving a face at infinity are not
 checked. The face $`w_1=w_2=0`$ is the union of two
 products of orthants and ordered pairs that meet in codimension two; its
-form is the sum of two known forms, given additivity. Below the other
-faces the third and deeper levels are not checked. An independent review
-rebuilt all eight face forms by solving for a different variable and
-found exact agreement. The inequalities themselves are
+form is the sum of two known forms, given additivity.
+
+**Every depth.** `region_form` computes the form of a region
+$`\{v_i>0,\ c_k>0\}`$ from its inequalities, for the regions that occur
+here: a constraint that factors is split into the sign patterns of its
+factors, and a variable occurring in one constraint only,
+$`\alpha v+\beta>0`$, is integrated out by the interval rule ($`1/v`$,
+$`\alpha/(\alpha v+\beta)`$ or $`\beta/(v(\alpha v+\beta))`$ according to
+the signs of $`\alpha`$ and $`\beta`$). It is not a general algorithm: it
+declines regions in which every variable occurs in two constraints.
+Applied to $`Q>0`$ it reproduces the two-loop integrand.
+
+*Coordinate faces.* `coordinate_recursion_check` starts from the full
+region and visits every face reached by setting coordinates to zero in
+any order. On each, the residue of its form at every remaining coordinate
+is compared with the form of the next face. All agree exactly. The
+traversal has 399 states and 1360 comparisons. Of the states, 199 are
+proper faces, 100 are whole orthants and 100 are empty; of the
+comparisons, 720 are between two non-zero forms, 160 test that a proper
+face has no pole where it should have none, and 480 are trivial.
+
+One thing had to be got right for this. On some steps the inequality
+vanishes identically on the next face: for instance on $`x_1=x_2=y_1=0`$
+the quadric is $`-y_2(z_1-z_2)`$, which is zero at $`y_2=0`$. The face
+there is not empty and not the whole orthant. It is the limit of the
+region, $`z_1<z_2`$, and the residue is its form,
+$`1/(z_1(z_2-z_1)w_1w_2)`$. Reached in the other order, through
+$`x_1=x_2=y_2=0`$ and then $`y_1=0`$, the same coordinate plane carries
+the other half, $`z_1>z_2`$; reached through $`y_1=y_2`$ it carries a
+third object, the signed union. Three divisors pass through that plane,
+so the boundary is not a normal crossing there, and a face is defined by
+the chain of residues that reaches it. The rule (`face_constraint`) is:
+the inequality on the face is the first non-vanishing coefficient of the
+constraint in the vanishing variable. With the naive restriction the
+recursion fails at every such step that has a non-zero residue (112
+steps in a run over subsets of coordinates); with the rule it holds.
+
+*Zeros and infinities.* `full_recursion_check` treats the chart as eight
+intervals $`[0,\infty]`$ and sends each coordinate to either end, in every
+order. At infinity the inequality on the face is the leading coefficient
+of the constraint. This gives 1323 states and 10 080 comparisons, 6096 of
+them with a non-zero residue, and all agree exactly.
+
+*The quadric.* `quadric_full_recursion_check` takes every one of those
+faces that still carries an inequality $`c>0`$ and every chart in which
+$`c=\alpha u+\beta`$ is linear in an eliminated variable $`u`$. The
+residue of the face's form at $`c=0`$ equals the form of
+$`\{\alpha>0,\beta<0\}`$ minus that of $`\{\alpha<0,\beta>0\}`$, the
+orientation rule above (1112 residues). Each such quadric face is then
+followed down: at each end of each remaining coordinate $`v`$ the residue
+equals the same expression with $`\alpha`$ and $`\beta`$ replaced by their
+leading coefficients in $`v`$ at that end, which say where $`u`$ stays
+positive in the limit. This one rule covers the steps at which the chart
+degenerates ($`u\to0`$ or $`u\to\infty`$ on the deeper face), which an
+earlier version skipped. Followed to the bottom there are 4328 quadric
+faces in charts and 29 920 comparisons, 22 688 with a non-zero residue,
+and all agree exactly.
+
+**What this shows.** In this chart, compactified as $`[0,\infty]^8`$, the
+form derived from the inequalities has, at every boundary reached by
+coordinates going to zero or infinity and by the quadric, in every order
+and to every depth checked, a residue equal to the form derived from the
+inequalities of that boundary. A check on coordinate residues alone could
+not see a term such as $`k/Q`$; the quadric residues exclude it. An
+independent review found no spurious poles: every denominator factor of
+every face form is a remaining coordinate or a factor of that face's own
+constraint.
+
+It is not a proof that the form is the canonical form of the region.
+That needs one of two things. Either each interval piece is a positive
+geometry whose form is the product form and forms add over subdivisions,
+in which case `region_form` is canonical by construction; or the
+boundary divisors of the region in its natural compactification, the
+product of two Grassmannians, are all among those checked here, in which
+case uniqueness gives it. I have not shown either. Two boundaries of a
+quadric face in a chart are not coordinates of that chart, $`u=0`$ and
+$`u=\infty`$; they are coordinates of other charts and are reached there.
+
+An independent review of the routine and of the coordinate and first
+quadric traversals wrote its own version, which eliminates a different
+variable and builds each interval from its end points. It agreed on all
+396 non-trivial faces, matched 98 random polytopes and cones against the
+dual-volume formula, reproduced all the counts, and supplied the
+breakdown into trivial and non-trivial comparisons quoted above. The
+traversals with infinities and the following of quadric faces to every
+depth were written after that review. The inequalities themselves are
 taken from the literature. An independent review rebuilt the five forms and
 confirmed the identity, the tiling on 20 000 points, and that
 $`\langle AB_1AB_2\rangle=-Q`$.

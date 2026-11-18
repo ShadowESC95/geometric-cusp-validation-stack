@@ -253,3 +253,344 @@ def two_loop_infinity_check():
         "Q=0,x1=x2": (sp.limit((x1 - x2) * mutual, x1, x2), 1 / (w2 * x2 * y1 * y2 * z1 * z2)),
     }
     return {name: sp.simplify(a / b) for name, (a, b) in cases.items()}
+
+
+# --------------------------------------------------------------------------
+# The residue recursion at every depth
+# --------------------------------------------------------------------------
+_REGION_MEMO: dict = {}
+
+
+def _definite_sign(f):
+    """+1 or -1 if the polynomial has that sign on the positive orthant by
+    inspection of its coefficients, 0 otherwise."""
+    coefficients = sp.Poly(f, *sorted(f.free_symbols, key=str)).coeffs() if f.free_symbols else [f]
+    if all(k > 0 for k in coefficients):
+        return 1
+    if all(k < 0 for k in coefficients):
+        return -1
+    return 0
+
+
+def region_form(constraints, variables):
+    """The form of {variables > 0, every constraint > 0}, as a density.
+
+    Computed from the inequalities alone. A constraint that factors is
+    split into the sign patterns of its factors (a disjoint union). Then a
+    variable v occurring in exactly one constraint, alpha v + beta > 0, is
+    integrated out by the interval rule:
+        alpha > 0, beta > 0:  v > 0              1/v
+        alpha > 0, beta < 0:  v > -beta/alpha    alpha/(alpha v + beta)
+        alpha < 0, beta > 0:  0 < v < -beta/alpha   beta/(v (alpha v + beta))
+    each times the form of the region of the remaining variables on which
+    alpha and beta have those signs. Every piece is a positive density on
+    its region. Raises NotImplementedError if no variable occurs in exactly
+    one constraint.
+    """
+    key = (frozenset(sp.expand(c) for c in constraints), tuple(variables))
+    if key not in _REGION_MEMO:
+        _REGION_MEMO[key] = _region_form(list(constraints), tuple(variables))
+    return _REGION_MEMO[key]
+
+
+def _region_form(constraints, variables):
+    import itertools
+
+    clean = set()
+    for index, c in enumerate(constraints):
+        c = sp.expand(c)
+        if c == 0:
+            return sp.Integer(0)
+        coefficient, factors = sp.factor_list(c)
+        sign = 1 if coefficient > 0 else -1
+        odd = []
+        for f, multiplicity in factors:
+            d = _definite_sign(f)
+            if d:
+                sign *= d ** multiplicity
+            elif multiplicity % 2:
+                odd.append(sp.expand(f))
+        if not odd:
+            if sign < 0:
+                return sp.Integer(0)
+            continue
+        if len(odd) > 1:
+            rest = [k for j, k in enumerate(constraints) if j != index]
+            total = sp.Integer(0)
+            for eps in itertools.product((1, -1), repeat=len(odd)):
+                if sp.prod(eps) == sign:
+                    total += region_form(tuple(rest + [e * f for e, f in zip(eps, odd)]), variables)
+            return total
+        clean.add(sp.expand(sign * odd[0]))
+    if any(sp.expand(-c) in clean for c in clean):
+        return sp.Integer(0)
+    clean = sorted(clean, key=str)
+    if not clean:
+        return sp.prod([1 / v for v in variables]) if variables else sp.Integer(1)
+    single = [v for v in variables if sum(1 for c in clean if c.has(v)) == 1]
+    if not single:
+        raise NotImplementedError("no variable occurs in exactly one constraint: " + str(clean))
+    v = single[0]
+    P = next(c for c in clean if c.has(v))
+    if sp.degree(P, v) != 1:
+        raise NotImplementedError("constraint not linear in " + str(v))
+    alpha, beta = sp.expand(P.coeff(v, 1)), sp.expand(P.coeff(v, 0))
+    others = [c for c in clean if c is not P]
+    rest = tuple(u for u in variables if u != v)
+    if beta == 0:
+        return region_form(tuple(others + [alpha]), rest) / v
+    total = (region_form(tuple(others + [alpha, beta]), rest) / v
+             + region_form(tuple(others + [alpha, -beta]), rest) * alpha / (alpha * v + beta)
+             + region_form(tuple(others + [-alpha, beta]), rest) * beta / (v * (alpha * v + beta)))
+    return sp.cancel(sp.together(total))
+
+
+def _two_loop_quadric():
+    variables = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    x1, y1, z1, w1, x2, y2, z2, w2 = variables
+    return variables, sp.expand((x1 - x2) * (w1 - w2) + (y1 - y2) * (z1 - z2))
+
+
+def face_constraint(constraint, v):
+    """The inequality on the face v = 0 of {constraint > 0, v > 0}: the
+    constraint at v = 0, or, if that vanishes identically, the coefficient
+    of v. In the second case the face is the limit of the region and not
+    the restriction of the inequality."""
+    constraint = sp.expand(constraint)
+    at_zero = constraint.subs(v, 0)
+    return at_zero if at_zero != 0 else sp.expand(constraint.coeff(v, 1))
+
+
+def _residue(form, v, at=0):
+    return sp.cancel(sp.cancel((v - at) * form).subs(v, at)) if form != 0 else sp.Integer(0)
+
+
+def coordinate_recursion_check():
+    """The residue recursion on every coordinate face, to every depth.
+
+    Starting from the region {all eight variables > 0, Q > 0}, whose form
+    from the inequalities is the two-loop integrand, every face reached by
+    setting coordinates to zero in any order is visited. On each, the
+    residue of its form at each remaining coordinate is compared with the
+    form of the next face computed from its own inequality. Returns the
+    number of faces, the number of residues compared, the number of steps
+    at which the inequality vanished identically, and the mismatches.
+    """
+    variables, Q = _two_loop_quadric()
+    _, integrand, _, _ = symbolic_two_loop_integrand()
+    states, frontier = {(Q, variables)}, [(Q, variables)]
+    compared, degenerate, mismatches = 0, 0, []
+    top = sp.cancel(region_form((Q,), variables) - integrand) == 0
+    while frontier:
+        c, remaining = frontier.pop()
+        form = region_form((c,) if c != 1 else (), remaining)
+        for v in remaining:
+            rest = tuple(u for u in remaining if u != v)
+            if c == 1:
+                c2 = sp.Integer(1)
+            else:
+                degenerate += sp.expand(c).subs(v, 0) == 0
+                c2 = face_constraint(c, v)
+                if c2.is_number:
+                    c2 = sp.Integer(1 if c2 > 0 else -1)
+            face = sp.Integer(0) if c2 == -1 else region_form((c2,) if c2 != 1 else (), rest)
+            compared += 1
+            if sp.cancel(_residue(form, v) - face) != 0:
+                mismatches.append((c, v))
+            if rest and (c2, rest) not in states:
+                states.add((c2, rest))
+                frontier.append((c2, rest))
+    return {"top_form_is_the_integrand": bool(top), "faces": len(states), "residues": compared,
+            "degenerate_steps": int(degenerate), "mismatches": mismatches}
+
+
+def _quadric_face_form(c, remaining, u):
+    """The form of the face c = 0 in the chart that eliminates u, or None.
+
+    c = alpha u + beta, so u = -beta/alpha, positive where alpha and beta
+    have opposite signs; du = dc/alpha, so the piece with alpha < 0 enters
+    with a minus sign."""
+    c = sp.expand(c)
+    if not c.has(u) or sp.degree(c, u) != 1:
+        return None
+    alpha, beta = sp.expand(c.coeff(u, 1)), sp.expand(c.coeff(u, 0))
+    if beta == 0:
+        return None
+    rest = tuple(w for w in remaining if w != u)
+    return sp.cancel(region_form((alpha, -beta), rest) - region_form((-alpha, beta), rest)), alpha, beta, rest
+
+
+def quadric_recursion_check():
+    """The residue at the quadric on every coordinate face, and one level below.
+
+    On each face with a non-trivial inequality c > 0 and in each chart u in
+    which c is linear: (1) the residue of the face's form at c = 0 against
+    the form of {c = 0} from its inequalities; (2) the residue of that form
+    at each other coordinate v against the form of the quadric face of the
+    face v = 0, in the same chart. Steps where the chart degenerates on the
+    deeper face (u no longer usable) are skipped and counted.
+    """
+    variables, Q = _two_loop_quadric()
+    states, frontier = {(Q, variables)}, [(Q, variables)]
+    first = second = skipped = 0
+    mismatches = []
+    while frontier:
+        c, remaining = frontier.pop()
+        form = region_form((c,), remaining)
+        for u in remaining:
+            chart = _quadric_face_form(c, remaining, u)
+            if chart is None:
+                continue
+            on_quadric, alpha, beta, rest = chart
+            first += 1
+            if sp.cancel(_residue(form, u, -beta / alpha) - on_quadric) != 0:
+                mismatches.append(("quadric", c, u))
+            for v in rest:
+                c2 = face_constraint(c, v)
+                deeper = None if c2.is_number else _quadric_face_form(c2, tuple(w for w in remaining if w != v), u)
+                if deeper is None:
+                    skipped += 1
+                    continue
+                second += 1
+                if sp.cancel(_residue(on_quadric, v) - deeper[0]) != 0:
+                    mismatches.append(("inside", c, u, v))
+        for v in remaining:
+            c2, rest = face_constraint(c, v), tuple(w for w in remaining if w != v)
+            if c2.is_number or not rest or (c2, rest) in states:
+                continue
+            states.add((c2, rest))
+            frontier.append((c2, rest))
+    return {"faces": len(states), "quadric_residues": first, "residues_inside": second,
+            "skipped": skipped, "mismatches": mismatches}
+
+
+# ---- zeros and infinities, in every order ------------------------------------
+_T_INF = sp.Symbol("t_inf")
+
+
+def _leading(p, v, at_infinity=False):
+    """First non-vanishing coefficient of p in v at v = 0, or the leading
+    coefficient at v = infinity. All polynomials here have degree at most one
+    in each variable."""
+    p = sp.expand(p)
+    if p == 0 or not p.has(v):
+        return p
+    if at_infinity:
+        return sp.expand(p.coeff(v, 1))
+    at_zero = p.subs(v, 0)
+    return at_zero if at_zero != 0 else sp.expand(p.coeff(v, 1))
+
+
+def _end_residue(form, v, at_infinity=False):
+    """lim v f at v = 0 or at v = infinity (the residue up to the orientation
+    of the upper end of an interval)."""
+    if form == 0:
+        return sp.Integer(0)
+    if at_infinity:
+        return sp.cancel(sp.cancel(form.subs(v, 1 / _T_INF) / _T_INF).subs(_T_INF, 0))
+    return sp.cancel(sp.cancel(v * form).subs(v, 0))
+
+
+def _normalised(c):
+    return sp.Integer(1 if c > 0 else -1) if c.is_number else c
+
+
+def _all_coordinate_faces():
+    """Every face reached from the full region by sending coordinates to zero
+    or to infinity in any order, as (inequality, remaining variables)."""
+    variables, Q = _two_loop_quadric()
+    states, frontier = {(Q, variables)}, [(Q, variables)]
+    while frontier:
+        c, remaining = frontier.pop()
+        for v in remaining:
+            rest = tuple(u for u in remaining if u != v)
+            for at_infinity in (False, True):
+                c2 = c if c in (1, -1) else _normalised(_leading(c, v, at_infinity))
+                if rest and (c2, rest) not in states:
+                    states.add((c2, rest))
+                    frontier.append((c2, rest))
+    return states
+
+
+def _face_form(c, remaining):
+    return sp.Integer(0) if c == -1 else region_form((c,) if c != 1 else (), remaining)
+
+
+def full_recursion_check():
+    """The residue recursion with every coordinate sent to zero or to
+    infinity, in every order, to every depth.
+
+    The chart is compactified as eight intervals [0, infinity]. On each face
+    the residue of its form at each end of each remaining coordinate is
+    compared with the form of the next face from its own inequality (the
+    leading coefficient at that end). Returns counts and mismatches;
+    `nonzero` counts the comparisons in which the residue is not zero.
+    """
+    states = _all_coordinate_faces()
+    compared = nonzero = 0
+    mismatches = []
+    for c, remaining in states:
+        form = _face_form(c, remaining)
+        for v in remaining:
+            rest = tuple(u for u in remaining if u != v)
+            for at_infinity in (False, True):
+                c2 = c if c in (1, -1) else _normalised(_leading(c, v, at_infinity))
+                residue = _end_residue(form, v, at_infinity)
+                compared += 1
+                nonzero += residue != 0
+                if sp.cancel(residue - _face_form(c2, rest)) != 0:
+                    mismatches.append((c, v, at_infinity))
+    return {"faces": len(states), "residues": compared, "nonzero": int(nonzero), "mismatches": mismatches}
+
+
+def _pair_form(alpha, beta, rest):
+    """Form of the face alpha u + beta = 0 in the chart eliminating u."""
+    return sp.cancel(region_form((alpha, -beta), rest) - region_form((-alpha, beta), rest))
+
+
+def quadric_full_recursion_check():
+    """The quadric faces, in every chart, followed to every depth.
+
+    A quadric face in the chart eliminating u is given by (alpha, beta) with
+    u = -beta/alpha; its form is that of {alpha > 0, beta < 0} minus that of
+    {alpha < 0, beta > 0}. First, on every face of `full_recursion_check`
+    and in every chart, the residue of the face's form at the quadric is
+    compared with this. Then every quadric face is followed down: at each end
+    of each remaining coordinate v the residue is compared with the form
+    given by the leading coefficients of alpha and beta at that end, which
+    describe where u stays positive in the limit. Returns counts and
+    mismatches.
+    """
+    pairs, first, mismatches = set(), 0, []
+    for c, remaining in _all_coordinate_faces():
+        if c in (1, -1):
+            continue
+        form = region_form((c,), remaining)
+        for u in remaining:
+            chart = _quadric_face_form(c, remaining, u)
+            if chart is None:
+                continue
+            on_quadric, alpha, beta, rest = chart
+            first += 1
+            if sp.cancel(_residue(form, u, -beta / alpha) - on_quadric) != 0:
+                mismatches.append(("quadric", c, u))
+            pairs.add((alpha, beta, rest))
+    initial, frontier = len(pairs), list(pairs)
+    compared = nonzero = 0
+    while frontier:
+        alpha, beta, rest = frontier.pop()
+        form = _pair_form(alpha, beta, rest)
+        for v in rest:
+            rest2 = tuple(w for w in rest if w != v)
+            for at_infinity in (False, True):
+                a2, b2 = _leading(alpha, v, at_infinity), _leading(beta, v, at_infinity)
+                residue = _end_residue(form, v, at_infinity)
+                compared += 1
+                nonzero += residue != 0
+                if sp.cancel(residue - _pair_form(a2, b2, rest2)) != 0:
+                    mismatches.append(("inside", alpha, beta, v, at_infinity))
+                if rest2 and (a2, b2, rest2) not in pairs:
+                    pairs.add((a2, b2, rest2))
+                    frontier.append((a2, b2, rest2))
+    return {"quadric_residues": first, "quadric_faces_in_charts": initial, "all_depths": len(pairs),
+            "residues": compared, "nonzero": int(nonzero), "mismatches": mismatches}

@@ -101,3 +101,61 @@ def test_poles_at_infinity_match_their_faces():
     ratios = ng.two_loop_infinity_check()
     assert set(ratios) == {"w1=inf", "w1=0,w2=inf", "Q=0,x1=x2"}
     assert all(r == 1 for r in ratios.values())
+
+
+def test_region_form_on_simple_regions():
+    x, y = sp.symbols("x y")
+    assert ng.region_form((), (x, y)) == 1 / (x * y)
+    assert sp.cancel(ng.region_form((x - y,), (x, y)) - 1 / (y * (x - y))) == 0
+    assert sp.cancel(ng.region_form((1 - x,), (x,)) - 1 / (x * (1 - x))) == 0
+    assert ng.region_form((x - y, y - x), (x, y)) == 0
+    assert ng.region_form((-x - y,), (x, y)) == 0
+    # a product constraint is the disjoint union of its sign patterns
+    a, b = sp.symbols("a b")
+    union = ng.region_form(((x - y) * (a - b),), (x, y, a, b))
+    pieces = 1 / (y * (x - y) * b * (a - b)) + 1 / (x * (y - x) * a * (b - a))
+    assert sp.cancel(union - pieces) == 0
+
+
+def test_residue_recursion_on_every_coordinate_face():
+    result = ng.coordinate_recursion_check()
+    assert result["top_form_is_the_integrand"]
+    assert result["faces"] == 399 and result["residues"] == 1360
+    assert result["degenerate_steps"] == 280
+    assert result["mismatches"] == []
+
+
+def test_face_constraint_takes_the_limit_of_the_region():
+    x1, y1, z1, w1, x2, y2, z2, w2 = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    c = -y2 * (z1 - z2)                      # Q on x1 = x2 = y1 = 0
+    assert ng.face_constraint(c, y2) == sp.expand(z2 - z1)
+    form = ng.region_form((c,), (z1, w1, y2, z2, w2))
+    residue = sp.cancel(sp.cancel(y2 * form).subs(y2, 0))
+    assert residue != 0                      # the naive restriction 0 > 0 would give an empty face
+    assert sp.cancel(residue - 1 / (z1 * (z2 - z1) * w1 * w2)) == 0
+
+
+def test_residue_recursion_at_the_quadric():
+    result = ng.quadric_recursion_check()
+    assert result["quadric_residues"] == 712 and result["residues_inside"] == 1912
+    assert result["mismatches"] == []
+
+
+def test_full_recursion_with_zeros_and_infinities():
+    result = ng.full_recursion_check()
+    assert result["faces"] == 1323 and result["residues"] == 10080
+    assert result["nonzero"] > 5000
+    assert result["mismatches"] == []
+
+
+def test_quadric_faces_followed_to_every_depth():
+    result = ng.quadric_full_recursion_check()
+    assert result["quadric_residues"] == 1112 and result["all_depths"] == 4328
+    assert result["residues"] == 29920 and result["nonzero"] == 22688
+    assert result["mismatches"] == []
+
+
+def test_region_form_declines_what_it_cannot_do():
+    x, y, z = sp.symbols("x y z")
+    with pytest.raises(NotImplementedError):
+        ng.region_form((x - y, x - 2 * y + z), (x, y, z))
