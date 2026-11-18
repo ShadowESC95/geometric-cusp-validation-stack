@@ -63,10 +63,12 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     (section 11.5). Its continuation to a timelike diagonal converges
     absolutely and carries two units, for $`z^p`$ and, by superposition,
     for the benchmark weights. The two continued pieces add up to the box.
-11. With a timelike diagonal the integral is also computed directly in
-    those kinematics, and is proved there to be the sum of the two
-    continued pieces: the second keyhole piece is carried onto the second
-    edge piece by an explicit change of variables (section 14).
+11. For $`z^p`$ in the timelike region $`s<0<t`$ the integral is also
+    computed directly in those kinematics, and shown there to be the sum
+    of the two continued pieces: the second keyhole piece is carried onto
+    the second edge piece by an explicit change of variables (section
+    14). The algebra is exact and checked numerically step by step; some
+    exchanges of integrals are formal.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -1863,13 +1865,10 @@ pole is four units. The choice of side changes the single pole, not the
 double pole.
 
 What this gives and what it does not. One of the two pieces is also
-derived directly in those kinematics (the piece that works). For the
-other I have not shown, by a direct computation in timelike kinematics,
-that the keyhole integral with the cut convention above equals the
-continued function; it follows only because the sum is fixed. So the
-identification of the total in the timelike regions still passes through
-the contour and the parametric form, and what is new is that each piece
-is then an explicit convergent integral with a proved remainder.
+derived directly in those kinematics (the piece that works). When this
+paragraph was first written the other was identified only because the
+sum is fixed by the contour and the parametric form. That is now done
+directly, for the region $`s<0<t`$, in the proof further down.
 
 **General weights, by superposition.** Let $`F`$ be in the class of
 Lemma 3 of GATE_6_BOUNDS with $`W`$ larger than the range $`\Phi`$ of
@@ -1880,8 +1879,13 @@ to C of GATE_6_BOUNDS section 5, with a timelike diagonal,
 I_\eta[F]=\int_{\operatorname{Re}p=-\sigma_0}c_+(p)\,I_\eta[z^p]\,dp+\int_{\operatorname{Re}p=\sigma_0}c_-(p)\,I_\eta[z^p]\,dp ,
 ```
 
-and by the above $`I_\eta[z^p]`$ is, up to the fixed phase, the sum of the
-two continued pieces $`A(p;\varrho)`$ and $`T^\eta A(-p;1-\varrho)`$. Define
+where on these lines $`I_\eta[z^p]`$ means its continuation in $`p`$,
+$`N_\eta(p)/(\epsilon^2st)`$, as in steps C and D (the integral itself
+converges only for $`|\operatorname{Re}p|<\eta`$). By the above this is,
+up to a factor that does not depend on $`p`$ (the phase of the region and
+the normalisation $`-2i\pi^{2+\eta}T^\eta st`$ of section 11.4), the sum of
+the two continued pieces $`A(p;\varrho)`$ and $`T^\eta A(-p;1-\varrho)`$.
+Define
 for each piece
 
 ```math
@@ -2024,14 +2028,32 @@ $`g=(1-\chi)/\Lambda_2-\beta<0`$.
 *Result.* `timelike_direct` evaluates $`st\,(I_{\rm I}+I_{\rm II})`$. It
 equals the sum of the two continued pieces on the side $`t-i0`$, with no
 constant fitted, to between $`10^{-6}`$ and $`10^{-8}`$ (the tolerance of
-the quadrature) at eight points:
+the quadrature in this code; an independent review evaluated the two
+printed integrals with its own code and found agreement to $`10^{-15}`$
+at three points and $`7\times10^{-13}`$ at a fourth) at eight points:
 $`(p,\eta,T)=(0.3,0.3,2.2)`$, $`(0.3,0.3,3.5)`$, $`(0.3,0.3,1.4)`$,
 $`(0.15,0.2,2.2)`$, $`(0.45,0.35,2.8)`$, $`(0.2,0.1,5.0)`$,
 $`(0.6,0.2,1.7)`$ and $`(-0.4,0.2,3.0)`$. Against the other side the ratio
 is $`0.71+0.70i`$ at the first point. So the side found by the review is
 confirmed by an independent computation, and the identification of the
 total with the two continued pieces no longer rests on the contour
-alone.
+alone. The measure is $`d\alpha\,d\beta\,d^{2+2\eta}y`$ with the prefactor
+$`st`$ and no Jacobian, which is the definition of $`A`$ in section 11, so
+the agreement is a test and not a calibration. Here $`y_0`$ and $`y_1`$
+lie along the direction that defines $`\kappa`$.
+
+The same review re-derived both regions and agreed with every phase,
+prefactor and exponent. It compared the closed contour of region I and
+the keyhole of region II with the integral along the real line at
+several points, to between $`10^{-11}`$ and $`10^{-16}`$. Its reservation
+is about rigour, not about the formulas: the algebra is exact, but the
+exchange of the transverse integral with the continued end-point
+integrals and with the Feynman parameters, and the limit
+$`\varepsilon\to0`$ where $`Z`$ vanishes inside the segment, are carried
+out formally and not justified by estimates. Convergence of the final
+integrals: in region I the integrand behaves like $`\xi^{\eta-1}`$ and
+$`(1-\xi)^{\eta-1}`$ at the two ends; in region II like $`\chi^{\eta-1}`$,
+$`(1-\chi)^{\eta-1}`$, $`(\beta-1)^{2\eta-1}`$ and $`(T-\beta)^{2\eta-1}`$.
 
 **Proof that the timelike integral is the sum of the two continued
 pieces.** The two regions above are convenient for computing the total.
