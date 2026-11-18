@@ -80,10 +80,15 @@ symmetries above carry $`w_1=0`$ to every coordinate facet, and residues
 at two facets can be taken in either order up to sign, so these eight
 represent every face of codimension two among the nine finite facets
 (the 36 pairs of facets fall into eight orbits, each containing one of
-these): the second level holds on all of them. Not counted are the poles
-at infinity in this chart, which the form also has: at $`w_1=\infty`$, at
-$`w_2=\infty`$ on the facet $`w_1=0`$, and at $`x_1=x_2`$ on the facet
-$`Q=0`$. They are not checked. The face $`w_1=w_2=0`$ is the union of two
+these): the second level holds on all of them. The form also has poles
+at infinity in this chart: at $`w_1=\infty`$, at $`w_2=\infty`$ on the
+facet $`w_1=0`$, and at $`x_1=x_2`$ on the facet $`Q=0`$, where $`w_1`$
+runs to infinity. At each of these three the residue equals the form of
+the face cut out by the inequalities there, up to the orientation of the
+upper end of an interval (`two_loop_infinity_check`): for example at
+$`w_1=\infty`$ the condition $`Q>0`$ forces $`x_1>x_2`$ and leaves the other
+variables free. The remaining pairs involving a face at infinity are not
+checked. The face $`w_1=w_2=0`$ is the union of two
 products of orthants and ordered pairs that meet in codimension two; its
 form is the sum of two known forms, given additivity. Below the other
 faces the third and deeper levels are not checked. An independent review

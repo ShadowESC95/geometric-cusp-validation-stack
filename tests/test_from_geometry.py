@@ -95,3 +95,9 @@ def test_second_level_of_the_residue_recursion():
     assert set(differences) == {"w1=w2=0", "w1=x1=0", "w1=x2=0", "w1=y1=0", "w1=y2=0",
                                 "w1=z1=0", "w1=z2=0", "w1=Q=0"}
     assert all(d == 0 for d in differences.values())
+
+
+def test_poles_at_infinity_match_their_faces():
+    ratios = ng.two_loop_infinity_check()
+    assert set(ratios) == {"w1=inf", "w1=0,w2=inf", "Q=0,x1=x2"}
+    assert all(r == 1 for r in ratios.values())

@@ -229,3 +229,27 @@ def two_loop_second_level_check():
         "w1=Q=0": (sp.limit((w2 - c / A) * residue, w2, c / A), -x_gt * c_pos + x_lt * c_neg),
     }
     return {name: sp.simplify(a - b) for name, (a, b) in faces.items()}
+
+
+def two_loop_infinity_check():
+    """The poles of the two-loop form at infinity in this chart.
+
+    The form also has poles where a coordinate tends to infinity. Each is
+    compared with the form of the corresponding face:
+        w1 = infinity:        Q > 0 needs x1 > x2, the rest free;
+        w1 = 0, w2 = infinity: -A w2 + c > 0 needs x1 < x2, the rest free;
+        Q = 0, x1 = x2:       w1 = w2 - c/A runs to infinity; x2 and the rest free.
+    Residues are taken as lim v f (v the coordinate, or x1 - x2), which is
+    the residue up to the orientation of the upper end of an interval.
+    Returns the three ratios, which should be 1.
+    """
+    (x1, y1, z1, w1, x2, y2, z2, w2), form, _, _ = symbolic_two_loop_integrand()
+    x_gt, x_lt = 1 / (x2 * (x1 - x2)), 1 / (x1 * (x2 - x1))
+    facet, _, _ = two_loop_boundary_check()
+    mutual, _, _ = two_loop_mutual_facet_check()
+    cases = {
+        "w1=inf": (sp.limit(w1 * form, w1, sp.oo), x_gt / (y1 * z1 * y2 * z2 * w2)),
+        "w1=0,w2=inf": (sp.limit(w2 * facet, w2, sp.oo), x_lt / (y1 * y2 * z1 * z2)),
+        "Q=0,x1=x2": (sp.limit((x1 - x2) * mutual, x1, x2), 1 / (w2 * x2 * y1 * y2 * z1 * z2)),
+    }
+    return {name: sp.simplify(a / b) for name, (a, b) in cases.items()}
