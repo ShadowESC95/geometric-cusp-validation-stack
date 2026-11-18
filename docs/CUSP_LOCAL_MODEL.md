@@ -67,18 +67,26 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     region $`s<0<t`$ the iterated integral is shown, in those
     kinematics, to be the sum of the two continued pieces: the second
     keyhole piece is carried onto the second edge piece by an explicit
-    change of variables (section 14). The algebra is exact and checked
-    numerically step by step; some exchanges of integrals are formal.
-    For $`\operatorname{Re}p\le0`$ the iterated integral with the
-    displacement removed first does not exist there, because two
-    opposite light cones meet.
+    change of variables (section 14). For $`\operatorname{Re}p\le0`$ the
+    iterated integral with the displacement removed first does not
+    exist there, because two opposite light cones meet.
+12. With the displacement removed last, which is the Feynman integral,
+    the same formula holds for both signs,
+    $`|\operatorname{Re}p|<\tfrac12-\eta`$, in both timelike regions
+    (Theorem 14.T). The exchanges of integrals are justified by keeping
+    the displacement positive, where everything converges absolutely,
+    and a bound uniform in the displacement (Lemmas 14.E and 14.F). By
+    superposition this gives the double pole $`4M[F]`$ for
+    $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with a timelike diagonal
+    without the contour. For $`\bar F^{(2)}`$ the uniform bound is not
+    sharp enough and the timelike statement still uses the contour.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
 integral (section 11.5) whose continuation to those kinematics converges
-absolutely and carries two units; what remains indirect there is the
-identification of the total with the Feynman integral, which uses the
-contour (section 14). The link to the global contour rests on the
+absolutely and carries two units; the identification of the total with
+the Feynman integral is direct for $`z^p`$ and for the first two
+benchmark weights, and uses the contour for the third (section 14). The link to the global contour rests on the
 certificate and on Proposition 7 of GATE_6_CONTOUR, a proof by inspection
 that the certificate's constants are those of every dimension. An
 independent review of sections 13 and 14 found two wrong statements, both
@@ -2053,7 +2061,8 @@ is about rigour, not about the formulas: the algebra is exact, but the
 exchange of the transverse integral with the continued end-point
 integrals and with the Feynman parameters, and the limit
 $`\varepsilon\to0`$ where $`Z`$ vanishes inside the segment, are carried
-out formally and not justified by estimates. Convergence of the final
+out formally and not justified by estimates (for the second keyhole
+piece they are justified further down, by Lemma 14.E). Convergence of the final
 integrals: in region I the integrand behaves like $`\xi^{\eta-1}`$ and
 $`(1-\xi)^{\eta-1}`$ at the two ends; in region II like $`\chi^{\eta-1}`$,
 $`(1-\chi)^{\eta-1}`$, $`(\beta-1)^{2\eta-1}`$ and $`(T-\beta)^{2\eta-1}`$.
@@ -2213,52 +2222,406 @@ limit. What fails for $`\operatorname{Re}p\le0`$ is taking
 $`\varepsilon\to0`$ before the transverse integral. For spacelike
 diagonals no two opposite cones meet and the order does not matter.
 
+**The exchanges of Step 2, with the displacement kept.** As written,
+Step 2 exchanges integrals that do not converge absolutely at
+$`\varepsilon=0`$. Keeping $`\varepsilon>0`$ repairs this. The
+displacement is $`\rho\to\rho+i\varepsilon`$ in all four invariants, so
+the zeros in $`\alpha`$ move to $`\operatorname{Im}\alpha_3=\varepsilon/(1-\beta)`$
+and $`\operatorname{Im}\alpha_4=\varepsilon/(T-\beta)`$. The cut from
+$`\alpha_3`$ along $`x_{03}^2-i\varepsilon>0`$ is a horizontal ray to the
+right and the cut from $`\alpha_4`$ along $`x_{04}^2-i\varepsilon<0`$ a
+horizontal ray to the left, at a different height, so they never meet
+and Step 1 holds for every $`\varepsilon>0`$. On the second ray, with
+$`x_{04}^2-i\varepsilon=-(T-\beta)\tau`$,
+
+```math
+x_{01}^2-i\varepsilon=-D_1,\quad x_{02}^2-i\varepsilon=-D_2,\quad x_{03}^2-i\varepsilon=-D_3,
+```
+
+```math
+D_1=A\big(|y-y_0|^2+i\varepsilon\big)-\beta\tau,\qquad D_2=D_1-\beta,\qquad D_3=A'\big(|y-y_1|^2+i\varepsilon\big)+(1-\beta)\tau ,
+```
+
+all three in the upper half plane, and for $`\operatorname{Re}p>0`$
+
+```math
+K_4^\varepsilon=-2i\sin(\pi p)\,T^{-p}(T-\beta)^{p-1}\int_0^\infty d\tau\,\tau^{p-1}D_1^{-1-p}D_2^{\,p-1}D_3^{-1-p}
+```
+
+with principal powers (for $`\operatorname{Re}p\le0`$ the keyhole does
+not shrink and the $`\tau`$ integral is its finite part at $`\tau=0`$).
+`timelike_alpha_split` compares the integral over the real line with the
+two keyholes and with this formula: they agree to $`10^{-9}`$ at
+$`\beta=0.4,0.7,1.3,1.5,1.8,2.0`$ for $`T=2.2`$,
+$`\varepsilon`$ between 0.02 and 0.08, and $`p=0.3`$ and $`-0.25`$.
+
+**Lemma 14.E (the transverse integral at positive displacement).** Let
+$`\varepsilon>0`$, $`0<\beta<T`$, $`\beta\ne1`$ and
+$`0<\operatorname{Re}p<1-\eta`$. Then
+
+```math
+\int d^{2+2\eta}y\;K_4^\varepsilon(\beta,y)=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\,(T-\beta)^{p+\eta}\,J_\varepsilon(\beta),
+```
+
+```math
+J_\varepsilon(\beta)=\int_0^1d\chi\,\chi^{\eta-1}(1-\chi)^p(T-1+\chi)^{-1-\eta}(\omega+i0)^{-p}\;g_\varepsilon^{\,\eta-2}\,{}_2F_1\Big(2-\eta,1+p;2;-\frac{\beta}{g_\varepsilon}\Big),
+\qquad g_\varepsilon=g+i\varepsilon\,\frac{T-1+\chi}{(T-\beta)\chi},
+```
+
+with $`\omega`$ and $`g`$ as in Step 2. The displacement enters only
+through the imaginary part of $`g`$, and $`\int_0^TJ_0\,(T-\beta)^{p+\eta}d\beta=\mathcal P`$.
+
+*Proof.* (i) The integral over $`(y,\tau)`$ converges absolutely. No
+$`D_i`$ vanishes, since $`\operatorname{Im}D_i\ge\varepsilon\min(A,A')`$. At
+$`\tau\to0`$ the integrand is $`\tau^{\sigma-1}`$. At infinity, with
+$`|y|^2\sim\tau\sim\Lambda`$, the moduli give $`\Lambda^{-3-\sigma}`$
+against $`\Lambda^{\sigma+\eta}d\Lambda`$, and on the shells where one
+real part vanishes the factor $`|D_i|^{-1-\sigma}`$ is at most
+$`C\varepsilon^{-1-\sigma}`$ on a set of thickness $`\varepsilon`$; for
+$`\beta>1`$ the shells of $`D_1`$ and $`D_3`$ meet in a compact set only,
+because their radii grow at different rates. So the order of $`y`$ and
+$`\tau`$ may be exchanged.
+
+(ii) At fixed $`\tau`$ combine the three factors with Feynman parameters
+$`\zeta_1,\zeta_2,\zeta_3`$, exponents $`1+p,1-p,1+p`$. The formula is
+valid because the $`D_i`$ lie in one open half plane, and
+$`|\sum\zeta_iD_i|\ge\varepsilon\min(A,A')`$ makes the integral over $`y`$
+and $`\zeta`$ absolutely convergent. With $`\chi=\zeta_1+\zeta_2`$ and
+$`\Lambda_2=A\chi+A'(1-\chi)=(T-1+\chi)/(T-\beta)`$, completing the square
+and using $`AA'|y_0-y_1|^2=1`$,
+
+```math
+\sum\zeta_iD_i=\Lambda_2|y-\bar y|^2+m,\qquad m=\frac{\chi(1-\chi)}{\Lambda_2}-\beta\zeta_2+\tau\,\omega+i\varepsilon\Lambda_2 ,
+```
+
+and the $`y`$ integral is
+$`\pi^{1+\eta}\Gamma(2+p-\eta)/\Gamma(3+p)\,\Lambda_2^{-1-\eta}m^{\eta-2-p}`$.
+
+(iii) The integral over $`\tau`$ and $`\zeta`$ converges absolutely. With
+$`m=m_0+\tau\omega`$, $`|m|\ge\varepsilon\Lambda_2`$ and $`m_0`$ bounded,
+the substitution $`u=\tau|\omega|`$ gives
+
+```math
+\int_0^\infty\tau^{\sigma-1}\,|m_0+\tau\omega|^{\eta-2-\sigma}\,d\tau\le C_\varepsilon\,\big(1+|\omega|^{-\sigma}\big),
+```
+
+which is integrable over the simplex because $`\omega`$ is a linear
+function and $`\sigma<1`$.
+
+(iv) For $`\operatorname{Im}m_0>0`$ and real $`\omega\ne0`$,
+$`\int_0^\infty\tau^{p-1}(m_0+\tau\omega)^{\eta-2-p}d\tau=B(p,2-\eta)\,m_0^{\eta-2}(\omega+i0)^{-p}`$.
+
+(v) Put $`\zeta_1=\chi t`$, $`\zeta_2=\chi(1-t)`$. Then
+$`m_0=\chi\,(g_\varepsilon+\beta t)`$, the weights are
+$`t^{p}(1-t)^{-p}(1-\chi)^p\,\chi\,d\chi\,dt`$, and the $`t`$ integral is
+
+```math
+\int_0^1t^{p}(1-t)^{-p}(g_\varepsilon+\beta t)^{\eta-2}dt=\beta^{\eta-2}E\Big(\frac{g_\varepsilon}{\beta}\Big)=\Gamma(1+p)\Gamma(1-p)\,g_\varepsilon^{\,\eta-2}\,{}_2F_1\Big(2-\eta,1+p;2;-\frac\beta{g_\varepsilon}\Big),
+\qquad E(v)=\int_0^1t^{p}(1-t)^{-p}(v+t)^{\eta-2}dt .
+```
+
+The constants multiply to the prefactor stated. The order matters: the
+integral over $`(y,\tau,\zeta)`$ together is not absolutely convergent
+(for $`\omega<0`$ the $`y`$ integral of the modulus grows with $`\tau`$),
+and the proof uses only (i) for $`(y,\tau)`$, then (ii) at fixed
+$`\tau`$, then (iii) for $`(\tau,\zeta)`$. The argument needs only
+$`0<\sigma<1`$. $`\blacksquare`$
+
+`timelike_keyhole_transverse` integrates the keyhole over the transverse
+space on a grid, and `timelike_second_piece_at_beta` evaluates the right
+side. At $`(T,\eta,\beta,\varepsilon)=(2.2,0.3,0.4,0.3)`$,
+$`(2.2,0.3,1.5,0.2)`$, $`(3,0.2,0.7,0.15)`$ and $`(1.6,0.35,1.2,0.1)`$ with
+$`p=0.3,0.3,0.15,0.4`$ they agree to between $`3\times10^{-5}`$ and
+$`10^{-3}`$, the accuracy of the grid; for negative $`p`$ (see below) at
+$`(2.2,0.3,0.4,0.3)`$, $`p=-0.3`$ and $`(3,0.2,1.6,0.2)`$, $`p=-0.2`$ to
+$`2\times10^{-5}`$ and $`1.5\times10^{-4}`$.
+
+**Lemma 14.F (a bound up to the cut).** Let $`p=\sigma+i\tau_p`$ with
+$`|\sigma|<1-\eta`$ and $`0<\theta\le\pi/4`$. For every $`v`$ with
+$`\operatorname{Im}v>0`$, and for the boundary values $`v+i0`$,
+
+```math
+|E(v)|\le C_\theta\,e^{2\theta|\tau_p|}\,\Big[\psi_1\big(|\operatorname{Re}v|\big)+\psi_2\big(|1+\operatorname{Re}v|\big)\Big],\qquad
+\psi_1(x)=\min\big(x^{\eta-1+\sigma},x^{\eta-2}\big),\quad\psi_2(x)=\min\big(x^{\eta-1-\sigma},x^{\eta-2}\big),
+```
+
+with $`C_\theta`$ depending on $`\theta`$, $`\eta`$ and $`\sigma`$ only.
+
+*Proof.* The factor $`(v+t)^{\eta-2}`$ is singular at $`t=-v`$, in the lower
+half plane, and $`t^p(1-t)^{-p}`$ is analytic in the upper half plane.
+Move the path of $`t`$ to the two segments $`t=re^{i\theta}`$ and
+$`1-t=re^{-i\theta}`$, $`0\le r\le1/(2\cos\theta)`$, which meet above
+$`t=\tfrac12`$. On them
+$`|t^p(1-t)^{-p}|\le|t|^\sigma|1-t|^{-\sigma}e^{2\theta|\tau_p|}`$. On the
+first segment the directions of $`v`$ and of $`-t`$ differ by an angle of
+at least $`\theta`$, so $`|v+t|\ge c_\theta(|v|+r)`$; on the second the
+same holds for $`v+1`$ and $`1-t`$, so $`|v+t|\ge c_\theta(|v+1|+r)`$. Since
+$`\int_0^{1}r^{\pm\sigma}(a+r)^{\eta-2}dr\le C\min(a^{\eta-1\pm\sigma},a^{\eta-2})`$
+and both exponents are negative, the bound follows with
+$`|v|\ge|\operatorname{Re}v|`$ and $`|v+1|\ge|1+\operatorname{Re}v|`$.
+$`\blacksquare`$
+
+Since $`\operatorname{Re}(g_\varepsilon/\beta)=g/\beta`$ does not depend on
+$`\varepsilon`$, the integrand of $`J_\varepsilon(T-\beta)^{p+\eta}`$ is
+bounded, for every $`\varepsilon\ge0`$, by
+$`C_\theta e^{(\pi+2\theta)|\tau_p|}\,|\Gamma(1+p)\Gamma(1-p)|^{-1}\,\mathcal D`$ with
+
+```math
+\mathcal D(\beta,\chi)=(T-\beta)^{\sigma+\eta}\chi^{\eta-1}(1-\chi)^{\sigma}(T-1+\chi)^{-1-\eta}|\omega|^{-\sigma}\,
+\beta^{\eta-2}\Big[\psi_1\Big(\frac{|g|}\beta\Big)+\psi_2\Big(\frac{|g+\beta|}\beta\Big)\Big],\qquad
+g+\beta=\frac{(1-\chi)(T-\beta)}{T-1+\chi}.
+```
+
+$`\mathcal D`$ is integrable over $`(0,T)\times(0,1)`$ for
+$`|\sigma|<1-\eta`$. The singular sets and the resulting powers are: the
+line $`\omega=0`$, $`|\omega|^{\eta-1}`$; $`\chi\to1`$ and $`\beta\to T`$,
+$`(1-\chi)^{\eta-1}(T-\beta)^{2\eta-1}`$; $`\chi\to0`$, $`\chi^{\eta-1}`$, and
+at the corner $`(\beta,\chi)=(1,0)`$, $`\chi^{\eta-1}|1-\beta-\chi|^{\eta-1}`$;
+and $`\beta\to0`$, where each of the four combinations (the two functions
+$`\psi`$, each on either side of its turning point) integrates over
+$`\chi`$ to $`C\beta^{\eta-1}`$. At fixed $`\beta\ne1`$ it is integrable in
+$`\chi`$.
+
+**Consequence 1: Step 2 holds for the iterated integral.** Let
+$`0<\operatorname{Re}p<1-\eta`$ and fix $`\beta\ne1`$. At fixed $`y`$ rotate
+the $`\tau`$ ray clockwise by an angle $`\phi<\pi/2`$. The zeros of
+$`D_1`$ and $`D_2`$ are in the closed upper half plane and the zero of
+$`D_3`$ is in the closed upper half plane ($`\beta>1`$) or in the closed
+third quadrant ($`\beta<1`$), so the open sector swept is free of them
+for every $`\varepsilon\ge0`$. For $`\varepsilon>0`$ the starting ray is
+free of them too; at $`\varepsilon=0`$ they lie on it, and $`K_4^0`$ is by
+definition the rotated integral, which is the $`+i0`$ prescription. On
+the rotated ray each $`|D_i|`$ is at least a positive constant (the sine
+of half of $`\phi`$, or of half of $`\pi/2-\phi`$ for $`D_3`$ when
+$`\beta<1`$) times (the modulus of its zero plus $`r`$) times its
+coefficient of $`\tau`$. Those moduli do not decrease with
+$`\varepsilon`$, and the exponents $`-1-\sigma`$, $`\sigma-1`$, $`-1-\sigma`$
+are negative, so
+
+```math
+|K_4^\varepsilon(\beta,y)|\le C\,e^{(2\pi+\phi)|\tau_p|}\,|\sin\pi p|\;\mathcal M(\beta,y),\qquad
+\mathcal M=\int_0^\infty dr\,r^{\sigma-1}(a_1+r)^{-1-\sigma}(a_2+r)^{\sigma-1}(a_3+r)^{-1-\sigma},
+```
+
+with $`a_1=A|y-y_0|^2/\beta`$, $`a_2=|A|y-y_0|^2-\beta|/\beta`$,
+$`a_3=A'|y-y_1|^2/|1-\beta|`$, uniformly in $`\varepsilon\ge0`$.
+$`\mathcal M`$ is integrable over the transverse space: near the sphere
+$`S`$ it is $`a_2^{2\sigma-1}`$ (a logarithm at $`\sigma=\tfrac12`$, bounded
+above it), integrable across a hypersurface exactly because
+$`\sigma>0`$; near $`y_0`$ and $`y_1`$ it is $`|y-y_i|^{-2}`$, integrable in
+$`2+2\eta`$ dimensions; at infinity it is $`|y|^{-6}`$; and $`y_1`$ is not
+on $`S`$ for $`\beta\ne1`$. By dominated convergence in $`y`$, then
+Lemma 14.E, then dominated convergence in $`\chi`$ with $`\mathcal D`$,
+
+```math
+\int d^{2+2\eta}y\,K_4^0(\beta,y)=\lim_{\varepsilon\to0}\int d^{2+2\eta}y\,K_4^\varepsilon
+=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}(T-\beta)^{p+\eta}J_0(\beta),
+```
+
+and the integral over $`\beta`$ is the formula of Step 2. So for the
+iterated integral with the displacement removed first the exchanges of
+Step 2 are justified, and the statement proved above holds as stated for
+$`0<\operatorname{Re}p<1-\eta`$. This also shows where the lower limit
+comes from: $`\mathcal M`$ is integrable across $`S`$ only for
+$`\sigma>0`$.
+
+**Consequence 2: the first piece.** For $`0<\beta<1<T`$ the function
+$`\varphi`$ of the continuation lemma of section 11.3 is, in these
+kinematics,
+
+```math
+\varphi(u_3)=(\rho+\beta u_3)^{p-1}(\rho+\beta u_3+\beta b)^{-1-p}\big((T-1)|y+y_*|^2+(T-\beta)u_3\big)^{p-1},
+```
+
+again three positive bases with positive coefficients of $`u_3`$, and
+the constant of the completed square is $`(\xi_1+\xi_2)\xi_3Tb^2/\Lambda`$
+with $`\Lambda=\xi_1+\xi_2+\xi_3(T-1)`$, positive. The proof of that lemma
+uses nothing else, so it holds word for word with $`\mathcal J^-`$ in
+place of $`\mathcal J`$: the first keyhole piece is analytic in $`p`$ for
+$`-1<\operatorname{Re}p<1-\eta`$, equals $`A(p;\varrho)`$,
+$`\varrho=T/(T-1)`$, and its integrand has an integrable majorant. With
+$`\varepsilon>0`$ each base acquires a positive imaginary part, as in the
+proof of Theorem 13.2, and the same majorant applies.
+
+**Theorem 14.T (a timelike diagonal, the displacement removed last).**
+Let $`s<0<-s<t`$, $`T=t/|s|`$, and let $`I_\varepsilon`$ be the integral of
+section 13 over real $`x_0`$. For $`|\operatorname{Re}p|<\tfrac12-\eta`$,
+
+```math
+\lim_{\varepsilon\to0}2\,I_\varepsilon[z^p]=A(p;T_r)+T_r^{\eta}A\big(-p;\tfrac1{T_r}\big)\Big|_{T_r=Te^{i\pi}}
+=-2\pi^2i\,\frac4{\eta^2}\,\frac{\sin\pi p}{\pi p}+O\Big(\frac1\eta\Big).
+```
+
+Both signs of $`\operatorname{Re}p`$ are covered. No contour deformation
+in $`x_0`$, no Mellin–Barnes form and no continuation in $`T`$ is used.
+
+*Proof.* (1) For $`\varepsilon>0`$ the integral converges absolutely for
+$`|\sigma|<\tfrac12-\eta`$. This is Lemma 13.1. For $`\sigma>0`$ the two
+invariants with the power $`1+\sigma`$ are $`x_{01}^2`$ and $`x_{03}^2`$,
+whose cones meet in a non-compact surface as before. For $`\sigma<0`$
+they are $`x_{02}^2`$ and $`x_{04}^2`$, whose cones meet in the compact
+sphere $`S`$, where the local integral is $`C\varepsilon^{-2|\sigma|}`$; a
+single small invariant with that power leaves $`r^{2\eta-2+|\sigma|}`$,
+which converges for $`|\sigma|<1-2\eta`$, a weaker condition. This step
+is power counting in the manner of Lemma 13.1, which was written for
+spacelike diagonals, and not a complete estimate; the review of this
+section redid the counting for this region (on the surface where the
+cones of $`x_1`$ and $`x_3`$ meet, $`|x_{04}^2|\ge(2T-1-2\sqrt{T(T-1)})|\beta|`$,
+and no three cones meet at infinity) and found the same ranges.
+
+(2) By Fubini the $`\alpha`$ integral may be done first, and by Step 1
+at $`\varepsilon>0`$, $`2I_\varepsilon=P_{23}^\varepsilon+P_{41}^\varepsilon`$, the
+integrals of the two keyholes over $`(\beta,y)`$. Each is absolutely
+convergent: the first by its majorant, the second as a difference.
+
+(3) $`P_{23}^\varepsilon\to A(p;\varrho)`$ on the whole strip
+$`-1<\sigma<1-\eta`$, by Consequence 2 and dominated convergence, and it is
+holomorphic in $`p`$ there for each $`\varepsilon`$.
+
+(4) $`P_{41}^\varepsilon`$ is holomorphic in $`p`$ for
+$`|\sigma|<\tfrac12-\eta`$, being $`2I_\varepsilon-P_{23}^\varepsilon`$. For
+$`0<\sigma<\tfrac12-\eta`$, by Lemma 14.E integrated over $`\beta`$,
+
+```math
+P_{41}^\varepsilon=st\cdot\Big(-\frac{2i\sin\pi p}{p}\Big)\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\int_0^Td\beta\,(T-\beta)^{p+\eta}J_\varepsilon(\beta),\qquad st=-T .
+```
+
+The right side is holomorphic in $`p`$
+for $`|\sigma|<1-\eta`$, because its integrand is, with the majorant
+$`\mathcal D`$ locally uniform in $`p`$. So the two sides agree for
+$`|\sigma|<\tfrac12-\eta`$.
+
+(5) By dominated convergence with $`\mathcal D`$ the right side tends to
+its value at $`\varepsilon=0`$, which is $`st\,P_{41}`$ of Step 2 in terms
+of $`\mathcal P`$. Steps 3 to 5 are identities between convergent
+integrals, valid for $`|\sigma|<1-\eta`$, and give
+$`T_r^\eta A(-p;1/T_r)`$. The double pole is the theorem of section 11.5.
+$`\blacksquare`$
+
+The limit in (5) is slow: at $`(T,\eta,\beta)=(2.2,0.3,0.4)`$ the closed
+form at displacement $`\varepsilon`$ differs from its limit by an amount
+proportional to $`\varepsilon^{\eta}`$, for $`p=0.3`$ and for $`p=-0.3`$.
+
+So the restriction to $`\operatorname{Re}p>0`$ belongs to the iterated
+integral with the displacement removed first, and not to the Feynman
+integral. With the displacement removed last the two zeros that pinch on
+$`S`$ stay $`O(\varepsilon)`$ apart, the second keyhole piece is given by
+the same closed formula for both signs of $`\operatorname{Re}p`$, and only
+the formula is continued.
+
+**General weights.** Let $`f(L)=F(e^L)`$ be holomorphic on
+$`|\operatorname{Im}L|<W`$ with $`W>3\pi`$ and polynomially bounded there,
+as for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$. On the real domain with
+$`\varepsilon>0`$ every displaced invariant has its argument in
+$`(-\pi,0)`$ and $`\log(s-i0)=\log|s|-i\pi`$, so
+$`-3\pi<\operatorname{Im}L<\pi`$ and $`F`$ is evaluated inside its strip
+(the corner $`-3\pi`$ is not approached: the sign pattern it needs
+cannot occur).
+By Lemma 3 of GATE_6_BOUNDS and Lemma 13.1,
+$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$ on lines
+$`\operatorname{Re}p=\mp\sigma`$ with
+$`\sigma<\min(1/m,\tfrac12-\eta)`$. Uniformly in $`\varepsilon`$,
+
+```math
+|P_{23}^\varepsilon|\le C(1+|\tau_p|)\,e^{3\pi|\tau_p|},\qquad|P_{41}^\varepsilon|\le C_\theta\,e^{(3\pi+2\theta)|\tau_p|},
+```
+
+the first as in Theorem 13.2 with one more factor $`e^{\pi|\tau_p|}`$ from
+$`(s/t)^p`$ (an overcount: that phase combines with the jump across the
+lips, and the true rate is about $`2\pi`$), the second from $`|\sin^2\pi p/p^2|\le Ce^{2\pi|\tau_p|}`$,
+$`|(\omega+i0)^{-p}|\le|\omega|^{-\sigma}e^{\pi|\tau_p|}`$ and Lemma 14.F.
+With $`W-\delta'>3\pi+2\theta`$ the limit passes under the $`p`$
+integral, and by the paragraph "General weights, by superposition"
+
+```math
+\lim_{\varepsilon\to0}2\,I_\varepsilon[F]=E_1[F]+E_2[F]=-2\pi^2i\,\frac{4\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big).
+```
+
+So for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with a timelike diagonal the
+Feynman integral is the sum of the two edge functionals and its double
+pole is $`4M[F]`$, derived in position space without the contour. For
+$`\bar F^{(2)}`$ the strip is $`W=3\pi-\delta`$ and the bound above, with
+the rate $`3\pi+2\theta`$, is not enough: the true growth of the two
+pieces is at most $`e^{3\pi|\tau_p|/2}`$, but I have not proved a uniform
+bound in $`\varepsilon`$ with a rate below $`3\pi`$. For that weight the
+timelike statement still goes through the contour.
+
+**The other timelike region.** Let $`s>0>t`$ with $`|t|<s`$; put
+$`s=1`$, $`t=-\tau_0`$, $`0<\tau_0<1`$. The cyclic relabelling
+$`x_i\to x_{i+1}`$ exchanges $`s`$ and $`t`$ and sends $`z\to1/z`$, term by
+term in the Feynman logarithms, and $`I_\varepsilon`$ is an integral over
+all of $`\mathbb R^D`$, so $`I_\varepsilon[z^p;s,t]=I_\varepsilon[z^{-p};t,s]`$.
+Rescaling $`x\to\sqrt{\tau_0}\,x`$ gives a factor $`\tau_0^{\eta}`$ and the
+square $`(-1,1/\tau_0)`$, which is the region of Theorem 14.T. So for
+$`|\operatorname{Re}p|<\tfrac12-\eta`$
+
+```math
+\lim_{\varepsilon\to0}2\,I_\varepsilon[z^p]=\tau_0^{\eta}\Big[A(-p;T_r)+T_r^{\eta}A\big(p;\tfrac1{T_r}\big)\Big]_{T_r=e^{i\pi}/\tau_0}
+=e^{i\pi\eta}\Big[A(p;T')+T'^{\eta}A\big(-p;\tfrac1{T'}\big)\Big]_{T'=\tau_0e^{-i\pi}},
+```
+
+which is the statement of "Which side is physical" for this region, now
+derived, with the same double pole. For the iterated integral with the
+displacement removed first the same relabelling gives the result for
+$`-(1-\eta)<\operatorname{Re}p<0`$, in coordinates adapted to the edge
+$`(2,3)`$; the reflections that fix $`s`$, $`t`$ and $`z`$ carry it to
+the other edges. There are no further timelike regions: for null edges
+$`s+t+u=0`$ with exactly one invariant positive, and $`u>0`$ is the
+region of spacelike diagonals.
+
 **What this covers.**
 
+- For $`z^p`$ with $`|\operatorname{Re}p|<\tfrac12-\eta`$ and a timelike
+  diagonal, in either region: the Feynman integral, with the
+  displacement removed last, is the sum of the two continued pieces and
+  its double pole is four units (Theorem 14.T).
 - For $`z^p`$ with $`0<\operatorname{Re}p<1-\eta`$ in the region
-  $`s<0<t`$: the iterated integral (the null direction first with the
-  displacement removed, then the transverse space, then $`\beta`$)
-  equals the sum of the two continued pieces, and its double pole is
-  four units.
-- The first piece is identified for $`\operatorname{Re}p<0`$ by the
-  analogue of section 11.1 and continued to $`\operatorname{Re}p>0`$ by
-  the lemma of section 11.3, which is used here as before and not
-  re-proved for these kinematics.
-- The exchanges of integrals in Step 2 are formal as written: with
-  $`+i0`$ the $`\tau`$ integral is not absolutely convergent. The review
-  indicates the valid route, which is to keep $`\varepsilon>0`$, where
-  the integrals over $`(y,\tau)`$ and over the Feynman parameters
-  converge absolutely, and then let $`\varepsilon\to0`$ by dominated
-  convergence after rotating $`\tau`$; it checked numerically that the
-  two orders agree at finite displacement. I have not written the
-  estimate.
-- The benchmark weights do **not** follow in this sense. Their
-  superposition uses both lines $`\operatorname{Re}p=\pm\sigma_0`$, and
-  on one of them the iterated integral does not exist in each timelike
-  region. For them the statement in the timelike regions is about the
-  Feynman integral with the displacement removed last, as in the
-  paragraph "General weights, by superposition", and its identification
-  with the edge functionals goes through the contour.
-- The other timelike region is not written out.
+  $`s<0<t`$ (and $`-(1-\eta)<\operatorname{Re}p<0`$ in the other): the
+  same for the iterated integral with the displacement removed first,
+  which exists exactly there. The exchanges of Step 2 are justified by
+  Consequence 1 and the first piece by Consequence 2.
+- For $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: the Feynman integral with a
+  timelike diagonal, directly. For $`\bar F^{(2)}`$: through the contour,
+  as before.
 
-The review verified Steps 1, 3, 4 and 5 by its own derivation and
-numerics (Step 1 on 42 configurations to $`10^{-9}`$ or better; the
-identity of Step 4 pointwise to $`10^{-22}`$), and Step 2 up to the two
-points above.
+An independent review verified Steps 1, 3, 4 and 5 by its own derivation
+and numerics (Step 1 on 42 configurations to $`10^{-9}`$ or better; the
+identity of Step 4 pointwise to $`10^{-22}`$), found the restriction on
+$`p`$, and pointed to the route through positive displacement. Lemmas
+14.E and 14.F, the two consequences, Theorem 14.T and the paragraphs
+after it were written after that review and refereed separately. That
+second review re-derived every formula and found no wrong sign, constant
+or exponent. With its own code it confirmed the split and the $`\tau`$
+formula at five further points, complex $`p`$ included, to $`10^{-11}`$ or
+better; Lemma 14.E to between $`2\times10^{-6}`$ and $`10^{-4}`$ for both
+signs of $`p`$ and one complex $`p`$; the bound of Lemma 14.F down to
+$`10^{-12}`$ from the two singular points; the integrability of
+$`\mathcal D`$ in every region for both signs of $`\sigma`$; and, at
+$`p=-0.3`$, that the closed form integrated over $`\beta`$ is the second
+continued piece on the side $`t-i0`$ to $`3\times10^{-4}`$ (its
+quadrature), the other side being off by a quantity of order one. Its
+corrections were to the wording of Consequence 1 and of the bounds, and
+are included. It names one gap, the power counting in step (1) of
+Theorem 14.T. It did not check Lemma 3 of GATE_6_BOUNDS, a direct
+evaluation of $`I_\varepsilon`$ in $`D`$ dimensions at negative $`p`$, or
+the rate $`\varepsilon^\eta`$.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above
-and for the weight $`z^p`$, two of the four units directly (the
-continuation lemma of section 11.3 is used for $`\mathcal J^-`$ in the
-same way and has not been restated). The other two are carried by the
+and for the weight $`z^p`$, two of the four units directly (the first
+keyhole piece, Consequence 2). The other two are carried by the
 continued function of section 11.5, an absolutely convergent
-one-dimensional integral with a proved $`O(1/\eta)`$ remainder, which
-equals the second keyhole piece only because the contour route fixes the
-total. No
-oscillatory estimate is needed: I had thought one was, because the cube
-integrand is singular there, but the singularity disappears once two of
-the three integrals are done. The identification of the total with the
-two continued pieces is shown above for $`z^p`$ with
-$`0<\operatorname{Re}p<1-\eta`$ in the region $`s<0<t`$, which is where
-the iterated integral exists, and confirmed there by a direct
-computation organised differently.
+one-dimensional integral with a proved $`O(1/\eta)`$ remainder. That it
+equals the second keyhole piece was first known only because the contour
+route fixes the total; it is now derived in those kinematics, by the
+change of variables of Step 4 and, for the exchanges of integrals, by
+keeping the displacement positive (Lemma 14.E). No oscillatory estimate
+is needed: I had thought one was, because the cube integrand is singular
+there, but the singularity disappears once two of the three integrals
+are done. The result holds for the Feynman integral with the
+displacement removed last for both signs of $`\operatorname{Re}p`$
+(Theorem 14.T), for the iterated integral where that exists, in both
+timelike regions, and for the first two benchmark weights. It is
+confirmed by a direct computation organised differently. What still
+goes through the contour with a timelike diagonal is the third benchmark
+weight.

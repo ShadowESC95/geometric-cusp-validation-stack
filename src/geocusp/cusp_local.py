@@ -839,3 +839,172 @@ def timelike_keyhole_piece(p, eta, T, rel=1e-4):
     integral = cquad(lambda beta: (T - min(beta, T - 1e-13)) ** (p - 1) * inner(min(max(beta, 1e-13), T - 1e-13)),
                      0, T, points=[1.0])
     return T * (2j * np.sin(np.pi * p) / p) * np.pi ** (1 + eta) * gamma(2 - eta) * T ** (-p) * integral
+
+
+# --------------------------------------------------------------------------
+# A timelike diagonal with the displacement kept (section 14, "removed last")
+# --------------------------------------------------------------------------
+def _timelike_tau_integral(p, T, beta, Y0, Y1):
+    """Continuation in p of int_0^oo dtau tau^(p-1) D1^(-1-p) (D1-beta)^(p-1) D3^(-1-p),
+    D1 = A Y0 - beta tau, D3 = A' Y1 + (1-beta) tau, for complex Y0, Y1 in the
+    upper half plane and -1 < Re p < 1, p != 0 (the finite part at tau = 0)."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    A, Ap = T / (T - beta), (T - 1) / (T - beta)
+
+    def cq(f, a, b):
+        kw = dict(limit=200, epsabs=1e-12, epsrel=1e-9)
+        return quad(lambda x: f(x).real, a, b, **kw)[0] + 1j * quad(lambda x: f(x).imag, a, b, **kw)[0]
+
+    def h(tau):
+        D1 = A * Y0 - beta * tau
+        return D1 ** (-1 - p) * (D1 - beta) ** (p - 1) * (Ap * Y1 + (1 - beta) * tau) ** (-1 - p)
+
+    h0, k = h(0.0), 1 + p
+    marks = [abs(A * Y0 / beta), abs((A * Y0 - beta) / beta)] + ([abs(Ap * Y1 / (beta - 1))] if beta > 1 else [])
+
+    def inner(x):                                   # x = tau^(1+p) on (0, 1)
+        tau = x ** (1 / k)
+        return (h(tau) - h0) / tau / k if tau > 1e-14 else 0j
+
+    pts = sorted({0.0, 1.0} | {m ** k for m in marks if m < 1})
+    total = sum(cq(inner, lo, hi) for lo, hi in zip(pts[:-1], pts[1:])) + h0 / p
+    top = max(max(marks), 1.0)
+    pts = sorted({1.0, 2 * top, 8 * top} | {m for m in marks if m > 1})
+    outer = lambda t: t ** (p - 1) * h(t)
+    return total + sum(cq(outer, lo, hi) for lo, hi in zip(pts[:-1], pts[1:])) + cq(outer, pts[-1], np.inf)
+
+
+def timelike_alpha_split(p, T, beta, y, eps):
+    """At displacement eps > 0 and fixed (beta, y), s = -1, t = T > 1: the
+    integral over real alpha of z^p / (x01^2 x02^2 x03^2 x04^2), and the two
+    keyholes it splits into. The cut from the zero of x03^2 runs to the right
+    (x03^2 - i eps > 0) and the cut from the zero of x04^2 to the left
+    (x04^2 - i eps < 0); they lie at different heights and never meet.
+
+    y = (component along the direction of kappa, modulus of the rest).
+    Returns (real line, K3, K4, K4 from the tau formula with Y -> Y + i eps);
+    K3 is zero for beta > 1.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+
+    if not (T > 1 and 0 < beta < T and beta != 1 and eps > 0):
+        raise ValueError("needs T > 1, 0 < beta < T, beta != 1, eps > 0")
+    c = 2 * np.sqrt(T * (T - 1))
+    rho = y[0] ** 2 + y[1] ** 2 + 1j * eps
+    coeff = [-beta, -beta, 1 - beta, T - beta]                            # w, u1, u3, u4
+    const = [-rho, -rho - beta, -rho, T * (1 - beta) - rho + c * y[0]]
+    zeros = [-b / a for a, b in zip(coeff, const)]
+    powers = [p - 1, -1 - p, -1 - p, p - 1]
+
+    def f(alpha):
+        total = 0j
+        for j in range(4):
+            x = alpha - zeros[j]
+            if coeff[j] > 0 and j == 3:
+                lg = np.log(x)                                             # cut to the left
+            elif coeff[j] > 0:
+                lg = np.log(-x) - 1j * np.pi                               # cut to the right
+            else:
+                lg = np.log(-1j * x) - 1j * np.pi / 2                      # zero below; cut downwards
+            total += powers[j] * (lg + np.log(abs(coeff[j])))
+        return np.exp(-1j * np.pi * p) * T ** (-p) * np.exp(total)
+
+    def cq(g, a, b):
+        kw = dict(limit=400, epsabs=1e-12, epsrel=1e-10)
+        return quad(lambda x: g(x).real, a, b, **kw)[0] + 1j * quad(lambda x: g(x).imag, a, b, **kw)[0]
+
+    marks = sorted(z.real for z in zeros)
+    edges = [-np.inf] + marks + [np.inf]
+    line = sum(cq(f, lo, hi) for lo, hi in zip(edges[:-1], edges[1:]))
+
+    def keyhole(j, direction):
+        a0 = zeros[j]
+        r0 = 0.3 * min(abs(a0 - zeros[k]) for k in range(4) if k != j)
+        tiny = 1e-11
+
+        def lips(t):
+            r = r0 * np.exp(t)
+            a = a0 + direction * r
+            return (f(a - 1j * tiny) - f(a + 1j * tiny)) * r
+
+        start = 0.0 if direction > 0 else np.pi
+        circle = lambda th: f(a0 + r0 * np.exp(1j * th)) * 1j * r0 * np.exp(1j * th)
+        return cq(lips, 0, 50) + cq(circle, start + 1e-9, start + 2 * np.pi - 1e-9)
+
+    K3 = keyhole(2, +1) if beta < 1 else 0j
+    K4 = keyhole(3, -1)
+    y0 = beta * np.sqrt((T - 1) / T)
+    y1 = -(1 - beta) * np.sqrt(T / (T - 1))
+    Y0 = (y[0] - y0) ** 2 + y[1] ** 2 + 1j * eps
+    Y1 = (y[0] - y1) ** 2 + y[1] ** 2 + 1j * eps
+    formula = (-2j * np.sin(np.pi * p) * T ** (-p) * (T - beta) ** (p - 1)
+               * _timelike_tau_integral(p, T, beta, Y0, Y1))
+    return line, K3, K4, formula
+
+
+def timelike_keyhole_transverse(p, eta, T, beta, eps, n: int = 100):
+    """int d^(2+2 eta) y of the (4,1) keyhole at displacement eps > 0 and fixed
+    beta, by a tensor Gauss-Legendre rule in y with the tau integral adaptive.
+    Works for both signs of p (finite part at tau = 0). Three to four digits
+    at n = 100 for eps of order 0.2; the cost grows like n^2."""
+    import numpy as np
+    from scipy.special import gamma
+
+    if not (T > 1 and 0 < beta < T and beta != 1 and eps > 0):
+        raise ValueError("needs T > 1, 0 < beta < T, beta != 1, eps > 0")
+    y0 = beta * np.sqrt((T - 1) / T)
+    y1 = -(1 - beta) * np.sqrt(T / (T - 1))
+    x, w = np.polynomial.legendre.leggauss(n)
+    reach = 4.5
+    dim = 1 + 2 * eta
+    sphere = 2 * np.pi ** (dim / 2) / gamma(dim / 2)
+    total = 0j
+    for a, wa in zip(reach * x, reach * w):
+        ypar = np.sinh(a)
+        for c, wc in zip((x + 1) / 2, w / 2):
+            r = c * c / (1 - c)
+            if r > 150:
+                continue
+            Y0 = (ypar - y0) ** 2 + r * r + 1j * eps
+            Y1 = (ypar - y1) ** 2 + r * r + 1j * eps
+            jac = np.cosh(a) * (2 * c - c * c) / (1 - c) ** 2
+            total += wa * wc * jac * sphere * r ** (2 * eta) * _timelike_tau_integral(p, T, beta, Y0, Y1)
+    return -2j * np.sin(np.pi * p) * T ** (-p) * (T - beta) ** (p - 1) * total
+
+
+def timelike_second_piece_at_beta(p, eta, T, beta, eps=0.0, dps: int = 18):
+    """The same quantity in closed form: after two Feynman parameters, the
+    transverse integral, the tau integral and Euler's integral,
+
+        -(2 i sin(pi p)/p) pi^(1+eta) Gamma(2-eta) T^(-p) (T-beta)^(p+eta)
+          int_0^1 dchi chi^(eta-1) (1-chi)^p (T-1+chi)^(-1-eta) (omega+i0)^(-p)
+              g^(eta-2) 2F1(2-eta, 1+p; 2; -beta/g),
+
+    omega = 1 - beta - chi, g = T omega/(T-1+chi) + i eps (T-1+chi)/((T-beta) chi).
+    The displacement enters only through the imaginary part of g. eps = 0
+    gives the boundary value g + i0. Returns an mpmath complex number.
+    """
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        p, eta, T, beta = mp.mpf(p), mp.mpf(eta), mp.mpf(T), mp.mpf(beta)
+        eps = mp.mpf(eps) if eps > 0 else mp.mpf(10) ** (-dps + 4)
+        if not (T > 1 and 0 < beta < T and beta != 1):
+            raise ValueError("needs T > 1, 0 < beta < T, beta != 1")
+
+        def f(chi):
+            om = 1 - beta - chi
+            g = T * om / (T - 1 + chi) + 1j * eps * (T - 1 + chi) / ((T - beta) * chi)
+            om_p = om ** (-p) if om > 0 else (-om) ** (-p) * mp.expjpi(-p)
+            return (chi ** (eta - 1) * (1 - chi) ** p * (T - 1 + chi) ** (-1 - eta) * om_p
+                    * g ** (eta - 2) * mp.hyp2f1(2 - eta, 1 + p, 2, -beta / g))
+
+        pts = [mp.mpf(0), mp.mpf(1) / 4, mp.mpf(1) / 2, mp.mpf(3) / 4, mp.mpf(1)]
+        if 0 < 1 - beta < 1:
+            pts = sorted(set(pts + [1 - beta]))
+        integral = mp.quad(f, pts)
+        return (-(2j * mp.sin(mp.pi * p) / p) * mp.pi ** (1 + eta) * mp.gamma(2 - eta)
+                * T ** (-p) * (T - beta) ** (p + eta) * integral)

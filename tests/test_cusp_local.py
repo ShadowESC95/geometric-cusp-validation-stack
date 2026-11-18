@@ -410,3 +410,37 @@ def test_timelike_keyhole_piece_is_the_second_continued_piece(p, eta, T):
     # and the rest of the direct computation is the first piece
     one, two = cl.timelike_direct(p, eta, T)
     assert abs(one + two - piece - complex(first)) < 2e-3 * abs(first)
+
+
+@pytest.mark.parametrize("beta,y,eps", [(0.4, (0.3, 0.5), 0.05), (1.8, (-0.9, 0.3), 0.03)])
+@pytest.mark.parametrize("p", [0.3, -0.25])
+def test_timelike_alpha_integral_splits_into_two_keyholes_at_positive_displacement(beta, y, eps, p):
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        line, k3, k4, formula = cl.timelike_alpha_split(p, 2.2, beta, y, eps)
+    assert abs(line - k3 - k4) < 1e-7 * abs(line)
+    assert abs(k4 - formula) < 1e-7 * abs(k4)          # the tau formula, both signs of p
+    if beta > 1:
+        assert k3 == 0
+
+
+@pytest.mark.parametrize("p,tol", [(0.3, 5e-4), (-0.3, 5e-3)])
+def test_transverse_integral_of_the_keyhole_is_the_closed_form_at_positive_displacement(p, tol):
+    """Lemma E of section 14: the exchange of integrals, with eps > 0."""
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        grid = cl.timelike_keyhole_transverse(p, 0.3, 2.2, 0.4, 0.3, n=80)
+    closed = complex(cl.timelike_second_piece_at_beta(p, 0.3, 2.2, 0.4, 0.3))
+    assert abs(grid - closed) < tol * abs(closed)
+
+
+@pytest.mark.parametrize("p", [0.3, -0.3])
+def test_closed_form_converges_as_the_displacement_is_removed(p):
+    limit = cl.timelike_second_piece_at_beta(p, 0.3, 2.2, 0.4, 0.0)
+    gaps = [abs(cl.timelike_second_piece_at_beta(p, 0.3, 2.2, 0.4, e) - limit) for e in (1e-2, 1e-4, 1e-6)]
+    assert gaps[0] > gaps[1] > gaps[2]
+    assert gaps[2] < 0.02 * abs(limit)
+    # the rate is eps^eta: two decades in eps^(eta) between successive entries
+    assert 2.0 < gaps[1] / gaps[2] < 6.0
