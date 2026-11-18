@@ -82,3 +82,9 @@ def test_residue_on_a_facet_is_the_form_of_the_facet():
     residue, facet, difference = ng.two_loop_boundary_check()
     assert difference == 0
     assert residue != 0
+
+
+def test_residue_on_the_mutual_facet_is_the_form_of_that_facet():
+    """Q = 0, with the orientation reversed where A < 0."""
+    residue, facet, ratio = ng.two_loop_mutual_facet_check()
+    assert ratio == 1

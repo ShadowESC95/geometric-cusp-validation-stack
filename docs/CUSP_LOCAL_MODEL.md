@@ -52,18 +52,21 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    usual sense: the limit $`\varepsilon\to0`$ of the absolutely convergent
    integral over real $`x_0`$ with $`-i\varepsilon`$ on every invariant. It
    also equals the integral over the global contour of GATE_6_CONTOUR,
-   given the $`D`$-dimensional properties of that contour (section 13).
+   where that contour exists (section 13). As a consequence the two edge
+   pieces add up to the box function for all $`T>0`$, and for $`z^p`$ the
+   integral is meromorphic in $`\eta`$.
 9. With a timelike diagonal the integral is again a sum of keyholes
    supported in a null slab, and one of the two edge pieces is treated as
    before and carries two units (section 14).
 
 What is **not** proved: with a timelike diagonal the second edge piece is
 not a positive integral and its two units are not derived in position
-space (section 14). The link to the global contour is conditional on the
-$`D`$-dimensional properties of that contour, which GATE_6_CONTOUR asserts
-but does not prove (section 13). An independent review of sections 13 and
-14 found two wrong statements, both corrected: the range of powers in
-Lemma 13.1, and the scope of the second consequence in section 13.
+space (section 14). The link to the global contour rests on the
+certificate and on Proposition 7 of GATE_6_CONTOUR, a proof by inspection
+that the certificate's constants are those of every dimension. An
+independent review of sections 13 and 14 found two wrong statements, both
+corrected: the range of powers in Lemma 13.1, and the scope of the second
+consequence in section 13.
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -1312,16 +1315,61 @@ between 24 and 27.
   which is integrable for the weights considered. So in the model those two
   integrals may be exchanged, with $`\rho`$ on the rotated ray. With the
   far propagator the rotation is not available and this is not shown.
-- *The edge statement as a formula.* By the previous remark the collinear
-  pole of the model at fixed $`\beta`$ can be computed with $`\rho`$ first.
-  The $`\rho`$ integral then behaves like $`|\alpha|^{\eta-1}`$ times the
-  two one-sided limits of GATE_6_CLOSURE, and the pole coefficient is their
-  difference, the edge jump $`-2\pi i\,M[F]`$; with $`\alpha`$ first it is
-  the coefficient $`2\pi i\,M[F]/\beta`$ of section 8. If the scaling limit
-  in the $`\rho`$ integral is justified, this identifies the edge jump with
-  the residue of the collinear pole. That limit is not written out, so this
-  is an outline; for $`z^p`$ the two one-sided integrals have been checked
-  in closed form to give $`2\pi i\,\frac{\sin\pi p}{\pi p}(1-\beta)^{-p}/\beta`$.
+
+**Proposition (the edge jump is the residue of the collinear pole).** In the
+cusp-local model fix $`0<\beta<1`$ and put
+$`K_\eta(\alpha)=\int_0^\infty d\rho\,\rho^\eta\,f(L)/(w\,u_1u_3)`$, the
+transverse integral done first. For $`\alpha\to0^\pm`$,
+
+```math
+K_\eta(\alpha)=|\alpha|^{\eta-1}\big[k_\pm(\eta)+O(|\alpha|^{\theta})\big],\qquad
+k_\pm(\eta)=-\frac1\beta\int_0^\infty\frac{dr\,r^\eta\,f(L_\pm(r))}{\big(-(\pm\beta+r)\big)\big(\pm(1-\beta)-r\big)},
+```
+
+for any $`\theta<1-\eta`$, where $`L_\pm=\log\frac{-(\pm\beta+r)}{\beta(\pm(1-\beta)-r)}`$
+on the branch fixed by the prescription. Hence
+$`\int_{|\alpha|<\delta}K_\eta\,d\alpha=(k_++k_-)\,\delta^\eta/\eta+O(1)`$, and
+
+```math
+k_+(0)+k_-(0)=\frac{2\pi i}{\beta}\,M\big[F_\beta\big],\qquad F_\beta(z)=F\big(z/(1-\beta)\big).
+```
+
+In the notation of GATE_6_CLOSURE, $`q_1=-\beta`$, $`q_3=\alpha`$ and
+$`q_1q_3K_f\to\mp\beta\,k_\pm(0)`$, so the jump across $`q_3=0`$ is
+$`-\beta(k_++k_-)=-2\pi i\,M[F_\beta]`$: the edge statement. (The shift by
+$`1-\beta`$ is the far propagator, frozen here at its cusp value and there
+at its edge value.)
+
+*Proof.* Put $`\rho=|\alpha|r`$. Then $`w=-|\alpha|(\pm\beta+r)`$,
+$`u_3=|\alpha|(\pm(1-\beta)-r)`$ and
+$`u_1=-\beta\,[1+|\alpha|(\pm\beta+r)/\beta]`$, exactly. So the integrand is
+$`|\alpha|^{\eta-1}`$ times the integrand of $`k_\pm`$ times a factor that
+differs from 1, and shifts $`L`$, by $`O(|\alpha|(1+r))`$. The integrand of
+$`k_\pm`$ decays like $`r^{\eta-2}`$ times a power of $`\log r`$, so the
+difference is $`O(|\alpha|^{\theta})`$ for $`\theta<1-\eta`$. For the value of
+$`k_++k_-`$: by the second remark the double integral over
+$`(\alpha,\rho)`$ at fixed $`\beta`$ is absolutely convergent, so it may be
+done in either order. With $`\rho`$ first, $`\eta`$ times it tends to
+$`k_+(0)+k_-(0)`$ by the expansion above; with $`\alpha`$ first it is the
+density of section 8, $`i\beta^{\eta-1}(1-\beta)^\eta\int\frac{dy\,y^{\eta-1}}{1+y}\int d\phi\,(\dots)`$,
+and $`\eta`$ times it tends to
+$`\frac i\beta\int_{-\pi}^{\pi}f(i\phi-\log(1-\beta))\,d\phi`$.
+$`\blacksquare`$
+
+Numerically (`collinear_residue`), $`k_++k_-`$ against
+$`\frac{2\pi i}{\beta}M[F_\beta]`$:
+
+| $`\beta`$ | Weight | $`k_++k_-`$ | Reference |
+| --- | --- | --- | --- |
+| 0.3 | $`z^{0.25}`$ | $`20.61480469\,i`$ | $`20.61480469\,i`$ |
+| 0.3 | $`z^{0.2+0.6i}`$ | $`4.23496402+36.77863169\,i`$ | the same |
+| 0.3 | $`\log^2z+\pi^2`$ | $`140.47010108\,i`$ | $`140.47010108\,i`$ |
+| 0.7 | $`z^{-0.4}`$ | $`4.19688232\,i`$ | $`4.19688232\,i`$ |
+| 0.7 | $`\log^2z+\pi^2`$ | $`72.07070961\,i`$ | $`72.07070961\,i`$ |
+
+So the edge jump and the collinear pole of the cusp derivation are the same
+quantity, not only the same mechanism. The numerical agreement is exact to
+the digits shown; the proof above has not been independently reviewed.
 
 Not treated: a timelike diagonal; removing the displacement after the
 outer integrals; the order with the transverse integral first for the full
@@ -1482,30 +1530,51 @@ $`16A(1+\sum_i|\log|x_{0i}^2||+C)^k/\prod|x_{0i}^2|`$, which is absolutely
 integrable on the contour (GATE_6_CONTOUR section 10). Dominated
 convergence gives the claim. $`\blacksquare`$
 
+**Theorem 13.4 (powers on the contour).** Under the hypotheses of
+Theorem 13.3, for $`F=z^p`$ with
+$`|\operatorname{Re}p|<\min(\eta,\tfrac12-\eta)`$ the integral over the
+contour equals $`\lim_{\varepsilon\to0}I_\varepsilon[z^p]`$.
+
+*Proof.* The proof of Theorem 13.3 with three changes. The integrand
+$`z_\varepsilon^p/\prod(x_{0i}^2-i\varepsilon)`$ has the same zero-free
+region, and its modulus is that of the powers $`1\pm\sigma`$ times
+$`e^{-\tau\operatorname{Im}L}\le e^{(2\pi+4e)|\tau|}`$, a constant. On the
+side at radius $`\varrho_0`$ the two invariants with the power
+$`1+|\sigma|`$ may be small together, as in Lemma 13.1, and the side term is
+at most $`\varrho_0^{2\eta-1+2|\sigma|}`$ up to logarithms, which tends to
+zero because $`|\sigma|<\tfrac12-\eta`$. On the contour the integrand is
+dominated, as before, by $`2^{4+2|\sigma|}`$ times the integrand at
+$`\varepsilon=0`$, and that is absolutely integrable for $`|\sigma|<\eta`$ by
+Lemma 8′ of GATE_6_CONTOUR. $`\blacksquare`$
+
 **Consequences.**
 
 1. For spacelike diagonals, wherever the contour exists in the sense of
    Theorem 13.3, the two routes of this repository compute the same
-   number: the contour integral equals the iterated Lorentzian integral,
-   and its double pole is $`\tfrac12\cdot(-2\pi^2i)\,4M[F]/\eta^2`$ by
-   section 12. This does not use the Mellin–Barnes form, Proposition 8 or
-   the sharper phase bounds; it does use condition (D), which is what makes
-   the integrand on the contour well defined.
-2. The identity $`A(p;T)+T^\eta A(-p;1/T)=`$ (the box), found numerically
-   to 12 digits in section 11.4, would follow analytically if Theorem 13.3
-   were also proved for $`F=z^p`$. The proof adapts for
-   $`|\sigma|<\min(\eta,\tfrac12-\eta)`$, using Lemma 8′ of GATE_6_CONTOUR
-   and a side term $`\varrho_0^{2\eta-1+2|\sigma|}`$, but that is not written
-   out. It would give the identity at each $`T`$ for which the contour
-   exists, and for all $`p`$ in the strip at that $`T`$ by analyticity in
-   $`p`$; to reach all $`T>0`$ by analyticity in $`T`$ one needs the contour
-   on a set of $`T`$ with an accumulation point, which the interval
-   certificate provides in four dimensions. So this consequence is not
-   established.
-3. Meromorphy in $`\eta`$: if the identity of 2 holds, the integral for
-   $`z^p`$ is the standard box function, whose Mellin–Barnes form is
-   meromorphic in $`\eta`$. For a general weight nothing beyond the bound
-   of section 12 is shown.
+   number: the contour integral equals the Feynman integral, and its
+   double pole is $`-\pi^2i\,4M[F]/\eta^2`$ by section 12. This does not use
+   the Mellin–Barnes form, Proposition 8 or the sharper phase bounds; it
+   does use condition (D), which makes the integrand on the contour well
+   defined.
+2. **The box identity.** By Theorem 13.4 and Proposition 8, for
+   $`|\sigma|<\min(\eta,\tfrac12-\eta)`$ and a square with a contour,
+   $`\tfrac12\big(A(p;T)+T^\eta A(-p;1/T)\big)`$ equals the parametric
+   integral, which is the box. Both sides are analytic in $`p`$ on
+   $`|\sigma|<1-\eta`$, so the identity holds on that strip at that $`T`$.
+   The interval certificate gives a contour for every $`T`$ in an interval,
+   and both sides are analytic in $`T>0`$, so the identity holds for all
+   $`T>0`$. This is the identity found numerically to 12 digits in section
+   11.4. It rests on the four-dimensional interval certificate, on
+   Proposition 7 of GATE_6_CONTOUR for the passage to $`D`$ dimensions, and
+   on Proposition 8.
+3. **Meromorphy in $`\eta`$ for $`z^p`$.** By 2 the Feynman integral for
+   $`z^p`$ is the box function, whose Mellin–Barnes form continues
+   meromorphically in $`\eta`$; that standard fact is not re-proved here.
+   For a general weight nothing beyond the bound of section 12 is shown.
+
+Theorem 13.4, consequences 2 and 3, and Proposition 7 of GATE_6_CONTOUR on
+which they rest were written after the last independent review and have
+not been reviewed. Treat them as unverified.
 
 ## 14. A timelike diagonal
 
@@ -1590,6 +1659,30 @@ analytic continuation and bounds on moduli are not available. Rotating
 $`\mu`$ off the real axis does not help as it stands: at the end
 $`\mu=1`$ the singular set still meets the contour, with exponent
 $`2\eta-2`$.
+
+**Why the bounds cannot simply be continued.** The cube function
+$`A(p;T)`$ is analytic in complex $`T`$ wherever $`\varrho=T/(T+1)`$ is not
+a negative real number. Along $`T=|T|e^{i\theta}`$, $`0\le\theta\le\pi`$,
+with $`|T|>1`$, $`\arg\varrho\in[0,\pi/2)`$ and
+$`|\xi\beta+\varrho b\mu|\ge\cos(\pi/4)\,(\xi\beta+|\varrho|b\mu)`$, so the
+bounds of section 11.2 hold uniformly along the path. That gives the piece
+that works a second time, by continuation. For the other piece the
+argument is $`1/T`$, with $`|1/T|<1`$, and $`\arg\varrho\to-\pi`$ as
+$`\theta\to\pi`$: the bounds degenerate like
+$`\cos(\tfrac12\arg\varrho)^{\eta-2}`$ exactly at the endpoint. The limit
+exists, but no bound on the remainder survives.
+
+**The Feynman integral with a timelike diagonal.** The proof of
+Theorem 13.3 does not use the sign of the diagonals except through the
+strip of the weight: it needs $`|\operatorname{Im}L|`$ along the family and
+on the contour to stay below $`W`$. For $`\bar F^{(0)}`$ and
+$`\bar F^{(1)}`$ any $`W`$ is allowed, so for these the contour integral
+equals $`\lim_{\varepsilon\to0}I_\varepsilon`$ in the timelike regions too,
+and its double pole is $`4M[F]`$ by the contour route of GATE_6_BOUNDS
+(conditional on the certificate and Proposition 7). For $`\bar F^{(2)}`$
+one needs the bound of Lemma Q along the whole family and with
+$`\varepsilon>0`$; the proof of Lemma Q appears to extend, but that is not
+written. This paragraph has not been reviewed.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above

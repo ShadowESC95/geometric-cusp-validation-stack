@@ -592,3 +592,41 @@ def general_keyhole_sum(f, beta, rho, kappa, s, t, eps=2e-2):
         total += quad(lambda ch: circle(ch).real, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
         total += 1j * quad(lambda ch: circle(ch).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-10)[0]
     return total, group, pattern
+
+
+# --------------------------------------------------------------------------
+# The edge jump as the residue of the collinear pole (section 12)
+# --------------------------------------------------------------------------
+def collinear_one_sided(f, beta, side, psi: float = 0.7):
+    """k_side = int_0^oo dr f(L)/(w u3 u1) in the scaling limit alpha -> 0 with
+    rho = |alpha| r, in four dimensions, for the cusp-local model at fixed beta:
+
+        w = -(side*beta + r),  u3 = side*(1 - beta) - r,  u1 = -beta,  z = w/(beta u3),
+
+    side = +1 or -1 being the sign of alpha. The -i0 is a rotation of r by e^{i psi}.
+    Then int d alpha K(alpha) has the collinear pole (k_+ + k_-)/eta.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+
+    def g(r):
+        rr = r * np.exp(1j * psi)
+        w = -(side * beta + rr)
+        u3 = side * (1 - beta) - rr
+        L = _feynman_log(w) - _feynman_log(u3) - np.log(beta)
+        return f(L) / (w * u3 * (-beta)) * np.exp(1j * psi)
+
+    marks = sorted({0.0, beta, 1 - beta, 1.0})
+    edges = marks + [np.inf]
+    total = 0j
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        total += quad(lambda r: g(r).real, lo, hi, limit=400, epsabs=0, epsrel=1e-11)[0]
+        total += 1j * quad(lambda r: g(r).imag, lo, hi, limit=400, epsabs=0, epsrel=1e-11)[0]
+    return total
+
+
+def collinear_residue(f, beta):
+    """k_+ + k_-: the coefficient of 1/eta in the collinear pole at fixed beta,
+    computed with the transverse integral first. For the weight F it should be
+    (2 pi i / beta) M[F(z/(1 - beta))], the density of section 8."""
+    return collinear_one_sided(f, beta, 1) + collinear_one_sided(f, beta, -1)

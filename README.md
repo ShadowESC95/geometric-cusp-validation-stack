@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **355 tests** and **63 worked example groups**, all passing
+- **364 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -67,7 +67,9 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | Double pole of the full integral from the Lorentzian domain, weight $`z^p`$, spacelike diagonals | Written proof; independently checked. Iterated integral in a fixed order, $`-i0`$ removed first |
 | The same for the three benchmark weights: double pole $`4M[F]`$, spacelike diagonals | Written proof; independently checked. Same iterated integral; no contour, certificate or Mellin–Barnes |
 | The same with the $`-i0`$ removed last: the limit of the absolutely convergent real integral | Written proof; independently checked (one range corrected on review) |
-| The iterated integral equals the integral over the global contour | Written proof, conditional on the $`D`$-dimensional properties of the contour, which are asserted and sampled, not proved |
+| The Feynman integral equals the integral over the global contour | Written proof, resting on the certificate and on an argument, not yet independently reviewed, that the contour's properties hold in $`D`$ dimensions |
+| The edge jump equals the residue of the collinear pole | Written proof, not yet independently reviewed; numerically exact to 8 digits |
+| The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the row above; not yet independently reviewed; identity confirmed numerically to 12 digits |
 | A timelike diagonal in position space | Exact slab and keyhole structure; one of the two edge pieces carries its two units; the other is **not derived** (covered via the parametric form) |
 | Review by a specialist | **Not done** |
 
@@ -87,7 +89,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 355 tests, about twenty minutes
+make test        # 364 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -328,7 +330,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            355 tests
+tests/            364 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

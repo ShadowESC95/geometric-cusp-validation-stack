@@ -888,6 +888,56 @@ through $`|e|`$ and a radial factor, so the integral reduces to one over
 $`x_0`$ and $`m=|e|`$ with weight $`m^{2\eta-1}`$, which is analytic in
 $`\eta`$.
 
+**Proposition 7 (dimension).** Let $`k\ge1`$ and extend the field to
+$`\mathbb R^{1,3+k}`$ as above: the frame fields gain $`\nu e`$, the far
+fields $`-\kappa'\Theta_\pm e`$, and the cutoffs $`m_j`$, the blend $`g`$ and
+$`\Theta_\pm`$ are evaluated with the $`D`$-dimensional invariants
+$`x_{0i}^2-\mu`$, $`\mu=e\!\cdot e`$, the $`D`$-dimensional radius and the
+space part $`(\xi,e)`$. Then every condition of section 9, (H1), (A),
+(C0) to (C3), (D), (E), (F), (G), (S), (I), and (Q1), (Q3), (Q4) of
+sections 5 and 11, holds with the same constants as for $`k=0`$.
+
+*Proof.* The derivations of those conditions use only the following, each
+of which is unchanged or improved.
+
+- The points $`x_i`$, $`c`$, $`c_\pm`$ have $`e=0`$. So $`\Delta`$, $`P`$,
+  $`D_j`$, $`u^\mp`$ and all products of these vectors are those of
+  $`k=0`$, and $`n\!\cdot u`$ does not involve $`e`$.
+- In the frame of $`x_j`$ the coordinates $`\alpha,\beta`$ do not involve
+  $`e`$, and $`\rho`$ is replaced by $`\rho+\mu`$. The three invariants of
+  the frame depend on the transverse position only through $`\rho+\mu`$,
+  and Lemma 5 holds with $`\rho+\mu`$ by the same computation, since $`e`$
+  is orthogonal to $`p_{j-1},p_j`$.
+- The far invariant is
+  $`D'(1+\alpha-\beta)+w+2\sqrt{\rho D'u/D}\cos\theta`$ with
+  $`w=\alpha\beta D-\rho-\mu`$ and the square root involving the
+  four-dimensional $`\rho\le\rho+\mu`$. The bound of (H1) and the strip
+  bounds (S) use only an upper bound on that square root.
+- Euclidean norms: $`|(y_\perp,e)|\le A_2|x_0-x_j|`$ because $`A_2\ge1`$, and
+  the largest Euclidean norm $`B`$ of a transverse vector of unit Minkowski
+  length is unchanged because $`B\ge1`$. Hence $`|V_j|\le\lambda_0|x_0-x_j|`$
+  and $`\operatorname{Lip}(V_j)\le\lambda_0`$ still hold: the new block of
+  $`\partial V_j`$ is $`\nu`$ times the identity and $`\nu\le\lambda_0`$.
+- Gradients of the cutoffs: $`|\nabla x_{0i}^2|=2|x_0-x_i|`$ in every
+  dimension, and $`|\nabla(\tau/|\xi|)|`$ is bounded as before with
+  $`|\xi|`$ the full space part. So (E) is unchanged.
+- The time and space decomposition used in (C0) to (C3), (I) and (Q3),
+  (Q4) is that of $`\mathbb R^{1,3+k}`$: every inequality there is between
+  $`\tau`$, $`|\xi|`$ (now including $`e`$), $`\Delta`$, $`\tau_0`$ and $`R`$.
+- At most three frames are switched on near a cone, as before.
+
+For non-integer $`k=2\eta`$ the integrand and the field depend on $`e`$
+only through $`m=|e|`$, and the integral is the one over $`(x_0,m)`$,
+$`m\ge0`$, with the weight $`m^{2\eta-1}dm`$. Its field and invariants are
+those of $`k=1`$ restricted to $`e\ge0`$, so the case $`k=1`$ gives every
+property used. $`\blacksquare`$
+
+This is a proof by inspection of the derivations in section 9, and it has
+not been independently reviewed. The
+certificate evaluates the four-dimensional constants; by the proposition
+they are the constants in every dimension. The survey in $`4+1`$
+dimensions is a numerical check of the conclusion.
+
 **Proposition 8 (parametric representation).** Let $`a_i`$ be complex with
 $`\sum a_i=4`$, in one of two cases: all $`a_i=1`$, or $`a_1=a_3=1+p`$,
 $`a_2=a_4=1-p`$ with $`|\operatorname{Re}p|<\eta`$. (Steps 1 to 5 hold for
@@ -1370,12 +1420,12 @@ timelike diagonal (Lemma Q). Still open:
   re-evaluates the inner field in 100-digit arithmetic with exactly null
   edges at points $`10^{-6}`$ to $`10^{-30}`$ from the edges, and every
   near-cone imaginary part is negative, in all three regions.
-- **The $`D`$-dimensional contour.** Section 11 says that Lemma 5 and
-  sections 4, 9 and 10 hold verbatim in $`\mathbb R^{1,3+k}`$, and a survey
-  in $`4+1`$ dimensions supports it, but the certificate is evaluated in
-  four dimensions and nothing is written out for non-integer $`k`$.
-  Theorem 13.3 of CUSP_LOCAL_MODEL, which identifies the contour integral
-  with the Feynman integral, is conditional on this.
+- **The $`D`$-dimensional contour.** Proposition 7 of section 11 argues,
+  condition by condition, that the certificate's constants are those of
+  every dimension, and reduces non-integer $`k`$ to $`k=1`$. It is a proof
+  by inspection and has **not** been independently reviewed. Theorem 13.3 of
+  CUSP_LOCAL_MODEL, which identifies the contour integral with the Feynman
+  integral, depends on it.
 - **Review** by someone who works with these integrals.
 
 What the argument takes from general analysis: Fubini's theorem and

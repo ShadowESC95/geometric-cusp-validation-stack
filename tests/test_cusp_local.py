@@ -327,3 +327,19 @@ def test_timelike_edge_piece_minus_end_terms_is_a_single_pole(p, T):
         values.append((eta * r / (-2j * np.pi**2)).real)
     assert max(abs(v) for v in values) < 2
     assert abs(values[2] - values[1]) < abs(values[1] - values[0])
+
+
+# ---- the edge jump as the residue of the collinear pole --------------------
+@pytest.mark.parametrize("beta", [0.3, 0.7])
+@pytest.mark.parametrize("p", [0.25, -0.4, 0.2 + 0.6j])
+def test_collinear_residue_for_powers(beta, p):
+    value = cl.collinear_residue(lambda L: np.exp(p * L), beta)
+    reference = 2j * np.pi * np.sin(np.pi * p) / (np.pi * p) * (1 - beta) ** (-p) / beta
+    assert value == pytest.approx(reference, rel=1e-7)
+
+
+@pytest.mark.parametrize("beta", [0.3, 0.7])
+def test_collinear_residue_for_a_logarithmic_weight(beta):
+    value = cl.collinear_residue(lambda L: L**2 + np.pi**2, beta)
+    reference = 2j * np.pi / beta * (2 * np.pi**2 / 3 + np.log(1 - beta) ** 2)
+    assert value == pytest.approx(reference, rel=1e-7)

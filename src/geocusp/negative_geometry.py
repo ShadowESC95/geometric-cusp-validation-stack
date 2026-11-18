@@ -156,3 +156,33 @@ def two_loop_boundary_check():
              + x_lt * c_neg * A / (A * w2 - c))
     facet = sp.factor(sp.together(facet))
     return residue, facet, sp.simplify(residue - facet)
+
+
+def two_loop_mutual_facet_check():
+    """The residue of the two-loop form on the facet Q = 0 against the
+    canonical form of that facet.
+
+    On Q = 0, w1 = w2 - c/A with A = x1 - x2, c = (y1-y2)(z1-z2). The facet is
+    the set of the other seven positive variables for which this w1 is
+    positive:
+        A > 0, c > 0: w2 > c/A;   A > 0, c < 0: w2 > 0;
+        A < 0, c > 0: w2 > 0;     A < 0, c < 0: w2 > c/A.
+    Its form is computed by the interval rule in w2. With Q = A (w1 - w2) + c,
+    dw1 = dQ/A, so the residue is f/A at w1 = w2 - c/A, and the orientation
+    induced on the facet agrees with that of the chart for A > 0 and is
+    opposite for A < 0: the pieces with A < 0 enter with a minus sign.
+    Returns (residue, form of the facet, ratio).
+    """
+    x1, y1, z1, w1, x2, y2, z2, w2 = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    A, c = x1 - x2, (y1 - y2) * (z1 - z2)
+    n12 = w1 * x1 + w2 * x2 + y1 * z1 + y2 * z2
+    D1, D2 = w1 * x1 * y1 * z1, w2 * x2 * y2 * z2
+    residue = sp.factor(sp.simplify((n12 / (D1 * D2 * A)).subs(w1, w2 - c / A)))
+    x_gt, x_lt = 1 / (x2 * (x1 - x2)), 1 / (x1 * (x2 - x1))
+    y_gt, y_lt = 1 / (y2 * (y1 - y2)), 1 / (y1 * (y2 - y1))
+    z_gt, z_lt = 1 / (z2 * (z1 - z2)), 1 / (z1 * (z2 - z1))
+    c_pos, c_neg = y_gt * z_gt + y_lt * z_lt, y_gt * z_lt + y_lt * z_gt
+    shifted = A / (A * w2 - c)                      # d w2 / (w2 - c/A)
+    facet = sp.factor(sp.together(x_gt * c_pos * shifted + x_gt * c_neg / w2
+                                  - x_lt * c_pos / w2 - x_lt * c_neg * shifted))
+    return residue, facet, sp.simplify(residue / facet)
