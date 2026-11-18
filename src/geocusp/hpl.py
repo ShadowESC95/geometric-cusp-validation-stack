@@ -179,6 +179,98 @@ class HPLWeights:
         return totals
 
 
+def series_values_mp(words, x, terms=130):
+    """`series_values` at the current mpmath precision, returning mpmath numbers."""
+    x = mp.mpmathify(x)
+    log_x = mp.log(x)
+    series, values = {(): {0: [mp.mpf(1)] + [mp.mpf(0)] * terms}}, {}
+    for word in words:
+        result = {}
+        for k, coefficients in series[word[1:]].items():
+            if word[0] == 0:
+                g, shift = coefficients, 0
+            else:
+                g, running = [mp.mpf(0)] * (terms + 1), mp.mpf(0)
+                for n in range(terms + 1):
+                    running = coefficients[n] - running
+                    g[n] = running
+                shift = 1
+            for n in range(terms + 1):
+                c, power = g[n], n + shift
+                if c == 0:
+                    continue
+                if power == 0:
+                    result.setdefault(k + 1, [mp.mpf(0)] * (terms + 1))[0] += c / (k + 1)
+                elif power <= terms:
+                    falling = mp.mpf(1)
+                    for j in range(k + 1):
+                        result.setdefault(k - j, [mp.mpf(0)] * (terms + 1))[power] += (
+                            c * (-1) ** j * falling / mp.mpf(power) ** (j + 1))
+                        falling *= k - j
+        series[word] = result
+        values[word] = sum(log_x ** k * mp.polyval(co[::-1], x) for k, co in result.items())
+    return values
+
+
+def taylor_step(words, values, a, b, terms=75):
+    """Continue all HPLs from a to b by their Taylor series at a.
+
+    Needs |b - a| well inside the distance from a to 0 and to -1.
+    """
+    g0 = [(-1) ** m / a ** (m + 1) for m in range(terms)]
+    g1 = [(-1) ** m / (1 + a) ** (m + 1) for m in range(terms)]
+    coefficients, new = {(): [mp.mpf(1)] + [mp.mpf(0)] * terms}, {}
+    for word in words:
+        previous, g = coefficients[word[1:]], (g0 if word[0] == 0 else g1)
+        c = [values[word]] + [mp.mpf(0)] * terms
+        for n in range(terms):
+            c[n + 1] = mp.fsum(g[m] * previous[n - m] for m in range(n + 1)) / (n + 1)
+        coefficients[word] = c
+        new[word] = mp.polyval(c[::-1], b - a)
+    return new
+
+
+def monodromy_at_minus_one(expressions: dict, combine=None, dps=45, steps=40):
+    """|F after one turn around x = -1 minus F|, at high precision.
+
+    Starts from the series at x = 0.4 i, walks in the upper half plane to
+    x = -1 + 0.3 e^{0.4 i} on the principal sheet, and goes once around -1.
+    Returns the differences, which vanish if F has no branch point there.
+    """
+    with mp.workdps(dps):
+        code, words = {}, set()
+        for name, text in expressions.items():
+            source, used = parse(text)
+            code[name] = compile(source, name, "eval")
+            words |= used
+        words = suffix_closure(words)
+
+        def functions(x, values):
+            env = {"H": values, "PI": mp.pi, "Z3": mp.zeta(3), "Z5": mp.zeta(5), "x": x}
+            out = {name: eval(c, env) for name, c in code.items()}
+            if combine is not None:
+                out.update(combine(out, x))
+            return out
+
+        a = mp.mpc(0, "0.4")
+        values = series_values_mp(words, a)
+        target = -1 + mp.mpf("0.3") * mp.expj(mp.mpf("0.4"))
+        while True:
+            reach = mp.mpf("0.22") * min(abs(a), abs(1 + a))
+            if abs(target - a) <= reach:
+                values = taylor_step(words, values, a, target)
+                break
+            nxt = a + (target - a) / abs(target - a) * reach
+            values, a = taylor_step(words, values, a, nxt), nxt
+        before = functions(target, values)
+        position = target
+        for j in range(1, steps + 1):
+            nxt = -1 + (target + 1) * mp.expj(2 * mp.pi * j / steps)
+            values, position = taylor_step(words, values, position, nxt), nxt
+        after = functions(target, values)
+        return {name: float(abs(after[name] - before[name])) for name in before}
+
+
 def three_loop_report(directory, nodes=40):
     """Circle means of the HKM functions against the cusp anomalous dimension,
     and the hypotheses of the double-pole theorem for the three-loop weight."""

@@ -64,8 +64,13 @@ $`1/(1+x)`$.
 Numerically:
 
 - **At $`z=-1`$ on the principal sheet.** Continued once around
-  $`x=-1`$, both parts return to themselves, to $`10^{-12}`$: there is no
-  branch point. The planar part tends to $`-1.19738`$. The factor
+  $`x=-1`$ at 45-digit precision, by Taylor steps, both parts return to
+  themselves to $`10^{-43}`$ (`monodromy_at_minus_one`); the same routine
+  gives $`2\pi`$ for $`\log(1+x)`$. So there is no branch point, to that
+  accuracy. Finiteness there is not an accident: the paper imposes
+  finiteness at $`x=-1`$ as the boundary condition that fixes the
+  integration constants of its master integrals. The planar part tends
+  to $`-1.19738`$. The factor
   $`F^{(3)}_{\rm NP1}`$ vanishes linearly ($`3\times10^{-6}`$ at distance
   $`10^{-6}`$), so the pole of $`1/(1+x)`$ is cancelled and the non-planar
   part tends to $`12.722`$.
@@ -82,7 +87,13 @@ position space for spacelike diagonals and by the contour route in all
 three regions, for the planar and the non-planar part separately. This
 is numerical evidence for the hypotheses, not a proof of them: for the
 two-loop weight holomorphy on the strip is proved (GATE_6_BOUNDS section
-2), and the same argument has not been written for weight six.
+2), and the same argument has not been written for weight six. A proof
+would expand each harmonic polylogarithm at $`x=-1`$ in powers of
+$`\log(1+x)`$ and show that the coefficients of the logarithms cancel.
+Those coefficients are fixed combinations of multiple zeta values of
+weight up to six and powers of $`i\pi`$, so the statement is a finite
+list of exact identities; I have checked that they hold to 43 digits and
+have not derived them.
 
 The one place where "which region contributes" was a real question is
 the factor $`1/(1+x)`$: a pole at $`z=-1`$ would have put a new

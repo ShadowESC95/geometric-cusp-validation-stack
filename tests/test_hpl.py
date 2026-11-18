@@ -58,3 +58,19 @@ def test_three_loop_weight_gives_the_four_loop_cusp():
         assert got == pytest.approx(expected, abs=2e-9)
     assert max(report["monodromy_at_minus_one"].values()) < 1e-9
     assert abs(report["values_near_minus_one"]["NP1"]) < 1e-5
+
+
+def test_two_loop_weight_has_no_branch_point_at_minus_one_to_thirty_digits():
+    result = hpl.monodromy_at_minus_one({"F2": hpl.F2_HKM}, dps=35)
+    assert result["F2"] < 1e-30
+    # a function that does have one
+    assert hpl.monodromy_at_minus_one({"log": "HPL[{-1}, x]"}, dps=35)["log"] == pytest.approx(2 * np.pi, abs=1e-12)
+
+
+@pytest.mark.skipif(not os.environ.get("HKM_ANC"), reason="set HKM_ANC to the ancillary directory of arXiv:1911.10174")
+def test_three_loop_weight_has_no_branch_point_at_minus_one_to_forty_digits():
+    read = lambda name: open(os.path.join(os.environ["HKM_ANC"], name)).read()
+    result = hpl.monodromy_at_minus_one(
+        {"P": read("HKM_F3_P_HPL.txt"), "NP1": read("HKM_F3_NP1_HPL.txt"), "NP2": read("HKM_F3_NP2_HPL.txt")},
+        combine=lambda v, x: {"NP": v["NP1"] / (1 + x) + v["NP2"]})
+    assert result["P"] < 1e-40 and result["NP"] < 1e-40
