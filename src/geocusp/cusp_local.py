@@ -1008,3 +1008,21 @@ def timelike_second_piece_at_beta(p, eta, T, beta, eps=0.0, dps: int = 18):
         integral = mp.quad(f, pts)
         return (-(2j * mp.sin(mp.pi * p) / p) * mp.pi ** (1 + eta) * mp.gamma(2 - eta)
                 * T ** (-p) * (T - beta) ** (p + eta) * integral)
+
+
+def timelike_euler_bound_ratio(p, eta, v, dps: int = 30):
+    """|(omega + i0)^(-p) E(v + i0)| / (|omega|^(-Re p) [psi_1 + psi_2]) for real v,
+    omega having the sign of v, with E(v) = int_0^1 t^p (1-t)^(-p) (v+t)^(eta-2) dt
+    and psi_1, psi_2 the majorants of Lemma 14.F. Lemmas 14.F and 14.F' say this
+    grows at most like e^(2 theta |Im p|) for every theta > 0."""
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        p, eta, v = mp.mpmathify(p), mp.mpf(eta), mp.mpf(v)
+        s, tau = mp.re(p), mp.im(p)
+        vc = mp.mpc(v, mp.mpf(10) ** (-dps + 5))
+        E = mp.gamma(1 + p) * mp.gamma(1 - p) * vc ** (eta - 2) * mp.hyp2f1(2 - eta, 1 + p, 2, -1 / vc)
+        phase = mp.exp(mp.pi * tau) if v < 0 else mp.mpf(1)
+        x, y = abs(v), abs(1 + v)
+        psi = min(x ** (eta - 1 + s), x ** (eta - 2)) + min(y ** (eta - 1 - s), y ** (eta - 2))
+        return abs(E) * phase / psi

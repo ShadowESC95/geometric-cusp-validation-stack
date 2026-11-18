@@ -76,17 +76,15 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     (Theorem 14.T). The exchanges of integrals are justified by keeping
     the displacement positive, where everything converges absolutely,
     and a bound uniform in the displacement (Lemmas 14.E and 14.F). By
-    superposition this gives the double pole $`4M[F]`$ for
-    $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with a timelike diagonal
-    without the contour. For $`\bar F^{(2)}`$ the uniform bound is not
-    sharp enough and the timelike statement still uses the contour.
+    superposition this gives the double pole $`4M[F]`$ for the three
+    benchmark weights with a timelike diagonal without the contour.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
 integral (section 11.5) whose continuation to those kinematics converges
 absolutely and carries two units; the identification of the total with
-the Feynman integral is direct for $`z^p`$ and for the first two
-benchmark weights, and uses the contour for the third (section 14). The link to the global contour rests on the
+the Feynman integral is direct for $`z^p`$ and for the three benchmark
+weights (section 14). The link to the global contour rests on the
 certificate and on Proposition 7 of GATE_6_CONTOUR, a proof by inspection
 that the certificate's constants are those of every dimension. An
 independent review of sections 13 and 14 found two wrong statements, both
@@ -2361,6 +2359,43 @@ and both exponents are negative, the bound follows with
 $`|v|\ge|\operatorname{Re}v|`$ and $`|v+1|\ge|1+\operatorname{Re}v|`$.
 $`\blacksquare`$
 
+**Lemma 14.F′ (decay for one sign).** Under the same hypotheses, if
+$`\tau_p\ge0`$ then
+
+```math
+|E(v)|\le C_\theta\,e^{-(\pi-\theta)\tau_p}\,\Big[\psi_1\big(|\operatorname{Re}v|\big)+\psi_2\big(|1+\operatorname{Re}v|\big)\Big].
+```
+
+*Proof.* $`t^p(1-t)^{-p}=(t/(1-t))^p`$, and for $`t`$ in the upper half
+plane $`\arg\big(t/(1-t)\big)`$ is $`\pi`$ minus the angle under which the
+segment $`[0,1]`$ is seen from $`t`$. Take the path that leaves 0 along
+$`t=re^{i(\pi-\theta)}`$, arrives at 1 along $`1-t=re^{-i(\pi-\theta)}`$,
+that is from the upper right, $`0\le r\le R`$, and joins the two ends by
+a horizontal segment, with $`R`$ so large that the segment $`[0,1]`$ is
+seen from the horizontal part under an angle at most $`\theta`$
+($`R\sin\theta\ge1/(2\tan(\theta/2))`$ suffices). On the whole path
+$`\arg(t/(1-t))\ge\pi-\theta`$, so
+$`|t^p(1-t)^{-p}|\le|t|^\sigma|1-t|^{-\sigma}e^{-(\pi-\theta)\tau_p}`$. The
+path stays in the upper half plane, so no singularity is crossed. On
+the first ray the directions of $`v`$ and $`-t`$ differ by at least
+$`\theta`$, on the last the same holds for $`v+1`$ and $`1-t`$, and on the
+horizontal part $`|v+t|\ge c_\theta(|v|+1)`$ with $`|t|\le C_\theta`$. The
+three integrals are bounded as in Lemma 14.F. $`\blacksquare`$
+
+The factor $`(\omega+i0)^{-p}`$ has modulus
+$`|\omega|^{-\sigma}e^{\pi\tau_p}`$ for $`\omega<0`$ and
+$`|\omega|^{-\sigma}`$ for $`\omega>0`$. So it grows only for
+$`\tau_p>0`$, which is where $`E`$ decays, and by the two lemmas
+
+```math
+\big|(\omega+i0)^{-p}\,E(v)\big|\le C_\theta\,e^{2\theta|\tau_p|}\,|\omega|^{-\sigma}\,\big[\psi_1+\psi_2\big]
+```
+
+for both signs of $`\tau_p`$. Numerically, at $`\eta=0.2`$,
+$`\sigma=\pm0.3`$ and nine values of $`v`$ on both sides of 0 and
+$`-1`$, the left side divided by $`|\omega|^{-\sigma}[\psi_1+\psi_2]`$ is at
+most 24, 43, 74 and 129 at $`|\tau_p|=5,10,20,40`$: it grows like a power.
+
 Since $`\operatorname{Re}(g_\varepsilon/\beta)=g/\beta`$ does not depend on
 $`\varepsilon`$, the integrand of $`J_\varepsilon(T-\beta)^{p+\eta}`$ is
 bounded, for every $`\varepsilon\ge0`$, by
@@ -2510,41 +2545,62 @@ the same closed formula for both signs of $`\operatorname{Re}p`$, and only
 the formula is continued.
 
 **General weights.** Let $`f(L)=F(e^L)`$ be holomorphic on
-$`|\operatorname{Im}L|<W`$ with $`W>3\pi`$ and polynomially bounded there,
-as for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$. On the real domain with
-$`\varepsilon>0`$ every displaced invariant has its argument in
-$`(-\pi,0)`$ and $`\log(s-i0)=\log|s|-i\pi`$, so
-$`-3\pi<\operatorname{Im}L<\pi`$ and $`F`$ is evaluated inside its strip
-(the corner $`-3\pi`$ is not approached: the sign pattern it needs
-cannot occur).
-By Lemma 3 of GATE_6_BOUNDS and Lemma 13.1,
-$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$ on lines
-$`\operatorname{Re}p=\mp\sigma`$ with
-$`\sigma<\min(1/m,\tfrac12-\eta)`$. Uniformly in $`\varepsilon`$,
+$`|\operatorname{Im}L|<W`$ with $`W>5\pi/2`$ and polynomially bounded
+there, as for the three benchmark weights ($`\bar F^{(2)}`$ has
+$`W=3\pi-\delta`$).
+
+*The strip.* On the real domain with $`\varepsilon>0`$ every displaced
+invariant has its argument in $`(-\pi,0)`$ and
+$`\log(s-i0)=\log|s|-i\pi`$, so $`-3\pi<\operatorname{Im}L<\pi`$. The lower
+corner would need $`x_{02}^2,x_{04}^2<0`$ and $`x_{01}^2,x_{03}^2>0`$,
+which cannot occur. Indeed $`x_{01}^2=x_{02}^2-\beta>0>x_{02}^2`$ gives
+$`\beta<0`$ and $`|x_{02}^2|<|\beta|`$, and $`x_{03}^2=x_{02}^2+\alpha>0`$
+gives $`\alpha>0`$, so $`\rho=\alpha|\beta|+|x_{02}^2|<(\alpha+1)|\beta|`$ and
 
 ```math
-|P_{23}^\varepsilon|\le C(1+|\tau_p|)\,e^{3\pi|\tau_p|},\qquad|P_{41}^\varepsilon|\le C_\theta\,e^{(3\pi+2\theta)|\tau_p|},
+x_{04}^2-x_{01}^2=T(1+\alpha)+(T-1)|\beta|+c\kappa\ \ge\ T(1+\alpha)+(T-1)|\beta|-2\sqrt{T(T-1)}\sqrt{(\alpha+1)|\beta|}\ \ge0 ,
 ```
 
-the first as in Theorem 13.2 with one more factor $`e^{\pi|\tau_p|}`$ from
-$`(s/t)^p`$ (an overcount: that phase combines with the jump across the
-lips, and the true rate is about $`2\pi`$), the second from $`|\sin^2\pi p/p^2|\le Ce^{2\pi|\tau_p|}`$,
-$`|(\omega+i0)^{-p}|\le|\omega|^{-\sigma}e^{\pi|\tau_p|}`$ and Lemma 14.F.
-With $`W-\delta'>3\pi+2\theta`$ the limit passes under the $`p`$
-integral, and by the paragraph "General weights, by superposition"
+so $`x_{04}^2>0`$. Hence at least one of the four arguments is on the
+far side of $`-\pi/2`$ from its corner value, and
+$`-5\pi/2\le\operatorname{Im}L<\pi`$: $`F`$ is evaluated inside its strip,
+at a distance from the edge that does not depend on $`\varepsilon`$. (In
+$`2\times10^{7}`$ random points the pattern did not occur.)
+
+*Superposition at fixed $`\varepsilon`$.* By Lemma 3 of GATE_6_BOUNDS,
+Lemma 13.1 and $`|z_\varepsilon^p|\le|z_\varepsilon|^{\pm\sigma}e^{5\pi|\tau_p|/2}`$,
+$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$ on lines
+$`\operatorname{Re}p=\mp\sigma`$ with
+$`\sigma<\min(1/m,\tfrac12-\eta)`$, where $`|c_\pm|\le Ce^{-(W-\delta')|\tau_p|}`$
+and $`W-\delta'>5\pi/2`$.
+
+*Bounds uniform in $`\varepsilon`$.*
+
+```math
+|P_{23}^\varepsilon|\le C(1+|\tau_p|)\,e^{2\pi|\tau_p|},\qquad|P_{41}^\varepsilon|\le C_\theta\,e^{(2\pi+2\theta)|\tau_p|}.
+```
+
+The first is the bound of Theorem 13.2: the constant in front of the
+first keyhole is $`2i\sin(\pi p)`$ times real powers, as in section 11.1
+(the phase of $`(s/t)^p`$ is absorbed by the sign of $`x_{04}^2`$ on the
+cut), and the three displaced bases contribute
+$`e^{-\tau_p(\theta_1-\theta_2+\theta_3)}`$ with
+$`0\le\theta_1-\theta_2+\theta_3<\pi`$. The second is
+$`|\sin^2\pi p/p^2|\le Ce^{2\pi|\tau_p|}`$ times the bound on
+$`(\omega+i0)^{-p}E`$ above, integrated against $`\mathcal D`$. Choose
+$`\theta`$ with $`2\pi+2\theta<W-\delta'`$. Then the limit passes under the
+$`p`$ integral, and by the paragraph "General weights, by superposition"
 
 ```math
 \lim_{\varepsilon\to0}2\,I_\varepsilon[F]=E_1[F]+E_2[F]=-2\pi^2i\,\frac{4\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big).
 ```
 
-So for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with a timelike diagonal the
-Feynman integral is the sum of the two edge functionals and its double
-pole is $`4M[F]`$, derived in position space without the contour. For
-$`\bar F^{(2)}`$ the strip is $`W=3\pi-\delta`$ and the bound above, with
-the rate $`3\pi+2\theta`$, is not enough: the true growth of the two
-pieces is at most $`e^{3\pi|\tau_p|/2}`$, but I have not proved a uniform
-bound in $`\varepsilon`$ with a rate below $`3\pi`$. For that weight the
-timelike statement still goes through the contour.
+So for the three benchmark weights with a timelike diagonal the Feynman
+integral is the sum of the two edge functionals and its double pole is
+$`4M[F]`$, derived in position space without the contour. A first
+version of this paragraph had the rates $`3\pi`$ and $`3\pi+2\theta`$ and
+therefore excluded $`\bar F^{(2)}`$; Lemma 14.F′ and the exclusion of the
+corner were added afterwards and have not been refereed separately.
 
 **The other timelike region.** Let $`s>0>t`$ with $`|t|<s`$; put
 $`s=1`$, $`t=-\tau_0`$, $`0<\tau_0<1`$. The cyclic relabelling
@@ -2580,9 +2636,9 @@ region of spacelike diagonals.
   same for the iterated integral with the displacement removed first,
   which exists exactly there. The exchanges of Step 2 are justified by
   Consequence 1 and the first piece by Consequence 2.
-- For $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: the Feynman integral with a
-  timelike diagonal, directly. For $`\bar F^{(2)}`$: through the contour,
-  as before.
+- For the three benchmark weights: the Feynman integral with a timelike
+  diagonal, directly. (The step that brings in $`\bar F^{(2)}`$, Lemma
+  14.F′, is not yet refereed.)
 
 An independent review verified Steps 1, 3, 4 and 5 by its own derivation
 and numerics (Step 1 on 42 configurations to $`10^{-9}`$ or better; the
@@ -2621,7 +2677,8 @@ there, but the singularity disappears once two of the three integrals
 are done. The result holds for the Feynman integral with the
 displacement removed last for both signs of $`\operatorname{Re}p`$
 (Theorem 14.T), for the iterated integral where that exists, in both
-timelike regions, and for the first two benchmark weights. It is
-confirmed by a direct computation organised differently. What still
-goes through the contour with a timelike diagonal is the third benchmark
-weight.
+timelike regions, and for the three benchmark weights. It is
+confirmed by a direct computation organised differently. The contour is
+then no longer needed for the double pole with a timelike diagonal; the
+points that remain are listed under "What this covers" and in the
+review note.

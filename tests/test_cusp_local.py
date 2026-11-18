@@ -444,3 +444,25 @@ def test_closed_form_converges_as_the_displacement_is_removed(p):
     assert gaps[2] < 0.02 * abs(limit)
     # the rate is eps^eta: two decades in eps^(eta) between successive entries
     assert 2.0 < gaps[1] / gaps[2] < 6.0
+
+
+@pytest.mark.parametrize("sigma", [0.3, -0.3])
+def test_phase_growth_is_cancelled_by_decay_of_the_euler_integral(sigma):
+    """Lemmas 14.F and 14.F': the product grows like a power of Im p, not like e^(pi |Im p|)."""
+    points = (-3, -1.001, -0.6, -1e-3, 1e-3, 0.4, 2.5)
+    worst = {t: max(float(cl.timelike_euler_bound_ratio(mp.mpc(sigma, sgn * t), 0.2, v))
+                    for v in points for sgn in (1, -1)) for t in (10, 40)}
+    assert worst[40] < 300
+    assert worst[40] / worst[10] < 8                    # e^(30 pi) would be 1e40
+
+
+def test_the_corner_of_the_strip_is_not_reached_with_a_timelike_diagonal():
+    rng = np.random.default_rng(3)
+    T = 2.2
+    c = 2 * np.sqrt(T * (T - 1))
+    a, b = rng.normal(0, 5, 10 ** 6), rng.normal(0, 5, 10 ** 6)
+    y = rng.normal(0, 3, (2, 10 ** 6))
+    w = -a * b - (y ** 2).sum(0)
+    u1, u3, u4 = w - b, w + a, T * (1 + a - b) + w + c * y[0]
+    assert not ((w < 0) & (u4 < 0) & (u1 > 0) & (u3 > 0)).any()
+    assert ((w < 0) & (u1 > 0) & (u3 > 0)).any()        # the other three signs do occur together

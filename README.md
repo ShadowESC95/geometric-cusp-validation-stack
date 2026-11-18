@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **424 tests** and **63 worked example groups**, all passing
+- **427 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -74,7 +74,7 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
 | Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction; the hypotheses of the theorem are verified numerically for this weight, not proved |
-| A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$ the Feynman integral (displacement removed last) is the sum of the two continued pieces for $`|\operatorname{Re}p|<\tfrac12-\eta`$, both signs, in both timelike regions; the iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. The exchanges of integrals are justified by keeping the displacement positive and a bound uniform in it. By superposition the double pole is $`4M[F]`$ for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ directly; for $`\bar F^{(2)}`$ the uniform bound is not sharp enough and the timelike statement still uses the contour. Two independent reviews; the open point they name is that absolute convergence at positive displacement rests on power counting. A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
+| A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$ the Feynman integral (displacement removed last) is the sum of the two continued pieces for $`|\operatorname{Re}p|<\tfrac12-\eta`$, both signs, in both timelike regions; the iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. The exchanges of integrals are justified by keeping the displacement positive and a bound uniform in it. By superposition the double pole is $`4M[F]`$ for the three benchmark weights directly. Two independent reviews; the open point they name is that absolute convergence at positive displacement rests on power counting. The last step, which brings in $`\bar F^{(2)}`$ (a bound that decays for one sign of $`\operatorname{Im}p`$), was added after them and is checked numerically only. A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
 | Each edge piece as a single integral of a $`{}_2F_1`$ | Exact: agrees with the cube integral and the box to $`10^{-15}`$ |
 | Review by a specialist | **Not done** |
 
@@ -94,7 +94,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 424 tests, about twenty minutes
+make test        # 427 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -347,7 +347,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            424 tests
+tests/            427 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
