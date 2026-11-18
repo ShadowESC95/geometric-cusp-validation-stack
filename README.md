@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **396 tests** and **63 worked example groups**, all passing
+- **402 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -73,6 +73,7 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | The edge jump equals the residue of the collinear pole | Written proof; independently checked; numerically exact |
 | The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
+| Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction; the hypotheses of the theorem are verified numerically for this weight, not proved |
 | A timelike diagonal in position space | Exact slab and keyhole structure; one of the two edge pieces carries its two units; the other is **not derived** (covered via the parametric form) |
 | Review by a specialist | **Not done** |
 
@@ -92,7 +93,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 396 tests, about twenty minutes
+make test        # 402 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -322,6 +323,7 @@ command line as shown in [Quick start](#quick-start).
 | [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md) | The cusp-local triangle, and the double pole as a sum over cusps without Mellin–Barnes |
 | [GATE_6_FUNCTIONAL](docs/GATE_6_FUNCTIONAL.md) | The functionals on the Mellin family, and the solver |
 | [FROM_GEOMETRY](docs/FROM_GEOMETRY.md) | The two-loop form from its inequalities; the membership test for the sampler |
+| [THREE_LOOP_WEIGHT](docs/THREE_LOOP_WEIGHT.md) | The published three-loop function: its circle mean against the four-loop coefficient, and whether the theorem applies to it |
 | [GATE_6_PROOF](docs/GATE_6_PROOF.md) | The earlier regulated-cap approach and its obstruction |
 | [MATHEMATICAL_MODEL](docs/MATHEMATICAL_MODEL.md) | Charts, forms and integrands used by the code |
 | [BENCHMARK_VALIDATION](docs/BENCHMARK_VALIDATION.md) | How to reproduce the suite, and what each check establishes |
@@ -341,7 +343,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            396 tests
+tests/            402 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
