@@ -630,3 +630,66 @@ def collinear_residue(f, beta):
     computed with the transverse integral first. For the weight F it should be
     (2 pi i / beta) M[F(z/(1 - beta))], the density of section 8."""
     return collinear_one_sided(f, beta, 1) + collinear_one_sided(f, beta, -1)
+
+
+# --------------------------------------------------------------------------
+# The edge piece as a one-dimensional integral (section 11.5, section 14)
+# --------------------------------------------------------------------------
+def edge_piece_one_dim(p, eta, rho, side: int = 0, dps: int = 25):
+    """The edge piece for F = z^p as a single integral, with rho = T/(T+1):
+
+        A = -2 i pi^(2+eta) Gamma(2-eta) B(eta,eta) / (Gamma(1-p) Gamma(1+p))
+            * rho^eta * int_0^1 dy (1-y)^(eta-1) (1-(1-rho) y)^(-eta) 2F1(eta, 1+p; 2; y).
+
+    For rho > 0 this equals the cube integral `edge_piece`. For rho < 0 it
+    is the boundary value at rho + i0 (side = +1) or rho - i0 (side = -1):
+    1 - (1-rho) y changes sign at y = 1/(1-rho), an integrable singularity
+    of exponent -eta. Returns an mpmath complex number.
+    """
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        p, eta, rho = mp.mpf(p), mp.mpf(eta), mp.mpf(rho)
+        if rho < 0 and side not in (1, -1):
+            raise ValueError("for rho < 0 give side = +1 or -1")
+        if rho == 0:
+            raise ValueError("rho must not vanish")
+
+        def factor(y):
+            v = 1 - (1 - rho) * y
+            # 1 + rho X with X = y/(1-y) is v/(1-y); below zero its phase is e^{+-i pi}
+            return (-v) ** (-eta) * mp.expjpi(-side * eta) if v < 0 else v ** (-eta)
+
+        def integrand(u):
+            y = 1 - u ** (1 / eta)                      # (1-y)^(eta-1) dy = du / eta
+            return factor(y) * mp.hyp2f1(eta, 1 + p, 2, y) / eta
+
+        points = [0, mp.mpf("0.25"), mp.mpf("0.5"), mp.mpf("0.75"), 1]
+        if rho < 0:
+            points = sorted(set(points + [(1 - 1 / (1 - rho)) ** eta]))
+        integral = mp.quad(integrand, points)
+        rho_eta = rho ** eta if rho > 0 else (-rho) ** eta * mp.expjpi(side * eta)
+        prefactor = -2j * mp.pi ** (2 + eta) * mp.gamma(2 - eta) / (mp.gamma(1 - p) * mp.gamma(1 + p))
+        return prefactor * mp.beta(eta, eta) * rho_eta * integral
+
+
+def timelike_two_edges(p, eta, modulus, sigma: int = -1, dps: int = 25):
+    """A(p;T) + T^eta A(-p;1/T) continued to T = modulus * e^{i sigma pi}.
+
+    One of rho = T/(T+1) and 1 - rho = 1/(T+1) is larger than 1 and the
+    other is negative; the negative one is approached from the side fixed
+    by sigma. Returns (first piece, second piece including T^eta).
+    """
+    import mpmath as mp
+
+    with mp.workdps(dps):
+        if sigma not in (1, -1):
+            raise ValueError("sigma must be +1 or -1")
+        modulus = mp.mpf(modulus)
+        if modulus <= 0 or modulus == 1:
+            raise ValueError("the modulus must be positive and different from 1")
+        T = -modulus
+        rho, other = T / (1 + T), 1 / (1 + T)
+        first = edge_piece_one_dim(p, eta, rho, side=sigma if rho < 0 else 0, dps=dps)
+        second = edge_piece_one_dim(-mp.mpf(p), eta, other, side=-sigma if other < 0 else 0, dps=dps)
+        return first, modulus ** mp.mpf(eta) * mp.expjpi(sigma * mp.mpf(eta)) * second

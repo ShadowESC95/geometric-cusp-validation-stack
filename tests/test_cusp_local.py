@@ -343,3 +343,47 @@ def test_collinear_residue_for_a_logarithmic_weight(beta):
     value = cl.collinear_residue(lambda L: L**2 + np.pi**2, beta)
     reference = 2j * np.pi / beta * (2 * np.pi**2 / 3 + np.log(1 - beta) ** 2)
     assert value == pytest.approx(reference, rel=1e-7)
+
+
+# ---- the edge piece as a one-dimensional integral -----------------------------
+@pytest.mark.parametrize("p,eta,T", [(0.3, 0.2, 2.5), (-0.4, 0.1, 0.3)])
+def test_one_dimensional_form_equals_the_cube_integral(p, eta, T):
+    cube = complex(cl.edge_piece(p, eta, T))
+    one = complex(cl.edge_piece_one_dim(p, eta, T / (1 + T)))
+    assert abs(cube - one) < 1e-10 * abs(cube)
+
+
+def test_one_dimensional_form_equals_the_piece_with_a_timelike_diagonal_that_works():
+    p, eta, T = -0.3, 0.2, 2.2
+    cube = complex(cl.edge_piece(p, eta, T, sign=-1))
+    one = complex(cl.edge_piece_one_dim(p, eta, T / (T - 1)))
+    assert abs(cube - one) < 1e-10 * abs(cube)
+
+
+@pytest.mark.parametrize("p,eta,modulus", [(0.3, 0.2, 0.45), (0.3, 0.2, 2.2), (-0.25, 0.1, 0.6)])
+def test_two_continued_pieces_add_up_to_the_box_with_a_timelike_diagonal(p, eta, modulus):
+    import mpmath as mp
+    from geocusp import lorentzian_edges as le
+    first, second = cl.timelike_two_edges(p, eta, modulus, sigma=-1)
+    box = (-2j * mp.pi ** (2 + mp.mpf(eta)) * mp.mpf(modulus) ** mp.mpf(eta) * mp.expjpi(-mp.mpf(eta))
+           * le.regulated_double_pole_complex(p, eta, 1 / mp.mpf(modulus), mp.pi) / mp.mpf(eta) ** 2)
+    assert abs(first + second - box) < 1e-12 * abs(box)
+    # the other side is the mirror image
+    f2, s2 = cl.timelike_two_edges(p, eta, modulus, sigma=1)
+    assert abs(f2 + s2 + mp.conj(box)) < 1e-12 * abs(box)
+
+
+@pytest.mark.parametrize("p,rho,side", [(0.3, -0.8, -1), (-0.3, -2.5, 1)])
+def test_continued_piece_carries_two_units_and_a_bounded_remainder(p, rho, side):
+    import mpmath as mp
+    unit = -2j * mp.pi ** 2
+    sinc = mp.sin(mp.pi * p) / (mp.pi * p)
+    scaled = []
+    for eta in (0.1, 0.05, 0.025):
+        e = mp.mpf(eta)
+        a = cl.edge_piece_one_dim(p, eta, rho, side=side)
+        scaled.append(e * (a - 2 * unit * sinc / e ** 2) / unit)
+    assert all(abs(v) < 12 for v in scaled)
+    assert abs(scaled[-1] - scaled[-2]) < 0.5        # eta (A - 2 sinc/eta^2) converges
+    with pytest.raises(ValueError):
+        cl.edge_piece_one_dim(0.3, 0.1, -0.5)

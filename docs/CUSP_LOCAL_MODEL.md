@@ -60,9 +60,12 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    supported in a null slab, and one of the two edge pieces is treated as
    before and carries two units (section 14).
 
-What is **not** proved: with a timelike diagonal the second edge piece is
-not a positive integral and its two units are not derived in position
-space (section 14). The link to the global contour rests on the
+With a timelike diagonal the second edge piece is not a positive integral
+in the cube variables, but each edge piece is also a one-dimensional
+integral (section 11.5) whose continuation to those kinematics converges
+absolutely and carries two units; what remains indirect there is the
+identification of the total with the Feynman integral, which uses the
+contour (section 14). The link to the global contour rests on the
 certificate and on Proposition 7 of GATE_6_CONTOUR, a proof by inspection
 that the certificate's constants are those of every dimension. An
 independent review of sections 13 and 14 found two wrong statements, both
@@ -1156,7 +1159,98 @@ closed forms of section 10:
 
 It converges in every row: the remainder is a single pole.
 
-### 11.5 What is and is not established
+### 11.5 A one-dimensional form
+
+Two of the three integrals over the cube can be done in closed form.
+
+*The $`\xi`$ integral* is Euler's integral, with $`c=\varrho b\mu`$:
+
+```math
+\int_0^1(1-\xi)^{-p}\xi^{p}(\xi\beta+c)^{\eta-2}d\xi=\Gamma(1+p)\Gamma(1-p)\;c^{\eta-2}\;{}_2F_1\big(2-\eta,1+p;2;-\beta/c\big).
+```
+
+*Change of variable.* Put $`X=\beta/(\varrho b\mu)`$, so
+$`\beta=X\varrho\mu/(1+X\varrho\mu)`$, $`b=1/(1+X\varrho\mu)`$,
+$`d\beta=\varrho\mu\,b^2dX`$ and $`\beta+\varrho b\mu=\varrho b\mu(1+X)`$.
+Collecting powers ($`b^{2\eta}`$, $`\varrho^{\eta-1+p}`$, $`\mu^{\eta-1}`$),
+
+```math
+K_p(\varrho)=\Gamma(1+p)\Gamma(1-p)\,\varrho^{\eta-1+p}\int_0^\infty dX\,(1+X)^p\,{}_2F_1(2-\eta,1+p;2;-X)
+\int_0^1d\mu\,\mu^{\eta-1}(1-\mu)^{\eta-1}(1+X\varrho\mu)^{-2\eta},
+```
+
+with $`K_p`$ the cube integral of section 14, "One variable".
+
+*The $`\mu`$ integral* is again Euler's, and it collapses because two
+parameters coincide:
+$`B(\eta,\eta)\,{}_2F_1(2\eta,\eta;2\eta;-X\varrho)=B(\eta,\eta)(1+\varrho X)^{-\eta}`$.
+
+With Pfaff's transformation
+$`(1+X)^p\,{}_2F_1(2-\eta,1+p;2;-X)=(1+X)^{-1}{}_2F_1(\eta,1+p;2;y)`$,
+$`y=X/(1+X)`$, the result is
+
+```math
+A(p;T)=-\frac{2i\pi^{2+\eta}\,\Gamma(2-\eta)\,B(\eta,\eta)}{\Gamma(1-p)\Gamma(1+p)}\;\varrho^{\eta}\,I_p(\varrho),\qquad
+I_p(\varrho)=\int_0^1dy\,(1-y)^{\eta-1}\big(1-(1-\varrho)y\big)^{-\eta}\,{}_2F_1(\eta,1+p;2;y),
+```
+
+with $`\varrho=T/(T+1)`$ (`edge_piece_one_dim`). The kinematics enter only
+through $`\varrho^\eta`$ and the factor $`(1-(1-\varrho)y)^{-\eta}`$. For
+$`\varrho>0`$ every base is positive, so the modulus of the integrand at
+complex $`p`$ is the integrand at $`\operatorname{Re}p`$, and Fubini covers
+the rearrangements. This agrees with the cube integral to $`10^{-15}`$ at
+three points and to $`3\times10^{-13}`$ at $`\eta=0.05`$, where the cube
+quadrature is the limit, and the two pieces computed this way add up to
+the box to $`10^{-16}`$.
+
+**Theorem (one-dimensional remainder).** Let $`p=\sigma+i\tau`$ with
+$`|\sigma|\le\sigma_0<1`$, $`0<\eta\le\eta_0`$ with $`\sigma_0+\eta_0<1`$,
+and let $`\varrho`$ be positive, or negative and approached from either
+side, with $`|\varrho|`$ in a compact subset of $`(0,\infty)`$. Then
+
+```math
+A(p;\varrho)=-2i\pi^2\,\frac{\sin\pi p}{\pi p}\,\frac{2}{\eta^2}+R,\qquad|R|\le\frac{C\,(1+|\tau|)^{k}\,e^{3\pi|\tau|/2}}{\eta}.
+```
+
+*Proof.* (a) Since $`2-\eta-(1+p)=1-\eta-p`$ has positive real part, the
+series of $`G(y)={}_2F_1(\eta,1+p;2;y)`$ converges on $`[0,1]`$, and
+
+```math
+G(y)-1=\eta\sum_{n\ge1}\frac{(1+\eta)_{n-1}\,(1+p)_n}{(2)_n\,n!}\,y^n .
+```
+
+With $`|(1+p)_n|\le\Gamma(1+\sigma+n)/|\Gamma(1+p)|`$ the terms are at most
+$`Cn^{\eta_0+\sigma_0-2}/|\Gamma(1+p)|`$, so
+$`|G(y)-1|\le C\eta/|\Gamma(1+p)|\le C\eta(1+|\tau|)^{k}e^{\pi|\tau|/2}`$ on
+$`[0,1]`$.
+
+(b) Let $`J(\varrho)=\int_0^1(1-y)^{\eta-1}(1-(1-\varrho)y)^{-\eta}dy`$ and
+$`J_{\rm abs}`$ the same with the modulus of the second factor. For
+$`\varrho>0`$ the second factor lies between two positive constants. For
+$`\varrho<0`$ it vanishes at $`y_0=1/(1-\varrho)`$, which stays away from
+0 and 1, and $`\int|y-y_0|^{-\eta}`$ is bounded; beyond $`y_0`$ the factor
+is $`|\cdot|^{-\eta}e^{\mp i\pi\eta}`$. Near $`y=1`$ the factor tends to
+$`\varrho^{-\eta}`$ (of modulus $`|\varrho|^{-\eta}`$). In all cases
+$`J=1/\eta+O(1)`$ and $`J_{\rm abs}=1/\eta+O(1)`$, uniformly.
+
+(c) So $`I_p=J+O\big(\eta\,(1+|\tau|)^ke^{\pi|\tau|/2}J_{\rm abs}\big)=1/\eta+O((1+|\tau|)^ke^{\pi|\tau|/2})`$.
+With $`B(\eta,\eta)=2/\eta+O(1)`$, $`\varrho^\eta=1+O(\eta)`$,
+$`\Gamma(2-\eta)\pi^\eta=1+O(\eta)`$ and
+$`1/|\Gamma(1-p)\Gamma(1+p)|\le C(1+|\tau|)e^{\pi|\tau|}`$ the statement
+follows. $`\blacksquare`$
+
+For positive $`\varrho`$ this is the theorem of section 11.2 again, with a
+shorter proof and a smaller exponent, $`3\pi/2`$ in place of $`2\pi`$. The
+two end terms are each $`-2i\pi^2\sin\pi p/(\pi p)/\eta^2`$ up to
+$`O(1/\eta)`$, so the statement is the same as "the piece equals its two
+end terms up to a single pole". What is new is negative $`\varrho`$,
+which is used in section 14. An independent review redid the derivation
+by hand and with its own quadrature, including complex $`p`$ (box
+identity to $`10^{-29}`$ at three complex points), and checked the proof.
+It notes that the bound is valid but not sharp: the remainder actually
+grows like $`e^{\pi|\tau|}`$ times a power.
+
+### 11.6 What is and is not established
 
 Established, for the weight $`z^p`$, spacelike diagonals, and the iterated
 integral in the order $`\alpha`$, $`y_\perp`$, $`\beta`$ with
@@ -1675,7 +1769,8 @@ fails. Equivalently,
 continuing the cube formula to $`T\in(-1,0)`$ makes $`\varrho`$ negative
 and puts the zero set of $`\xi\beta+\varrho b\mu`$ inside the cube with the
 non-integrable exponent $`\eta-2`$. The integral then exists only as an
-analytic continuation and bounds on moduli are not available. Rotating
+analytic continuation, and bounds on moduli are not available in these
+variables (they are in the one-dimensional form below). Rotating
 $`\mu`$ off the real axis does not help as it stands: at the end
 $`\mu=1`$ the singular set still meets the contour, with exponent
 $`2\eta-2`$.
@@ -1700,7 +1795,8 @@ where the
 factor $`(\xi\beta+\varrho b\mu)^{\eta-2}`$ is singular inside the cube.
 I tried to write $`K_p`$ as a single Mellin–Barnes integral with Gamma
 functions only, which would have given bounds on the negative axis. It
-does not reduce by this route: the Mellin transform of $`K_p`$ in
+does not reduce by this route (the one-dimensional form of section 11.5,
+found afterwards, is what works): the Mellin transform of $`K_p`$ in
 $`\varrho`$ is two Gamma functions times a Barnes integral of five Gamma
 functions over one, with parameters that miss the condition of Barnes'
 second lemma ($`\eta`$ where 1 is needed), so it is a $`{}_3F_2`$ at unit
@@ -1708,19 +1804,64 @@ argument and not a product. Four trial forms with trigonometric factors
 disagree with the numerical edge piece. An independent review re-derived
 the Barnes integral and reproduced $`K_p`$ from it to $`3\times10^{-7}`$.
 
-**Why the bounds cannot simply be continued.** The cube function
-$`A(p;T)`$ is analytic in complex $`T`$ wherever $`\varrho=T/(T+1)`$ is not
-a negative real number. Along $`T=|T|e^{i\theta}`$, $`0\le\theta\le\pi`$,
-with $`|T|>1`$, $`\arg\varrho\in[0,\pi/2)`$ and
-$`|\xi\beta+\varrho b\mu|\ge\cos(\pi/4)\,(\xi\beta+|\varrho|b\mu)`$, so the
-bounds of section 11.2 should hold uniformly along the path, which would
-give the piece that works a second time, by continuation. This is not
-shown: with complex $`\varrho`$ the substitutions in that proof need
-rotated contours. For the other piece the
-argument is $`1/T`$, with $`|1/T|<1`$, and $`\arg\varrho\to-\pi`$ as
-$`\theta\to\pi`$: the bounds degenerate like
-$`\cos(\tfrac12\arg\varrho)^{\eta-2}`$ exactly at the endpoint. The limit
-exists, but no bound on the remainder survives.
+**The other piece, by continuation.** The one-dimensional form of
+section 11.5 settles this. In
+
+```math
+A(p;\varrho)\ \propto\ \varrho^{\eta}\int_0^1dy\,(1-y)^{\eta-1}\big(1-(1-\varrho)y\big)^{-\eta}\,{}_2F_1(\eta,1+p;2;y)
+```
+
+the kinematics enter only through $`\varrho^\eta`$ and one factor with the
+exponent $`-\eta`$. For negative $`\varrho`$ that factor changes sign at
+$`y_0=1/(1-\varrho)`$, an integrable singularity, and the boundary value
+from either side is the same integral with the phase $`e^{\mp i\pi\eta}`$
+beyond $`y_0`$ and $`\varrho^\eta=|\varrho|^\eta e^{\pm i\pi\eta}`$. The
+non-integrable singularity of the cube integrand has gone: it was
+produced by the order of integration, and the $`\xi`$ and $`\mu`$
+integrals remove it. So the continuation of each edge piece to a
+timelike diagonal is an absolutely convergent integral, and by the
+theorem of section 11.5 it equals $`-2i\pi^2\cdot2\sin\pi p/(\pi p)/\eta^2`$
+up to $`O(1/\eta)`$: two units, as for spacelike diagonals.
+
+Numerically (`timelike_two_edges`): continued along
+$`T=|T|e^{i\theta}`$ to $`\theta=-\pi`$, the two pieces add up to the
+continuation of the box along the same path to $`10^{-16}`$ at
+$`(p,\eta,|T|)=(0.3,0.2,0.45)`$, $`(0.3,0.2,2.2)`$, $`(-0.25,0.1,0.6)`$ and
+$`(0.2,0.05,3.0)`$; continued to $`\theta=+\pi`$ they give the mirror
+image. For $`\varrho>1`$ the one-dimensional form equals the piece that
+works, $`\mathcal J^-`$, to $`10^{-15}`$. For negative $`\varrho`$,
+$`\eta^2A/(-2i\pi^2)`$ tends to $`2\sin\pi p/(\pi p)=1.7168`$ ($`1.768`$ at
+$`\eta=0.0125`$) and $`\eta\,(A-A_{\rm near}-A_{\rm far})/(-2i\pi^2)`$
+converges, to about $`-0.01\mp2.70i`$ at $`p=0.3`$, $`\varrho=-0.8`$, the
+sign depending on the side.
+
+*Which side is physical.* The box identity of section 13 holds for
+$`T>0`$, both sides are analytic in $`T`$ off the negative axis and
+continuous up to it from each side, so it holds on both sides of the
+negative axis. Which side is the Feynman integral depends on the region,
+and I had this wrong in a first version; an independent review corrected
+it by comparing with Proposition 8 of GATE_6_CONTOUR directly.
+
+- $`s=-1`$, $`t=|T|>1`$: the timelike diagonal is $`t`$, read at $`t-i0`$,
+  which is $`\theta=+\pi`$.
+- $`s=1`$, $`t=-|T|`$, $`|T|<1`$: the timelike diagonal is $`s`$, read at
+  $`s-i0`$. In these units the integral is $`e^{i\pi\eta}`$ times the sum
+  continued to $`\theta=-\pi`$.
+
+In both cases the Feynman integral with a timelike diagonal, which equals
+the parametric form by section 13 and Proposition 8 with Lemma 14, is a
+sum of two continued pieces up to a phase $`1+O(\eta)`$, and its double
+pole is four units. The choice of side changes the single pole, not the
+double pole.
+
+What this gives and what it does not. One of the two pieces is also
+derived directly in those kinematics (the piece that works). For the
+other I have not shown, by a direct computation in timelike kinematics,
+that the keyhole integral with the cut convention above equals the
+continued function; it follows only because the sum is fixed. So the
+identification of the total in the timelike regions still passes through
+the contour and the parametric form, and what is new is that each piece
+is then an explicit convergent integral with a proved remainder.
 
 **The Feynman integral with a timelike diagonal.** The proof of
 Theorem 13.3 does not use the sign of the diagonals except through the
@@ -1769,10 +1910,15 @@ $`|\arg z|/\pi\le2.000003`$, against the bound 2.9045.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above
-and for the weight $`z^p`$, two of the four units (the continuation lemma
-of section 11.3 is used for $`\mathcal J^-`$ in the same way and has not
-been restated). The other
-two are not derived. The full statement in those regions still rests on
-the parametric form (section 6) and the global contour. A complete
-position-space treatment would need an oscillatory estimate in place of
-positivity; I do not have one.
+and for the weight $`z^p`$, two of the four units directly (the
+continuation lemma of section 11.3 is used for $`\mathcal J^-`$ in the
+same way and has not been restated). The other two are carried by the
+continued function of section 11.5, an absolutely convergent
+one-dimensional integral with a proved $`O(1/\eta)`$ remainder, which
+equals the second keyhole piece only because the contour route fixes the
+total. No
+oscillatory estimate is needed: I had thought one was, because the cube
+integrand is singular there, but the singularity disappears once two of
+the three integrals are done. What is still indirect is the
+identification of the total with the Feynman integral in those regions,
+which uses the contour and the parametric form.

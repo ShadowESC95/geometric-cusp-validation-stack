@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **404 tests** and **63 worked example groups**, all passing
+- **412 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -74,7 +74,8 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
 | Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction; the hypotheses of the theorem are verified numerically for this weight, not proved |
-| A timelike diagonal in position space | Exact slab and keyhole structure; one of the two edge pieces carries its two units; the other is **not derived** (covered via the parametric form) |
+| A timelike diagonal in position space | Exact slab and keyhole structure; one edge piece carries its two units directly. The other is the continuation of a one-dimensional integral, absolutely convergent, with a proved $`O(1/\eta)`$ remainder; the two add up to the continued box to $`10^{-16}`$. The identification of the total with the Feynman integral there still uses the contour. Independently checked; the review corrected which side of the cut is physical in each region |
+| Each edge piece as a single integral of a $`{}_2F_1`$ | Exact: agrees with the cube integral and the box to $`10^{-15}`$ |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -93,7 +94,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 404 tests, about twenty minutes
+make test        # 412 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -293,8 +294,10 @@ the full integral from the Lorentzian domain for the weight $`z^p`$ and
 spacelike diagonals, as an iterated integral in a fixed order with the
 $`-i0`$ removed first, and by superposition for the three benchmark
 weights: the double pole is $`4M[F]`$. This route uses no global contour,
-no certificate and no Mellin–Barnes. A timelike diagonal is covered only
-through the parametric form. See
+no certificate and no Mellin–Barnes. With a timelike diagonal each edge
+piece continues to an explicit convergent integral carrying two units,
+but the identification of the total still goes through the contour and
+the parametric form. See
 [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md).
 
 ## Solver
@@ -343,7 +346,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            404 tests
+tests/            412 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
