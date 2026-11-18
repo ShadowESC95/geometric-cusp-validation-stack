@@ -861,12 +861,12 @@ def _timelike_tau_integral(p, T, beta, Y0, Y1):
         D1 = A * Y0 - beta * tau
         return D1 ** (-1 - p) * (D1 - beta) ** (p - 1) * (Ap * Y1 + (1 - beta) * tau) ** (-1 - p)
 
-    h0, k = h(0.0), 1 + p
+    h0, k = h(0.0), 1 + (p.real if isinstance(p, complex) else p)
     marks = [abs(A * Y0 / beta), abs((A * Y0 - beta) / beta)] + ([abs(Ap * Y1 / (beta - 1))] if beta > 1 else [])
 
-    def inner(x):                                   # x = tau^(1+p) on (0, 1)
+    def inner(x):                                   # x = tau^(1 + Re p) on (0, 1)
         tau = x ** (1 / k)
-        return (h(tau) - h0) / tau / k if tau > 1e-14 else 0j
+        return tau ** (p - k) * (h(tau) - h0) / k if tau > 1e-14 else 0j
 
     pts = sorted({0.0, 1.0} | {m ** k for m in marks if m < 1})
     total = sum(cq(inner, lo, hi) for lo, hi in zip(pts[:-1], pts[1:])) + h0 / p

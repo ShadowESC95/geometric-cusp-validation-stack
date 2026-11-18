@@ -2399,7 +2399,8 @@ most 24, 43, 74 and 129 at $`|\tau_p|=5,10,20,40`$: it grows like a power.
 Since $`\operatorname{Re}(g_\varepsilon/\beta)=g/\beta`$ does not depend on
 $`\varepsilon`$, the integrand of $`J_\varepsilon(T-\beta)^{p+\eta}`$ is
 bounded, for every $`\varepsilon\ge0`$, by
-$`C_\theta e^{(\pi+2\theta)|\tau_p|}\,|\Gamma(1+p)\Gamma(1-p)|^{-1}\,\mathcal D`$ with
+$`C_\theta e^{(\pi+2\theta)|\tau_p|}\,|\Gamma(1+p)\Gamma(1-p)|^{-1}\,\mathcal D`$
+(and by the same with $`e^{2\theta|\tau_p|}`$, by Lemma 14.F′ below) with
 
 ```math
 \mathcal D(\beta,\chi)=(T-\beta)^{\sigma+\eta}\chi^{\eta-1}(1-\chi)^{\sigma}(T-1+\chi)^{-1-\eta}|\omega|^{-\sigma}\,
@@ -2565,7 +2566,12 @@ so $`x_{04}^2>0`$. Hence at least one of the four arguments is on the
 far side of $`-\pi/2`$ from its corner value, and
 $`-5\pi/2\le\operatorname{Im}L<\pi`$: $`F`$ is evaluated inside its strip,
 at a distance from the edge that does not depend on $`\varepsilon`$. (In
-$`2\times10^{7}`$ random points the pattern did not occur.)
+$`2\times10^{7}`$ random points the pattern did not occur. The review of
+this paragraph found that the range is in fact
+$`-2\pi<\operatorname{Im}L<\pi`$, by a case analysis on the signs of
+$`\alpha`$, $`\beta`$ and $`x_{04}^2-x_{01}^2`$, and saw the minimum
+$`-2\pi`$ numerically; then any $`W>2\pi`$ would do. The weaker range
+proved here is enough for the three weights.)
 
 *Superposition at fixed $`\varepsilon`$.* By Lemma 3 of GATE_6_BOUNDS,
 Lemma 13.1 and $`|z_\varepsilon^p|\le|z_\varepsilon|^{\pm\sigma}e^{5\pi|\tau_p|/2}`$,
@@ -2582,10 +2588,12 @@ and $`W-\delta'>5\pi/2`$.
 
 The first is the bound of Theorem 13.2: the constant in front of the
 first keyhole is $`2i\sin(\pi p)`$ times real powers, as in section 11.1
-(the phase of $`(s/t)^p`$ is absorbed by the sign of $`x_{04}^2`$ on the
-cut), and the three displaced bases contribute
+(the phase $`e^{-i\pi p}`$ of $`(s/t)^p`$ combines with the jump across
+the lips, $`e^{-i\pi p}(e^{2\pi ip}-1)=2i\sin\pi p`$, and $`x_{04}^2>0`$ on
+the cut adds no phase), and the three displaced bases contribute
 $`e^{-\tau_p(\theta_1-\theta_2+\theta_3)}`$ with
-$`0\le\theta_1-\theta_2+\theta_3<\pi`$. The second is
+$`0\le\theta_1-\theta_2+\theta_3<\pi`$, where $`\theta_3`$ is the argument
+of the displaced $`x_{04}^2`$, which lies in $`[0,\pi/2)`$ on the cut. The second is
 $`|\sin^2\pi p/p^2|\le Ce^{2\pi|\tau_p|}`$ times the bound on
 $`(\omega+i0)^{-p}E`$ above, integrated against $`\mathcal D`$. Choose
 $`\theta`$ with $`2\pi+2\theta<W-\delta'`$. Then the limit passes under the
@@ -2600,7 +2608,19 @@ integral is the sum of the two edge functionals and its double pole is
 $`4M[F]`$, derived in position space without the contour. A first
 version of this paragraph had the rates $`3\pi`$ and $`3\pi+2\theta`$ and
 therefore excluded $`\bar F^{(2)}`$; Lemma 14.F′ and the exclusion of the
-corner were added afterwards and have not been refereed separately.
+corner were added afterwards and refereed separately. That review
+confirmed the path of Lemma 14.F′ (the condition on $`R`$ is exactly the
+one needed), the lower bounds on every part of it, the sign, the
+inequality that excludes the corner, both uniform bounds and their
+sufficiency for $`W=3\pi-\delta`$. With its own code the product bound
+gave the same numbers as above for $`\sigma=\pm0.3,\pm0.75`$ and $`v`$
+from $`\pm10^{-8}`$ to $`\pm10^{6}`$, and the constant of the first
+keyhole showed no leftover $`e^{-i\pi p}`$ at $`p=-0.3\pm5i`$ and
+$`-0.2\pm9i`$. It names two dependencies that remain: the power counting
+of step (1) of Theorem 14.T, and the uniformity in $`\varepsilon`$ of the
+constant in the bound for the first keyhole, which is taken from
+Theorem 13.2. It did not check Lemma 3 of GATE_6_BOUNDS, Theorem 13.2
+itself, or the final identification with $`E_1+E_2`$.
 
 **The other timelike region.** Let $`s>0>t`$ with $`|t|<s`$; put
 $`s=1`$, $`t=-\tau_0`$, $`0<\tau_0<1`$. The cyclic relabelling
@@ -2637,8 +2657,7 @@ region of spacelike diagonals.
   which exists exactly there. The exchanges of Step 2 are justified by
   Consequence 1 and the first piece by Consequence 2.
 - For the three benchmark weights: the Feynman integral with a timelike
-  diagonal, directly. (The step that brings in $`\bar F^{(2)}`$, Lemma
-  14.F′, is not yet refereed.)
+  diagonal, directly.
 
 An independent review verified Steps 1, 3, 4 and 5 by its own derivation
 and numerics (Step 1 on 42 configurations to $`10^{-9}`$ or better; the
