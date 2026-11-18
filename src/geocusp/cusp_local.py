@@ -413,3 +413,91 @@ def far_end_coefficient(p, eta, T=1.0):
     p, eta, T = mp.mpmathify(p), mp.mpf(eta), mp.mpf(T)
     return ((T / (1 + T)) ** eta * mp.gamma(1 + eta) * eta**2 * mp.gamma(eta) ** 2 * mp.gamma(1 - p - eta)
             / (mp.gamma(1 + p) * mp.gamma(1 - p) ** 2 * mp.gamma(1 + 2 * eta)))
+
+
+# --------------------------------------------------------------------------
+# The edge piece as an explicit integral (docs/CUSP_LOCAL_MODEL.md section 11)
+# --------------------------------------------------------------------------
+def _edge_inner_terms(lbeta, lg, p, eta):
+    """int_0^1 (1-xi)^(-p) xi^p (xi beta + g)^(eta-2) d xi
+       = g^(eta-2) Gamma(1+p) Gamma(1-p) 2F1(2-eta, 1+p; 2; -beta/g),
+    returned as a list of (log|term|, sign), using the connection formula
+    when beta/g > 1 so that nothing overflows."""
+    import numpy as np
+    from scipy.special import gamma, hyp2f1, rgamma
+
+    a, b, c = 2 - eta, 1 + p, 2.0
+    lX = lbeta - lg
+    pref = gamma(1 + p) * gamma(1 - p)
+    if lX <= 0:
+        v = pref * hyp2f1(a, b, c, -np.exp(lX))
+        return [((eta - 2) * lg + np.log(abs(v)), np.sign(v))]
+    inv = -np.exp(-lX)
+    c1 = pref * gamma(b - a) * rgamma(b) * rgamma(c - a) * hyp2f1(a, a - c + 1, a - b + 1, inv)
+    c2 = pref * gamma(a - b) * rgamma(a) * rgamma(c - b) * hyp2f1(b, b - c + 1, b - a + 1, inv)
+    return [((eta - 2) * lbeta + np.log(abs(c1)), np.sign(c1)),
+            ((eta - 1 + p) * lg - (1 + p) * lbeta + np.log(abs(c2)), np.sign(c2))]
+
+
+def edge_cube_integral(p, eta, T, rel: float = 1e-9):
+    """J = (T+1)^(-1) int_0^1 d beta b^(eta-p) int_0^1 d xi int_0^1 d mu
+             (1-xi)^(-p) xi^p mu^(-p) (1-mu)^(eta-1)
+             (xi beta + tau b mu)^(eta-2) ((T+1) beta + T b mu)^p,
+    b = 1 - beta, tau = T/(T+1); real p with |p| < 1 - eta and p + eta not an
+    integer. The xi integral is done in closed form; beta and mu are
+    integrated in logit variables."""
+    import numpy as np
+    from scipy.integrate import quad
+
+    p, eta, T = float(p), float(eta), float(T)
+    tau = T / (T + 1)
+    R = 44 / eta
+
+    def integrand(xb, xm):
+        lbeta, lb = -np.logaddexp(0, -xb), -np.logaddexp(0, xb)
+        lmu, l1mu = -np.logaddexp(0, -xm), -np.logaddexp(0, xm)
+        lg = np.log(tau) + lb + lmu
+        lc = np.logaddexp(np.log(T + 1) + lbeta, np.log(T) + lb + lmu)
+        base = (eta - p) * lb - p * lmu + (eta - 1) * l1mu + p * lc + lbeta + lb + lmu + l1mu
+        return sum(s * np.exp(base + l) for l, s in _edge_inner_terms(lbeta, lg, p, eta))
+
+    def outer(xb):
+        pts = sorted({-R, 0.0, R, float(np.clip(-xb, -R, R)), float(np.clip(xb, -R, R))})
+        return sum(quad(lambda xm: integrand(xb, xm), lo, hi, epsabs=0, epsrel=rel, limit=400)[0]
+                   for lo, hi in zip(pts[:-1], pts[1:]))
+
+    pts = [-R, -30, -5, 0, 5, 30, R] if R > 30 else [-R, -5, 0, 5, R]
+    total = sum(quad(outer, lo, hi, epsabs=0, epsrel=20 * rel, limit=400)[0] for lo, hi in zip(pts[:-1], pts[1:]))
+    return total / (T + 1)
+
+
+def edge_piece(p, eta, T):
+    """The edge piece A(p; T) of the full integral, with s = -1, t = -T,
+    prefactor s t and measure d alpha d beta d^(2+2 eta) y:
+
+        A = -2 i pi^(2+eta) Gamma(2-eta) T^(1-p) / (Gamma(1-p)^2 Gamma(1+p)^2) * J.
+    """
+    import numpy as np
+    from scipy.special import gamma
+
+    return (-2j * np.pi ** (2 + eta) * gamma(2 - eta) * T ** (1 - p)
+            / (gamma(1 - p) ** 2 * gamma(1 + p) ** 2) * edge_cube_integral(p, eta, T))
+
+
+def edge_near_term(p, eta):
+    import numpy as np
+    from scipy.special import gamma
+    return -2j * np.pi ** (2 + eta) * gamma(eta) ** 2 * gamma(1 + p - eta) / (gamma(1 + p) ** 2 * gamma(1 + 2 * eta - p))
+
+
+def edge_far_term(p, eta, T):
+    import numpy as np
+    from scipy.special import gamma
+    return (-2j * np.pi ** (2 + eta) * (T / (1 + T)) ** eta * gamma(eta) ** 2 * gamma(1 - p - eta)
+            / (gamma(1 + p) * gamma(1 - p) ** 2 * gamma(1 + 2 * eta)))
+
+
+def box_from_two_edges(p, eta, T):
+    """A(p; T) + T^eta A(-p; 1/T): the second piece is the first with the two
+    diagonals exchanged and z -> 1/z."""
+    return edge_piece(p, eta, T) + T ** eta * edge_piece(-p, eta, 1 / T)

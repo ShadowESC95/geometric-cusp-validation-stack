@@ -21,7 +21,7 @@ Together they explain the known contour rule and give a conditional proof
 of it for the three benchmark weights in all three kinematic regions. The
 conditions are listed under [Scope and limits](#scope-and-limits).
 
-- **321 tests** and **63 worked example groups**, all passing
+- **331 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -58,9 +58,11 @@ conditions are listed under [Scope and limits](#scope-and-limits).
 | Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
 | Cusp-local model derived from the Lorentzian domain: support on the edge segment, discontinuity across $`z<0`$, exact factorisation | Written proof for the iterated integral in a fixed order; independently checked |
-| Full integrand: support in a null slab and exact split into two edge pieces | Written proof; checked numerically; not reviewed |
-| Leading term at both ends of an edge piece: one unit of $`M[z^p]`$ each | Closed form; checked numerically; not reviewed |
-| Each edge piece equals its two leading terms up to a single pole, in position space | **Not proved** (proved for the parametric form) |
+| Full integrand: support in a null slab and exact split into two edge pieces | Written proof; independently checked |
+| Leading term at both ends of an edge piece: one unit of $`M[z^p]`$ each | Closed form; independently checked |
+| Each edge piece equals its two leading terms up to a single pole | Written proof for an explicit cube representation, uniform in $`\eta`$; independently checked |
+| Double pole of the full integral from the Lorentzian domain, weight $`z^p`$, spacelike diagonals | Written proof; independently checked. Iterated integral in a fixed order, $`-i0`$ removed first |
+| The same for the benchmark weights, a timelike diagonal, or other orders of integration | **Not written** in position space (proved via the parametric form) |
 | Review by a specialist | **Not done** |
 
 The contour argument was written and machine-checked in one working
@@ -79,7 +81,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 321 tests, about twenty minutes
+make test        # 331 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -268,8 +270,13 @@ pole is proved for the Feynman-parameter form, by elementary estimates on
 the simplex, in all three regions. In position space the leading term at each
 end of each edge piece is computed, and each gives one unit: at the near
 end one pole from the endpoint and one from a collinear limit, at the far
-end half a pole from the endpoint and two collinear limits. The missing
-step is the estimate that the rest is a single pole. See
+end half a pole from the endpoint and two collinear limits. The estimate
+that the rest is a single pole is proved, in variables in which each edge
+piece is a positive integral over a cube. This gives the double pole of
+the full integral from the Lorentzian domain for the weight $`z^p`$ and
+spacelike diagonals, as an iterated integral in a fixed order with the
+$`-i0`$ removed first. It has not been carried over to the benchmark
+weights or to a timelike diagonal except through the parametric form. See
 [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md).
 
 ## Solver
@@ -313,7 +320,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            321 tests
+tests/            331 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

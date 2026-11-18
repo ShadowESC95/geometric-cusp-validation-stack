@@ -205,3 +205,43 @@ def test_far_end_coefficient_is_the_scaled_closed_form():
     scaled = (T / (1 + T)) ** eta / (2 * eta) * 2j * mp.sin(mp.pi * p) * cl.far_end_closed_form(p, eta)
     near_units = -2j * mp.pi ** (2 + eta) / (mp.gamma(1 + eta) * eta**2) * cl.far_end_coefficient(p, eta, T)
     assert abs(scaled - near_units) < 1e-12 * abs(scaled)
+
+
+# ---- the edge piece: reduction and remainder (section 11) ------------------
+@pytest.mark.parametrize("p,eta,T", [(0.3, 0.25, 1.0), (0.15, 0.1, 1.0), (0.3, 0.2, 3.0), (-0.25, 0.1, 0.4)])
+def test_two_edge_pieces_add_up_to_the_box(p, eta, T):
+    """A(p; T) + T^eta A(-p; 1/T) equals the box computed by Mellin-Barnes."""
+    from geocusp.lorentzian_edges import regulated_double_pole
+    total = cl.box_from_two_edges(p, eta, T)
+    box = -2j * np.pi ** (2 + eta) * T**eta * complex(regulated_double_pole(p, eta, 1 / T)) / eta**2
+    assert total == pytest.approx(box, rel=1e-8)
+
+
+@pytest.mark.parametrize("p,T", [(-0.3, 1.0), (0.3, 1.0), (-0.3, 3.0), (0.5, 0.4)])
+def test_edge_piece_minus_both_end_terms_is_a_single_pole(p, T):
+    values = []
+    for eta in (0.1, 0.05, 0.025):
+        r = cl.edge_piece(p, eta, T) - cl.edge_near_term(p, eta) - cl.edge_far_term(p, eta, T)
+        values.append((eta * r / (-2j * np.pi**2)).real)
+    assert max(abs(v) for v in values) < 1.5
+    assert abs(values[2] - values[1]) < abs(values[1] - values[0])        # settling
+
+
+def test_far_end_term_from_the_cube_agrees_with_section_ten():
+    """(T+1)^(p-1) tau^(eta-1+p) h0/(2 eta) in the units of A is the far-end closed form."""
+    from scipy.special import gamma as G
+    p, eta, T = -0.3, 0.15, 1.7
+    tau = T / (T + 1)
+    h0 = G(1 + p) * G(1 - p - eta) / G(2 - eta) * G(eta) ** 2 / G(2 * eta)
+    j_far = (T + 1) ** (p - 1) * tau ** (eta - 1 + p) * h0 / (2 * eta)
+    a_far = -2j * np.pi ** (2 + eta) * G(2 - eta) * T ** (1 - p) / (G(1 - p) ** 2 * G(1 + p) ** 2) * j_far
+    assert a_far == pytest.approx(cl.edge_far_term(p, eta, T), rel=1e-12)
+
+
+def test_near_end_term_from_the_cube_has_the_same_double_pole():
+    from scipy.special import gamma as G
+    p, T = 0.3, 2.0
+    for eta in (1e-3, 1e-4):
+        j_near = T ** (p - 1) * G(1 + p) * G(1 - p) / eta**2
+        a_near = -2j * np.pi ** (2 + eta) * G(2 - eta) * T ** (1 - p) / (G(1 - p) ** 2 * G(1 + p) ** 2) * j_near
+        assert abs(a_near / cl.edge_near_term(p, eta) - 1) < 20 * eta

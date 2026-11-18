@@ -37,10 +37,18 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    integral is supported in the slab between two null hyperplanes and
    splits into two pieces, one for each of two opposite edges.
 
-What is **not** proved: that each of those two pieces equals the cusp-local
-models at its two ends up to a single pole. In position space that
-estimate is missing; the statement is proved only for the parametric
-integral (sections 3 and 6).
+6. Each of the two pieces is an explicit integral over a cube and equals
+   its two end terms up to a single pole (sections 10 and 11). With
+   section 9 this gives the double pole of the full integral,
+   $`4\sin\pi p/(\pi p)`$, from the Lorentzian domain, for the weight
+   $`z^p`$.
+
+Conditions and what is **not** proved (section 11.5): the result is for the
+iterated integral in a fixed order with the displacement removed first,
+spacelike diagonals and the weight $`z^p`$. The extension to the benchmark
+weights and to a timelike diagonal is not written in position space, and
+the equality of the iterated integral with the integral over the global
+contour is not proved.
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -685,10 +693,15 @@ $`\kappa`$,
 
 *Proof.* As in step 1 of section 8: where all four zeros lie in one half
 plane the contour closes in the other; where exactly one zero lies apart,
-the contour is deformed onto a keyhole around a cut from that zero. In the
-closing half plane the four invariants have negative imaginary part, so
-$`|\operatorname{Im}L|<2\pi`$; the integrand decays like $`|\alpha|^{-4}`$
-up to logarithms. $`\blacksquare`$
+the contour is deformed onto a keyhole around a cut from that zero. Where
+the integral vanishes, the four invariants have negative imaginary part in
+the closing half plane, so $`|\operatorname{Im}L|<2\pi`$. In the keyhole
+ranges the invariant whose zero is encircled changes sign, and
+$`\operatorname{Im}L`$, which is harmonic and bounded, stays within
+$`[-2\pi,2\pi]`$ by its values on the real line and on the two lips. The
+integrand decays like $`|\alpha|^{-4}`$; no growth condition on $`f`$ is
+needed for this, because $`z`$ tends to a finite non-zero constant as
+$`|\alpha|\to\infty`$, so the theorem also covers $`z^p`$. $`\blacksquare`$
 
 **Geometry.** The surfaces $`\beta=`$ const are the null hyperplanes
 orthogonal to $`p_1`$. The one with $`\beta=1`$ passes through $`x_3`$, the
@@ -731,11 +744,8 @@ from the ends.
   in total $`\tfrac{1}{2\eta}(\tfrac1\eta+\tfrac1\eta)=1/\eta^2`$, one unit.
 
 The far-end coefficient is computed in section 10: it is one unit, as at
-the near end. What is still not written is the estimate that turns the two
-leading terms into "edge piece $`=`$ two cusp terms $`+\,O(1/\eta)`$". That
-estimate is the remaining step for a derivation of the full coefficient
-entirely in position space. Sections 9 and 10 have not been independently
-reviewed.
+the near end. The estimate that turns the two leading terms into "edge
+piece $`=`$ two end terms $`+\,O(1/\eta)`$" is section 11.
 
 ## 10. The far end of an edge piece
 
@@ -830,9 +840,337 @@ section 8 and gives $`M[F]`$; this is not written out.
 | $`\eta^2\times`$ far-end term at $`p=0.3`$, $`T=1.7`$, $`\eta=10^{-1},10^{-2},10^{-3}`$ | 0.8818, 0.8600, 0.8585 → 0.8584 |
 
 **Status.** The far-end leading term is exact for the scaled integrand.
-Not proved: that the edge piece minus its two leading terms is
-$`O(1/\eta)`$. For $`\operatorname{Re}p<0`$ the integrand after the keyhole
-is a constant times a positive function, so this should follow from
-estimates on moduli of the kind used in section 3, in three regions (near
-end, far end, the rest), but it is not written. The equality of the edge
-piece with the other piece's mirror image has not been checked either.
+That the edge piece minus its two leading terms is $`O(1/\eta)`$ is proved
+in section 11, where the far-end term is also re-derived by a second
+route.
+
+## 11. The edge piece: exact reduction and the remainder
+
+Units as in section 9: $`s=-1`$, $`t=-T`$, $`b=1-\beta`$,
+$`\varrho=T/(T+1)`$; $`p=\sigma+i\tau`$. The edge piece for the edge
+$`(2,3)`$ is
+
+```math
+A(p;T)=st\int_0^1d\beta\int d^{2+2\eta}y_\perp\int_{\mathbb R}d\alpha\,\frac{z^p}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2},
+```
+
+and the full integral with the same prefactor and measure is $`A`$ plus the
+piece for the edge $`(4,1)`$. The order is part of the definition: the
+$`\alpha`$ integral first, with the displacement $`\varepsilon\to0`$ taken
+at fixed $`(\beta,y_\perp)`$, then the transverse integral, then
+$`\beta`$.
+
+### 11.1 Reduction to an integral over a cube
+
+**Proposition.** For $`\eta-1<\operatorname{Re}p<0`$,
+
+```math
+A(p;T)=-2i\pi^{2+\eta}\,\frac{\Gamma(2-\eta)\,T^{1-p}}{\Gamma(1-p)^2\,\Gamma(1+p)^2}\;\mathcal J(p;T),
+```
+
+```math
+\mathcal J=\frac{1}{T+1}\int_0^1d\beta\,b^{\eta-p}\int_0^1d\xi\int_0^1d\mu\;
+(1-\xi)^{-p}\,\xi^{p}\,\mu^{-p}\,(1-\mu)^{\eta-1}\,\big(\xi\beta+\varrho b\mu\big)^{\eta-2}\,\big((T+1)\beta+Tb\mu\big)^{p}.
+```
+
+*Proof.* By section 9 the $`\alpha`$ integral is a keyhole around the zero
+of $`x_{03}^2`$. For $`\operatorname{Re}p<0`$ the circle shrinks and the
+keyhole is $`2i\sin\pi p`$ times an integral over $`u_3>0`$ of a positive
+function (on the cut $`x_{02}^2,x_{01}^2,x_{04}^2<0`$ and $`\arg z=\mp\pi`$):
+
+```math
+A=2iT^{1-p}\sin(\pi p)\int_0^1d\beta\,b^{2-p}\int_0^\infty\frac{du_3}{u_3^{1+p}}\int d^{2+2\eta}y\;
+(\rho+\beta u_3)^{p-1}(\rho+\beta u_3+\beta b)^{-1-p}\big((T+1)|y-y_*|^2+(T+\beta)u_3\big)^{p-1}.
+```
+
+Combine the three factors with Feynman parameters $`\xi_1,\xi_2,\xi_3`$,
+with exponents $`1-p`$, $`1+p`$, $`1-p`$. The quadratic form in $`y`$ is
+$`\Lambda|y-\bar y|^2+(\xi_1+\xi_2)\xi_3Tb^2/\Lambda`$ with
+$`\Lambda=\xi_1+\xi_2+\xi_3(T+1)`$, and the $`y`$ integral gives
+$`\pi^{1+\eta}\Gamma(2-p-\eta)/\Gamma(3-p)\,\Lambda^{-1-\eta}M^{p-2+\eta}`$,
+where $`M`$ is linear in $`u_3`$. The $`u_3`$ integral is a Beta function,
+$`\Gamma(-p)\Gamma(2-\eta)/\Gamma(2-p-\eta)`$ times powers. The integrand is
+homogeneous of degree $`-3`$ in $`\xi`$, so put $`\xi_1+\xi_2=1`$,
+$`\xi=\xi_2`$, $`\lambda=\xi_3`$, and then
+$`\mu=\lambda(T+1)/(1+\lambda(T+1))`$. Finally
+$`\sin(\pi p)\Gamma(-p)=-\pi/\Gamma(1+p)`$. $`\blacksquare`$
+
+The Feynman parameters here are an integration technique for the
+transverse and $`u_3`$ integrals, applied after the contour has been closed
+in position space. The cube has a direct reading:
+
+| Limit | Meaning | Behaviour |
+| --- | --- | --- |
+| $`\beta\to0`$ | near end, the cusp $`x_2`$ | $`\beta^{\eta-1}`$ |
+| $`b\to0`$ | far end, the cusp $`x_3`$ | $`b^{2\eta-1}`$ |
+| $`\xi,\mu\to0`$ | collinear to the edge $`(2,3)`$ | pole $`1/\eta`$ |
+| $`\mu\to1`$ | collinear to the edge $`(3,4)`$ | pole $`1/\eta`$ |
+
+$`\mathcal J`$ converges and is analytic in $`p`$ for
+$`-1<\operatorname{Re}p<1-\eta`$; from here on $`A`$ denotes the right side
+on that strip. The integrand is positive for real $`p`$; for complex $`p`$
+its modulus is the integrand at $`\sigma`$.
+
+### 11.2 The remainder
+
+**Theorem (edge piece).** Let $`p=\sigma+i\tau`$ with $`\sigma`$ in a compact
+subset of $`(-1+\eta_0,1-\eta_0)`$ and $`0<\eta\le\eta_0<\tfrac12`$. Then
+
+```math
+\mathcal J=\frac{T^{p-1}\,\Gamma(1+p)\Gamma(1-p)}{\eta^2}
++\frac{(T+1)^{p-1}\varrho^{\eta-1+p}}{2\eta}\,\frac{\Gamma(1+p)\,\Gamma(1-p-\eta)\,\Gamma(\eta)^2}{\Gamma(2-\eta)\,\Gamma(2\eta)}
++R,\qquad|R|\le\frac{C\,(1+|\tau|)}{\eta},
+```
+
+with $`C`$ depending on the compact set, $`T`$ and $`\eta_0`$ only.
+Equivalently
+
+```math
+A(p;T)=A_{\rm near}+A_{\rm far}+O\Big(\frac{(1+|\tau|)\,e^{2\pi|\tau|}}{\eta}\Big),
+```
+
+with the two terms of section 10, each equal to
+$`-2\pi^2i\,\frac{\sin\pi p}{\pi p}\,\eta^{-2}`$ up to $`O(1/\eta)`$. The
+bound is at fixed $`T`$ and is weak in $`\tau`$: the leading terms grow
+like $`e^{\pi|\tau|}`$ only.
+
+*Proof.* Write $`\mathcal J=(T+1)^{-1}\int_0^1b^{\eta-p}G(\beta)\,d\beta`$
+with $`G`$ the integral over $`\xi,\mu`$, and split at $`\beta=\tfrac12`$.
+All bounds are on moduli; differences of complex powers cost a factor
+$`1+|\tau|`$.
+
+*Near half, $`\beta\le\tfrac12`$.* Put $`\mu=\beta m/(\varrho b)`$,
+$`0<m<M=\varrho b/\beta`$. Then $`\xi\beta+\varrho b\mu=\beta(\xi+m)`$,
+$`(T+1)\beta+Tb\mu=(T+1)\beta(1+m)`$, and
+
+```math
+b^{\eta-p}G(\beta)=\beta^{\eta-1}\,\varrho^{p-1}(T+1)^p\,b^{\eta-1}\,\hat g(\beta),\qquad
+\hat g=\int_0^1d\xi\int_0^Mdm\;k(\xi,m)\,\Big(1-\frac mM\Big)^{\eta-1},
+```
+
+```math
+k=(1-\xi)^{-p}\xi^{p}m^{-p}(\xi+m)^{\eta-2}(1+m)^{p},\qquad g_0=\int_0^1d\xi\int_0^\infty dm\,k .
+```
+
+$`g_0`$ converges ($`k\sim m^{\eta-2}`$ at infinity) and
+$`g_0=\Gamma(1+p)\Gamma(1-p)/\eta+O(1)`$: replacing
+$`(1-\xi)^{-p}(1+m)^p`$ by 1 gives exactly
+$`\int_0^1\xi^{\eta-1}d\xi\cdot B(1-p,1+p-\eta)`$, and the difference gains
+a power of $`\xi`$ or $`m`$ and is bounded. Next,
+
+```math
+|\hat g-g_0|\le\int_0^1\!\!\int_M^\infty|k|+\int_0^1\!\!\int_0^M|k|\,\Big[\Big(1-\frac mM\Big)^{\eta-1}-1\Big].
+```
+
+The first term is at most $`CM^{\eta-1}`$. In the second, for $`m\le M/2`$
+the bracket is at most $`4m/M`$, which gives $`C/M`$ from $`m\le1`$ and
+$`CM^{\eta-1}/\eta`$ from $`m\ge1`$; for $`M/2<m<M`$,
+$`|k|\le CM^{\eta-2}`$ and $`\int(1-m/M)^{\eta-1}dm\le M/\eta`$. Since
+$`M\ge\varrho/(2\beta)`$,
+
+```math
+|\hat g-g_0|\le\frac C\eta\,\beta^{1-\eta}.
+```
+
+With $`b^{\eta-1}=1+O(\beta)`$ and $`g_0=O(1/\eta)`$,
+$`b^{\eta-p}G=\beta^{\eta-1}\varrho^{p-1}(T+1)^pg_0+E`$ with
+$`|E|\le C\eta^{-1}(1+\beta^{\eta})`$, and
+
+```math
+\frac1{T+1}\int_0^{1/2}b^{\eta-p}G\,d\beta=\frac{T^{p-1}\Gamma(1+p)\Gamma(1-p)}{\eta^2}+O\Big(\frac1\eta\Big).
+```
+
+*Far half, $`b\le\tfrac12`$.* Put $`\xi=\varrho bx/\beta`$,
+$`0<x<X=\beta/(\varrho b)`$. Then $`\xi\beta+\varrho b\mu=\varrho b(x+\mu)`$ and
+
+```math
+b^{\eta-p}G(\beta)=\varrho^{\eta-1+p}\,\beta^{-1-p}\,b^{2\eta-1}\,h(\beta),\qquad
+h=\int_0^Xdx\int_0^1d\mu\;x^{p}\mu^{-p}(1-\mu)^{\eta-1}(x+\mu)^{\eta-2}\Big(1-\frac xX\Big)^{-p}\big((T+1)\beta+Tb\mu\big)^{p}.
+```
+
+Let
+
+```math
+h_0=\int_0^\infty dx\int_0^1d\mu\;x^{p}\mu^{-p}(1-\mu)^{\eta-1}(x+\mu)^{\eta-2}
+=B(1+p,1-p-\eta)\,B(\eta,\eta)
+=\frac{\Gamma(1+p)\Gamma(1-p-\eta)}{\Gamma(2-\eta)}\cdot\frac{\Gamma(\eta)^2}{\Gamma(2\eta)} ,
+```
+
+by the $`x`$ integral first, which gives $`\mu^{p+\eta-1}`$. This is the
+far-end coefficient of section 10 obtained independently:
+$`B(\eta,\eta)`$ is the two collinear limits $`\mu\to0`$ and $`\mu\to1`$.
+The differences between $`h`$ and $`(T+1)^ph_0`$ are: the tail $`x>X`$, at
+most $`C\eta^{-1}X^{\sigma+\eta-1}`$; the factor $`(1-x/X)^{-p}-1`$, at most
+$`C(1+|\tau|)\eta^{-1}X^{-\theta}`$ with
+$`\theta=\min(1,1-\sigma-\eta)-\epsilon`$ for a small fixed $`\epsilon>0`$
+(for $`x\le X/2`$ it is at most $`C|p|x/X`$, for $`x>X/2`$ the integrand is
+at most $`CX^{\sigma+\eta-2}`$ times an integrable function); and
+$`((T+1)\beta+Tb\mu)^p-(T+1)^p`$ and $`\beta^{-1-p}-1`$, each $`O(|p|b)`$
+times a quantity of order $`1/\eta`$. In each case the $`\mu`$ integral
+contributes $`B(1-\sigma,\eta)\le C/\eta`$. As $`X\ge1/(2\varrho b)`$,
+
+```math
+b^{\eta-p}G=\varrho^{\eta-1+p}(T+1)^ph_0\,b^{2\eta-1}+E',\qquad|E'|\le\frac{C(1+|\tau|)}{\eta}\,b^{2\eta-1+\theta},
+```
+
+and $`\int_0^{1/2}b^{2\eta-1}db=2^{-2\eta}/(2\eta)`$ with
+$`h_0=O(1/\eta)`$ gives the second term of the theorem plus
+$`O(1/\eta)`$. $`\blacksquare`$
+
+### 11.3 The other edge and the full integral
+
+The relabelling $`x_1\leftrightarrow x_2`$, $`x_3\leftrightarrow x_4`$
+exchanges $`s`$ and $`t`$, sends $`z\to1/z`$, and reverses $`p_1`$. It
+preserves the foliation by null hyperplanes orthogonal to $`p_1`$ and
+exchanges the two parts of the slab. So the piece for the edge $`(4,1)`$ is
+the piece for $`(2,3)`$ of the relabelled square: in the present units it
+is $`T^{\eta}A(-p;1/T)`$, and
+
+```math
+\text{full integral}=A(p;T)+T^{\eta}\,A(-p;1/T).
+```
+
+**Corollary (double pole from the Lorentzian domain).** By the lemma
+below, for the iterated integral defined at the start of this section,
+spacelike diagonals and the weight $`z^p`$,
+$`|\operatorname{Re}p|<1-\eta`$,
+
+```math
+st\int\frac{z^p}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}
+=-2\pi^2i\,\frac{4}{\eta^2}\,\frac{\sin\pi p}{\pi p}+O\Big(\frac1\eta\Big):
+```
+
+two units from each edge piece, one from each of its ends.
+
+**What the corollary uses.** The proposition identifies $`A`$ with the
+position-space edge piece for $`\operatorname{Re}p<0`$. The second piece
+needs $`A(-p)`$, that is $`\operatorname{Re}p>0`$. So at a given $`p`$ only
+one of the two pieces is identified directly, and the corollary needs the
+following lemma for the other. Without it the statement is: each edge
+piece carries two units on its own half strip.
+
+**Lemma (continuation).** The position-space edge piece is analytic in
+$`p`$ for $`-1<\operatorname{Re}p<1-\eta`$ and equals $`A(p;T)`$ there.
+
+*Proof.* At fixed $`(\beta,y)`$ write the keyhole integral as
+$`\oint_Hu_3^{-1-p}\varphi(u_3)\,du_3`$ times a phase, with
+
+```math
+\varphi(u_3)=(\rho+\beta u_3)^{p-1}(\rho+\beta u_3+\beta b)^{-1-p}\big((T+1)|y-y_*|^2+(T+\beta)u_3\big)^{p-1},
+```
+
+which is analytic near $`u_3\ge0`$ for $`\rho>0`$, $`y\ne y_*`$. Integrate
+by parts on $`H`$. The ends at infinity do not contribute, since
+$`u_3^{-p}\varphi\sim u_3^{-3}`$. So for $`p\ne0`$
+
+```math
+\oint_Hu_3^{-1-p}\varphi\,du_3=\frac1p\oint_Hu_3^{-p}\varphi'\,du_3,
+```
+
+and for $`\operatorname{Re}p<1`$ the circle on the right shrinks:
+
+```math
+\text{keyhole}=\frac{2i\sin\pi p}{p}\int_0^\infty u_3^{-p}\,\varphi'(u_3)\,du_3 .
+```
+
+For $`\operatorname{Re}p<0`$ this is the formula used in the proposition,
+by an ordinary integration by parts. $`\varphi'`$ is a sum of three terms,
+each $`\varphi`$ with one exponent lowered by one and a factor
+$`(p-1)\beta`$, $`-(1+p)\beta`$ or $`(p-1)(T+\beta)`$. Take moduli and
+apply to each term the reduction of the proposition: Feynman parameters
+with exponents $`(2-\sigma,1+\sigma,1-\sigma)`$, $`(1-\sigma,2+\sigma,1-\sigma)`$
+or $`(1-\sigma,1+\sigma,2-\sigma)`$, the $`y`$ integral, and
+$`\int_0^\infty u_3^{-\sigma}(M_0+c_1u_3)^{\sigma-3+\eta}du_3=M_0^{\eta-2}c_1^{\sigma-1}B(1-\sigma,2-\eta)`$,
+finite for $`\sigma<1`$. Here
+$`c_1=\beta(\xi_1+\xi_2)+\xi_3(T+\beta)`$. The result is the integrand of
+$`\mathcal J`$ at $`\sigma`$, in its homogeneous form, times
+$`\beta\xi_1/c_1`$, $`\beta\xi_2/c_1`$ or $`(T+\beta)\xi_3/c_1`$
+respectively. These three factors are non-negative and sum to 1. Since
+$`\mathcal J`$ converges for $`-1<\sigma<1-\eta`$, the integral of
+$`|u_3^{-p}\varphi'|`$ over $`(\beta,y,u_3)`$ is finite. It is locally
+bounded in $`p`$: the modulus of the integrand is the exponential of a
+function linear in $`\sigma`$, hence convex in $`\sigma`$ and bounded on a
+compact interval by the sum of its values at the two ends. By Tonelli and
+Fubini the iterated integral in the defined order exists and equals this
+absolutely convergent integral (the null set $`\rho=0`$ or $`y=y_*`$ is
+excluded), and an integral of a function holomorphic in $`p`$ with a
+locally bounded majorant is holomorphic. At $`p=0`$ the keyhole at fixed
+$`(\beta,y)`$ is entire in $`p`$, so the formula extends by continuity; it
+gives the residue. The piece equals $`A`$ for
+$`\eta-1<\operatorname{Re}p<0`$, and $`A`$ is analytic on the strip, so
+they agree on the strip. $`\blacksquare`$
+
+With the lemma the corollary holds for $`|\operatorname{Re}p|<1-\eta`$.
+The lemma was added after the first independent review of this section and
+was then refereed separately: the integration by parts, the phases, the
+three reductions and the logic were re-derived and found correct, and the
+keyhole identity was confirmed numerically for $`\operatorname{Re}p>0`$ to
+between $`10^{-14}`$ and $`10^{-27}`$. Independently of it, the identity
+$`A(p;T)+T^\eta A(-p;1/T)=`$ (the box) is confirmed numerically to 12
+digits below, where the box is computed by Mellin–Barnes.
+
+### 11.4 Numerical checks
+
+`edge_cube_integral`, `edge_piece`, `box_from_two_edges`. The box value is
+$`-2i\pi^{2+\eta}\,T^{\eta}N_\eta(p)/\eta^2`$ with $`N_\eta`$ the
+Mellin–Barnes form at $`s/t=1/T`$.
+
+| $`p`$ | $`\eta`$ | $`T`$ | (two edge pieces)/(box) |
+| --- | --- | --- | --- |
+| 0.30 | 0.25 | 1 | 1.000000000000 |
+| 0.15 | 0.10 | 1 | 1.000000000000 |
+| 0.40 | 0.05 | 1 | 1.000000000000 |
+| 0.30 | 0.20 | 3 | 1.000000 after the factor $`T^\eta`$ |
+| $`-0.25`$ | 0.10 | 0.4 | 1.000000 after the factor $`T^\eta`$ |
+| 0.35 | 0.10 | 2.5 | 1.000000 after the factor $`T^\eta`$ |
+
+The remainder, $`\eta\,(A-A_{\rm near}-A_{\rm far})/(-2\pi^2i)`$, with the
+closed forms of section 10:
+
+| $`p`$ | $`T`$ | $`\eta=0.2`$ | 0.1 | 0.05 | 0.025 | 0.0125 |
+| --- | --- | --- | --- | --- | --- | --- |
+| $`-0.3`$ | 1 | $`-0.584`$ | $`-0.055`$ | 0.177 | 0.287 | 0.341 |
+| 0.3 | 1 | $`-0.551`$ | $`-0.023`$ | 0.198 | 0.299 | 0.347 |
+| $`-0.3`$ | 3 | $`-0.825`$ | $`-0.346`$ | $`-0.142`$ | $`-0.046`$ | 0.000 |
+| 0.5 | 0.4 | $`-0.873`$ | $`-0.183`$ | 0.080 | 0.197 | 0.253 |
+| $`-0.6`$ | 2 | $`-1.885`$ | $`-0.958`$ | $`-0.671`$ | $`-0.551`$ | $`-0.495`$ |
+
+It converges in every row: the remainder is a single pole.
+
+### 11.5 What is and is not established
+
+Established, for the weight $`z^p`$, spacelike diagonals, and the iterated
+integral in the order $`\alpha`$, $`y_\perp`$, $`\beta`$ with
+$`\varepsilon\to0`$ innermost:
+
+- the integral is exactly two edge pieces (section 9);
+- each piece is given by the cube integral, positive for real $`p`$, on
+  the whole strip $`|\operatorname{Re}p|<1-\eta`$ (proposition and
+  continuation lemma);
+- the cube function equals its two end terms up to a single pole, with a
+  bound uniform in $`\eta`$ at fixed $`p`$ and $`T`$ (theorem);
+- each end term carries $`\sin\pi p/(\pi p)`$ (sections 8 and 10);
+- hence the double pole of the full integral is
+  $`4\sin\pi p/(\pi p)`$ (corollary).
+
+No Mellin–Barnes representation and no global contour is used. An
+independent review re-derived sections 9 to 11 and, separately, the
+continuation lemma, found no wrong sign, constant or exponent, and
+confirmed with its own code the two-edge theorem, the reduction at fixed
+$`\beta`$ against a three-dimensional position-space integral (ratio
+1.0000001), the remainder table with a fourth row at $`p=0.7`$, and the
+box identity at five points.
+
+Not established:
+
+- the benchmark weights: the Mellin superposition needs the corollary on
+  both lines $`\operatorname{Re}p=\pm\sigma`$ and an exchange of the $`p`$
+  integral with the iterated integral; the growth $`e^{2\pi|\tau|}`$ of the
+  bound then requires $`W-\delta'>2\pi`$ as before. This is not written
+  out;
+- a timelike diagonal: the table of half planes in section 9 and the
+  positivity used here change;
+- the limit $`\varepsilon\to0`$ taken after the outer integrals, and other
+  orders of integration;
+- the equality of this iterated integral with the integral over the global
+  contour of GATE_6_CONTOUR.
