@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **372 tests** and **63 worked example groups**, all passing
+- **380 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -89,7 +89,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 372 tests, about twenty minutes
+make test        # 380 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -103,6 +103,10 @@ PYTHONPATH=src python -m geocusp.solver two-loop              # three-loop coeff
 PYTHONPATH=src python -m geocusp.solver contour --region=+-   # survey of the contour, with the range of arg z
 PYTHONPATH=src python -m geocusp.solver certificate           # the inequalities the contour proof needs
 PYTHONPATH=src python -m geocusp.solver threshold --sigma 0.3 # convergence of |z^p|: needs |Re p| < eta
+PYTHONPATH=src python -m geocusp.solver cusp                  # the regulated cusp term of a weight, two ways
+PYTHONPATH=src python -m geocusp.solver edge-piece --exponent 0.3 --ratio 2.5   # an edge piece against the box
+PYTHONPATH=src python -m geocusp.solver slab --region=-+      # support and keyholes along a null direction
+PYTHONPATH=src python -m geocusp.solver interval --low 1.0 --high 1.2            # certificate in interval arithmetic
 PYTHONPATH=src python -m examples.lorentzian_all_cusps        # one example group
 ```
 
@@ -297,7 +301,11 @@ cycle on the weighted divisor, the Mellin–Barnes double pole, and the
 Lorentzian edge chain. It also handles the two-loop weight, surveys the
 integration contour in any of the three kinematic regions, evaluates the
 certificate of its conditions, and shows the convergence threshold for
-powers. It runs locally, with no server and no network access.
+powers. For the position-space derivation it evaluates the regulated cusp
+term of a weight, an edge piece with its two end terms and the remainder,
+the integral along a null direction with its keyholes in any kinematic
+region, and the certificate in interval arithmetic over a range of
+squares. It runs locally, with no server and no network access.
 The desktop window needs Tk; every function is also available from the
 command line as shown in [Quick start](#quick-start).
 
@@ -330,7 +338,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            372 tests
+tests/            380 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

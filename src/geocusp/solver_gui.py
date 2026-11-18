@@ -132,6 +132,7 @@ class SolverApp:
         for title, build in (("Functional solver", self.build_functional),
                              ("Lorentzian edge chain", self.build_edge),
                              ("Integration contour", self.build_contour),
+                             ("Position space", self.build_position),
                              ("CD weight at a point", self.build_cd),
                              ("Rim collision explorer", self.build_rim)):
             page = ttk.Frame(book, padding=12)
@@ -546,6 +547,116 @@ class SolverApp:
                   "of |z^p| diverges near the cusps. The proof works on lines inside the "
                   "regulator and moves them afterwards."),
             foreground=GOOD if r["converges"] else BAD)
+
+    # -- position-space derivation
+
+    def build_position(self, page):
+        left, right = self.panel(page)
+        ttk.Label(left, text="The derivation from the Lorentzian domain (CUSP_LOCAL_MODEL). "
+                             "The weight is the one set on the Functional solver tab.",
+                  wraplength=380, justify="left").grid(row=0, column=0, columnspan=3, sticky="w",
+                                                       pady=(0, 8))
+        idle = lambda: None
+        self.q = {"eta": Control(left, 1, "regulator η", .0125, .4, .1, idle, digits=4),
+                  "p": Control(left, 2, "exponent p (edge piece)", -.8, .8, .3, idle, digits=3),
+                  "T": Control(left, 3, "ratio T = t/s", .1, 10, 1., idle, digits=3)}
+        self.q_region = tk.StringVar(value="--")
+        ttk.Label(left, text="signs of s and t (slab)").grid(row=4, column=0, sticky="w", padx=(0, 8), pady=2)
+        ttk.Combobox(left, textvariable=self.q_region, values=tuple(solver.SLAB_REGIONS),
+                     state="readonly", width=8).grid(row=4, column=1, sticky="w", pady=2)
+        buttons = ttk.Frame(left)
+        buttons.grid(row=5, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        for column, (text, command) in enumerate((("Cusp term", self.position_cusp),
+                                                  ("Edge piece", self.position_edge),
+                                                  ("Null slab", self.position_slab))):
+            ttk.Button(buttons, text=text, command=command).grid(row=0, column=column, padx=(0, 6))
+        ttk.Label(left, text="Cusp term: η² × (cusp-local model) for the weight, by the formula on "
+                             "the path between the lips and by the Lorentzian product formula; both "
+                             "tend to M[F]. Edge piece: for z^p, the piece, its two end terms and the "
+                             "remainder, and the two pieces against the box. Null slab: the integral "
+                             "along a null edge direction vanishes outside a slab and is a sum of "
+                             "keyholes inside it.",
+                  style="Cap.TLabel", wraplength=380, justify="left").grid(
+            row=6, column=0, columnspan=3, sticky="w", pady=(10, 0))
+        self.q_table = Table(right, ("Quantity", "Meaning", "Value"), (230, 400, 190), 16)
+        self.q_table.grid(row=0, column=0, sticky="nsew")
+        self.q_verdict = self.note(right, 1)
+        self.q_verdict.configure(text="Press a button.")
+
+    def position_run(self, message, action):
+        self.root.configure(cursor="watch")
+        self.q_verdict.configure(text=message, foreground="")
+        self.root.update_idletasks()
+        try:
+            return action()
+        except (ValueError, ArithmeticError) as error:
+            self.q_verdict.configure(text=f"Solver error: {error}", foreground=BAD)
+            return None
+        finally:
+            self.root.configure(cursor="")
+
+    def position_cusp(self):
+        weight = self.weight()
+        r = self.position_run("Integrating ...", lambda: solver.cusp_term(weight, self.q["eta"].get()))
+        if r is None:
+            return
+        self.results["cusp"] = r
+        ok = "ok" if r["formulas_agree"] else "bad"
+        rows = [("Weight", "", r["weight"], ""),
+                ("Circle mean M[F]", "the limit", signed(r["circle_mean"], 7), ""),
+                ("Path between the lips", "section 7", signed(r["path_between_lips"][0], 7), ok),
+                ("Lorentzian product formula", "section 8", signed(r["lorentzian_product"][0], 7), ok),
+                ("(value − M[F]) / η", "stays bounded as η → 0", f"{r['difference_from_mean_over_eta']:+.4f}", "")]
+        if "closed_form" in r:
+            rows.append(("Closed form", "Gamma functions", signed(r["closed_form"][0], 7), ""))
+        self.q_table.fill(rows)
+        self.q_verdict.configure(
+            text=("The two formulas agree; the cusp term is M[F] plus a correction of order η."
+                  if r["formulas_agree"] else "The two formulas disagree."),
+            foreground=GOOD if r["formulas_agree"] else BAD)
+
+    def position_edge(self):
+        r = self.position_run("Integrating over the cube ...", lambda: solver.edge_piece_report(
+            self.q["p"].get(), self.q["eta"].get(), self.q["T"].get()))
+        if r is None:
+            return
+        self.results["edge_piece"] = r
+        ok = "ok" if r["two_pieces_equal_box"] else "bad"
+        self.q_table.fill([
+            ("Unit", "", r["unit"], ""),
+            ("Edge piece", "η² A / unit", f"{r['edge_piece']:+.6f}", ""),
+            ("Near end", "the cusp at the start of the edge", f"{r['near_end']:+.6f}", ""),
+            ("Far end", "the cusp at the end of the edge", f"{r['far_end']:+.6f}", ""),
+            ("Limit of each end", "sin(πp)/(πp)", f"{r['per_end_limit']:+.6f}", ""),
+            ("η × remainder", "bounded: a single pole", f"{r['eta_times_remainder']:+.6f}", ""),
+            ("Two edge pieces", "A(p;T) + T^η A(−p;1/T)", f"{r['two_pieces']:+.8f}", ok),
+            ("Box", "Mellin–Barnes", f"{r['box']:+.8f}", ok),
+        ])
+        self.q_verdict.configure(
+            text=("The two edge pieces add up to the box, and each end carries sin(πp)/(πp) "
+                  "up to terms of order η." if r["two_pieces_equal_box"] else
+                  "The two edge pieces do not add up to the box."),
+            foreground=GOOD if r["two_pieces_equal_box"] else BAD)
+
+    def position_slab(self):
+        weight = self.weight()
+        rows = self.position_run("Integrating along the null direction ...",
+                                 lambda: solver.slab_scan(weight, self.q_region.get()))
+        if rows is None:
+            return
+        self.results["slab"] = rows
+        table = []
+        for r in rows:
+            inside = ", ".join(r["keyholes_around"]) or "none"
+            value = "0" if r["vanishes"] else f"{r['alpha_integral'][0]:+.4f} {r['alpha_integral'][1]:+.4f}i"
+            table.append((f"β = {r['beta']:+.2f}", f"half planes {r['half_planes']}; keyholes: {inside}",
+                          value, "ok" if r["agree"] else "bad"))
+        self.q_table.fill(table)
+        good = all(r["agree"] for r in rows)
+        self.q_verdict.configure(
+            text=("Outside the slab the integral vanishes; inside it equals the sum of keyholes "
+                  "around the zeros shown." if good else "A row disagrees with its keyhole sum."),
+            foreground=GOOD if good else BAD)
 
     # -- CD weight
 

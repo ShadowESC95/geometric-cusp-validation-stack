@@ -654,7 +654,17 @@ serves in Lemma 9, and $`\omega`$ is taken 2% below the fixed point.
 | $`(+,-)`$ | 0.02 to 3.087 | 12 268 | $`-1342`$ to $`-1.0001`$ | all hold |
 | $`(-,+)`$ | 0.02 to 3.087 | 12 268 | $`-0.9999`$ to $`-0.00074`$ | all hold |
 
-On these ranges $`e\le0.093`$ and $`\mu_Q\le0.020`$. An earlier version
+On these ranges $`e\le0.093`$ and $`\mu_Q\le0.0201`$, with
+$`\tan(c_0+3e)\le0.66`$, so $`\mu_Q\tan(c_0+3e)\le0.014`$. For (H1) the value
+of $`\epsilon`$ is taken 1% below the floating-point gap and the
+contradiction is then verified in intervals at that value, which is all
+(H1) needs. The exact transverse norm is
+$`B^2=\max(1,|v|^2/(a\!\cdot b)^2)`$ in the notation below; the bound used
+is larger by at most 1. An independent review re-ran the three full
+covers, with every box passing, checked that boxes outside the ranges
+fail, and compared the interval version with the floating-point
+certificate line by line: no condition is missing and every comparison is
+in the safe direction. An earlier version
 covered only $`0.023\le s/t\le33.6`$ and the corresponding timelike ranges;
 it failed further out because of the way a transverse basis was chosen,
 not because of the conditions. The bound for $`B`$ is now in closed form:

@@ -229,3 +229,53 @@ def test_new_subcommands_print_json(capsys):
     assert '"all": true' in capsys.readouterr().out
     solver.main(["threshold", "--eta", "0.2", "--sigma", "0.3"])
     assert '"converges": false' in capsys.readouterr().out
+
+
+# ---- position-space derivation ----------------------------------------------
+def test_cusp_term_tends_to_the_circle_mean():
+    weight = solver.Weight((pi**2, 0, 1))
+    coarse, fine = solver.cusp_term(weight, .1), solver.cusp_term(weight, .025)
+    for r in (coarse, fine):
+        assert r["formulas_agree"]
+        assert 9 < r["difference_from_mean_over_eta"] < 12
+    assert abs(fine["path_between_lips"][0] - fine["circle_mean"]) < abs(coarse["path_between_lips"][0] - coarse["circle_mean"])
+
+
+def test_cusp_term_for_a_power_has_the_closed_form():
+    r = solver.cusp_term(solver.Weight((0.,), 1., .3), .1)
+    assert r["path_between_lips"][0] == pytest.approx(r["closed_form"][0], rel=1e-5)
+    with pytest.raises(ValueError):
+        solver.cusp_term(solver.Weight((1.,)), .7)
+
+
+def test_edge_piece_report():
+    r = solver.edge_piece_report(.3, .1, 2.5)
+    assert r["two_pieces_equal_box"]
+    assert r["two_pieces"] == pytest.approx(r["box"], rel=1e-8)
+    assert abs(r["eta_times_remainder"]) < 1
+    assert r["near_end"] == pytest.approx(r["per_end_limit"], rel=.4)
+    for bad in ((0., .1, 1.), (.1, .1, 1.), (.3, .1, -1.), (.95, .1, 1.)):
+        with pytest.raises(ValueError):
+            solver.edge_piece_report(*bad)
+
+
+@pytest.mark.parametrize("region,inside,outside", [("--", .4, 1.5), ("-+", 1.5, 2.6), ("+-", .8, 1.5)])
+def test_slab_scan(region, inside, outside):
+    rows = solver.slab_scan(solver.Weight((pi**2, 0, 1)), region, positions=(inside, outside))
+    assert all(r["agree"] for r in rows)
+    assert not rows[0]["vanishes"] and rows[0]["keyholes_around"]
+    assert rows[1]["vanishes"] and rows[1]["keyholes_around"] == []
+
+
+def test_interval_cover_from_the_solver():
+    r = solver.interval_cover("--", 1.0, 1.05, 25)
+    assert r["all"] and r["failed_count"] == 0
+    with pytest.raises(ValueError):
+        solver.interval_cover("--", 1.2, 1.0, 10)
+
+
+def test_position_space_subcommands_print_json(capsys):
+    solver.main(["edge-piece", "--exponent", "0.3", "--eta", "0.1"])
+    assert '"two_pieces_equal_box": true' in capsys.readouterr().out
+    solver.main(["interval", "--low", "1.0", "--high", "1.02", "--boxes", "10"])
+    assert '"all": true' in capsys.readouterr().out

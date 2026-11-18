@@ -130,6 +130,10 @@ PYTHONPATH=src python -m geocusp.solver two-loop        # about a minute; --no-e
 PYTHONPATH=src python -m geocusp.solver contour --points 5000 --region=-+
 PYTHONPATH=src python -m geocusp.solver certificate --region=+-
 PYTHONPATH=src python -m geocusp.solver threshold --eta 0.2 --sigma 0.3
+PYTHONPATH=src python -m geocusp.solver cusp --logs 9.8696044 0 1 --eta 0.05
+PYTHONPATH=src python -m geocusp.solver edge-piece --exponent 0.3 --eta 0.1 --ratio 2.5
+PYTHONPATH=src python -m geocusp.solver slab --region=-+
+PYTHONPATH=src python -m geocusp.solver interval --region=+- --low 0.02 --high 0.04 --boxes 80
 PYTHONPATH=src python -m geocusp.solver cd 0.35+0.8j
 PYTHONPATH=src python -m geocusp.solver rim --t 1 --lam 470 --s 0.27
 ```
@@ -147,3 +151,14 @@ of $`|z^p|`$ near the edges converges only for
 $`|\operatorname{Re}p|<\eta`$. The window has an "Integration contour" tab
 with the same three actions. Write regions that begin with a minus sign as
 `--region=-+`.
+
+Four commands belong to [CUSP_LOCAL_MODEL.md](CUSP_LOCAL_MODEL.md). `cusp`
+gives $`\eta^2`$ times the cusp-local model of a weight by the formula on
+the path between the lips and by the product formula from the Lorentzian
+domain, with the circle mean they tend to. `edge-piece` gives an edge piece
+of the full integral for $`z^p`$, its near-end and far-end terms, $`\eta`$
+times the remainder, and the two pieces against the box. `slab` gives the
+integral along a null edge direction at several positions: which zeros lie
+in which half plane, the value, and the sum of keyholes it equals.
+`interval` runs the certificate in interval arithmetic over a range of
+squares. The window has a "Position space" tab with the first three.

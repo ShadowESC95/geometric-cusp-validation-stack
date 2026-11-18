@@ -394,6 +394,123 @@ def convergence_threshold(eta: float = .2, sigma: float = .1) -> dict:
             "converges": bool(abs(sigma) < eta)}
 
 
+# ------------------------------------------------- position-space derivation
+
+SLAB_REGIONS = {"--": (-1.0, -1.7), "-+": (-1.0, 2.2), "+-": (1.0, -0.45)}
+
+
+def _numpy_weight(weight: Weight):
+    """The weight as a function of L = log z accepting numpy arrays."""
+    logs, amp, exp = weight.logs, weight.amplitude, weight.exponent
+
+    def f(L):
+        value = sum(c*L**k for k, c in enumerate(logs) if c)
+        return value+amp*np.exp(exp*L)+0*L if amp else value+0*L
+    return f
+
+
+def cusp_term(weight: Weight, eta: float = .05) -> dict:
+    """The regulated cusp term of docs/CUSP_LOCAL_MODEL.md for a weight.
+
+    eta^2 x (cusp-local model), by the formula on the path between the lips
+    (section 7) and by the product formula derived from the Lorentzian domain
+    (section 8). Both tend to the circle mean M[F] as eta -> 0.
+    """
+    from . import cusp_local as cl
+
+    if not 0 < eta < .45:
+        raise ValueError("eta must lie strictly between 0 and 0.45")
+    f = _numpy_weight(weight)
+    circle = cl.regulated_circle_formula(f, eta)
+    product = cl.lorentzian_product_formula(f, eta)
+    mean = closed_mean(weight)
+    result = {"weight": weight.describe(), "eta": eta, "circle_mean": mean,
+              "path_between_lips": [circle.real, circle.imag],
+              "lorentzian_product": [product.real, product.imag],
+              "difference_from_mean_over_eta": (circle.real-mean)/eta,
+              "formulas_agree": bool(abs(circle-product) < 3e-3*max(1., abs(circle)))}
+    if weight.amplitude and not any(weight.logs):
+        closed = complex(cl.triangle_closed_form(weight.exponent, eta))*weight.amplitude
+        result["closed_form"] = [closed.real, closed.imag]
+    return result
+
+
+def edge_piece_report(exponent: float = .3, eta: float = .1, ratio: float = 1.) -> dict:
+    """An edge piece of the full integral for F = z^p (section 11).
+
+    `ratio` is T = t/s for spacelike diagonals. Reports the piece, its two end
+    terms, eta times the remainder, and the sum of the two pieces against the
+    box computed by Mellin-Barnes.
+    """
+    from . import cusp_local as cl
+    from .lorentzian_edges import regulated_double_pole
+
+    if not 0 < eta < .45:
+        raise ValueError("eta must lie strictly between 0 and 0.45")
+    if not abs(exponent) < 1-eta:
+        raise ValueError("|p| must be below 1 - eta")
+    if abs(exponent) < 1e-6 or abs(abs(exponent)-eta) < 1e-6:
+        raise ValueError("p = 0 and |p| = eta are excluded by the quadrature; shift p slightly")
+    if not ratio > 0:
+        raise ValueError("the ratio T must be positive")
+    unit = -2j*pi**2
+    piece = cl.edge_piece(exponent, eta, ratio)
+    near, far = cl.edge_near_term(exponent, eta), cl.edge_far_term(exponent, eta, ratio)
+    total = cl.box_from_two_edges(exponent, eta, ratio)
+    box = -2j*pi**(2+eta)*ratio**eta*complex(regulated_double_pole(exponent, eta, 1/ratio))/eta**2
+    return {"exponent": exponent, "eta": eta, "ratio": ratio,
+            "unit": "-2 pi^2 i / eta^2",
+            "edge_piece": float((eta**2*piece/unit).real),
+            "near_end": float((eta**2*near/unit).real),
+            "far_end": float((eta**2*far/unit).real),
+            "per_end_limit": sinc(exponent),
+            "eta_times_remainder": float((eta*(piece-near-far)/unit).real),
+            "two_pieces": float((eta**2*total/unit).real),
+            "box": float((eta**2*box/unit).real),
+            "two_pieces_equal_box": bool(abs(total-box) < 1e-7*abs(box))}
+
+
+def slab_scan(weight: Weight, region: str = "--", positions=(-2.5, -1., -.3, .2, .4, .8, 1.5, 2., 2.6)) -> list:
+    """The alpha integral of the full integrand at several beta (section 9, 14).
+
+    For each position: which zeros lie in which half plane, the integral
+    along the null direction, and the sum of keyholes it equals.
+    """
+    from . import cusp_local as cl
+
+    if region not in SLAB_REGIONS:
+        raise ValueError("region must be one of "+", ".join(SLAB_REGIONS))
+    s, t = SLAB_REGIONS[region]
+    f = _numpy_weight(weight)
+    rows = []
+    for beta in positions:
+        if beta in (0., 1.) or abs(t+beta*s) < 1e-9:
+            continue
+        direct = cl.general_light_cone_integral(f, beta, .35, .3, s, t)
+        keyholes, group, pattern = cl.general_keyhole_sum(f, beta, .35, .3, s, t)
+        rows.append({"beta": float(beta), "half_planes": pattern, "keyholes_around": group,
+                     "alpha_integral": [direct.real, direct.imag],
+                     "keyhole_sum": [keyholes.real, keyholes.imag],
+                     "vanishes": bool(abs(direct) < 1e-8),
+                     "agree": bool(abs(direct-keyholes) <= 1e-8+1e-5*abs(direct))})
+    return rows
+
+
+def interval_cover(region: str = "--", low: float = 1.0, high: float = 1.2, boxes: int = 200) -> dict:
+    """The contour certificate in interval arithmetic over a range of squares."""
+    from . import certificate_iv as ci
+
+    if region not in REGIONS:
+        raise ValueError("region must be one of "+", ".join(REGIONS))
+    if not 0 < low < high < pi:
+        raise ValueError("need 0 < low < high < pi")
+    if not 1 <= boxes <= 20000:
+        raise ValueError("boxes must lie between 1 and 20000")
+    result = ci.cover(region, low, high, boxes)
+    result["failed"] = [[lo, hi, names] for lo, hi, names in result["failed"]]
+    return result
+
+
 # ---------------------------------------------------------------- CD weight
 
 def cd_weight(z: complex, points: int = 3000) -> complex:
@@ -529,6 +646,29 @@ def main(argv=None) -> None:
     thr.add_argument("--eta", type=float, default=.2)
     thr.add_argument("--sigma", type=float, default=.1, help="Re p")
 
+    cus = sub.add_parser("cusp", help="the regulated cusp term for a weight, two ways")
+    cus.add_argument("--logs", type=float, nargs="*", default=[pi**2, 0, 1])
+    cus.add_argument("--amplitude", type=float, default=0.)
+    cus.add_argument("--exponent", type=float, default=0.)
+    cus.add_argument("--eta", type=float, default=.05)
+
+    edp = sub.add_parser("edge-piece", help="an edge piece for z^p: end terms, remainder, box check")
+    edp.add_argument("--exponent", type=float, default=.3)
+    edp.add_argument("--eta", type=float, default=.1)
+    edp.add_argument("--ratio", type=float, default=1., help="T = t/s, spacelike diagonals")
+
+    slb = sub.add_parser("slab", help="the integral along a null direction: support and keyholes")
+    slb.add_argument("--logs", type=float, nargs="*", default=[pi**2, 0, 1])
+    slb.add_argument("--amplitude", type=float, default=0.)
+    slb.add_argument("--exponent", type=float, default=0.)
+    slb.add_argument("--region", choices=tuple(SLAB_REGIONS), default="--")
+
+    ivc = sub.add_parser("interval", help="the contour certificate in interval arithmetic")
+    ivc.add_argument("--region", choices=tuple(REGIONS), default="--")
+    ivc.add_argument("--low", type=float, default=1.0)
+    ivc.add_argument("--high", type=float, default=1.2)
+    ivc.add_argument("--boxes", type=int, default=200)
+
     cd = sub.add_parser("cd", help="integrate the CD weight at a complex z")
     cd.add_argument("z", type=complex, help="for example 0.35+0.8j")
 
@@ -544,7 +684,7 @@ def main(argv=None) -> None:
         except ImportError as error:
             parser.error(f"the desktop window needs Tk and Matplotlib ({error}); install your "
                          "platform's Tk package for Python, or use the functional, edge, "
-                         "two-loop, contour, certificate, threshold, cd and rim subcommands")
+                         "two-loop, contour, certificate, threshold, cusp, edge-piece, slab, interval, cd and rim subcommands")
         run()
         return
     try:
@@ -564,6 +704,14 @@ def main(argv=None) -> None:
             result = contour_certificate(args.region, args.angle)
         elif args.command == "threshold":
             result = convergence_threshold(args.eta, args.sigma)
+        elif args.command == "cusp":
+            result = cusp_term(Weight(tuple(args.logs) or (0.,), args.amplitude, args.exponent), args.eta)
+        elif args.command == "edge-piece":
+            result = edge_piece_report(args.exponent, args.eta, args.ratio)
+        elif args.command == "slab":
+            result = slab_scan(Weight(tuple(args.logs) or (0.,), args.amplitude, args.exponent), args.region)
+        elif args.command == "interval":
+            result = interval_cover(args.region, args.low, args.high, args.boxes)
         elif args.command == "cd":
             result = solve_cd(args.z)
         else:

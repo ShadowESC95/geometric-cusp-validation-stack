@@ -1699,23 +1699,41 @@ timelike pair the two cones meet in a compact sphere, which is harmless.
 - For $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ any $`W`$ is allowed, and (D)
   gives $`|\operatorname{Im}L|\le3\pi+4e`$.
 - For $`\bar F^{(2)}`$, $`W=3\pi-\delta`$, and the bound of Lemma Q is needed
-  along the whole family and with $`\varepsilon>0`$. It holds. Replace
-  $`V`$ by $`\lambda V`$, $`0<\lambda\le1`$: if the corner configuration
-  occurred, then as in Lemma Q $`V^2<0`$, $`|x_{02}^2|<\lambda^2|V^2|`$ and
-  $`|2\lambda V\!\cdot n|+\varepsilon\le\tan\gamma\,\lambda^2|V^2|`$, since
-  $`V\!\cdot n\le0`$ near the cone and $`\varepsilon`$ only adds to the
-  modulus of the imaginary part. By the claim of Lemma Q,
-  $`\lambda^2|V^2|\le\lambda\,\mu_Q\,|2\lambda V\!\cdot n|`$, so
-  $`|2\lambda V\!\cdot n|\le\mu_Q\tan\gamma\,|2\lambda V\!\cdot n|`$, which
-  forces $`V\!\cdot n=0`$ and then $`V^2=0`$, a contradiction. So
-  $`|\arg z|\le3\pi-0.3`$ along the family and with $`\varepsilon>0`$.
+  along the whole family, $`0\le\lambda\le1`$, and with $`\varepsilon>0`$. It
+  holds. The displaced invariant is
+  $`x_{0i}^2-\lambda^2V^2+i(2\lambda V\!\cdot n-\varepsilon)`$, and (D) is
+  monotone in the amplitude, so $`e`$ and $`\gamma=c_0+3e`$ are unchanged.
+  Suppose the corner configuration occurred. For $`\lambda=0`$ it requires
+  $`w>0`$ and $`w<0`$ at once. For $`\lambda>0`$, as in Lemma Q, the signs
+  of the real parts give $`V^2<0`$ and $`|x_{02}^2|<\lambda^2|V^2|`$; the
+  displacement $`\varepsilon`$ does not enter this.
+  - *For $`r\ge2R`$* the proof of Lemma Q shows that $`V^2<0`$ and
+    $`|x_{02}^2|\le|V^2|`$ cannot both hold, and here
+    $`|x_{02}^2|<\lambda^2|V^2|\le|V^2|`$.
+  - *For $`r<2R`$*, $`|x_{02}^2|<\lambda^2|V^2|\le v^2<\delta_0/2`$ by (D), so
+    the point is near the cone and $`V\!\cdot n\le0`$ there, by (A) in the
+    inner zone and by (C1), (C2) in the blend zone. The imaginary part then
+    has modulus $`|2\lambda V\!\cdot n|+\varepsilon`$, and the corner requires
+    $`|2\lambda V\!\cdot n|+\varepsilon\le\tan\gamma\,\lambda^2|V^2|`$. By the
+    claim of Lemma Q, which applies because $`|x_{02}^2|\le|V^2|`$,
+    $`\lambda^2|V^2|\le\lambda\,\mu_Q\,|2\lambda V\!\cdot n|`$. So
+    $`(1-\mu_Q\tan\gamma)\,|2\lambda V\!\cdot n|+\varepsilon\le0`$, which is
+    impossible for $`\varepsilon>0`$.
+
+  So $`|\arg z|\le3\pi-0.3`$ along the family and with $`\varepsilon>0`$.
+  This uses (Q1) and (Q3) for the $`D`$-dimensional field, in addition to
+  the hypotheses listed in Theorem 13.3.
 
 So for the three benchmark weights the contour integral equals
 $`\lim_{\varepsilon\to0}I_\varepsilon`$ in the timelike regions as well.
 Its double pole is $`4M[F]`$ by the contour route. That route rests on
 the certificate, Proposition 7, Proposition 8 with Lemma 14, and steps A
-to D of GATE_6_BOUNDS section 5. The bullet for $`\bar F^{(2)}`$ was written
-after the review of this section and has not itself been reviewed.
+to D of GATE_6_BOUNDS section 5. An independent review re-derived the
+bullet for $`\bar F^{(2)}`$ step by step and asked for the two zones to be
+treated separately, as they now are. On four squares with 11 892 points
+each, for $`\lambda\in\{0.1,0.5,1\}`$ and
+$`\varepsilon\in\{10^{-9},10^{-6},10^{-3}\}`$, it found
+$`|\arg z|/\pi\le2.000003`$, against the bound 2.9045.
 
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above
