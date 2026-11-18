@@ -387,3 +387,26 @@ def test_continued_piece_carries_two_units_and_a_bounded_remainder(p, rho, side)
     assert abs(scaled[-1] - scaled[-2]) < 0.5        # eta (A - 2 sinc/eta^2) converges
     with pytest.raises(ValueError):
         cl.edge_piece_one_dim(0.3, 0.1, -0.5)
+
+
+@pytest.mark.parametrize("p,eta,T", [(0.3, 0.31, 2.2), (-0.4, 0.2, 3.0)])
+def test_direct_timelike_computation_equals_the_two_continued_pieces(p, eta, T):
+    """No contour, no Mellin-Barnes, no continuation in T on the left side."""
+    one, two = cl.timelike_direct(p, eta, T)
+    first, second = cl.timelike_two_edges(p, eta, T, sigma=1)
+    assert abs(one + two - complex(first + second)) < 1e-5 * abs(first + second)
+    # the other side of the cut is not what the direct computation gives
+    f2, s2 = cl.timelike_two_edges(p, eta, T, sigma=-1)
+    assert abs(one + two - complex(f2 + s2)) > 0.1 * abs(f2 + s2)
+    with pytest.raises(ValueError):
+        cl.timelike_direct(p, eta, 0.5)
+
+
+@pytest.mark.parametrize("p,eta,T", [(0.3, 0.31, 2.2), (0.15, 0.2, 3.0)])
+def test_timelike_keyhole_piece_is_the_second_continued_piece(p, eta, T):
+    piece = cl.timelike_keyhole_piece(p, eta, T)
+    first, second = cl.timelike_two_edges(p, eta, T, sigma=1)
+    assert abs(piece - complex(second)) < 1e-3 * abs(second)
+    # and the rest of the direct computation is the first piece
+    one, two = cl.timelike_direct(p, eta, T)
+    assert abs(one + two - piece - complex(first)) < 2e-3 * abs(first)

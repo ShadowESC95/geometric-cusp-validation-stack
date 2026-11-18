@@ -63,6 +63,10 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     (section 11.5). Its continuation to a timelike diagonal converges
     absolutely and carries two units, for $`z^p`$ and, by superposition,
     for the benchmark weights. The two continued pieces add up to the box.
+11. With a timelike diagonal the integral is also computed directly in
+    those kinematics, and is proved there to be the sum of the two
+    continued pieces: the second keyhole piece is carried onto the second
+    edge piece by an explicit change of variables (section 14).
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -1948,6 +1952,218 @@ each, for $`\lambda\in\{0.1,0.5,1\}`$ and
 $`\varepsilon\in\{10^{-9},10^{-6},10^{-3}\}`$, it found
 $`|\arg z|/\pi\le2.000003`$, against the bound 2.9045.
 
+**A direct computation in timelike kinematics.** The total can also be
+computed directly for $`s=-1`$, $`t=T>1`$, without the contour, without
+Mellin–Barnes and without continuing in $`T`$. Each invariant carries
+$`-i\varepsilon`$ and $`z^p`$ is on the Feynman branch, so the integrand is
+$`e^{-i\pi p}T^{-p}\,w^{p-1}u_1^{-1-p}u_3^{-1-p}u_4^{p-1}`$ with
+$`w=x_{02}^2`$, $`u_i=x_{0i}^2`$. The trick is to choose, in each range of
+$`\beta`$, a closing of the $`\alpha`$ contour on which no cut crosses
+another.
+
+*Region I, $`0<\beta<1`$.* The zeros of $`w`$ and $`u_1=w-\beta`$ lie in
+one half plane and those of $`u_3,u_4`$ in the other. Close around the
+first pair. Their monodromies are $`e^{2\pi ip}`$ and $`e^{-2\pi ip}`$, so
+the two cuts merge into the compact segment $`0<w<\beta`$, and the
+contour is a closed curve around it. With $`w=\beta a`$,
+
+```math
+\int d\alpha\,(\dots)=-2i\sin(\pi p)\,e^{-i\pi p}T^{-p}\,\beta^{-2}\int_0^1da\,a^{p-1}(1-a)^{-1-p}\,X^{-1-p}Z^{\,p-1},
+```
+
+```math
+X=\frac{|y|^2}{\beta}+ab>0,\qquad Z=\frac T\beta|y-y_0|^2-(T-\beta)(1-a)+i0,\qquad|y_0|^2=\frac{\beta^2(T-1)}{T},
+```
+
+where $`u_3=-X`$ and $`u_4=-Z`$; the end-point integral is understood by
+continuation in the two exponents, as for any closed contour around a
+segment. One Feynman parameter $`\xi`$ combines $`X`$ and $`Z`$, which
+have quadratic parts of the same sign, and the transverse integral gives
+$`\pi^{1+\eta}\Gamma(1-\eta)\Lambda^{-1-\eta}(M+i0)^{\eta-1}`$ with
+$`\Lambda=m/\beta`$, $`m=\xi+(1-\xi)T`$ and
+
+```math
+M=M_0+M_1a,\qquad M_1=m-\beta,\qquad M_0=-\frac{(1-\xi)T}{m}\,M_1 .
+```
+
+The ratio $`-M_1/M_0=m/((1-\xi)T)`$ does not depend on $`\beta`$. The
+$`a`$ integral is a hypergeometric function at that ratio, which is
+larger than 1, on the upper side of its cut; the $`\beta`$ integral
+factors off. The result is a single integral:
+
+```math
+I_{\rm I}=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,e^{i\pi(\eta-p)}T^{-p}\int_0^1d\xi\,\xi^p(1-\xi)^{-p}\,m^{-1-\eta}
+\Big(\frac{(1-\xi)T}{m}\Big)^{\eta-2}{}_2F_1\Big(2-\eta,1+p;2;\frac{m}{(1-\xi)T}+i0\Big)\,h(m),
+```
+
+with $`h(m)=\int_0^1\beta^{\eta-1}(m-\beta)^{\eta-1}d\beta`$.
+
+*Region II, $`1<\beta<T`$.* Only the zero of $`u_4`$ lies in its half
+plane. The keyhole around it can be laid along $`u_4=(T-\beta)\theta`$,
+$`\theta>0`$, where
+
+```math
+u_1=-P,\quad w=\beta-P,\quad u_3=-R,\qquad P=A|y-y_0|^2+\beta\theta,\quad R=A'|y-y_1|^2+(\beta-1)\theta,
+```
+
+$`A=T/(T-\beta)`$, $`A'=(T-1)/(T-\beta)`$, $`|y_1|^2=(1-\beta)^2T/(T-1)`$.
+Two Feynman parameters combine the three factors; the cross term
+simplifies because $`AA'|y_0-y_1|^2=1`$. The $`\theta`$ integral is a Beta
+function and one parameter integral is again the same hypergeometric
+function above its cut. What is left is a double integral over
+$`\beta`$ and one parameter $`\chi`$:
+
+```math
+I_{\rm II}=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,e^{i\pi(\eta-p)}T^{-p}\int_1^Td\beta\,(T-\beta)^{p-1}\int_0^1d\chi\,
+\chi^{\eta-1}(1-\chi)^p\Lambda_2^{-1-\eta}N_1^{-p}|g|^{\eta-2}\,{}_2F_1\Big(2-\eta,1+p;2;\frac{\beta}{|g|}+i0\Big),
+```
+
+$`\Lambda_2=(T-1+\chi)/(T-\beta)`$, $`N_1=\chi\beta+(1-\chi)(\beta-1)`$,
+$`g=(1-\chi)/\Lambda_2-\beta<0`$.
+
+*Result.* `timelike_direct` evaluates $`st\,(I_{\rm I}+I_{\rm II})`$. It
+equals the sum of the two continued pieces on the side $`t-i0`$, with no
+constant fitted, to between $`10^{-6}`$ and $`10^{-8}`$ (the tolerance of
+the quadrature) at eight points:
+$`(p,\eta,T)=(0.3,0.3,2.2)`$, $`(0.3,0.3,3.5)`$, $`(0.3,0.3,1.4)`$,
+$`(0.15,0.2,2.2)`$, $`(0.45,0.35,2.8)`$, $`(0.2,0.1,5.0)`$,
+$`(0.6,0.2,1.7)`$ and $`(-0.4,0.2,3.0)`$. Against the other side the ratio
+is $`0.71+0.70i`$ at the first point. So the side found by the review is
+confirmed by an independent computation, and the identification of the
+total with the two continued pieces no longer rests on the contour
+alone.
+
+**Proof that the timelike integral is the sum of the two continued
+pieces.** The two regions above are convenient for computing the total.
+For the proof a different splitting of the same $`\alpha`$ integral is
+used, into the two edge pieces themselves. Take $`s=-1`$, $`t=T>1`$.
+
+*Step 1: two keyholes that do not interlock.* For $`0<\beta<1`$ the zeros
+$`\alpha_3`$ of $`u_3`$ and $`\alpha_4`$ of $`u_4`$ lie in the same half
+plane. Lay the cut from $`\alpha_3`$ along $`u_3>0`$ and the cut from
+$`\alpha_4`$ along $`u_4<0`$. At $`u_4=0`$ one has
+$`u_3=-(T-1)|y+y_*|^2/(T-\beta)\le0`$, so $`\alpha_4`$ lies on the side
+$`u_3<0`$ of $`\alpha_3`$: the two rays point away from each other and
+never overlap. On the first ray $`u_4>0`$, $`w<0`$, $`u_1<0`$ (the piece
+that works). On the second, $`u_3<0`$, and $`w`$, $`u_1`$ have zeros in
+the other half plane, so they take their Feynman values. For
+$`1<\beta<T`$ only $`\alpha_4`$ is in its half plane and the same ray
+serves, with $`u_3`$ now also at its Feynman value. So
+
+```math
+\int d\alpha\,(\dots)=K_3\,[0<\beta<1]+K_4\,[0<\beta<T],
+```
+
+with each keyhole evaluated on the branch continued from the real axis.
+$`P_{23}=\int K_3`$ is the piece that works, equal to $`A(p;\varrho)`$ with
+$`\varrho=T/(T-1)>1`$.
+
+*Step 2: the second keyhole.* On $`u_4=-(T-\beta)\tau`$, $`\tau>0`$,
+
+```math
+K_4=-2i\sin(\pi p)\,T^{-p}(T-\beta)^{p-1}\int_0^\infty d\tau\,\tau^{p-1}\,(\tilde P+i0)^{-1-p}(\tilde P-\beta+i0)^{p-1}(\tilde R+i0)^{-1-p},
+```
+
+$`\tilde P=A|y-y_0|^2-\beta\tau`$, $`\tilde R=A'|y-y_1|^2+(1-\beta)\tau`$, with
+$`u_1=-\tilde P`$, $`w=\beta-\tilde P`$, $`u_3=-\tilde R`$. The three forms
+have quadratic parts of the same sign and the same $`+i0`$, so two
+Feynman parameters $`\zeta,\chi`$ combine them, the transverse integral
+is elementary, the $`\tau`$ integral is a Beta function
+(for $`\operatorname{Re}p>0`$; both sides are analytic in $`p`$) and the
+$`\zeta`$ integral is Euler's. With $`\omega=1-\beta-\chi`$,
+
+```math
+P_{41}=-\frac{2i\sin\pi p}{p}\,\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\,\mathcal P,\qquad
+\mathcal P=\int_0^Td\beta\int_0^1d\chi\,(T-\beta)^{p+\eta}\chi^{\eta-1}(1-\chi)^p(T-1+\chi)^{-1-\eta}
+(\omega+i0)^{-p}(g+i0)^{\eta-2}\,{}_2F_1\Big(2-\eta,1+p;2;\frac{-\beta}{g+i0}\Big),
+```
+
+$`g=T\omega/(T-1+\chi)`$. Both the coefficient of $`\tau`$ and the constant
+term are proportional to $`\omega`$, which is why one variable carries
+the whole prescription.
+
+*Step 3: Pfaff's transformation.* With $`z=-\beta/(g+i0)`$,
+$`1-z=(1-\chi)(T-\beta)/(T(\omega+i0))`$ and
+$`z/(z-1)=Y:=\beta(T-1+\chi)/((1-\chi)(T-\beta))`$, taken below its cut
+where $`Y>1`$, which is where $`\omega<0`$. So
+
+```math
+\mathcal P=\int_0^Td\beta\int_0^1d\chi\,(T-\beta)^{p+2\eta-2}\chi^{\eta-1}(1-\chi)^{p+\eta-2}(T-1+\chi)^{1-2\eta}(\omega+i0)^{-p}\,{}_2F_1(2-\eta,1-p;2;Y-i0).
+```
+
+*Step 4: change of variables.* Put
+
+```math
+\beta'=\frac\beta T,\qquad\mu=\frac{(T-1)(1-\chi)}{T-1+\chi},
+```
+
+a bijection of $`(0,T)\times(0,1)`$ onto the unit square, with
+$`1-\mu=\chi T/(T-1+\chi)`$. Let $`\varrho_2=-1/(T-1)`$ and $`b'=1-\beta'`$.
+Then
+
+```math
+\varrho_2b'\mu=-\frac{(T-\beta)(1-\chi)}{T(T-1+\chi)},\qquad\beta'+\varrho_2b'\mu=-\frac{\omega}{T-1+\chi},\qquad-\frac{\beta'}{\varrho_2b'\mu}=Y .
+```
+
+With $`\varrho_2`$ read as $`\varrho_2-i0`$ the three prescriptions agree
+with those of $`\mathcal P`$: $`(\beta'+\varrho_2b'\mu)^{-p}=e^{i\pi p}(T-1+\chi)^p(\omega+i0)^{-p}`$,
+the argument of the hypergeometric function is $`Y-i0`$, and
+$`(\varrho_2b'\mu)^{\eta-2}`$ carries $`e^{-i\pi\eta}`$. Collecting powers
+(those of $`T-\beta`$, $`\chi`$, $`1-\chi`$, $`T-1+\chi`$ and $`\omega`$ match
+exactly; the powers of $`T`$ and $`T-1`$ are $`T^{1-p-\eta}(T-1)^{1+p}`$),
+
+```math
+\mathcal P=\frac{e^{i\pi(\eta-p)}\,T^{p+\eta-1}(T-1)^{-1-p}}{\Gamma(1+p)\Gamma(1-p)}\;K_{-p}(\varrho_2-i0),
+```
+
+where $`K_{-p}`$ is the cube integral of "One variable" with $`p\to-p`$,
+in the form it takes after the $`\xi`$ integral of section 11.5:
+
+```math
+K_{-p}(\varrho)=\Gamma(1+p)\Gamma(1-p)\int_0^1d\beta'\int_0^1d\mu\,b'^{\eta+p}\mu^{p}(1-\mu)^{\eta-1}(\varrho b'\mu)^{\eta-2}
+\,{}_2F_1\Big(2-\eta,1-p;2;-\frac{\beta'}{\varrho b'\mu}\Big)(\beta'+\varrho b'\mu)^{-p}.
+```
+
+*Step 5: assembling.* With $`\sin\pi p/p=\pi/(\Gamma(1+p)\Gamma(1-p))`$ and
+$`st=-T`$,
+
+```math
+st\,P_{41}=-\frac{2i\pi^{2+\eta}\Gamma(2-\eta)}{\Gamma(1+p)^2\Gamma(1-p)^2}\;\big(Te^{i\pi}\big)^{\eta}\,\varrho_2^{\,1+p}\,K_{-p}(\varrho_2),\qquad\varrho_2=\frac{e^{-i\pi}}{T-1},
+```
+
+which is $`T_r^{\eta}A(-p;1/T_r)`$ at $`T_r=Te^{i\pi}`$ with
+$`1-\varrho=1/(T_r+1)`$ approached from below: the second continued piece
+on the side $`t-i0`$, exactly as in `timelike_two_edges`. The integral
+for $`K_{-p}(\varrho_2-i0)`$ is the boundary value of the analytic function
+$`K_{-p}(\varrho)`$ from $`\operatorname{Im}\varrho<0`$: for
+$`\operatorname{Im}\varrho<0`$ nothing vanishes, and at the boundary the
+only singularity is where $`\beta'+\varrho b'\mu=0`$, with the combined
+exponent $`\eta-1`$, which is integrable uniformly. So by section 11.5
+
+```math
+st\int\frac{z^p}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=A\big(p;\tfrac{T}{T-1}\big)+T_r^{\eta}A\big(-p;\tfrac{1}{T_r}\big)\Big|_{t-i0}
+=-2\pi^2i\,\frac{4}{\eta^2}\,\frac{\sin\pi p}{\pi p}+O\Big(\frac1\eta\Big)\qquad(s<0<-s<t),
+```
+
+derived in timelike kinematics, in position space, with no contour
+deformation in $`x_0`$ and no Mellin–Barnes. $`\blacksquare`$
+
+Numerically, `timelike_keyhole_piece` evaluates $`st\,P_{41}`$ from
+$`\mathcal P`$. It equals the second continued piece to between
+$`10^{-5}`$ and $`4\times10^{-5}`$ (the quadrature) at
+$`(p,\eta,T)=(0.3,0.31,2.2)`$, $`(0.15,0.2,3.0)`$, $`(0.45,0.35,1.6)`$,
+$`(0.2,0.1,5.0)`$, $`(-0.4,0.2,3.0)`$ and $`(-0.2,0.35,1.8)`$, and the total
+of the direct computation minus it equals the first piece.
+
+What this covers. The iterated integral (the null direction first, then
+the transverse space, then $`\beta`$) for $`z^p`$ in the region
+$`s<0<t`$ with $`t>|s|`$. The first piece uses the continuation lemma of
+section 11.3 in $`p`$, as before. The other timelike region, $`s>0`$,
+follows by the relabelling of section 11.3, which exchanges the two
+pieces; I have not written it out separately. The benchmark weights
+follow by the superposition above. The steps were checked numerically
+piece by piece, and the proof has not yet been independently reviewed.
+
 **Position.** With a timelike diagonal the position-space argument gives
 the exact slab and keyhole structure and, with the cut convention above
 and for the weight $`z^p`$, two of the four units directly (the
@@ -1959,6 +2175,6 @@ equals the second keyhole piece only because the contour route fixes the
 total. No
 oscillatory estimate is needed: I had thought one was, because the cube
 integrand is singular there, but the singularity disappears once two of
-the three integrals are done. What is still indirect is the
-identification of the total with the Feynman integral in those regions,
-which uses the contour and the parametric form.
+the three integrals are done. The identification of the total with the
+two continued pieces is proved above for the region $`s<0<t`$, and
+confirmed there by a direct computation organised differently.

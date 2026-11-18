@@ -693,3 +693,149 @@ def timelike_two_edges(p, eta, modulus, sigma: int = -1, dps: int = 25):
         first = edge_piece_one_dim(p, eta, rho, side=sigma if rho < 0 else 0, dps=dps)
         second = edge_piece_one_dim(-mp.mpf(p), eta, other, side=-sigma if other < 0 else 0, dps=dps)
         return first, modulus ** mp.mpf(eta) * mp.expjpi(sigma * mp.mpf(eta)) * second
+
+
+# --------------------------------------------------------------------------
+# A timelike diagonal, computed directly (section 14)
+# --------------------------------------------------------------------------
+def _hyp_above_cut(a, b, c, X, delta):
+    """2F1(a, b; c; X + i0) for X > 1, with delta = X - 1 given separately."""
+    import numpy as np
+    from scipy.special import gamma, hyp2f1
+
+    e = c - a - b
+    if delta < 0.5 and abs(e - round(e)) > 1e-6:
+        return (gamma(c) * gamma(e) / (gamma(c - a) * gamma(c - b)) * hyp2f1(a, b, a + b - c + 1, -delta)
+                + delta ** e * np.exp(-1j * np.pi * e) * gamma(c) * gamma(-e) / (gamma(a) * gamma(b))
+                * hyp2f1(c - a, c - b, e + 1, -delta))
+    z = 1.0 / X
+    return (gamma(c) * gamma(b - a) / (gamma(b) * gamma(c - a)) * X ** (-a) * np.exp(1j * np.pi * a)
+            * hyp2f1(a, a - c + 1, a - b + 1, z)
+            + gamma(c) * gamma(a - b) / (gamma(a) * gamma(c - b)) * X ** (-b) * np.exp(1j * np.pi * b)
+            * hyp2f1(b, b - c + 1, b - a + 1, z))
+
+
+def timelike_direct(p, eta, T, rel=1e-6):
+    """s t times the iterated integral of z^p / (x01^2 x02^2 x03^2 x04^2) for
+    s = -1, t = T > 1, computed in those kinematics.
+
+    Region I, 0 < beta < 1: the alpha contour is closed around the compact
+    cut between the zeros of x02^2 and x01^2. Region II, 1 < beta < T: a
+    keyhole around the zero of x04^2. The transverse integral is done with
+    Feynman parameters and the remaining ones in closed form, down to a
+    single integral for region I and a double integral for region II. No
+    contour deformation in x0, no Mellin-Barnes, no continuation in T.
+    Returns (region I, region II), each multiplied by s t = -T.
+    Parameters with p = eta or p + eta = 1 are degenerate for the
+    hypergeometric connection formulas used; shift them slightly.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+    from scipy.special import gamma
+
+    if not T > 1:
+        raise ValueError("this region needs T > 1")
+    if abs(p) < 1e-9:
+        raise ValueError("p = 0 is excluded by the formulas used; shift it slightly")
+
+    def cquad(f, lo, hi):
+        return (quad(lambda x: f(x).real, lo, hi, limit=60, epsabs=0, epsrel=rel)[0]
+                + 1j * quad(lambda x: f(x).imag, lo, hi, limit=60, epsabs=0, epsrel=rel)[0])
+
+    front = np.pi ** (1 + eta) * gamma(2 - eta) * T ** (-p) * np.sin(np.pi * p) / p
+
+    def h(m):
+        return quad(lambda v: (m - v ** (1 / eta)) ** (eta - 1) / eta, 0, 1, limit=200)[0]
+
+    def one(u):
+        xi = min(u ** (1 / eta), 1 - 1e-15)
+        m = xi + (1 - xi) * T
+        ratio = (1 - xi) * T / m
+        F = _hyp_above_cut(2 - eta, 1 + p, 2, 1 / ratio, xi / ((1 - xi) * T))
+        return u ** (1 / eta - 1) / eta * xi ** p * (1 - xi) ** (-p) * m ** (-1 - eta) * ratio ** (eta - 2) * F * h(m)
+
+    region_one = -2j * front * np.exp(1j * np.pi * (eta - p)) * cquad(one, 0, 1)
+
+    def two(beta):
+        beta = min(max(beta, 1 + 1e-14), T - 1e-14)
+
+        def inner(u):
+            chi = min(max(u ** (1 / eta), 1e-30), 1 - 1e-15)
+            lam = (T - 1 + chi) / (T - beta)
+            g = min((1 - chi) / lam - beta, -1e-30)
+            F = _hyp_above_cut(2 - eta, 1 + p, 2, beta / (-g), ((1 - chi) / lam) / (-g))
+            return ((1 - chi) ** p * lam ** (-1 - eta) * (chi * beta + (1 - chi) * (beta - 1)) ** (-p)
+                    * (-g) ** (eta - 2) * F / eta)
+
+        return (T - beta) ** (p - 1) * cquad(inner, 0, 1)
+
+    region_two = -2j * front * np.exp(1j * np.pi * (eta - p)) * cquad(two, 1, T)
+    return -T * region_one, -T * region_two
+
+
+def timelike_keyhole_piece(p, eta, T, rel=1e-4):
+    """s t times the (4,1) piece for s = -1, t = T > 1: the keyhole around the
+    zero of x04^2 laid along x04^2 < 0, over the whole slab 0 < beta < T, with
+    every other invariant at its Feynman value.
+
+    After two Feynman parameters, the transverse integral, a Beta function
+    and an Euler integral it is a double integral over beta and chi with
+    omega = 1 - beta - chi:
+
+        (T-beta)^(p+eta) chi^(eta-1) (1-chi)^p (T-1+chi)^(-1-eta)
+            (omega + i0)^(-p) (g + i0)^(eta-2) 2F1(2-eta, 1+p; 2; -beta/(g + i0)),
+        g = T omega / (T - 1 + chi).
+
+    The substitution beta' = beta/T, mu = (T-1)(1-chi)/(T-1+chi) turns it
+    into the second edge piece at rho = -1/(T-1) - i0 (section 14). The
+    quadrature here is crude; expect three to four digits.
+    """
+    import numpy as np
+    from scipy.integrate import quad
+    from scipy.special import gamma, hyp2f1
+
+    if not T > 1:
+        raise ValueError("this region needs T > 1")
+
+    def cquad(f, lo, hi, points=None):
+        kw = dict(limit=80, epsabs=0, epsrel=rel)
+        if points:
+            kw["points"] = points
+        return quad(lambda x: f(x).real, lo, hi, **kw)[0] + 1j * quad(lambda x: f(x).imag, lo, hi, **kw)[0]
+
+    def inner(beta):
+        def f(chi, one_minus_chi, omega):
+            """The integrand, with 1 - chi and omega = 1 - beta - chi supplied
+            separately so that neither is formed by cancellation."""
+            common = chi ** (eta - 1) * one_minus_chi ** p * ((T - 1 + chi) / (T - beta)) ** (-1 - eta)
+            if omega > 0:
+                g = T * omega / (T - 1 + chi)
+                X = beta / g
+                return common * omega ** (-p) * g ** (eta - 2) * (1 + X) ** (-1 - p) * hyp2f1(eta, 1 + p, 2, X / (1 + X))
+            g = T * omega / (T - 1 + chi)
+            F = _hyp_above_cut(2 - eta, 1 + p, 2, beta / (-g), (T - beta) * one_minus_chi / (T * (-omega)))
+            return (common * (-omega) ** (-p) * np.exp(-1j * np.pi * p) * (-g) ** (eta - 2)
+                    * np.exp(1j * np.pi * eta) * F)
+
+        cuts = [0.0] + ([1 - beta] if 0 < 1 - beta < 1 else []) + [1.0]
+        total, k = 0j, 1 / eta
+        for lo, hi in zip(cuts[:-1], cuts[1:]):
+            half = (hi - lo) / 2
+
+            def left(u, lo=lo, half=half):
+                d = half * max(u, 1e-12) ** k                      # chi = lo + d
+                omega = -d if lo > 0 else 1 - beta - d
+                return f(lo + d, 1 - lo - d, omega) * half * k * u ** (k - 1)
+
+            def right(u, hi=hi, half=half):
+                d = half * max(u, 1e-12) ** k                      # chi = hi - d
+                omega = d if hi < 1 else -beta + d
+                one_minus = d if hi == 1 else 1 - hi + d
+                return f(hi - d, one_minus, omega) * half * k * u ** (k - 1)
+
+            total += cquad(left, 0, 1) + cquad(right, 0, 1)
+        return total
+
+    integral = cquad(lambda beta: (T - min(beta, T - 1e-13)) ** (p - 1) * inner(min(max(beta, 1e-13), T - 1e-13)),
+                     0, T, points=[1.0])
+    return T * (2j * np.sin(np.pi * p) / p) * np.pi ** (1 + eta) * gamma(2 - eta) * T ** (-p) * integral
