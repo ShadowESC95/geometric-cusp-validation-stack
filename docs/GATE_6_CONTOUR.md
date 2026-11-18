@@ -650,15 +650,31 @@ serves in Lemma 9, and $`\omega`$ is taken 2% below the fixed point.
 
 | Region | Angle range | Boxes | $`s/t`$ covered | Result |
 | --- | --- | --- | --- | --- |
-| $`(-,-)`$ | 0.3 to 2.8 | 2500 | 0.0228 to 33.6 | all conditions hold on every box |
-| $`(+,-)`$ | 0.05 to 2.8 | 3500 | $`-34.6`$ to $`-1.0006`$ | all hold |
-| $`(-,+)`$ | 0.05 to 2.8 | 3500 | $`-0.9994`$ to $`-0.029`$ | all hold |
+| $`(-,-)`$ | 0.055 to 3.087 | 12 128 | 0.00076 to 1341 | all conditions hold on every box |
+| $`(+,-)`$ | 0.02 to 3.087 | 12 268 | $`-1342`$ to $`-1.0001`$ | all hold |
+| $`(-,+)`$ | 0.02 to 3.087 | 12 268 | $`-0.9999`$ to $`-0.00074`$ | all hold |
 
-On these ranges $`e\le0.093`$ and $`\mu_Q\le0.020`$. Closer to the
-degenerate squares the interval version fails, first in the bound for
-$`B`$, and only the floating-point evaluation is available. What interval
-arithmetic certifies is the list of inequalities; that those inequalities
-imply the properties of the contour is the content of the proofs above.
+On these ranges $`e\le0.093`$ and $`\mu_Q\le0.020`$. An earlier version
+covered only $`0.023\le s/t\le33.6`$ and the corresponding timelike ranges;
+it failed further out because of the way a transverse basis was chosen,
+not because of the conditions. The bound for $`B`$ is now in closed form:
+the edges of this family have no component along one spatial axis, so that
+axis is transverse with Euclidean norm 1, and the other transverse
+direction is
+$`v=(a_1b_3-a_3b_1,\ a_0b_3-a_3b_0,\ 0,\ a_1b_0-a_0b_1)`$ for edges $`a,b`$,
+with $`-v^2=(a\!\cdot b)^2`$; hence $`B^2\le1+|v|^2/(a\!\cdot b)^2`$. Closer
+to the degenerate squares the four-cone gap of (H1) closes and finer boxes
+are needed; the limit itself, $`s/t\to0`$ or $`\infty`$, is not reached by
+any finite cover. What interval arithmetic certifies is the list of
+inequalities; that those inequalities imply the properties of the contour
+is the content of the proofs above.
+
+**Dimension.** By Proposition 7 of section 11 the same constants serve in
+every dimension. As a check of that conclusion, 4000 points near the
+$`D`$-dimensional cones were sampled in $`4+1`$, $`4+2`$ and $`4+3`$
+dimensions in each region: the largest imaginary part near a cone is
+negative in every case (between $`-2\times10^{-11}`$ and
+$`-2\times10^{-10}`$) and the largest excursion of an argument is 0.0003.
 
 ## 10. Absolute integrability, line by line
 

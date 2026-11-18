@@ -186,3 +186,28 @@ def two_loop_mutual_facet_check():
     facet = sp.factor(sp.together(x_gt * c_pos * shifted + x_gt * c_neg / w2
                                   - x_lt * c_pos / w2 - x_lt * c_neg * shifted))
     return residue, facet, sp.simplify(residue / facet)
+
+
+def two_loop_second_level_check():
+    """Second level of the residue recursion at three faces of codimension two.
+
+    Starting from the facet w1 = 0 (whose form is already matched), take the
+    further residue at w2 = 0, x1 = 0 and x2 = 0 and compare with the form of
+    each face computed from its inequalities:
+        w1 = w2 = 0:  x1, x2 > 0 free and c > 0;
+        w1 = x1 = 0:  x2 w2 + c > 0  (c > 0: w2 > 0;  c < 0: w2 > -c/x2);
+        w1 = x2 = 0:  -x1 w2 + c > 0  (c > 0 and 0 < w2 < c/x1).
+    Returns the three differences, which should vanish.
+    """
+    x1, y1, z1, w1, x2, y2, z2, w2 = sp.symbols("x1 y1 z1 w1 x2 y2 z2 w2")
+    residue, _, _ = two_loop_boundary_check()
+    c = (y1 - y2) * (z1 - z2)
+    y_gt, y_lt = 1 / (y2 * (y1 - y2)), 1 / (y1 * (y2 - y1))
+    z_gt, z_lt = 1 / (z2 * (z1 - z2)), 1 / (z1 * (z2 - z1))
+    c_pos, c_neg = y_gt * z_gt + y_lt * z_lt, y_gt * z_lt + y_lt * z_gt
+    faces = {
+        "w1=w2=0": (sp.limit(w2 * residue, w2, 0), c_pos / (x1 * x2)),
+        "w1=x1=0": (sp.limit(x1 * residue, x1, 0), (c_pos / w2 + c_neg * x2 / (x2 * w2 + c)) / x2),
+        "w1=x2=0": (sp.limit(x2 * residue, x2, 0), (c_pos * c / (w2 * (c - x1 * w2))) / x1),
+    }
+    return {name: sp.simplify(a - b) for name, (a, b) in faces.items()}

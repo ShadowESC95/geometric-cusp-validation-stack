@@ -551,8 +551,8 @@ with weight $`F`$ is $`4M[F]`$.
 So the conclusion holds for all three weights at every square for which the
 certificate of GATE_6_CONTOUR passes. The certificate is verified in
 interval arithmetic for every square with
-$`0.023\le s/t\le33.6`$ in the region $`(-,-)`$,
-$`1.0006\le|s/t|\le34.6`$ in $`(+,-)`$ and $`0.029\le|s/t|\le0.9994`$ in
+$`0.00076\le s/t\le1341`$ in the region $`(-,-)`$,
+$`1.0001\le|s/t|\le1342`$ in $`(+,-)`$ and $`0.00074\le|s/t|\le0.9999`$ in
 $`(-,+)`$ (GATE_6_CONTOUR section 9). Outside these ranges, towards the
 degenerate squares, it is evaluated at sample squares in floating point
 only.

@@ -65,7 +65,11 @@ computed by the interval rule in $`w_2`$, with the pieces having $`A<0`$
 taken with the opposite sign because $`dw_1=dQ/A`$ reverses the induced
 orientation there (`two_loop_mutual_facet_check`). So the first level of
 the recursion holds at every facet, given that sign rule, which has not
-been independently reviewed. The deeper levels are not checked. The inequalities themselves are
+been independently reviewed. At the second level, the further residues of
+the facet $`w_1=0`$ at $`w_2=0`$, $`x_1=0`$ and $`x_2=0`$ equal, exactly, the
+forms of those three faces computed from their inequalities
+(`two_loop_second_level_check`). The remaining faces of codimension two
+and all deeper levels are not checked. The inequalities themselves are
 taken from the literature. An independent review rebuilt the five forms and
 confirmed the identity, the tiling on 20 000 points, and that
 $`\langle AB_1AB_2\rangle=-Q`$.

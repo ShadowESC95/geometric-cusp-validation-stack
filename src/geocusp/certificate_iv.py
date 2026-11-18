@@ -98,6 +98,23 @@ def _transverse_bound(pm, pp, seeds):
     return iv.sqrt(sum((x * x for e in basis for x in e), iv.mpf(0)))
 
 
+def _transverse_bound_planar(pm, pp):
+    """Upper bound for B when all edges have zero second spatial component,
+    as in the family used here. Then e_y = (0,0,1,0) is transverse with
+    Euclidean norm 1, and the other transverse direction is
+        v = (a1 b3 - a3 b1, a0 b3 - a3 b0, 0, a1 b0 - a0 b1),
+    which is Minkowski-orthogonal to a = pm and b = pp, with
+    -v.v = (a.b)^2 for null a, b. So B^2 <= 1 + |v|^2 / (a.b)^2 (the trace
+    of the Gram matrix). No seed has to be chosen."""
+    a, b = pm, pp
+    v = [a[1] * b[3] - a[3] * b[1], a[0] * b[3] - a[3] * b[0], iv.mpf(0), a[1] * b[0] - a[0] * b[1]]
+    ab = _mdot(a, b)
+    if not (ab * ab).a > 0:
+        raise ArithmeticError("edges not certainly independent")
+    euclid = sum((x * x for x in v), iv.mpf(0))
+    return iv.sqrt(1 + euclid / (ab * ab))
+
+
 def _float_seeds(C, j):
     """Which seed vectors the floating-point Gram-Schmidt accepts."""
     pm, pp = C.p[(j - 1) % 4], C.p[j]
@@ -179,7 +196,7 @@ def interval_certificate(region: str, angle_lo: float, angle_hi: float) -> dict:
     j_blend = 1.5 / R * (4 * lam0 * reach + kf * (2 * R + tau0 + Delta))
     out["E_local_diffeomorphism"] = lt(j_inner + j_outer + j_blend, 1)
 
-    B = _max([_transverse_bound(p[(j - 1) % 4], p[j], _float_seeds(C, j)) for j in range(4)])
+    B = _max([_transverse_bound_planar(p[(j - 1) % 4], p[j]) for j in range(4)])
     theta = _max([512 * kap * Pn**2 / Dmin, 8 * nu * B**2])
     out["F_theta_small"] = le(theta, 1)
 

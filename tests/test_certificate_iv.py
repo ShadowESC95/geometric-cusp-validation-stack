@@ -48,3 +48,48 @@ def test_interval_certificate_rejects_a_bad_contour(monkeypatch):
 def test_field_has_the_right_sign_next_to_the_edges_in_high_precision(region):
     result = ci.edge_sign_check(region, 1.1, dps=100, samples=30, seed=1)
     assert result["pairs"] >= 30 and result["all_negative"]
+
+
+@pytest.mark.parametrize("region,lo,hi", [("--", 0.06, 0.08), ("+-", 0.02, 0.04), ("-+", 3.06, 3.08)])
+def test_interval_certificate_close_to_the_degenerate_squares(region, lo, hi):
+    result = ci.cover(region, lo, hi, 80)
+    assert result["all"] and result["failed_count"] == 0
+
+
+def test_planar_transverse_bound_dominates_the_floating_point_value():
+    from mpmath import iv
+    contour = fc.tuned_contour("--", 1.1)
+    angle = iv.mpf([1.1, 1.1])
+    p = ci._square("--", angle)
+    for j in range(4):
+        bound = ci._transverse_bound_planar(p[(j - 1) % 4], p[j])
+        assert fc.transverse_norm(contour, j) <= float(bound.b) * (1 + 1e-12)
+
+
+@pytest.mark.parametrize("extra", [1, 2, 3])
+def test_contour_in_higher_dimensions_stays_on_the_feynman_side(extra):
+    """Proposition 7: near the D-dimensional cones the imaginary part is negative."""
+    import numpy as np
+    contour = fc.tuned_contour("+-", 1.1)
+    rng = np.random.default_rng(5)
+    worst, count = -np.inf, 0
+    for _ in range(1200):
+        i = rng.integers(0, 4)
+        d = np.array([rng.choice([-1.0, 1.0]), *(rng.normal(size=3) * 0.4)])
+        if fc.mdot(d, d) <= 0:
+            continue
+        x0 = contour.x[i] + 10 ** rng.uniform(-1.5, 1.6) * d
+        mu = fc.mdot(x0 - contour.x[i], x0 - contour.x[i]) * (1 + rng.normal() * 10 ** rng.uniform(-4, -1))
+        if mu <= 0:
+            continue
+        e = rng.normal(size=extra)
+        e *= np.sqrt(mu) / np.linalg.norm(e)
+        real = contour.invariants(x0) - mu
+        displaced, _ = fc.displaced_extended(contour, x0, e)
+        r = np.sqrt((x0 - contour.centre) @ (x0 - contour.centre) + mu)
+        tol = contour.delta0 / 2 if r < contour.radius else 0.1 * r
+        for j in range(4):
+            if abs(real[j]) <= tol:
+                count += 1
+                worst = max(worst, displaced[j].imag)
+    assert count > 500 and worst < 0

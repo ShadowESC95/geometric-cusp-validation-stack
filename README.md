@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **364 tests** and **63 worked example groups**, all passing
+- **372 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -56,7 +56,7 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | Two-loop weight is regular at $`z=-1`$ | Proved |
 | Explicit integration contour, all kinematic regions | Constructed; conditions verified in interval arithmetic over a range of squares |
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
-| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes; the certificate is verified in interval arithmetic for $`0.023\le s/t\le33.6`$ and the corresponding ranges with a timelike diagonal |
+| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes; the certificate is verified in interval arithmetic for $`0.00076\le s/t\le1341`$ and the corresponding ranges with a timelike diagonal |
 | Cusp-local model: a light-like triangle, double pole $`\sin\pi p/(\pi p)`$ | Exact closed form |
 | Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
@@ -89,7 +89,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 364 tests, about twenty minutes
+make test        # 372 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -330,7 +330,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            364 tests
+tests/            372 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
