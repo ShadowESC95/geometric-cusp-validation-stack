@@ -672,3 +672,65 @@ def leading_singularity_two():
     for v in (w1, w2, x1, x2, y1, z1, y2, z2):
         plain = _end_residue(plain, v)
     return sp.factor(on_diagonal), r, plain
+
+
+def chart_brackets():
+    """The chart coordinates as twistor brackets, with Z the identity.
+
+    For the line A = (1, x, 0, -y), B = (0, z, 1, w):
+        <AB14> = x,  <AB12> = y,  <AB34> = z,  <AB23> = w,
+    and for two lines <AB1 AB2> = -Q. So the hyperplanes x_i = 0 etc. are
+    the divisors where a loop line meets an edge of the square, and Q = 0
+    is where the two loop lines meet. Returns the four brackets and the
+    ratio <AB1 AB2>/Q.
+    """
+    x, y, z, w, x2, y2, z2, w2 = sp.symbols("x y z w x2 y2 z2 w2")
+    A, B = sp.Matrix([1, x, 0, -y]), sp.Matrix([0, z, 1, w])
+    A2, B2 = sp.Matrix([1, x2, 0, -y2]), sp.Matrix([0, z2, 1, w2])
+    unit = sp.eye(4)
+    bracket = lambda i, j: sp.factor(sp.Matrix.hstack(A, B, unit[:, i - 1], unit[:, j - 1]).det())
+    Q = (x - x2) * (w - w2) + (y - y2) * (z - z2)
+    mutual = sp.Matrix.hstack(A, B, A2, B2).det()
+    return ({"14": bracket(1, 4), "12": bracket(1, 2), "34": bracket(3, 4), "23": bracket(2, 3)},
+            sp.cancel(mutual / Q), (x, y, z, w))
+
+
+def orientation_flip_residues():
+    """Residues of the quadric-face forms where alpha and beta share a factor.
+
+    There the face is a whole orthant as a set and its orientation flips
+    across the common factor. Returns a tally of residue / (orthant form):
+    every entry should be +2 or -2.
+    """
+    import collections
+
+    pairs = set()
+    for c, remaining in _all_coordinate_faces():
+        if c in (1, -1):
+            continue
+        for u in remaining:
+            chart = _quadric_face_form(c, remaining, u)
+            if chart is not None:
+                pairs.add((chart[1], chart[2], chart[3]))
+    frontier, tally = list(pairs), collections.Counter()
+    while frontier:
+        alpha, beta, rest = frontier.pop()
+        common = sp.gcd(alpha, beta)
+        if not common.is_number:
+            form = _pair_form(alpha, beta, rest)
+            for h, _m in sp.factor_list(common)[1]:
+                if h in rest:
+                    continue
+                t = sorted(h.free_symbols, key=str)[0]
+                root = sp.solve(h, t)[0]
+                residue = _residue(form, t, root)
+                orthant = sp.prod([1 / v for v in rest if v != t])
+                tally[sp.cancel(residue / orthant)] += 1
+        for v in rest:
+            rest2 = tuple(q for q in rest if q != v)
+            for at_infinity in (False, True):
+                nxt = (_leading(alpha, v, at_infinity), _leading(beta, v, at_infinity), rest2)
+                if rest2 and nxt not in pairs:
+                    pairs.add(nxt)
+                    frontier.append(nxt)
+    return dict(tally)

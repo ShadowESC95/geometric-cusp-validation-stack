@@ -174,3 +174,14 @@ def test_an_iterated_residue_equals_two():
     assert sp.cancel(on_diagonal - (z1 + z2) / (w1 * w2 * y2 * z1 * z2 * (z1 - z2))) == 0
     assert through_crossing == 2
     assert coordinates_only == 1
+
+
+def test_chart_coordinates_are_twistor_brackets():
+    brackets, ratio, (x, y, z, w) = ng.chart_brackets()
+    assert brackets == {"14": x, "12": y, "34": z, "23": w}
+    assert ratio == -1
+
+
+def test_orientation_flip_poles_have_residue_two():
+    tally = ng.orientation_flip_residues()
+    assert tally == {2: 92, -2: 92}

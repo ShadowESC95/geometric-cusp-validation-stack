@@ -182,7 +182,9 @@ $`y_1=y_2`$, $`z_1=z_2`$ and each contributes 1. The chain through the
 eight coordinates gives 1. The same happens on a quadric face wherever
 $`\alpha`$ and $`\beta`$ have a common factor: the face is the whole
 orthant as a set, its orientation flips across the common factor, and the
-form has a pole there with residue twice an orthant form (184 states).
+form has a pole there. Its residue is exactly $`\pm2`$ times the orthant
+form in all 184 such states, 92 of each sign
+(`orientation_flip_residues`).
 The review found a second example at the chart's infinity, which may be
 an artefact of this compactification; the one above uses finite
 hyperplanes only.
@@ -193,10 +195,17 @@ taken with its orientation, and its residues are the corresponding sums
 on the boundaries. It is a weighted object, not a positive geometry with
 unit leading singularities. That agrees with how the form arises: the
 logarithm of the amplitude is a combination of forms of positive
-geometries, not the form of one. Whether the chart's hyperplanes
-$`x_i=0`$ are restrictions of boundary divisors of the product of two
-Grassmannians, so that the example is a statement about the geometry and
-not about the chart, I have not checked.
+geometries, not the form of one.
+
+The example is a statement about the geometry and not about the chart.
+With $`Z`$ the identity the chart coordinates are brackets
+(`chart_brackets`):
+$`x=\langle AB14\rangle`$, $`y=\langle AB12\rangle`$,
+$`z=\langle AB34\rangle`$, $`w=\langle AB23\rangle`$, and
+$`\langle AB_1AB_2\rangle=-Q`$. So $`x_1=x_2=0`$ is the face on which both
+loop lines meet the line $`(41)`$. On it the condition that the two loop
+lines meet each other factors, $`(y_1-y_2)(z_1-z_2)=0`$, into two
+components, and the residue 2 sits where the two components cross.
 
 An independent review of the routine and of the coordinate and first
 quadric traversals wrote its own version, which eliminates a different
