@@ -273,3 +273,47 @@ def position_cross_ratio(x0, xs):
     d = lambda p, q: np.linalg.det(p - q)
     x1, x2, x3, x4 = xs
     return d(x0, x2) * d(x0, x4) * d(x1, x3) / (d(x0, x1) * d(x0, x3) * d(x2, x4))
+
+
+# --------------------------------------------------------------------------
+# Reality conditions of the chart for a real Lorentzian square
+# --------------------------------------------------------------------------
+_SIGMA = (np.eye(2), np.array([[0, 1], [1, 0]]), np.array([[0, -1j], [1j, 0]]), np.array([[1, 0], [0, -1]]))
+
+
+def hermitian_point(x):
+    """The 2x2 Hermitian matrix of a real point; its determinant is x^2 in the metric (+,-,-,-)."""
+    return sum(x[m] * _SIGMA[m] for m in range(4))
+
+
+def real_square_twistors(region: str = "--", angle: float = 1.1):
+    """Momentum twistors Z_1..Z_4 (rows) of a real light-like square, with
+    x_i = (Z_{i-1} Z_i), each normalised to a unit spinor lambda_i."""
+    from .lorentzian_edges import light_like_square as square
+
+    p, s, t = square(region, angle)
+    x = [np.zeros(4)]
+    for k in range(3):
+        x.append(x[-1] + p[k])
+    Z = []
+    for i in range(4):                               # (x_{i+1} - x_i) lambda_i = 0
+        w, v = np.linalg.eig(hermitian_point(p[i]))
+        lam = v[:, np.argmin(abs(w))]
+        Z.append(np.concatenate([lam, hermitian_point(x[i]) @ lam]))
+    return np.array(Z), np.array(x)
+
+
+def twistor_form(Z):
+    """H_ij = h(Z_i, Z_j) with h(Z, Z') = lambda^dagger mu' - mu^dagger lambda'.
+    A line is a real point exactly when h vanishes on it."""
+    lam, mu = Z[:, :2], Z[:, 2:]
+    return lam.conj() @ mu.T - mu.conj() @ lam.T
+
+
+def chart_of_real_point(x0, Z):
+    """(a, b, c, d) with A = Z_1 + a Z_3 + b Z_4, B = Z_2 + c Z_3 + d Z_4 spanning the line of x0."""
+    X0 = hermitian_point(x0)
+    on_line = [np.concatenate([e, X0 @ e]) for e in np.eye(2)]
+    coeff = np.array([np.linalg.solve(Z.T, v) for v in on_line])
+    red = np.linalg.solve(coeff[:, :2], coeff)
+    return red[0, 2], red[0, 3], red[1, 2], red[1, 3]

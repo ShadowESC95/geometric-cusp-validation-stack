@@ -139,11 +139,37 @@ cross-ratios are exact. The rows of the table are statements at leading
 order in the collinear scaling, up to factors that depend on $`a`$ and on
 the frame: for instance $`x_{03}^2=q_3(1+q_1/|s|)-\rho`$, and the last row
 holds in the further limit $`q_1\to0`$. On the divisor at fixed $`a`$ the
-exact statement is $`1+z=\rho|s|/(q_1x_{03}^2)`$. The identification of the
-phase of $`b`$ with $`\theta`$, the reality conditions on $`(b,c)`$ for a
-real point, and the coordinates $`(a,z,\theta)`$ on $`E`$ are asserted, not
-proved. What is established about the weights $`(1,1,2)`$ is that they
-match the scaling orders $`y_\perp\sim\lambda`$, $`\alpha\sim\lambda^2`$.
+exact statement is $`1+z=\rho|s|/(q_1x_{03}^2)`$. What is established about
+the weights $`(1,1,2)`$ is that they match the scaling orders
+$`y_\perp\sim\lambda`$, $`\alpha\sim\lambda^2`$.
+
+**Reality conditions.** Let $`Z_1,\dots,Z_4`$ be the momentum twistors of a
+real light-like square, $`x_i=(Z_{i-1}Z_i)`$, and
+$`h(Z,Z')=\lambda^\dagger\mu'-\mu^\dagger\lambda'`$. A line is a real point
+of Minkowski space exactly when $`h`$ vanishes on it. Each $`Z_i`$ lies on
+two real lines, so $`h(Z_i,Z_i)=0`$ and $`h(Z_i,Z_{i\pm1})=0`$; only
+$`H_{13}=h(Z_1,Z_3)`$ and $`H_{24}`$ and their conjugates remain. For
+$`A=Z_1+aZ_3+bZ_4`$, $`B=Z_2+cZ_3+dZ_4`$,
+
+```math
+h(A,A)=2i\operatorname{Im}(aH_{13}),\qquad h(B,B)=2i\operatorname{Im}(dH_{24}),\qquad h(A,B)=cH_{13}+\bar b\,H_{42}.
+```
+
+With twistors normalised so that $`H_{13}`$ and $`H_{24}`$ are real, the
+line $`AB`$ is a real point exactly when
+
+```math
+a,\ d\in\mathbb R,\qquad c=-\frac{H_{42}}{H_{13}}\,\bar b .
+```
+
+The ratio is $`+1`$ for unit spinors when both diagonals are spacelike, so
+$`c=-\bar b`$ and $`bc=-|b|^2`$: the real section has two real parameters
+$`a,d`$ and one complex parameter $`b`$, whose modulus squared is
+proportional to $`\rho`$ and whose phase is the remaining angle.
+(`real_square_twistors`, `twistor_form`, `chart_of_real_point`; checked on
+300 real points in each region.) That the phase of $`b`$ is the angle
+$`\theta`$ of $`y_\perp`$ up to origin and orientation, and the
+coordinates $`(a,z,\theta)`$ on $`E`$, are still asserted, not proved.
 
 ## 4. The measure (exact)
 
@@ -351,10 +377,10 @@ are computed in GATE_6_BOUNDS section 2.
   [CUSP_LOCAL_MODEL.md](CUSP_LOCAL_MODEL.md): each cusp contributes a
   light-like triangle, whose regulated value for a general weight is an
   explicit integral along the path between the lips of $`z=-1`$, derived
-  from the Lorentzian domain in section 8 of that document. For that
-  triangle the edge statement, integrated along the edge, gives the double
-  pole. The reduction of the full integral to the four triangles is proved
-  for the parametric form only.
+  from the Lorentzian domain in section 8 of that document. Sections 9 to
+  12 there carry this to the full integral: for spacelike diagonals and
+  the integral taken as an iterated integral, the double pole $`4M[F]`$ is
+  derived in position space for $`z^p`$ and for the benchmark weights.
 - The three-loop value from the edge chain is, by Cauchy's theorem, the
   same number as the circle mean. It tests the continuation of
   $`\bar F^{(2)}`$ to its second sheet, not an independent quantity.

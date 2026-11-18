@@ -43,12 +43,16 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
    $`4\sin\pi p/(\pi p)`$, from the Lorentzian domain, for the weight
    $`z^p`$.
 
-Conditions and what is **not** proved (section 11.5): the result is for the
-iterated integral in a fixed order with the displacement removed first,
-spacelike diagonals and the weight $`z^p`$. The extension to the benchmark
-weights and to a timelike diagonal is not written in position space, and
-the equality of the iterated integral with the integral over the global
-contour is not proved.
+7. The same holds for every weight holomorphic and polynomially bounded on
+   a strip $`|\operatorname{Im}\log z|<W`$ with $`W>2\pi`$, in particular
+   for the three benchmark weights: the double pole is $`4M[F]`$
+   (section 12).
+
+Conditions and what is **not** proved: the result is for the iterated
+integral in a fixed order with the displacement removed first, and for
+spacelike diagonals. A timelike diagonal is not treated in position space,
+and the equality of the iterated integral with the integral over the
+global contour is not proved.
 
 Code: `src/geocusp/cusp_local.py`. Tests: `tests/test_cusp_local.py`.
 
@@ -1163,14 +1167,159 @@ box identity at five points.
 
 Not established:
 
-- the benchmark weights: the Mellin superposition needs the corollary on
-  both lines $`\operatorname{Re}p=\pm\sigma`$ and an exchange of the $`p`$
-  integral with the iterated integral; the growth $`e^{2\pi|\tau|}`$ of the
-  bound then requires $`W-\delta'>2\pi`$ as before. This is not written
-  out;
+- (the benchmark weights are treated in section 12;)
 - a timelike diagonal: the table of half planes in section 9 and the
   positivity used here change;
 - the limit $`\varepsilon\to0`$ taken after the outer integrals, and other
   orders of integration;
 - the equality of this iterated integral with the integral over the global
   contour of GATE_6_CONTOUR.
+
+## 12. General weights from the Lorentzian domain
+
+**Theorem (benchmark weights).** Let both diagonals be spacelike, and let
+$`f(L)=F(e^L)`$ be holomorphic on $`|\operatorname{Im}L|<W`$ with
+$`W>2\pi`$ and $`|f(L)|\le A(1+|L|)^k`$ there. For the iterated integral of
+section 11 (the $`\alpha`$ integral first, the displacement removed at
+fixed $`(\beta,y_\perp)`$, then $`y_\perp`$, then $`\beta`$),
+
+```math
+st\int\frac{F(z)}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=-2\pi^2i\,\frac{4\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big),\qquad\eta\to0^+ .
+```
+
+The hypothesis holds for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with any
+$`W`$ and for $`\bar F^{(2)}`$ with $`W=3\pi-\delta`$ (GATE_6_BOUNDS,
+Lemma 3′).
+
+*Proof.* By GATE_6_BOUNDS Lemma 3, for $`0<\sigma<1/m`$,
+$`f(L)=\int_{\operatorname{Re}p=-\sigma}c_+(p)e^{pL}dp+\int_{\operatorname{Re}p=\sigma}c_-(p)e^{pL}dp`$
+on the strip, with $`|c_\pm|\le Ce^{-(W-\delta')|\tau|}`$; choose
+$`\delta'`$ with $`W-\delta'>2\pi`$. Consider the edge piece for the edge
+$`(2,3)`$.
+
+*Step 1, the $`\alpha`$ integral.* Fix $`(\beta,y)`$ with $`\rho>0`$,
+$`y\ne y_*`$, and $`\varepsilon>0`$. On the real $`\alpha`$ line
+$`|\operatorname{Im}L|\le2\pi`$ (section 9), so
+$`|z^p|\le|z|^{\pm\sigma}e^{2\pi|\tau|}`$; the integrand has no zero on the
+line and decays like $`|\alpha|^{-4}`$. With the decay of $`c_\pm`$ the
+double integral over $`\alpha`$ and $`p`$ converges absolutely, and the
+order can be exchanged. For each $`p`$ the $`\alpha`$ integral is the
+keyhole of section 9. To take $`\varepsilon\to0`$ under the $`p`$ integral
+use a contour that does not move with $`\varepsilon`$: in the variable
+$`u_3`$, two lips $`\operatorname{Im}u_3=\pm\delta_0`$,
+$`\operatorname{Re}u_3\ge0`$, joined by a semicircle on the left. For
+$`\rho>0`$, $`y\ne y_*`$ the other three zeros have
+$`\operatorname{Re}u_3<0`$ at a distance independent of
+$`\varepsilon`$, so for small $`\delta_0`$ the contour encloses only the
+branch point. On it $`\operatorname{Im}L=\mp\pi+O(\delta_0)`$ on the lips
+and interpolates on the arc, $`|z|^{\pm\sigma}`$ is bounded and the tails
+decay like $`|\alpha|^{-4}`$, all uniformly in small $`\varepsilon`$. So the
+integral is bounded by $`C(\beta,y)e^{2\pi|\tau|}`$ uniformly, and by
+dominated convergence
+
+```math
+\lim_{\varepsilon\to0}\int d\alpha\,\frac{F(z)}{\prod x_{0i}^2}=\sum_\pm\int c_\pm(p)\,K_p(\beta,y)\,dp ,
+```
+
+with $`K_p`$ the keyhole integral for $`z^p`$ at $`\varepsilon=0`$.
+
+*Step 2, the outer integrals.* By the proof of the continuation lemma,
+$`\int d\beta\int d^{2+2\eta}y\,|K_p|\le C(1+|\tau|)\,|\sin(\pi p)/p|\le C(1+|\tau|)e^{\pi|\tau|}`$
+on the two lines. So the $`p`$ integral can be exchanged with the $`y`$ and
+$`\beta`$ integrals, and the edge piece for $`F`$ is
+
+```math
+A[F]=\sum_\pm\int c_\pm(p)\,A(p;T)\,dp .
+```
+
+*Step 3, the limit.* By the theorem of section 11,
+$`A(p;T)=A_{\rm near}(p)+A_{\rm far}(p)+R_p`$ with
+$`|R_p|\le C(1+|\tau|)e^{2\pi|\tau|}/\eta`$ on the two lines, uniformly in
+$`\eta\le\eta_0`$. Since $`W-\delta'>2\pi`$, $`\int|c_\pm||R_p|\le C/\eta`$.
+The near term is exactly $`-2\pi^{2+\eta}i\,\eta^{-2}\,\mathcal T_\eta(p)`$.
+Section 7 needs $`|f|+|f'|`$ polynomially bounded on
+$`|\operatorname{Im}L|\le\pi`$, which follows from the hypothesis by
+Cauchy's estimate on discs of radius $`(W-\pi)/2`$. So, with
+$`\pi^\eta=1+O(\eta)`$,
+
+```math
+\sum_\pm\int c_\pm A_{\rm near}=-\frac{2\pi^{2+\eta}i}{\eta^2}\,\mathcal T_\eta[F]=-\frac{2\pi^2i}{\eta^2}\big(M[F]+O(\eta)\big).
+```
+
+The far term is
+$`-2\pi^{2+\eta}i\,\varrho^\eta\eta^{-2}\,\Phi_\eta(p)`$ with
+$`\Phi_\eta(p)=\frac{\sin\pi p}{\pi p}\cdot\frac{\eta^2\Gamma(\eta)^2}{\Gamma(1+2\eta)}\cdot\frac{\Gamma(1-p-\eta)}{\Gamma(1-p)}`$.
+On the lines the last two factors differ from 1 by at most
+$`C\eta(1+\log(2+|\tau|))`$, and $`\int c(p)\frac{\sin\pi p}{\pi p}dp=M[F]`$
+by Lemma 3 on the unit circle. So the far term also gives
+$`-2\pi^2i\,\eta^{-2}(M[F]+O(\eta))`$, and
+
+```math
+A[F]=-2\pi^2i\,\frac{2\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big).
+```
+
+*Step 4, the other edge.* The relabelling of section 11.3 is a change of
+variables that does not depend on the weight, so steps 1 and 2 apply to
+the piece for the edge $`(4,1)`$: it is the first piece with the diagonals
+exchanged, the weight $`F(1/z)`$ and a factor $`T^\eta=1+O(\eta)`$. That
+weight is $`f(-L)`$, with the same strip, bound and mean, and section 11
+applies at $`1/T`$. $`\blacksquare`$
+
+The constants depend on $`T`$ and are not uniform as $`T\to0`$ or
+$`\infty`$. The statement is a bound as $`\eta\to0^+`$; it is not a
+statement about the pole structure in $`\eta`$.
+
+**What this replaces.** For spacelike diagonals, and for the iterated
+integral, this derives the coefficient $`4M[\bar F^{(L-1)}]`$ for the
+benchmark weights without the global contour and its certificate, without
+Mellin–Barnes and without the phase bound on the contour. It uses the
+contour closing in $`\alpha`$, elementary integrals, and Lemma 3. That the
+iterated integral equals the integral over the global contour, or the
+parametric integral, is not proved; for $`z^p`$ the two agree numerically
+(section 11.4).
+
+**Numerical check.** For $`F=\log^2z+\pi^2`$ the edge piece is
+$`\partial_p^2A(p)|_{p=0}+\pi^2A(0)`$. With `edge_piece`,
+$`\eta^2A[F]/(-2\pi^2i)`$ at $`\eta=0.2,0.1,0.05,0.025`$ is
+17.88, 15.70, 14.48, 13.83 at $`T=1`$ and 18.10, 15.76, 14.50, 13.84 at
+$`T=2.5`$, against $`2M[F]=13.16`$; the difference divided by $`\eta`$ is
+between 24 and 27.
+
+**Remarks on what is still fixed by the definition.**
+
+- *The other null direction.* The cyclic relabelling $`x_i\to x_{i+1}`$
+  exchanges the roles of $`\alpha`$ and $`\beta`$, sends $`z\to1/z`$ and
+  exchanges $`s`$ and $`t`$. So the theorem holds equally with the $`\beta`$
+  integral first; the two pieces are then the edges $`(1,2)`$ and
+  $`(3,4)`$.
+- *$`\alpha`$ and $`\rho`$ in the cusp-local model.* With $`\rho`$ rotated
+  by a phase the model integrand is absolutely integrable in
+  $`(\alpha,\rho)`$ at fixed $`\beta`$: it decays like the inverse cube at
+  infinity and is at most $`|(\alpha,\rho)|^{-2}`$ at the one point where
+  two invariants vanish, against the measure $`\rho^\eta d\rho\,d\alpha`$;
+  at the isolated zero of $`x_{01}^2`$ it is of order one over the distance,
+  which is integrable for the weights considered. So in the model those two
+  integrals may be exchanged, with $`\rho`$ on the rotated ray. With the
+  far propagator the rotation is not available and this is not shown.
+- *The edge statement as a formula.* By the previous remark the collinear
+  pole of the model at fixed $`\beta`$ can be computed with $`\rho`$ first.
+  The $`\rho`$ integral then behaves like $`|\alpha|^{\eta-1}`$ times the
+  two one-sided limits of GATE_6_CLOSURE, and the pole coefficient is their
+  difference, the edge jump $`-2\pi i\,M[F]`$; with $`\alpha`$ first it is
+  the coefficient $`2\pi i\,M[F]/\beta`$ of section 8. If the scaling limit
+  in the $`\rho`$ integral is justified, this identifies the edge jump with
+  the residue of the collinear pole. That limit is not written out, so this
+  is an outline; for $`z^p`$ the two one-sided integrals have been checked
+  in closed form to give $`2\pi i\,\frac{\sin\pi p}{\pi p}(1-\beta)^{-p}/\beta`$.
+
+Not treated: a timelike diagonal; removing the displacement after the
+outer integrals; the order with the transverse integral first for the full
+integrand; and the equality of the iterated integral with the integral
+over the global contour.
+
+An independent review re-derived this section, found no wrong constant,
+sign or exponent, and asked for the three additions now made (the contour
+uniform in $`\varepsilon`$, the Cauchy estimate, the transfer of the
+relabelling) and for the qualifier on "What this replaces". It reproduced
+the numerical check with an independent three-dimensional quadrature:
+17.8808, 15.7035, 14.4813 at $`T=1`$.

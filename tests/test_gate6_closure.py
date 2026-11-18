@@ -159,3 +159,31 @@ def test_freezing_the_fourth_propagator_only_rescales_the_circle():
               - q1 * (-q3) * lc.kernel(f, q1, -q3, x04=-1.0))
     expected = -2j * mp.pi * lc.circle_mean(f, 1 / (1 - beta))
     assert complex(frozen) == pytest.approx(complex(expected), abs=1e-7)
+
+
+# ---- reality conditions of the chart ----------------------------------------
+@pytest.mark.parametrize("region", ["--", "+-", "-+"])
+def test_real_points_have_real_a_d_and_c_proportional_to_conj_b(region):
+    """For a real Lorentzian square: a, d real and c = -(H42/H13) conj(b)."""
+    Z, x = lc.real_square_twistors(region, 1.1)
+    H = lc.twistor_form(Z)
+    assert np.allclose(H, -H.conj().T)                              # the form is anti-Hermitian
+    mask = np.ones((4, 4), bool)
+    for i, j in ((0, 2), (2, 0), (1, 3), (3, 1)):
+        mask[i, j] = False
+    assert np.allclose(H[mask], 0, atol=1e-12)                      # only H13, H24 survive
+    assert abs(H[0, 2].imag) < 1e-12 and abs(H[1, 3].imag) < 1e-12
+    k = -H[3, 1] / H[0, 2]
+    assert abs(abs(k) - 1) < 1e-9
+    rng = np.random.default_rng(1)
+    for _ in range(100):
+        x0 = x[1] + rng.normal(size=4) * rng.choice([0.2, 1.0, 4.0])
+        a, b, c, d = lc.chart_of_real_point(x0, Z)
+        assert abs(a.imag) < 1e-8 * abs(a) and abs(d.imag) < 1e-8 * abs(d)
+        assert abs(c - k * np.conj(b)) < 1e-8 * abs(b)
+
+
+def test_complex_points_violate_the_reality_conditions():
+    Z, x = lc.real_square_twistors("--", 1.1)
+    a, b, c, d = lc.chart_of_real_point(x[1] + np.array([0.3, 0.1j, 0.2, -0.1]), Z)
+    assert abs(a.imag) > 1e-3 or abs(c + np.conj(b)) > 1e-3

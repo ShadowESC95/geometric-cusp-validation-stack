@@ -245,3 +245,28 @@ def test_near_end_term_from_the_cube_has_the_same_double_pole():
         j_near = T ** (p - 1) * G(1 + p) * G(1 - p) / eta**2
         a_near = -2j * np.pi ** (2 + eta) * G(2 - eta) * T ** (1 - p) / (G(1 - p) ** 2 * G(1 + p) ** 2) * j_near
         assert abs(a_near / cl.edge_near_term(p, eta) - 1) < 20 * eta
+
+
+# ---- general weights (section 12) ------------------------------------------
+def test_edge_piece_with_a_logarithmic_weight_has_double_pole_two_means():
+    """F = log^2 z + pi^2: A[F] = A''(0) + pi^2 A(0); eta^2 A[F]/(-2 pi^2 i) -> 2 M[F]."""
+    target = 2 * (2 * np.pi**2 / 3)
+    slopes = []
+    for eta in (0.1, 0.05):
+        A = lambda q: cl.edge_piece(q, eta, 1.0)
+        h = 0.08
+        a0 = A(1e-9)
+        d2 = (-(A(2 * h) + A(-2 * h)) + 16 * (A(h) + A(-h)) - 30 * a0) / (12 * h * h)
+        value = (eta**2 * (d2 + np.pi**2 * a0) / (-2j * np.pi**2)).real
+        slopes.append((value - target) / eta)
+    assert 20 < slopes[0] < 30 and 20 < slopes[1] < 30          # O(eta) correction with a stable coefficient
+    assert abs(slopes[1] - slopes[0]) < 3
+
+
+def test_far_end_factor_tends_to_one_uniformly_on_a_line():
+    """eta^2 Gamma(eta)^2/Gamma(1+2 eta) * Gamma(1-p-eta)/Gamma(1-p) - 1 = O(eta log|tau|)."""
+    eta = mp.mpf("0.01")
+    for tau in (0, 3, 30, 300):
+        p = mp.mpc(0.1, tau)
+        factor = eta**2 * mp.gamma(eta) ** 2 / mp.gamma(1 + 2 * eta) * mp.gamma(1 - p - eta) / mp.gamma(1 - p)
+        assert abs(factor - 1) < 10 * eta * (1 + mp.log(2 + tau))
