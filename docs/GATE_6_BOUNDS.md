@@ -685,6 +685,34 @@ and, on a different contour, at six points with $`\eta`$ negative or
 complex (differences below $`10^{-22}`$), and found equal one-sided
 derivatives at $`\eta=0`$.
 
+The two direct parameter quadratures, `parametric_double_pole` and
+`parametric_double_pole_rotated`, were not checks near $`\eta=0`$ in
+their first form. Their ranges in the logarithmic variables were fixed,
+while the double pole comes from tails of length $`1/\eta`$, and below
+$`\eta\approx0.01`$ (spacelike) and $`\eta\approx0.1`$ (timelike, rotated)
+they returned a wrong number without warning. They are now arranged so
+that those tails are done in closed form (`_parametric_box`): the inner
+integral over $`y`$ is 1 below a window and a pure exponential above it,
+its two asymptotic forms in $`q`$ are exact to rounding, and beyond
+$`x=e^{-A_0}`$ the integrand is $`e^{-\eta a}(a\,m_0+m_1)`$ with
+$`m_0=S^{-1-p}B(1+p,1-p-\eta)`$. Relative difference from
+`box_continued` at $`p=0.2`$, $`|s/t|=2.5`$:
+
+| $`\eta`$ | 0.25 | 0.1 | 0.03 | 0.01 | 0.003 | $`10^{-3}`$ | $`10^{-5}`$ |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Spacelike, before | $`2\times10^{-10}`$ | $`10^{-8}`$ | $`2\times10^{-7}`$ | $`8\times10^{-7}`$ | 0.96 | 0.99 | 1.00 ($`10^{-4}`$) |
+| Timelike, before | $`7\times10^{-10}`$ | $`2\times10^{-5}`$ | 0.60 | 0.90 | 0.99 | 1.00 | 1.00 ($`10^{-4}`$) |
+| Spacelike, now | $`6\times10^{-14}`$ | $`4\times10^{-12}`$ | | $`9\times10^{-15}`$ | | $`3\times10^{-15}`$ | $`10^{-15}`$ |
+| Timelike, now | $`10^{-10}`$ | $`10^{-11}`$ | | $`2\times10^{-14}`$ | | $`2\times10^{-15}`$ | $`10^{-15}`$ |
+
+The agreement at small $`\eta`$ is that good because the leading terms
+are then the closed-form tails; the numerical part enters at relative
+order $`\eta`$. So the Feynman-parameter form, the Mellin–Barnes form and
+the continued form now agree down to $`\eta\to0`$, where all tend to
+$`4\sin\pi p/(\pi p)`$. None of the earlier results near $`\eta=0`$
+depended on the two quadratures; the tests that used them ran at
+$`\eta\ge0.25`$.
+
 A consequence is that the coefficient of the single pole is also a linear
 functional of the weight, obtained from
 $`\int c(p)\,\partial_\eta N_\eta(p)|_{\eta=0}\,dp`$. Its value depends on
@@ -750,7 +778,7 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and $`2\pi+0.36`$ to $`2\pi+0.54`$ at the squares evaluated under further conditions on the constants (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.5701`$ over the certified range of squares, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |

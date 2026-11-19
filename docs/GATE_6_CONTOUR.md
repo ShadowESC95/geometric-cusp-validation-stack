@@ -1462,16 +1462,19 @@ timelike diagonal (Lemma Q). Still open:
   is proved at real points (Lemma P) and observed on the contour. On the
   contour $`3\pi-0.3`$ is proved (Lemma Q), which is all the argument
   uses. A bound close to $`2\pi`$ is now proved in
-  [GATE_6_PHASE.md](GATE_6_PHASE.md):
-  $`|\arg z|\le2\pi+e+\max(K_{\rm in},K_{\rm bl},e,3e_{\rm sp})`$,
-  which is $`2\pi+0.36`$ for the default constants and $`2\pi+0.54`$ for
-  most tuned squares, under further explicit inequalities between the
-  constants (`geocusp.phase_bound`). It is not uniform in the square
-  ($`2\pi+1.58`$ at one extreme square), is evaluated in floating point
-  at individual squares, and does not treat the contour in $`D`$
-  dimensions. The exact value $`2\pi`$ remains unproved; the constants
-  are far from the observed excess, which is at most $`0.004`$ in
-  $`K_c`$ and none in $`|\arg z|`$. Two things learned there correct
+  [GATE_6_PHASE.md](GATE_6_PHASE.md), zone by zone: exactly $`2\pi`$
+  for $`r\ge2R`$; $`2\pi+0.05`$ to $`2\pi+0.1`$ for $`r\le R`$; and
+  $`2\pi+0.36`$ (default constants) to $`2\pi+0.57`$ in the blend zone,
+  which sets the overall bound. It holds under further explicit
+  inequalities between the constants, which are verified in interval
+  arithmetic on the same cover as the certificate, with the bound at
+  most $`2\pi+0.5701`$ throughout (`geocusp.phase_bound`,
+  `geocusp.phase_bound_iv`). The exact value $`2\pi`$ for $`r<2R`$
+  remains unproved: a frame that does not control an invariant moves it
+  by an amount of indefinite sign, so the method gives
+  $`2\pi+O(\iota/\delta_0)`$ there at best, and the blend-zone constant
+  comes from a crude case. The observed phase never exceeds $`2\pi`$.
+  Two things learned there correct
   earlier statements here. The route proposed before Lemma Q, a bound
   $`|\operatorname{Im}x_{0c}^2|\le c\,|\operatorname{Re}x_{0c}^2|`$
   beyond a cusp, is false: the ratio reaches $`10^{22}`$, harmlessly,

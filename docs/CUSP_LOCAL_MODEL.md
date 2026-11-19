@@ -1683,44 +1683,64 @@ at most a constant times a sum of products with one exponent
 $`1\pm\kappa`$ and the others 1, for which
 $`S\ge4-\kappa`$ and $`\max\pi_{ij}\le3\kappa`$. $`\blacksquare`$
 
-**Sharpness for the powers.** If the diagonal $`s`$ is spacelike and
-$`\sigma\ge\tfrac12-\eta`$ the integral of $`|z_\varepsilon^p|/\prod|X_i-i\varepsilon|`$
-diverges (and likewise for $`t`$ spacelike and $`\sigma\le-(\tfrac12-\eta)`$).
-So the range $`|\sigma|<\tfrac12-\eta`$ for spacelike diagonals, and
-the end $`\tfrac12-\eta`$ of the interval for $`s<0<t`$, cannot be
-improved.
+**Lemma 13.1″ (the condition is sharp).** Let $`a_i>0`$. If
+$`S-\max_{i\ne j}\pi_{ij}\le3+2\eta`$ the integral of
+$`\prod_i|X_i-i\varepsilon|^{-a_i}`$ over $`\mathbb R^D`$ diverges. So for
+$`a_i\in(0,2)`$ it converges exactly when
+$`S-\max_{i\ne j}\pi_{ij}>3+2\eta`$. In particular, for the powers, the
+integral of $`|z_\varepsilon^p|/\prod|X_i-i\varepsilon|`$ diverges for
+$`\sigma\ge\tfrac12-\eta`$ when $`s`$ is spacelike and for
+$`\sigma\ge1-2\eta`$ when $`s`$ is timelike, and likewise with
+$`-\sigma`$ and $`t`$: none of the intervals of Lemma 13.1 can be
+enlarged.
 
-*Proof.* In the coordinates above, $`|X_i|\le2v|u-\tilde\ell_i|`$ for
-$`|u|\le v`$, so $`|X_i-i\varepsilon|\le2v(|u-\tilde\ell_i|+\delta)`$,
-and the factor $`e^{-\tau\arg z}`$ is bounded below. Let
-$`h(\omega)=\tilde\ell_1-\tilde\ell_3`$. It differs from
-$`n\cdot(x_1-x_3)`$ by $`O(1/v)`$ and is Lipschitz in
-$`\omega_\parallel`$ with a constant $`\Lambda`$ independent of $`v`$.
-Since $`x_1-x_3`$ is spacelike, $`n\cdot(x_1-x_3)`$ takes values
-$`\pm c`$ at two interior points of the disc, so for large $`v`$ there
-are two balls $`B_\pm`$ in the interior on which $`\pm h\ge c/2`$. Every
-segment from $`B_-`$ to $`B_+`$ parallel to the line of centres contains
-a zero of $`h`$ and hence an interval of length $`\delta/\Lambda`$ on
-which $`|h|\le\delta`$; the density of $`\mu`$ is bounded below on the
-convex hull of the balls, so $`\mu\{|h|\le\delta\}\ge c'\delta`$. For
-such $`\omega`$ and $`|u-\tilde\ell_1|\le\delta`$ the two factors with
-$`i=1,3`$ are at least $`(6v\delta)^{-(1+\sigma)}`$ each, the other two
-at least $`(Cv)^{-(1-\sigma)}`$, and the measure is at least
-$`cv^{D-2}du\,d\mu\,dv`$. The integral is therefore at least
+*Proof.* In the coordinates above, for $`v\ge V_0`$ and $`|u|\le K+2`$,
+$`|X_i|\le2v|u-\tilde\ell_i|`$, so
+$`|X_i-i\varepsilon|\le2v(|u-\tilde\ell_i|+\delta)`$, and the measure is at
+least $`cv^{D-2}du\,d\mu\,dv`$. Each factor
+$`(|u-\tilde\ell_i|+\delta)^{-a_i}`$ is at least a constant there. So the
+integral is at least
 
 ```math
-c\int^\infty dv\,v^{D-2}\,v^{-4}\,\delta^{-2-2\sigma}\cdot\delta\cdot\delta
-=c_\varepsilon\int^\infty v^{2\eta-2+2\sigma}\,dv=\infty\qquad(\sigma\ge\tfrac12-\eta).\qquad\blacksquare
+c\int_{V_0}^\infty dv\,v^{2+2\eta-S}\int d\mu(\omega)\int_{|u|\le K+2}du\prod_i\big(|u-\tilde\ell_i|+\delta\big)^{-a_i},
 ```
 
-For general exponents only the upper bound is proved. An independent
-review integrated the true integrand numerically and found the density
-in $`v`$ growing like $`v^{2+2\eta-S+\max\pi_{ij}}`$ in eleven cases,
-over four decades, which suggests that the general condition is sharp
-too. For the powers the divergence arises where the cones of the two
-opposite cusps with the power $`1+|\sigma|`$ meet along a non-compact
-surface. With a timelike diagonal those two cones do not meet at
-infinity, which is the reason for the larger interval. An earlier
+and it is enough to show that the inner double integral is at least
+$`c\,\delta^{-\pi_{ij}}`$ for each pair, with $`\delta=2\varepsilon/v`$; the
+integral over $`v`$ then diverges when $`2+2\eta-S+\pi_{ij}\ge-1`$.
+
+(0) It is at least a constant. This is the claim when $`\pi_{ij}=0`$.
+
+(1) If $`a_i\ge1`$: on $`|u-\tilde\ell_i|\le1`$ the factor $`i`$
+integrates to $`2\int_0^1(r+\delta)^{-a_i}dr\ge c\,\delta^{1-a_i}`$ (and to
+$`2\log(1/\delta)`$ if $`a_i=1`$). This is the claim when
+$`a_j\le\gamma_{ij}`$.
+
+(2) If $`\gamma_{ij}<\infty`$: the estimates (b) are two-sided,
+$`\mu\{d_{ij}\le x\}\ge c\,x^{\gamma_{ij}}`$ for small $`x`$ (the strip has
+length bounded below and the density is bounded below on its middle
+part; the cap is $`\int_{1-x'}^1(1-a^2)^\eta da`$). On the set
+$`d_{ij}\le\delta`$ we have
+$`\tilde d_{ij}\le\delta+4K^2/v=(1+2K^2/\varepsilon)\,\delta`$, so for
+$`|u-\tilde\ell_i|\le\delta`$ the two factors $`i`$ and $`j`$ are at least
+$`(C\delta)^{-a_i}`$ and $`(C\delta)^{-a_j}`$. The double integral is
+therefore at least
+$`c\,\delta^{\gamma_{ij}}\cdot\delta\cdot\delta^{-a_i-a_j}=c\,\delta^{-(a_i+a_j-1-\gamma_{ij})}`$.
+This is the claim when $`a_i<1`$ and $`a_i+a_j-1>\gamma_{ij}`$, and when
+$`a_i\ge1`$ and $`a_j>\gamma_{ij}`$, where
+$`a_i+a_j-1-\gamma_{ij}=\pi_{ij}`$.
+
+For the powers the factor $`e^{-\tau\arg z}`$ is bounded below, and the
+values of $`\max\pi_{ij}`$ are those found in the proof of Lemma 13.1.
+$`\blacksquare`$
+
+An independent review had integrated the true integrand numerically
+before this was written and found the density in $`v`$ growing like
+$`v^{2+2\eta-S+\max\pi_{ij}}`$ in eleven cases, over four decades. For the
+powers with spacelike diagonals the divergence arises where the cones of
+the two opposite cusps with the power $`1+|\sigma|`$ meet along a
+non-compact surface. With a timelike diagonal those two cones do not
+meet at infinity, which is the reason for the larger interval. An earlier
 version of this lemma argued by power counting, and before that claimed
 the range $`|\operatorname{Re}p|<1-2\eta`$ for spacelike diagonals, which
 was wrong; the error was found on review. The same review checked

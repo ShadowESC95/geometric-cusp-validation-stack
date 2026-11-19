@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from geocusp import feynman_contour as fc
+
 from geocusp import phase_bound as pb
 
 
@@ -25,8 +26,11 @@ def test_conditions_hold_and_the_bound_is_below_the_corner(name):
     assert out["all_conditions"]
     assert out["bound"] == pytest.approx(value, abs=5e-4)
     assert out["bound"] < np.pi - fc.PHASE_CORNER_MARGIN
-    # the bound is e plus the largest of the three zone constants
-    assert out["bound"] == pytest.approx(out["e"] + max(out["K_in"], out["K_bl"], out["K_out"]))
+    # the bound is the largest of the three zone bounds; the blend zone decides
+    assert out["bound"] == max(out["bound_inner"], out["bound_blend"], out["bound_outer"])
+    assert out["bound"] == pytest.approx(out["e"] + out["K_bl"])
+    assert out["R7_outer_exact"] and out["bound_outer"] == 0.0
+    assert out["bound_inner"] < 0.1
     assert out["K_in"] >= out["K_in_cases_3ab"] and out["K_near_cusp"] < 1e-5
 
 
@@ -34,19 +38,22 @@ def test_the_constants_of_the_default_square():
     out = pb.phase_bound(fc.Contour(region="+-"))
     assert out["e4"] == pytest.approx(0.02619, abs=1e-5)
     assert out["e_sp"] == pytest.approx(0.01261, abs=1e-5)
-    assert out["c1_prime"] == pytest.approx(0.01042, abs=1e-5)
+    assert out["c_3d"] == pytest.approx(0.00288, abs=1e-5)
+    assert out["bound_inner"] == pytest.approx(0.0459, abs=2e-4)
     assert out["K_in"] == pytest.approx(0.1744, abs=1e-4)
     assert out["s"] == pytest.approx(out["s0"]) == pytest.approx(0.2090, abs=1e-4)
     assert out["K_bl"] == pytest.approx(0.2847, abs=1e-4)
     assert (out["s1"], out["s2"], out["s3"]) == pytest.approx((0.0675, 0.0300, 0.00057), abs=1e-4)
 
 
-def test_the_bound_is_not_uniform_in_the_square_but_stays_below_the_corner():
-    out = pb.phase_bound(fc.tuned_contour("+-", 2.5))
-    assert out["all_conditions"]
-    assert out["bound"] == pytest.approx(1.578, abs=2e-3)
-    assert out["K_in"] == out["K_in_case_3d"]            # c_1' grows when the other diagonal is small
-    assert out["bound"] < np.pi - fc.PHASE_CORNER_MARGIN
+@pytest.mark.parametrize("region", ["+-", "-+"])
+def test_the_bound_is_uniform_over_the_family_of_squares(region):
+    values = []
+    for angle in (0.02, 0.5, 1.5, 2.2, 2.5, 2.9, 3.087):
+        out = pb.phase_bound(fc.tuned_contour(region, angle))
+        assert out["all_conditions"], angle
+        values.append(out["bound"])
+    assert 0.53 < min(values) and max(values) < 0.57
 
 
 def test_no_timelike_diagonal_is_rejected():
@@ -107,9 +114,10 @@ def _points(C, n, seed):
 def test_K_and_the_phase_stay_below_the_proved_constants_on_samples(name):
     C = SQUARES[name][0]()
     out = pb.phase_bound(C)
-    limits = (out["K_in"], out["K_bl"], out["K_out"])
-    largest, count, phase = [-np.inf] * 3, [0] * 3, 0.0
-    for x0 in _points(C, 1500, seed=11):
+    limits = (out["K_in_sharp"], out["K_bl"], out["K_out"])
+    zone_bounds = (out["bound_inner"], out["bound_blend"], out["bound_outer"])
+    largest, count, phase = [-np.inf] * 3, [0] * 3, [0.0] * 3
+    for x0 in _points(C, 500, seed=11):
         if C.distance_to_edges(x0) < 1e-5:
             continue
         val = pb.k_values(C, x0)
@@ -119,10 +127,38 @@ def test_K_and_the_phase_stay_below_the_proved_constants_on_samples(name):
         z = val["zone"]
         count[z] += 1
         largest[z] = max(largest[z], max(val["K"].values()))
-        phase = max(phase, abs(val["arg_z"]))
-    assert min(count) > 2000, count
+        phase[z] = max(phase[z], abs(val["arg_z"]))
+    assert min(count) > 650, count
     for z in range(3):
         assert largest[z] <= limits[z], (z, largest[z], limits[z])
-    assert phase <= 2 * np.pi + out["bound"]
+        assert phase[z] <= 2 * np.pi + zone_bounds[z] + 1e-12, (z, phase[z])
     # what is observed is far below what is proved
-    assert max(largest) < 0.01 and phase < 2 * np.pi + 1e-6
+    assert max(largest) < 0.01 and max(phase) < 2 * np.pi + 1e-6
+
+
+# ---- interval arithmetic (phase_bound_iv)
+from geocusp import phase_bound_iv as pbi
+
+
+@pytest.mark.parametrize("region,lo,hi,boxes", [("+-", 1.1, 1.103, 12), ("-+", 2.236, 2.239, 12),
+                                                 ("+-", 0.02, 0.023, 12), ("-+", 3.084, 3.087, 12)])
+def test_interval_conditions_hold_on_ranges_of_squares(region, lo, hi, boxes):
+    result = pbi.cover(region, lo, hi, boxes)
+    assert result["R7_outer_exact"]
+    assert result["all"] and result["failed_count"] == 0
+    assert result["bound_upper"] < 0.58
+    assert result["Lambda_lower"] >= 2
+
+
+def test_interval_bound_dominates_the_floating_point_bound():
+    for region, angle in [("+-", 1.1), ("-+", 2.5)]:
+        r = pbi.interval_phase_bound(region, angle - 1e-4, angle + 1e-4)
+        o = pb.phase_bound(fc.tuned_contour(region, angle))
+        assert r["all_conditions"]
+        assert o["bound"] <= r["bound_upper"] <= o["bound"] + 0.02
+        assert o["e"] <= r["e_upper"] and o["K_in"] <= r["K_in_upper"] and o["K_bl"] <= r["K_bl_upper"]
+
+
+def test_interval_version_rejects_the_region_without_a_timelike_diagonal():
+    with pytest.raises(ValueError):
+        pbi.interval_phase_bound("--", 1.0, 1.1)

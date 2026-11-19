@@ -319,3 +319,31 @@ def test_continued_box_grows_no_faster_than_the_bound():
     for eta in (-0.2, 0.15j):
         scaled = [abs(le.box_continued(0.1 + 1j * t, eta, 2.5)) * (1 + t) * mp.exp(-mp.pi * t) for t in (2, 4, 8)]
         assert max(scaled) < 5 and min(scaled) > 0.1
+
+
+@pytest.mark.parametrize("eta", [0.25, 0.03, 1e-3, 1e-6])
+def test_parameter_quadratures_are_valid_down_to_eta_zero(eta):
+    """The two direct parameter quadratures against the continued form, which is
+    analytic through eta = 0. With fixed ranges they used to fail silently
+    below eta ~ 0.01 (spacelike) and ~ 0.1 (timelike): the double pole comes
+    from tails of length 1/eta, now integrated in closed form."""
+    for p in (0.2, -0.3):
+        if eta >= 0.5 - abs(p):
+            continue
+        direct = le.parametric_double_pole(p, eta, 2.5)
+        assert direct == pytest.approx(complex(le.box_continued(p, eta, 2.5, 0)).real, rel=1e-8)
+        rotated = le.parametric_double_pole_rotated(p, eta, 2.5, np.pi, 0.5)
+        assert abs(rotated - complex(le.box_continued(p, eta, 2.5, np.pi))) < 1e-8 * abs(rotated)
+        if eta <= 1e-6:
+            limit = 4 * np.sin(p * np.pi) / (p * np.pi)
+            assert abs(direct - limit) < 1e-4 and abs(rotated - limit) < 1e-4
+
+
+def test_parameter_quadratures_do_not_depend_on_the_rotation_or_the_window():
+    a = le.parametric_double_pole_rotated(0.2, 0.01, 2.5, np.pi, 0.5)
+    b = le.parametric_double_pole_rotated(0.2, 0.01, 2.5, np.pi, 0.9)
+    c = le._parametric_box(0.2, 0.01, 2.5 * np.exp(1j * np.pi), 0.5, window=60.0)
+    assert abs(a - b) < 1e-8 and abs(a - c) < 1e-8
+    for eta in (0.0, -0.1):
+        with pytest.raises(ValueError):
+            le.parametric_double_pole(0.2, eta, 2.5)

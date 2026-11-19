@@ -528,6 +528,92 @@ def landau_pinch_analysis():
 # --------------------------------------------------------------------------
 # Feynman-parameter form of the regulated integral
 # --------------------------------------------------------------------------
+def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
+    """eta^2 S^(1+p) Gamma(2-eta)/(Gamma(1+p)^2 Gamma(1-p)^2) times
+
+        2 int_0^(1/2) dx X^(eta-1) int dw w^p (1 + S w)^(eta-2) h(X w),   X = x(1-x),
+        h(q) = 2 int_0^oo dy (1 + 2 sqrt(q) cosh y)^(-2 eta),
+
+    with w on the ray arg w = -gamma. This is the Feynman-parameter integral
+    of `parametric_double_pole` after q = X w. It is arranged so that it is
+    accurate for every eta > 0, including eta -> 0, where the double pole
+    comes from tails of length 1/eta in the logarithmic variables:
+
+    * h: the integrand is 1 for y below log(1/sqrt q) - 40 and a pure
+      exponential beyond log(1/sqrt q) + 45, so only a window of fixed width
+      is integrated numerically; outside |log q| <= window the asymptotic
+      forms h = -log q - 2 psi(2 eta) - 2 gamma_E and
+      h = Gamma(eta)^2/(2 Gamma(2 eta)) q^(-eta) are exact to rounding;
+    * x: with x = exp(-a), beyond a = A0 the inner integral is a m0 + m1 with
+      m0 = S^(-1-p) B(1+p, 1-p-eta) and
+      m1 = m0 (log S - psi(1+p) + psi(1-p-eta) - 2 psi(2 eta) - 2 gamma_E),
+      and int_A0^oo e^(-eta a)(a m0 + m1) da is done in closed form.
+    """
+    from scipy.integrate import quad
+    from scipy.interpolate import CubicSpline
+    from scipy.special import digamma, gamma as gamma_fn
+
+    p, S = complex(p), complex(S)
+    sigma = p.real
+    if not (eta > 0 and abs(sigma) < 1 and sigma + eta < 1):
+        raise ValueError("need eta > 0, |Re p| < 1 and Re p + eta < 1")
+
+    def cquad(f, lo, hi, epsrel=1e-11, points=None):
+        kw = dict(epsabs=0, epsrel=epsrel, limit=400, points=points)
+        return (quad(lambda t: complex(f(t)).real, lo, hi, **kw)[0]
+                + 1j * quad(lambda t: complex(f(t)).imag, lo, hi, **kw)[0])
+
+    rot, half = np.exp(-1j * gamma), np.exp(-0.5j * gamma)
+    c0 = -2 * digamma(2 * eta) - 2 * np.euler_gamma
+    large = 0.5 * gamma_fn(eta) ** 2 / gamma_fn(2 * eta)
+
+    def h_window(log_r):
+        c = 2 * np.exp(0.5 * log_r) * half
+        lam = -0.5 * log_r                                   # log(2/|c|)
+        y1, y2 = max(0.0, lam - 40.0), max(lam, 0.0) + 45.0
+        knee = max(lam, 0.0)
+        middle = cquad(lambda y: (1 + c * np.cosh(y)) ** (-2 * eta), y1, y2,
+                       points=[knee] if y1 < knee < y2 else None)
+        tail = (c / 2) ** (-2 * eta) * np.exp(-2 * eta * y2) / (2 * eta)
+        return 2 * (y1 + middle + tail)
+
+    grid = np.linspace(-window, window, int(20 * window) + 1)
+    values = np.array([h_window(g) for g in grid])
+    spline_re, spline_im = CubicSpline(grid, values.real), CubicSpline(grid, values.imag)
+
+    def h(log_r):
+        if log_r < -window:
+            return -log_r + 1j * gamma + c0
+        if log_r > window:
+            return large * np.exp(-eta * log_r) * rot ** (-eta)
+        return spline_re(log_r) + 1j * spline_im(log_r)
+
+    log_s = np.log(abs(S))
+    lo, hi = -40.0 / (1 + sigma) - max(log_s, 0.0), 40.0 / (1 - sigma - eta) + max(-log_s, 0.0)
+
+    def inner(log_x):
+        def integrand(v):
+            w = np.exp(v) * rot
+            return w ** (1 + p) * (1 + S * w) ** (eta - 2) * h(v + log_x)
+        marks = sorted(m for m in {-log_s, -log_x, -log_x - window, -log_x + window} if lo < m < hi)
+        edges = [lo] + marks + [hi]
+        return sum(cquad(integrand, u, v) for u, v in zip(edges[:-1], edges[1:]))
+
+    a0 = window + 40.0 / (1 - sigma - eta) + 5
+
+    def outer(a):
+        x = np.exp(-a)
+        return (1 - x) ** (eta - 1) * x ** eta * inner(np.log(x * (1 - x)))
+
+    edges = [np.log(2.0)] + [m for m in (5.0, 40.0, window) if m < a0] + [a0]
+    direct = sum(cquad(outer, u, v, epsrel=1e-9) for u, v in zip(edges[:-1], edges[1:]))
+    m0 = S ** (-1 - p) * gamma_fn(1 + p) * gamma_fn(1 - p - eta) / gamma_fn(2 - eta)
+    m1 = m0 * (np.log(S) - digamma(1 + p) + digamma(1 - p - eta) + c0)
+    tail = np.exp(-eta * a0) * ((a0 / eta + 1 / eta**2) * m0 + m1 / eta)
+    return (eta**2 * S ** (1 + p) * gamma_fn(2 - eta)
+            / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * 2 * (direct + tail))
+
+
 def parametric_double_pole(p, eta, ratio=1):
     """eps^2 s t times the regulated integral of z^p from Feynman parameters.
 
@@ -544,37 +630,14 @@ def parametric_double_pole(p, eta, ratio=1):
           = Gamma(2 - eta) A^(eta - 2).
     Substituting a1 = sqrt(q) e^y, a3 = sqrt(q) e^(-y) leaves three nested
     one-dimensional integrals. Agrees with `regulated_double_pole`, which is
-    the Mellin-Barnes form of the same quantity.
+    the Mellin-Barnes form of the same quantity, and with `box_continued`.
+
+    Valid for every eta > 0 with eta < 1 - p, small eta included: see
+    `_parametric_box`. An earlier version used fixed ranges in the
+    logarithmic variables and returned a wrong number, without warning, for
+    eta below about 0.01 (0.165 for 3.754 at eta = 0.003, p = 0.2).
     """
-    from scipy.integrate import quad
-    from scipy.interpolate import CubicSpline
-    from scipy.special import gamma as gamma_fn
-
-    p, eta, ratio = float(p), float(eta), float(ratio)
-
-    def h(q):
-        root = 2 * np.sqrt(q)
-        with np.errstate(over="ignore"):
-            value = quad(lambda y: (1 + root * np.cosh(y)) ** (-2 * eta), 0, np.inf,
-                         epsabs=0, epsrel=1e-11, limit=400)[0]
-        return 2 * value
-
-    grid = np.linspace(-34, 34, 681)                       # log q
-    spline = CubicSpline(grid, np.log([h(np.exp(g)) for g in grid]))
-
-    def over_q(X):
-        # q = X exp(v): the integrand in v decays like exp(-(1-p-eta)|v|) or faster
-        def integrand(v):
-            q = X * np.exp(v)
-            return q ** (1 + p) * np.exp(spline(np.log(q))) / (q * ratio + X) ** (2 - eta)
-        return quad(integrand, -30 - np.log(X), 30 - np.log(X), epsabs=0, epsrel=1e-10,
-                    limit=400, points=[0.0])[0]
-
-    total = 2 * quad(lambda x: (x * (1 - x)) ** (-p) * over_q(x * (1 - x)), 0, 0.5,
-                     epsabs=0, epsrel=1e-9, limit=200)[0]
-    # s t from the prefactor and (s/t)^p from the definition of z, with t = 1
-    return (eta**2 * ratio ** (1 + p) * gamma_fn(2 - eta)
-            / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)
+    return float(_parametric_box(float(p), float(eta), float(ratio), 0.0).real)
 
 
 # --------------------------------------------------------------------------
@@ -612,46 +675,12 @@ def parametric_double_pole_rotated(p, eta, modulus=1, theta=np.pi, gamma=0.5):
     0 <= arg <= pi - gamma, so |F| >= sin(gamma/2)(X + r |S|) and the integral
     converges absolutely; by Cauchy's theorem it equals the boundary value
     from theta < pi. The y integral defines h(q) for complex q.
+
+    Valid for every eta > 0 with eta < 1 - p, small eta included: see
+    `_parametric_box`. An earlier version cut the y integral at 60 and
+    returned a wrong number, without warning, for eta below about 0.1.
     """
-    from scipy.integrate import quad
-    from scipy.interpolate import CubicSpline
-    from scipy.special import gamma as gamma_fn
-
-    p, eta = float(p), float(eta)
-    S = modulus * np.exp(1j * theta)
-    rot = np.exp(-1j * gamma)
-
-    def h(r):
-        root = 2 * np.sqrt(r) * np.exp(-0.5j * gamma)
-        with np.errstate(over="ignore", invalid="ignore"):
-            f = lambda y: (1 + root * np.cosh(y)) ** (-2 * eta)
-            re = quad(lambda y: f(y).real, 0, 60, epsabs=0, epsrel=1e-11, limit=600)[0]
-            im = quad(lambda y: f(y).imag, 0, 60, epsabs=0, epsrel=1e-11, limit=600)[0]
-        return 2 * (re + 1j * im)
-
-    grid = np.linspace(-34, 34, 681)                         # log r
-    values = np.array([h(np.exp(g)) for g in grid])
-    spline_re, spline_im = CubicSpline(grid, values.real), CubicSpline(grid, values.imag)
-
-    def over_q(X):
-        def integrand(v):
-            r = X * np.exp(v)
-            q = r * rot
-            hq = spline_re(np.log(r)) + 1j * spline_im(np.log(r))
-            return r * rot * q**p * hq * (q * S + X) ** (eta - 2)     # dq = r rot dv
-        lo, hi = -30 - np.log(X), 30 - np.log(X)
-        re = quad(lambda v: integrand(v).real, lo, hi, epsabs=0, epsrel=1e-10, limit=600, points=[0.0])[0]
-        im = quad(lambda v: integrand(v).imag, lo, hi, epsabs=0, epsrel=1e-10, limit=600, points=[0.0])[0]
-        return re + 1j * im
-
-    def outer(x):
-        return (x * (1 - x)) ** (-p) * over_q(x * (1 - x))
-
-    re = quad(lambda x: outer(x).real, 0, 0.5, epsabs=0, epsrel=1e-9, limit=200)[0]
-    im = quad(lambda x: outer(x).imag, 0, 0.5, epsabs=0, epsrel=1e-9, limit=200)[0]
-    total = 2 * (re + 1j * im)
-    return (eta**2 * S ** (1 + p) * gamma_fn(2 - eta)
-            / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * total)
+    return complex(_parametric_box(float(p), float(eta), modulus * np.exp(1j * theta), gamma))
 
 
 def box_continued(p, eta, modulus=1, theta=0):

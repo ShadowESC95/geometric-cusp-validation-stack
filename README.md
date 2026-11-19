@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **452 tests** and **63 worked example groups**, all passing
+- **464 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -94,7 +94,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 452 tests, about twenty minutes
+make test        # 464 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -230,9 +230,10 @@ What it does not do:
   Cauchy's theorem, so it is not an independent check.
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
   contour is measured, not proved. The bound the argument needs, below
-  $`3\pi`$, is proved, and so is a closer one, $`2\pi+0.36`$ for the
-  default constants ([GATE_6_PHASE](docs/GATE_6_PHASE.md)), in floating
-  point at individual squares and not uniformly in the square.
+  $`3\pi`$, is proved, and so is a closer one
+  ([GATE_6_PHASE](docs/GATE_6_PHASE.md)): at most $`2\pi+0.5701`$ over
+  the certified range of squares, in interval arithmetic, and exactly
+  $`2\pi`$ outside the ball of radius $`2R`$.
 
 Earlier statements found to be wrong and corrected in the documents: the
 exchange of integrals was claimed on lines where the integral does not
@@ -350,7 +351,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            452 tests
+tests/            464 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

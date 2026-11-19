@@ -3,12 +3,15 @@
 See docs/GATE_6_PHASE.md.  With one diagonal timelike, on the contour of
 docs/GATE_6_CONTOUR.md,
 
-    |arg z|  <=  2 pi + e + max(K_in, K_bl, e, 3 e_sp),
+    |arg z| <= 2 pi + b_in         for r <= R        (Proposition R8),
+    |arg z| <= 2 pi + e + K_bl     for R < r < 2R    (Proposition R6),
+    |arg z| <= 2 pi                for r >= 2R       (Proposition R7),
 
-provided the conditions of GATE_6_CONTOUR section 9 and the conditions (G1), (G2), (R4),
-(B1)-(B5) below hold.  K_c = u_c - u_{c-1} - u_{c+1} with u_i = pi + arg x0i^2 on the
-Feynman branch, at a cusp c whose diagonal is timelike; K_in, K_bl and max(e, 3 e_sp)
-bound it for r <= R, R < r < 2R and r >= 2R.
+provided the conditions of GATE_6_CONTOUR section 9 and the conditions (R4), (R7), (G1),
+(G2), (B1)-(B5) and the trivial ones hold.  K_c = u_c - u_{c-1} - u_{c+1} with
+u_i = pi + arg x0i^2 on the Feynman branch, at a cusp c whose diagonal is timelike.
+`bound` is the largest of the three zone bounds (`bound_inner`, `bound_blend`,
+`bound_outer`); without (R7) the outer zone has e + max(e, 3 e_sp) instead of 0.
 
 `phase_bound(contour)` evaluates every constant and condition in floating point.
 `k_values(contour, x0)` evaluates K_c and arg z at a real point x0, in float64.
@@ -47,7 +50,10 @@ def phase_bound(contour: fc.Contour) -> dict:
     D, Dp = max(Ds), min(Ds)                       # timelike diagonal, the other one
     u = -D - Dp
     Delta, P, A1, lam0 = cert["Delta"], cert["P"], cert["A1"], cert["lambda0"]
-    B = max(fc.transverse_norm(C, j) for j in range(4))
+    Bj = [fc.transverse_norm(C, j) for j in range(4)]
+    B = max(Bj)
+    B_c = max(Bj[j] for j in range(4) if Ds[j] > 0)      # frames of the cusps with the timelike diagonal
+    B_n = max(Bj[j] for j in range(4) if Ds[j] < 0)      # frames of their neighbours
     R, d0, kf, tau0, kap, nu = C.radius, C.delta0, C.kappa_far, C.tau0, C.kappa, C.nu
     e, theta, M = cert["excursion_bound"], cert["theta"], cert["C1_margin"]
     mu = max(64 * kap * P**2 / Dmin, nu * B**2)
@@ -61,7 +67,9 @@ def phase_bound(contour: fc.Contour) -> dict:
     e_sp = atan(2 * kf * (1 + sqrt(2) * q) / (1 - eps_k)) if eps_k < 1 else np.inf
     out.update(eps_kappa=eps_k, e_sp=e_sp, K_out=max(e, 3 * e_sp))
     out["R4_centres"] = bool(tau0 >= 3 * Delta and 2 * R > sqrt(2) * tau0)
-    out["R4_trivial"] = bool(eps_k < 1 and e < np.pi / 2)
+    out["R4_trivial"] = bool(eps_k < 1 and e <= np.pi / 4 and 4 * e_sp < np.pi)
+    # Proposition R7: |arg z| <= 2 pi exactly for r >= 2R
+    out["R7_outer_exact"] = bool(out["R4_centres"] and (R - tau0 / 2) * (tau0 - 2 * Delta) >= 2 * Delta * tau0)
 
     # ---- inner zone (Proposition R5)
     out["G1"] = bool(4 * d0 * abs(u) < D * abs(Dp))
@@ -71,25 +79,23 @@ def phase_bound(contour: fc.Contour) -> dict:
     v_R = 4 * lam0 * (R + Delta)
     out["R5_trivial"] = bool(v_R**2 < d0 and theta / 2 <= 1 and nu < 1 and 4 * kap**2 < 1)
     e4 = atan(4 * iota / (d0 - v_R**2)) if v_R**2 < d0 else np.inf
-    beta_max = A1 * (R + Delta)
-    alpha_max = beta_max * D / abs(Dp)
-    beta_star = abs(Dp) / abs(u) * gamma1
-    c1 = (2 * nu + 2 * kap * alpha_max) * 2 * D / d0 * max(1.0, beta_max)
-    if gamma1 > 0:
-        c1p = (2 * abs(Dp) * (kap * alpha_max**2 + (1 + beta_max) * (nu * alpha_max + kap * beta_max))
-               / (0.5 * d0 * min(1.0, beta_star)))
-    else:
-        c1p = np.inf
-    c_star = max(c1, c1p)
+    beta_c = 2 * P * (R + Delta) / D               # |alpha|, |beta| <= beta_c in the frame of c, r <= R
+    G = 2 * D / d0 * max(1.0, beta_c)              # |A|/|r_c|, |B|/|r_c| <= G where the neighbour frame is on
+    w = abs(u) / abs(Dp)
+    c_3d = G * (2 * nu * (1 + beta_c * w)
+                + 2 * kap * (beta_c * D / abs(Dp) + abs(u) / D + u * u * beta_c / (abs(Dp) * D)))
     eps_V = max(asin(theta / 2), asin(v_R**2 / d0))
     K_in_12 = 2 * e + e4
     K_in_3ab = e + 2 * eps_V
-    K_in_3d = atan(2 * nu + 2 * c_star + 2 * iota / d0) + 2 * atan(iota / d0) + 3 * eps_V
+    # for r <= R only the frame i+2 can push arg x0i^2 out of [-pi, 0]: excursion e_fr <= e
+    e_fr = atan(iota / (d0 - v_R**2)) if v_R**2 < d0 else np.inf
+    K_in_3d = atan(2 * nu + 2 * c_3d + 2 * iota / d0) + 2 * atan(iota / d0) + 3 * eps_V
     K_in = max(K_in_12, K_in_3ab, K_in_3d)
-    out.update(gamma1=gamma1, iota=iota, v_R=v_R, e4=e4, beta_max=beta_max, alpha_max=alpha_max,
-               beta_star=beta_star, c1=c1, c1_prime=c1p, c_star=c_star, eps_V=eps_V,
+    out.update(gamma1=gamma1, iota=iota, v_R=v_R, e4=e4,
+               beta_c=beta_c, G=G, c_3d=c_3d, eps_V=eps_V,
                K_in_cases_1_2=K_in_12, K_in_cases_3ab=K_in_3ab, K_in_case_3d=K_in_3d, K_in=K_in,
-               K_near_cusp=2 * nu / (1 - nu**2) + 4 * kap**2 / (1 - 4 * kap**2))
+               K_near_cusp=2 * nu / (1 - nu**2) + 4 * kap**2 / (1 - 4 * kap**2), e_fr=e_fr,
+               K_in_sharp=max(2 * e_fr + e4, e_fr + 2 * eps_V, K_in_3d))
 
     # ---- blend zone (Proposition R6)
     reach = 2 * R + Delta
@@ -104,15 +110,16 @@ def phase_bound(contour: fc.Contour) -> dict:
     dv = d0 - v2
     eps = sqrt(2) * P / (R - Delta)
     b0 = eps * d0 / Dmin
-    rad = R - Delta - B * sqrt(d0 + 2 * b0 * Dmax)
-    Lam = rad / P
-    a_min = Lam - b0
+    Lam_c = (R - Delta - B_c * sqrt(d0 + b0**2 * D)) / P
+    Lam_n = (R - Delta - B_n * sqrt(d0 * (1 + eps) + 2 * b0**2 * abs(Dp))) / P
+    a_min = Lam_c - b0
     d1 = d0 * (1 - eps)
     out.update(K_far=K, v_in=v_in, v=v_in + K, iota2=iota2, pi0=pi0, mu_minus=mu_m, mu_plus=mu_p,
-               omega0=omega0, delta_v=dv, eps=eps, b0=b0, Lambda_b=Lam, a_min=a_min, delta1=d1)
+               omega0=omega0, delta_v=dv, eps=eps, b0=b0, Lambda_c=Lam_c, Lambda_n=Lam_n, a_min=a_min, delta1=d1,
+               B_c=B_c, B_n=B_n)
     out["B1"] = bool(R >= tau0 and R > sqrt(5) * Delta)
     out["B2"] = bool(kap <= nu)
-    out["B3"] = bool(b0 <= 0.5 and Lam >= 2 and 4 * d0 <= Dmin)
+    out["B3"] = bool(b0 <= 0.5 and Lam_c >= 2 and Lam_n >= 2 and 4 * d0 <= Dmin)
     out["B4"] = bool(d1 > v2)
     ok = out["B3"] and out["B4"] and dv > 0 and a_min > 0
     if ok:
@@ -136,7 +143,10 @@ def phase_bound(contour: fc.Contour) -> dict:
     conditions = ["certificate", "R4_centres", "R4_trivial", "G1", "G2", "R5_trivial",
                   "B1", "B2", "B3", "B4", "B5", "R6_trivial"]
     out["all_conditions"] = all(out[k] for k in conditions)
-    out["bound"] = float(e + max(K_in, K_bl, out["K_out"]))
+    out["bound_inner"] = float(min(e, e_fr) + min(K_in, out["K_in_sharp"]))
+    out["bound_blend"] = float(e + K_bl)
+    out["bound_outer"] = 0.0 if out["R7_outer_exact"] else float(e + out["K_out"])
+    out["bound"] = max(out["bound_inner"], out["bound_blend"], out["bound_outer"])
     return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in out.items()}
 
 
