@@ -21,6 +21,9 @@ What is enclosed, and how:
 * arctan x is replaced by x, and arcsin x by t - t^3/3 + t^5/5 with
   t = x / sqrt(1 - x^2) (by t itself if t > 1); both are upper bounds, so
   `bound_upper` is an upper bound of the float `bound` (slightly larger).
+* `bound_upper` is the zone-by-zone bound of the theorem: the largest of b_in
+  (Proposition R8), b_bl (Proposition R6) and, for r >= 2R, 0 if (R7)
+  holds on the box and e + max(e, 3 e_sp) otherwise.
 
 Every comparison is between the upper end of one interval and the lower end
 of the other.  A True says: for every square with angle in the range, the
@@ -37,7 +40,9 @@ from . import feynman_contour as fc
 _I, _max, _min, _abs, lt, le = ci._I, ci._max, ci._min, ci._abs, ci.lt, ci.le
 
 CONDITIONS = ["certificate", "R4_centres", "R4_trivial", "G1", "G2", "R5_trivial",
-              "B1", "B2", "B3", "B4", "B5", "R6_trivial"]
+              "B1", "B2", "B3", "B4", "B5", "B6", "R6_trivial"]
+
+from .phase_bound import PAIRING
 
 
 def _asin_upper(x):
@@ -131,6 +136,9 @@ def interval_phase_bound(region: str, angle_lo: float, angle_hi: float, with_cer
     c_3d = G * (2 * nu * (1 + beta_c * w) + 2 * kap * (beta_c * D / Dp + u_abs / D + u_abs**2 * beta_c / (Dp * D)))
     eps_V = _max([_asin_upper(theta / 2), _asin_upper(v_R2 / d0)])
     K_in = _max([2 * e + e4, e + 2 * eps_V, (2 * nu + 2 * c_3d + 2 * iota / d0) + 2 * iota / d0 + 3 * eps_V])
+    e_fr = iota / (d0 - v_R2)                                                            # arctan x <= x
+    K_3d = (2 * nu + 2 * c_3d + 2 * iota / d0) + 2 * iota / d0 + 3 * eps_V
+    b_in = e_fr + _max([2 * e_fr + e4, e_fr + 2 * eps_V, K_3d])                         # Proposition R8
 
     # ---- blend zone (R6)
     iota2 = 2 * lam0 * reach**2
@@ -151,27 +159,48 @@ def interval_phase_bound(region: str, angle_lo: float, angle_hi: float, with_cer
     out["B4"] = lt(v2, d1)
     gap = (tau0 - 2 * Delta) ** 2
     out["R6_trivial"] = lt(v2, d0 / 2) and lt(v2, gap)
-    if out["B3"] and out["B4"] and out["R6_trivial"]:
+    # (B6)
+    tau1 = 2 * Delta * tau0 / (tau0 - 2 * Delta)
+    W1 = Delta * (tau0 + Delta) + Delta * (tau1 + tau0 + Delta)
+    out["B6"] = False
+    rho1 = None
+    if lt(tau1, R):
+        root = iv.sqrt(R * R - tau1 * tau1) - Delta
+        if lt(tau1 + Delta, root):
+            rho1 = root * root - (tau1 + Delta) ** 2
+            out["B6"] = lt(0, rho1)
+    out["B5"] = False
+    if out["B3"] and out["B4"] and out["B6"] and out["R6_trivial"] and a_min.a > 0:
+        unit = iota2 / dv
+        half = _I(PAIRING) * unit
+        a_c = 2 * Pn * reach / D
+        a_n = 2 * Pn * reach / Dp
+        vs_c = 2 * nu + 2 * D / d0 * (kap * a_c**2 + nu * a_c**2 + kap * a_c * _max([a_c + 1, iv.mpf(2)]))
+        vs_n = 2 * Dp / d0 * (kap * a_n**2 + nu * (a_n**2 + a_n) + kap * a_n * (a_n + 1))
+        far0 = 2 * K * Pn * omega0 / dv**2
+        vterm = 2 * v2 * pi0 / dv**2
+        s0 = _max([3 * half + vterm + far0, 2 * half + far0,
+                   unit + 2 * half + (vs_c + vs_n) * (d0 / dv) ** 2 + vterm + far0])
         vs = (2 * nu + kap * b0**2 / (a_min * (1 + a_min))) + (2 * nu + kap * b0**2) / a_min
         F = 2 * K * Pn * mu_m / dv
-        s0 = 8 * iota2 / dv + 2 * K * Pn * omega0 / dv**2
-        s1 = _max([(iota2 + 2 * mu_p * pi0) / dv + F,
-                   (1 + mu_p) * d0 / dv * vs + 2 * mu_m * pi0 / dv + iota2 * (1 / dv + 1 / (d1 - v2)) + F])
-        s2 = (iota2 + 2 * mu_p * pi0) / dv + F
+        chi_eps = eps * eps * (3 - 2 * eps)
+        s1 = _max([half + 2 * mu_p * pi0 / dv + F,
+                   (1 + mu_p) * d0 / dv * vs + 2 * mu_m * pi0 / dv + chi_eps * iota2 * (1 / dv + 1 / (d1 - v2)) + F])
+        s2 = half + 2 * mu_p * pi0 / dv + F
         s3 = mu_m + (1 + mu_p) ** 2 * vs
         s = _max([s0, s1, s2, s3])
         if s.b < 1:
             asin_s = _asin_upper(s)
-            out["B5"] = lt(e + asin_s + mu_m, iv.pi / 2)
             e_sp2 = (4 * iota2 / gap + 2 * kf * (1 + r2 * q)) / (1 - v2 / gap)
-            K_bl = _max([e + asin_s, 3 * e_sp2])
-            bound = e + _max([K_in, K_bl, K_out])
-            out.update(s_upper=float(s.b), K_bl_upper=float(K_bl.b), bound_upper=float(bound.b))
-        else:
-            out["B5"] = False
-    else:
-        out["B5"] = False
-    out.update(e_upper=float(e.b), K_in_upper=float(K_in.b), K_out_upper=float(K_out.b), c_3d_upper=float(c_3d.b),
+            out["B5"] = lt(e + asin_s + mu_m, iv.pi / 2) and lt(4 * e_sp2, iv.pi)
+            e_bl_hi = half                                                               # arctan x <= x
+            e_bl_lo = half + 2 * kf * (1 + W1 / rho1) / (1 - v2 / d0)
+            b_bl = e_bl_hi + e_bl_lo + asin_s
+            b_out = iv.mpf(0) if out["R7_outer_exact"] else e + K_out
+            bound = _max([b_in, b_bl, b_out])
+            out.update(s_upper=float(s.b), b_bl_upper=float(b_bl.b), bound_upper=float(bound.b))
+    out.update(e_upper=float(e.b), K_in_upper=float(K_in.b), b_in_upper=float(b_in.b), K_out_upper=float(K_out.b),
+               c_3d_upper=float(c_3d.b),
                Lambda_lower=float(min(Lam_c.a, Lam_n.a)), B_n_upper=float(B_n.b),
                ratio_s_over_t=[float((-D / Dp).a), float((-D / Dp).b)] if region == "+-"
                else [float((-Dp / D).a), float((-Dp / D).b)])
@@ -186,7 +215,8 @@ def cover(region: str, angle_lo: float, angle_hi: float, boxes: int, with_certif
     `certificate_iv.cover`).  Reports where all conditions hold and the largest bound there."""
     edges = np.linspace(angle_lo, angle_hi, boxes + 1)
     failed, ratios, worst, where, r7_failed = [], [], 0.0, None, 0
-    parts = {"e_upper": 0.0, "K_in_upper": 0.0, "K_bl_upper": 0.0, "K_out_upper": 0.0, "c_3d_upper": 0.0, "s_upper": 0.0}
+    parts = {"e_upper": 0.0, "K_in_upper": 0.0, "b_in_upper": 0.0, "b_bl_upper": 0.0, "K_out_upper": 0.0,
+             "c_3d_upper": 0.0, "s_upper": 0.0}
     lam = np.inf
     for lo, hi in zip(edges[:-1], edges[1:]):
         try:

@@ -1689,8 +1689,8 @@ $`\prod_i|X_i-i\varepsilon|^{-a_i}`$ over $`\mathbb R^D`$ diverges. So for
 $`a_i\in(0,2)`$ it converges exactly when
 $`S-\max_{i\ne j}\pi_{ij}>3+2\eta`$. In particular, for the powers, the
 integral of $`|z_\varepsilon^p|/\prod|X_i-i\varepsilon|`$ diverges for
-$`\sigma\ge\tfrac12-\eta`$ when $`s`$ is spacelike and for
-$`\sigma\ge1-2\eta`$ when $`s`$ is timelike, and likewise with
+$`\tfrac12-\eta\le\sigma<1`$ when $`s`$ is spacelike and for
+$`1-2\eta\le\sigma<1`$ when $`s`$ is timelike, and likewise with
 $`-\sigma`$ and $`t`$: none of the intervals of Lemma 13.1 can be
 enlarged.
 
@@ -1734,8 +1734,11 @@ For the powers the factor $`e^{-\tau\arg z}`$ is bounded below, and the
 values of $`\max\pi_{ij}`$ are those found in the proof of Lemma 13.1.
 $`\blacksquare`$
 
-An independent review had integrated the true integrand numerically
-before this was written and found the density in $`v`$ growing like
+A later review checked this proof step by step (the three mechanisms,
+the two-sided sublevel estimates, and that every case of the definition
+of $`\pi_{ij}`$ is matched) and found it correct. An independent review
+had integrated the true integrand numerically before this was written
+and found the density in $`v`$ growing like
 $`v^{2+2\eta-S+\max\pi_{ij}}`$ in eleven cases, over four decades. For the
 powers with spacelike diagonals the divergence arises where the cones of
 the two opposite cusps with the power $`1+|\sigma|`$ meet along a

@@ -8,13 +8,13 @@ from geocusp import phase_bound as pb
 
 
 SQUARES = {
-    "default +-": (lambda: fc.Contour(region="+-"), 0.359),
-    "default -+": (lambda: fc.Contour(region="-+"), 0.359),
-    "tuned +- 0.7": (lambda: fc.tuned_contour("+-", 0.7), 0.534),
-    "tuned -+ 1.1": (lambda: fc.tuned_contour("-+", 1.1), 0.537),
+    "default +-": (lambda: fc.Contour(region="+-"), 0.117),
+    "default -+": (lambda: fc.Contour(region="-+"), 0.117),
+    "tuned +- 0.7": (lambda: fc.tuned_contour("+-", 0.7), 0.169),
+    "tuned -+ 1.1": (lambda: fc.tuned_contour("-+", 1.1), 0.168),
 }
 CONDITIONS = ["certificate", "R4_centres", "R4_trivial", "G1", "G2", "R5_trivial",
-              "B1", "B2", "B3", "B4", "B5", "R6_trivial"]
+              "B1", "B2", "B3", "B4", "B5", "B6", "R6_trivial"]
 
 
 @pytest.mark.parametrize("name", list(SQUARES))
@@ -28,7 +28,8 @@ def test_conditions_hold_and_the_bound_is_below_the_corner(name):
     assert out["bound"] < np.pi - fc.PHASE_CORNER_MARGIN
     # the bound is the largest of the three zone bounds; the blend zone decides
     assert out["bound"] == max(out["bound_inner"], out["bound_blend"], out["bound_outer"])
-    assert out["bound"] == pytest.approx(out["e"] + out["K_bl"])
+    assert out["bound"] == out["bound_blend"] == pytest.approx(out["e_bl_hi"] + out["e_bl_lo"] + np.arcsin(out["s"]))
+    assert out["e_bl_hi"] <= out["e_bl_lo"] <= out["e"]
     assert out["R7_outer_exact"] and out["bound_outer"] == 0.0
     assert out["bound_inner"] < 0.1
     assert out["K_in"] >= out["K_in_cases_3ab"] and out["K_near_cusp"] < 1e-5
@@ -41,9 +42,19 @@ def test_the_constants_of_the_default_square():
     assert out["c_3d"] == pytest.approx(0.00288, abs=1e-5)
     assert out["bound_inner"] == pytest.approx(0.0459, abs=2e-4)
     assert out["K_in"] == pytest.approx(0.1744, abs=1e-4)
-    assert out["s"] == pytest.approx(out["s0"]) == pytest.approx(0.2090, abs=1e-4)
-    assert out["K_bl"] == pytest.approx(0.2847, abs=1e-4)
-    assert (out["s1"], out["s2"], out["s3"]) == pytest.approx((0.0675, 0.0300, 0.00057), abs=1e-4)
+    assert out["s"] == pytest.approx(out["s0"]) == pytest.approx(out["s0_nn"]) == pytest.approx(0.0820, abs=1e-4)
+    assert out["unit"] == pytest.approx(0.02588, abs=1e-5)
+    assert (out["varsigma_c"], out["varsigma_n"]) == pytest.approx((0.0089, 0.0128), abs=1e-4)
+    assert (out["e_bl_hi"], out["e_bl_lo"]) == pytest.approx((0.01346, 0.02143), abs=1e-5)
+    assert out["K_bl"] == pytest.approx(0.1035, abs=1e-4)
+    assert (out["s1"], out["s2"], out["s3"]) == pytest.approx((0.0176, 0.0176, 0.00057), abs=1e-4)
+
+
+def test_the_cutoff_is_below_the_pairing_line():
+    """chi(t) <= PAIRING (1 + t), the inequality behind (F5)."""
+    t = np.linspace(0.0, 3.0, 300001)
+    assert np.all(fc.smoothstep(t) <= pb.PAIRING * (1 + t))
+    assert np.min(pb.PAIRING * (1 + t) - fc.smoothstep(t)) == pytest.approx(0.01596, abs=1e-4)
 
 
 @pytest.mark.parametrize("region", ["+-", "-+"])
@@ -53,7 +64,7 @@ def test_the_bound_is_uniform_over_the_family_of_squares(region):
         out = pb.phase_bound(fc.tuned_contour(region, angle))
         assert out["all_conditions"], angle
         values.append(out["bound"])
-    assert 0.53 < min(values) and max(values) < 0.57
+    assert 0.16 < min(values) and max(values) < 0.195
 
 
 def test_no_timelike_diagonal_is_rejected():
@@ -146,7 +157,7 @@ def test_interval_conditions_hold_on_ranges_of_squares(region, lo, hi, boxes):
     result = pbi.cover(region, lo, hi, boxes)
     assert result["R7_outer_exact"]
     assert result["all"] and result["failed_count"] == 0
-    assert result["bound_upper"] < 0.58
+    assert result["bound_upper"] < 0.195 and result["b_in_upper"] < 0.1
     assert result["Lambda_lower"] >= 2
 
 
@@ -155,8 +166,9 @@ def test_interval_bound_dominates_the_floating_point_bound():
         r = pbi.interval_phase_bound(region, angle - 1e-4, angle + 1e-4)
         o = pb.phase_bound(fc.tuned_contour(region, angle))
         assert r["all_conditions"]
-        assert o["bound"] <= r["bound_upper"] <= o["bound"] + 0.02
-        assert o["e"] <= r["e_upper"] and o["K_in"] <= r["K_in_upper"] and o["K_bl"] <= r["K_bl_upper"]
+        assert o["bound"] <= r["bound_upper"] <= o["bound"] + 0.002
+        assert o["e"] <= r["e_upper"] and o["K_in"] <= r["K_in_upper"]
+        assert o["bound_inner"] <= r["b_in_upper"] and o["bound_blend"] <= r["b_bl_upper"]
 
 
 def test_interval_version_rejects_the_region_without_a_timelike_diagonal():

@@ -6,17 +6,17 @@ one is timelike (Lemma Q). It leaves open a bound close to $`2\pi`$ in the
 second case. This document proves
 
 ```math
-|\arg z|\ \le\ 2\pi+\max\big(b_{\rm in},\ e+K_{\rm bl},\ 0\big)
+|\arg z|\ \le\ 2\pi+\max\big(b_{\rm in},\ b_{\rm bl},\ 0\big)
 ```
 
 with explicit constants, the three entries being the bounds for $`r\le R`$,
 $`R<r<2R`$ and $`r\ge2R`$, under explicit inequalities between the constants
-of the contour (section 6). The right side is $`2\pi+0.36`$ for the default
-constants and between $`2\pi+0.53`$ and $`2\pi+0.57`$ at ten tuned squares
+of the contour (section 6). The right side is $`2\pi+0.12`$ for the default
+constants and between $`2\pi+0.17`$ and $`2\pi+0.19`$ at ten tuned squares
 evaluated in floating point; for $`r\ge2R`$ the bound is $`2\pi`$ exactly. In
 interval arithmetic: for every square with angle in $`[0.02,3.087]`$ the
 conditions hold for the contour with the constants of the midpoint of its
-box, and the bound is at most $`2\pi+0.5701`$ (section 7).
+box, and the zone-by-zone bound is at most $`2\pi+0.1908`$ (section 7).
 
 **Status.** Proved, under the conditions listed in section 6. The
 argument was found by an automated search and written out. It has been
@@ -32,7 +32,21 @@ error; it reproduced the interval cover (24 536 boxes, no failure), checked
 Proposition R8 at 90 digits on twelve squares (no violation), and asked for
 the corrections that are now in the text (a trivial condition for
 Proposition R7, the wording of what the interval certificate covers, one
-number). Nothing here has been reviewed by a specialist.
+number).
+
+After the second round the blend zone was sharpened: the facts (F5) and
+(F6), condition (B6), the constants $`s_0,s_1,s_2`$ and $`b_{\rm bl}`$,
+Case N0 with its three sub-cases, the terms of the frames $`c+1`$ and
+$`c+2`$ in N1 and N2, the end of Step 4, the zone-by-zone interval bound
+and its cover. A further round of the same review covered exactly these
+passages: proved as written; it re-derived each step, reproduced the full
+cover (24 536 boxes, no failure, largest bound $`2\pi+0.1908`$), tested the
+new inequalities at 90 digits on seven squares in four dimensions and on
+five squares for $`k=1`$ (no violation), and asked for two corrections of
+wording, now made. A separate round reviewed section 9 (the contour in
+$`D`$ dimensions): correct as written, with its own $`D`$-dimensional field
+and no violation on eleven runs.
+Nothing here has been reviewed by a specialist.
 
 **What is taken from GATE_6_CONTOUR without re-derivation:** (D)
 ($`\arg x_{0i}^2\in[-\pi-e,e]`$ on the contour); Lemma 5; Lemma 6
@@ -359,7 +373,7 @@ in the inner zone (Proposition R8), not $`2\pi`$. Where $`K_c>0`$ is observed
 (generic spacelike points, $`K_c\approx2\kappa'`$) all four $`u_i`$ are within
 $`e_{\rm sp}`$ of 0 and $`\arg z\approx\pi`$; where $`\arg z`$ is close to
 $`2\pi`$, $`u_{c+2}\approx\pi`$ and $`K_c\le0`$ up to the same small terms. In
-the blend zone the constant is still set by the crude Case N0.
+the blend zone the constant is set by the sub-case N0nn of Proposition R6.
 
 ## 4. The inner zone
 
@@ -812,9 +826,28 @@ K:=\kappa'(2R+\tau_0+\Delta),\quad v_{\rm in}:=4\lambda_0(2R+\Delta),\quad v:=v_
 \varsigma:=\Big(2\nu+\frac{\kappa b_0^2}{a_{\min}(1+a_{\min})}\Big)+\frac{2\nu+\kappa b_0^2}{a_{\min}},\qquad F:=\frac{2KP\mu_-}{\delta_v}.
 ```
 
+```math
+u_2:=\frac{\iota_2}{\delta_v},\qquad h:=0.52,\qquad
+\mathfrak a:=\frac{2P(2R+\Delta)}{D},\qquad\mathfrak a':=\frac{2P(2R+\Delta)}{|D'|},
+```
+```math
+\varsigma_c:=2\nu+\frac{2D}{\delta_0}\Big(\kappa\mathfrak a^2+\nu\mathfrak a^2+\kappa\mathfrak a\max(\mathfrak a+1,2)\Big),\qquad
+\varsigma_n:=\frac{2|D'|}{\delta_0}\Big(\kappa\mathfrak a'^2+\nu(\mathfrak a'^2+\mathfrak a')+\kappa\mathfrak a'(\mathfrak a'+1)\Big),
+```
+```math
+\tau_1:=\frac{2\Delta\tau_0}{\tau_0-2\Delta},\qquad W_1:=\Delta(\tau_0+\Delta)+\Delta(\tau_1+\tau_0+\Delta),\qquad
+\rho_1:=\Big(\sqrt{R^2-\tau_1^2}-\Delta\Big)^2-(\tau_1+\Delta)^2,
+```
+```math
+\tan e^+_{\rm bl}:=h\,u_2,\qquad\tan e^-_{\rm bl}:=h\,u_2+\frac{2\kappa'(1+W_1/\rho_1)}{1-v^2/\delta_0},\qquad\chi(t)=t^2(3-2t)\ \ (0\le t\le1).
+```
+
 For $`r<2R`$: $`|V_j|\le\lambda_0(2R+\Delta)`$, so
 $`|J^{(j)}_i|\le\iota_2`$, $`|2V_j\!\cdot p|\le\pi_0`$ for an edge $`p`$,
-$`|V_{\rm in}|\le v_{\rm in}`$, $`|V_{\rm out}|\le K`$, $`|V^2|\le v^2`$.
+$`|V_{\rm in}|\le v_{\rm in}`$, $`|V_{\rm out}|\le K`$, $`|V^2|\le v^2`$. In the frame of $`c`$
+the coordinates satisfy $`|\alpha|,|\beta|\le\mathfrak a`$, in the frame of
+$`c\mp1`$ they satisfy $`|\alpha'|,|\beta'|\le\mathfrak a'`$ (as in section 4,
+with $`|n_j|\le2R+\Delta`$).
 
 **Conditions (B).** Besides section 9 of GATE_6_CONTOUR ((C0), (C1), (C2),
 (D), in particular $`v^2<\delta_0/2`$, which also gives
@@ -826,24 +859,32 @@ $`\omega_0<\delta_0`$):
 - (B4) $`\delta_1>v^2`$ (in particular $`\varepsilon<1`$);
 - (B5) $`s<1`$ and $`e+\arcsin s+\arctan\mu_-<\tfrac\pi2`$, with $`s`$ defined
   in the statement;
-- and $`v^2<(\tau_0-2\Delta)^2`$.
+- (B6) $`\tau_1<R`$, $`\sqrt{R^2-\tau_1^2}-\Delta>\tau_1+\Delta`$ (so that
+  $`\rho_1>0`$);
+- and $`v^2<(\tau_0-2\Delta)^2`$, $`4e'_{\rm sp}<\pi`$.
 
 **Proposition R6.** Assume the conditions of section 9 and (B). Then for
 $`R<r<2R`$
 
 ```math
-K_c\le K_{\rm bl}:=\max\big(e+\arcsin s,\ 3e_{\rm sp}'\big),\qquad
+K_c\le K_{\rm bl}:=\max\big(e^-_{\rm bl}+\arcsin s,\ 3e_{\rm sp}'\big),\qquad
+|\arg z|\le2\pi+b_{\rm bl},\quad b_{\rm bl}:=e^+_{\rm bl}+e^-_{\rm bl}+\arcsin s,
+```
+```math
 \tan e'_{\rm sp}=\frac{\dfrac{4\iota_2}{(\tau_0-2\Delta)^2}+2\kappa'\Big(1+\sqrt2\dfrac{\tau_0+\Delta}{\tau_0-2\Delta}\Big)}{1-v^2/(\tau_0-2\Delta)^2},
 ```
 
-where $`s=\max(s_0,s_1,s_2,s_3)`$,
+where $`s=\max(s_0,s_1,s_2,s_3)`$ and, with
+$`T_V:=2v^2\pi_0/\delta_v^2`$ and $`T_F:=2KP\,\omega_0/\delta_v^2`$,
 
 ```math
-s_0=\frac{8\iota_2}{\delta_v}+\frac{2KP\,\omega_0}{\delta_v^2},\qquad
-s_2=\frac{\iota_2+2\mu_+\pi_0}{\delta_v}+F,\qquad s_3=\mu_-+(1+\mu_+)^2\varsigma,
+s_0=\max\Big(3hu_2+T_V+T_F,\ \ 2hu_2+T_F,\ \ (1+2h)u_2+(\varsigma_c+\varsigma_n)\frac{\delta_0^2}{\delta_v^2}+T_V+T_F\Big),
 ```
 ```math
-s_1=\max\Big(\frac{\iota_2+2\mu_+\pi_0}{\delta_v}+F,\ \ (1+\mu_+)\frac{\delta_0}{\delta_v}\,\varsigma+\frac{2\mu_-\pi_0}{\delta_v}+\iota_2\Big(\frac1{\delta_v}+\frac1{\delta_1-v^2}\Big)+F\Big).
+s_1=\max\Big(hu_2+\frac{2\mu_+\pi_0}{\delta_v}+F,\ \ (1+\mu_+)\frac{\delta_0}{\delta_v}\,\varsigma+\frac{2\mu_-\pi_0}{\delta_v}+\chi(\varepsilon)\,\iota_2\Big(\frac1{\delta_v}+\frac1{\delta_1-v^2}\Big)+F\Big),
+```
+```math
+s_2=hu_2+\frac{2\mu_+\pi_0}{\delta_v}+F,\qquad s_3=\mu_-+(1+\mu_+)^2\varsigma .
 ```
 
 *Proof.* Write $`x_0-c=(\tau,\vec\xi)`$.
@@ -853,7 +894,8 @@ as in R4(iii), $`-r_i\ge(\tau_0-2\Delta)|\vec n_i|\ge(\tau_0-2\Delta)^2`$ and
 $`|n_i|\le\sqrt2|\vec n_i|`$ for all $`i`$. The frames contribute at most
 $`4\iota_2`$ to $`|\operatorname{Im}X_i|`$, the far field at most
 $`2\kappa'|r_i|(1+\sqrt2\tfrac{\tau_0+\Delta}{\tau_0-2\Delta})`$, and
-$`|V^2|\le v^2`$. So $`|u_i|\le e'_{\rm sp}`$ and $`K_c\le3e'_{\rm sp}`$.
+$`|V^2|\le v^2`$. So $`|u_i|\le e'_{\rm sp}`$, $`K_c\le3e'_{\rm sp}`$ and
+$`|\arg z|\le\pi+4e'_{\rm sp}<2\pi`$.
 
 (b) If $`x_0\in J^+(c_-)`$: $`\tau+\tau_0\ge|\vec\xi|`$. If $`\tau\le0`$ then
 $`|\tau|+|\vec\xi|\le\tau_0`$ and $`r\le\tau_0\le R`$. So $`\tau>0`$,
@@ -926,6 +968,49 @@ The first two bound $`V^2_-`$, all three bound $`|V^2|`$. $`\square`$
 Without the hypothesis $`|r_i|\le\delta_0`$:
 $`V^2_-\le(1-g)\big(2g|V_{\rm in}||W|+(1-g)|V_{\rm in}|^2\big)\le\omega_0`$.
 
+(F5) *The frame $`i+2`$ against $`\operatorname{Re}X_i`$.* For every $`i`$,
+
+```math
+m_{i+2}\,\big|J_i^{(i+2)}\big|\ \le\ h\,u_2\,|R_i| .
+```
+
+*Proof.* If $`m_{i+2}>0`$ then $`|r_i|=\delta_0(1+t)`$ with $`t>0`$ and
+$`m_{i+2}=\chi(t)`$ ($`=1`$ for $`t\ge1`$). The polynomial
+$`2t^3-3t^2+0.52t+0.52`$ has its minimum on $`[0,1]`$ at
+$`t=\tfrac12+\tfrac1{12}\sqrt{36-12.48}=0.9041\ldots`$, where it is larger than
+$`0.015`$; so $`\chi(t)\le h(1+t)`$ for all $`t\ge0`$. Since
+$`|R_i|\ge\delta_0(1+t)-v^2\ge(1+t)(\delta_0-v^2)`$ and
+$`|J_i^{(i+2)}|\le\iota_2`$, the claim follows. $`\square`$
+
+(F6) *Excursions in $`J^+(c_-)`$.* For every $`i`$:
+$`-e^-_{\rm bl}\le u_i\le\pi+e^+_{\rm bl}`$.
+
+*Proof.* $`J_i=(1-g)\sum_jm_jJ_i^{(j)}+g\vartheta J_i^W`$, with
+$`J_i^W=2\kappa'(r_i+n_i\!\cdot w_i)`$, $`w_i=x_i-c_-`$. If $`J_i\ge0`$ then
+$`u_i\in[0,\pi]`$. Let $`J_i<0`$. Then $`|r_i|>\delta_0`$: if $`i`$ is near,
+the frame $`i+2`$ is off, the other frames contribute $`\ge0`$ and
+$`J_i^W>0`$ by (F2). So $`|R_i|\ge|r_i|(1-v^2/\delta_0)`$, and $`R_i`$ has the
+sign of $`r_i`$. The frames $`j\ne i+2`$ contribute $`\ge0`$, and the frame
+$`i+2`$ at least $`-hu_2|R_i|`$ by (F5).
+
+If $`r_i>\delta_0`$: $`n_i`$ is future timelike (F1), so $`J_i^W\ge0`$ and
+$`0<\operatorname{Im}X_i\le hu_2\,R_i`$: $`u_i\le\pi+e^+_{\rm bl}`$.
+
+If $`r_i<-\delta_0`$: I bound the negative part of $`J_i^W`$. With
+$`w_i=(\tau_0+t_i,\vec x_i)`$, $`n_i=(\tau-t_i,\vec\xi-\vec x_i)`$,
+$`|t_i|,|\vec x_i|\le\Delta`$, $`|\vec\xi|\le\tau+\tau_0`$ and $`\tau>0`$:
+for $`\tau\ge\Delta`$,
+$`n_i\!\cdot w_i\ge(\tau-\Delta)(\tau_0-\Delta)-(\tau+\tau_0+\Delta)\Delta=\tau(\tau_0-2\Delta)-2\Delta\tau_0`$,
+which is $`\ge0`$ for $`\tau\ge\tau_1`$. So $`n_i\!\cdot w_i<0`$ forces
+$`\tau<\tau_1`$ (note $`\tau_1\ge2\Delta`$), and then
+$`n_i\!\cdot w_i\ge-\Delta(\tau_0+\Delta)-(\tau_1+\tau_0+\Delta)\Delta=-W_1`$,
+while $`|\vec n_i|\ge|\vec\xi|-\Delta\ge\sqrt{R^2-\tau_1^2}-\Delta`$ and
+$`|n_i^0|\le\tau_1+\Delta`$ give $`-r_i\ge\rho_1>0`$ by (B6). Hence, whenever
+$`J_i^W<0`$: $`|J_i^W|\le2\kappa'(|r_i|+W_1)\le2\kappa'|r_i|(1+W_1/\rho_1)`$ if
+$`n_i\!\cdot w_i<0`$, and $`|J_i^W|\le2\kappa'|r_i|`$ otherwise. So
+$`0<\operatorname{Im}X_i\le\big(hu_2+\tfrac{2\kappa'(1+W_1/\rho_1)}{1-v^2/\delta_0}\big)|R_i|`$
+and $`u_i\ge-e^-_{\rm bl}`$. $`\square`$
+
 **Step 2: decomposition.** Put $`R_i:=r_i-V^2=\operatorname{Re}X_i`$,
 $`\Delta^W:=-2\vartheta W\!\cdot p_{c-1}=2\kappa'\vartheta\,\xi_-\!\cdot p_{c-1}\in[0,2KP]`$,
 $`\Delta^{(j)}:=J^{(j)}_{c-1}-J^{(j)}_c=-2V_j\!\cdot p_{c-1}`$, and
@@ -973,11 +1058,103 @@ $`2\nu\alpha'-\kappa d'_\beta=-2\nu|\alpha'|-\kappa\phi'(\ell'_3)+\kappa\phi'(-\
 $`|r_i|\le\tfrac{\delta_0}{\delta_v}|R_i|`$. If $`i`$ is near,
 $`|X_i|\ge J_i`$ and $`|r_i|\le|R_i|+|V^2|\le(1+\mu_+)|X_i|`$ by (F4).
 
-**Case N0: neither $`c`$ nor $`c-1`$ is near.** Far bracket:
-$`\ge-\omega_0\cdot2KP\ge-\tfrac{2KP\omega_0}{\delta_v^2}|X_c||X_{c-1}|`$.
-Frames: by the crude bound for the four frames,
-$`\ge-4\iota_2(|R_c|+|R_{c-1}|)\ge-\tfrac{8\iota_2}{\delta_v}|X_c||X_{c-1}|`$.
-So (5.2) holds with $`s_0`$.
+In (5.1) the bracket of the frame $`j`$ carries the weight $`m_j`$. For
+a frame that does not control $`i`$, i.e. $`j=i+2`$, (F5) gives
+$`m_j|J_i^{(j)}|\le hu_2|R_i|`$; for any frame $`m_j|J_i^{(j)}|\le\iota_2`$.
+
+**Case N0: neither $`c`$ nor $`c-1`$ is near.** Then $`|R_c|,|R_{c-1}|\ge\delta_v`$
+and $`R_i`$ has the sign of $`r_i`$. Far bracket:
+$`\ge-\omega_0\cdot2KP\ge-T_F|X_c||X_{c-1}|`$. The frame $`c+1`$ controls
+$`c`$ but not $`c-1`$ (so $`m_{c+1}|J^{(c+1)}_{c-1}|\le hu_2|R_{c-1}|`$), the
+frame $`c+2`$ controls $`c-1`$ but not $`c`$ (so
+$`m_{c+2}|J^{(c+2)}_c|\le hu_2|R_c|`$ and
+$`0\le m_{c+2}J^{(c+2)}_{c-1}\le\chi\big(\tfrac{|r_c|}{\delta_0}-1\big)\iota_2\le hu_2|R_c|`$,
+as in the proof of (F5)).
+
+*N0pp: $`r_c>\delta_0`$.* Then $`y`$ is future timelike (F1), $`A>0`$ and
+$`R_{c-1}>R_c>0`$. Frames $`c-1,c`$: as in N1b below, $`E_c,E_{c-1}\ge0`$,
+and $`|V^2\Delta^{(j)}|\le v^2\pi_0`$, so their brackets are
+$`\ge-T_V|X_c||X_{c-1}|`$ together. Frame $`c+1`$:
+$`R_{c-1}J_c^{(c+1)}\ge0`$ and
+$`-R_c\,m_{c+1}J^{(c+1)}_{c-1}\ge-hu_2R_cR_{c-1}`$. Frame $`c+2`$:
+$`-R_c\,m_{c+2}J^{(c+2)}_{c-1}\ge-hu_2R_c^2\ge-hu_2R_cR_{c-1}`$ and
+$`R_{c-1}\,m_{c+2}J_c^{(c+2)}\ge-hu_2R_{c-1}R_c`$. Total: (5.2) with
+$`3hu_2+T_V+T_F`$.
+
+*N0mix: $`r_{c-1}>\delta_0`$, $`r_c<-\delta_0`$.* Then $`R_{c-1}>0>R_c`$.
+Frames $`c-1,c`$: both $`J`$'s are $`\ge0`$, the brackets are $`\ge0`$.
+Frame $`c+1`$: $`R_{c-1}J_c^{(c+1)}\ge0`$ and
+$`|R_c|\,m_{c+1}J^{(c+1)}_{c-1}\ge-hu_2|R_c|R_{c-1}`$. Frame $`c+2`$:
+$`|R_c|J^{(c+2)}_{c-1}\ge0`$ and
+$`R_{c-1}\,m_{c+2}J_c^{(c+2)}\ge-hu_2R_{c-1}|R_c|`$. Total: $`2hu_2+T_F`$.
+
+*N0nn: $`r_c<-\delta_0`$, $`r_{c-1}<-\delta_0`$.* (The fourth combination,
+$`r_c>\delta_0`$ with $`r_{c-1}<0`$, does not occur.) Here the brackets are
+$`-|R_{c-1}|J_c^{(j)}+|R_c|J_{c-1}^{(j)}`$. Frame $`c+1`$:
+$`-|R_{c-1}|\,m_{c+1}J_c^{(c+1)}\ge-\iota_2|R_{c-1}|\ge-u_2|R_c||R_{c-1}|`$ and
+$`|R_c|\,m_{c+1}J^{(c+1)}_{c-1}\ge-hu_2|R_c||R_{c-1}|`$. Frame $`c+2`$:
+$`-|R_{c-1}|\,m_{c+2}J_c^{(c+2)}\ge-hu_2|R_c||R_{c-1}|`$ and
+$`|R_c|J^{(c+2)}_{c-1}\ge0`$. Frames $`c`$ and $`c-1`$:
+$`|V^2\Delta^{(j)}|\le v^2\pi_0`$, and the closed forms satisfy
+
+```math
+E_c\ge-\varsigma_c\,|r_c||r_{c-1}|,\qquad E_{c-1}\ge-\varsigma_n\,|r_c||r_{c-1}| , \tag{5.3}
+```
+
+proved below. With $`|r_i|\le\tfrac{\delta_0}{\delta_v}|R_i|`$ the total is
+(5.2) with $`(1+2h)u_2+(\varsigma_c+\varsigma_n)\delta_0^2/\delta_v^2+T_V+T_F`$.
+
+*Proof of (5.3) for $`E_c=D[\kappa D\beta^2d_\beta+\rho(2\nu\beta+\kappa d_\alpha)]`$.*
+Recall $`\rho=\alpha\beta D+|r_c|`$ and $`|r_c|,|r_{c-1}|>\delta_0`$.
+
+If $`\beta\ge0`$: $`d_\beta=\phi'(\ell_3)\ge0`$, so
+$`E_c\ge D\rho\,(2\nu\beta-\kappa\phi'(\ell_3^+))`$. If $`\alpha\ge-1`$ then
+$`\ell_3\le\beta`$, $`\phi'(\ell_3^+)\le2\beta`$ and $`E_c\ge0`$ by (B2). If
+$`\alpha<-1`$ then $`\alpha\beta\le0`$, $`\rho\le|r_c|`$,
+$`\phi'(\ell_3^+)\le2(\beta+|\alpha|)\le4\mathfrak a`$ and
+$`E_c\ge-4\kappa D\mathfrak a|r_c|\ge-\tfrac{4\kappa D\mathfrak a}{\delta_0}|r_c||r_{c-1}|`$.
+
+If $`\beta=-b<0`$: $`|r_{c-1}|=|r_c|+bD\ge bD`$ and
+$`\rho\le\alpha_-bD+|r_c|`$ with $`\alpha_-:=\max(-\alpha,0)`$. Dropping the
+non-negative terms,
+$`E_c\ge-D\big[\kappa Db^2\phi'(b)+\rho\,(2\nu b+\kappa\phi'(\ell_3^+))\big]`$,
+and $`\ell_3^+\le\alpha_-`$. Term by term:
+
+```math
+\kappa D^2b^2\phi'(b)\le2\kappa Db^2\cdot bD\le\frac{2\kappa D\mathfrak a^2}{\delta_0}|r_c||r_{c-1}|,\qquad
+2\nu\,bD\,\rho\le2\nu|r_{c-1}|\big(\alpha_-bD+|r_c|\big)\le2\nu\Big(\frac{\mathfrak a^2D}{\delta_0}+1\Big)|r_c||r_{c-1}|,
+```
+```math
+\kappa D\rho\,\phi'(\ell_3^+)\le2\kappa D\alpha_-\big(\alpha_-bD+|r_c|\big)\le2\kappa D\alpha_-\Big(\frac{\alpha_-}{|r_c|}+\frac1{|r_{c-1}|}\Big)|r_c||r_{c-1}|\le\frac{2\kappa D\mathfrak a(\mathfrak a+1)}{\delta_0}|r_c||r_{c-1}| .
+```
+
+The sum, and the bound of the case $`\beta\ge0`$, are at most
+$`\varsigma_c|r_c||r_{c-1}|`$.
+
+*Proof of (5.3) for $`E_{c-1}=-|D'|[\kappa|D'|\alpha'^2d'_\alpha+\rho'(2\nu\alpha'-\kappa d'_\beta)]`$.*
+Dropping the non-negative terms,
+$`E_{c-1}\ge-|D'|\big[\kappa|D'|\alpha'^2\phi'(\alpha'_+)+\rho'\,(2\nu\alpha'_++\kappa\phi'(\beta'_-))\big]`$.
+Recall $`r_c=r_{c-1}+\alpha'|D'|`$ and $`\rho'=\alpha'\beta'D'+|r_{c-1}|`$.
+
+If $`\alpha'>0`$: $`|r_{c-1}|=|r_c|+\alpha'|D'|\ge\alpha'|D'|`$ and
+$`\rho'\le\alpha'\beta'_-|D'|+|r_{c-1}|`$. Then
+
+```math
+\kappa D'^2\alpha'^2\phi'(\alpha')\le2\kappa|D'|\alpha'^2\cdot\alpha'|D'|\le\frac{2\kappa|D'|\mathfrak a'^2}{\delta_0}|r_c||r_{c-1}|,\qquad
+2\nu\alpha'|D'|\rho'\le2\nu\alpha'|D'|\big(\alpha'\beta'_-|D'|+|r_{c-1}|\big)\le\frac{2\nu|D'|(\mathfrak a'^2+\mathfrak a')}{\delta_0}|r_c||r_{c-1}|,
+```
+```math
+\kappa|D'|\rho'\phi'(\beta'_-)\le2\kappa|D'|\beta'_-\big(\alpha'\beta'_-|D'|+|r_{c-1}|\big)\le\frac{2\kappa|D'|\mathfrak a'(\mathfrak a'+1)}{\delta_0}|r_c||r_{c-1}| ,
+```
+
+using $`\alpha'|D'|\le|r_{c-1}|`$ and $`|r_c|>\delta_0`$ in each.
+
+If $`\alpha'\le0`$: only the last term is present; if $`\beta'<0`$ then
+$`\alpha'\beta'D'\le0`$, $`\rho'\le|r_{c-1}|`$, and it is at most
+$`2\kappa|D'|\mathfrak a'|r_{c-1}|\le\tfrac{2\kappa|D'|\mathfrak a'}{\delta_0}|r_c||r_{c-1}|`$.
+In both cases the sum is at most $`\varsigma_n|r_c||r_{c-1}|`$. $`\square`$
+
+So (5.2) holds in Case N0 with $`s_0`$.
 
 **Case N1: $`c`$ near, $`c-1`$ not.** The frame $`c+2`$ is off; $`c-1`$ and
 $`c`$ control both invariants, $`c+1`$ controls $`c`$ only. By (F2),
@@ -987,7 +1164,7 @@ $`\ge-V^2_-\Delta^W\ge-\mu_-J_c\cdot2KP\ge-F|X_c||X_{c-1}|`$.
 *N1a: $`r_{c-1}>\delta_0`$ and $`R_c\le0`$.* Then $`R_{c-1}>0\ge R_c`$. For
 $`j=c-1,c`$ both $`J^{(j)}`$ are $`\ge0`$, so the bracket is $`\ge0`$. For
 $`j=c+1`$: $`R_{c-1}J^{(c+1)}_c\ge0`$ and
-$`-R_cJ^{(c+1)}_{c-1}\ge-|R_c|\iota_2\ge-\tfrac{\iota_2}{\delta_v}|X_c||X_{c-1}|`$.
+$`-R_c\,m_{c+1}J^{(c+1)}_{c-1}\ge-hu_2|R_c||R_{c-1}|\ge-hu_2|X_c||X_{c-1}|`$ by (F5).
 
 *N1b: $`r_{c-1}>\delta_0`$ and $`R_c>0`$.* If $`r_c>0`$: by (F1) $`y`$ is
 future timelike, so $`\alpha,\beta>0`$ and $`\rho<\alpha\beta D`$. Then
@@ -998,7 +1175,7 @@ So (E+) gives $`E_c,E_{c-1}\ge0`$. If $`r_c\le0`$: $`r_{c-1}>0\ge r_c`$ and
 $`E_c,E_{c-1}\ge0`$ because the $`J`$'s are $`\ge0`$. In both sub-cases
 $`|V^2\Delta^{(j)}|\le\mu_+J_c\pi_0\le\tfrac{\mu_+\pi_0}{\delta_v}|X_c||X_{c-1}|`$
 for $`j=c-1,c`$. For $`j=c+1`$: $`R_{c-1}J^{(c+1)}_c\ge0`$ and
-$`-R_cJ^{(c+1)}_{c-1}\ge-R_c\iota_2\ge-\tfrac{\iota_2}{\delta_v}|X_c||X_{c-1}|`$.
+$`-R_c\,m_{c+1}J^{(c+1)}_{c-1}\ge-hu_2R_cR_{c-1}\ge-hu_2|X_c||X_{c-1}|`$ by (F5).
 
 *N1c: $`r_{c-1}<-\delta_0`$.* Then $`A=r_{c-1}-r_c<0`$, so $`\beta<0`$. By
 (F2) $`|\beta|D\le\varepsilon\delta_0`$, i.e.
@@ -1045,9 +1222,11 @@ So $`E_c+E_{c-1}\ge-\varsigma|r_c||r_{c-1}|\ge-(1+\mu_+)\tfrac{\delta_0}{\delta_
 Also $`\Delta^{(c)}=\kappa D\phi'(a)\ge0`$ and
 $`\Delta^{(c-1)}=\kappa|D'|\phi'(\ell_3')\ge0`$, both at most $`\pi_0`$, so
 $`V^2\Delta^{(j)}\ge-V^2_-\pi_0\ge-\tfrac{\mu_-\pi_0}{\delta_v}|X_c||X_{c-1}|`$
-for $`j=c-1,c`$. For $`j=c+1`$ the crude bound with
+for $`j=c-1,c`$. For $`j=c+1`$: its weight is
+$`m_{c+1}=\chi(|r_{c-1}|/\delta_0-1)\le\chi(\varepsilon)`$, because
+$`|r_{c-1}|\le\delta_0(1+\varepsilon)`$; the crude bound with
 $`|R_c|\ge\delta_1-v^2`$, $`|R_{c-1}|\ge\delta_v`$ gives
-$`\ge-\iota_2\big(\tfrac1{\delta_v}+\tfrac1{\delta_1-v^2}\big)|X_c||X_{c-1}|`$.
+$`\ge-\chi(\varepsilon)\iota_2\big(\tfrac1{\delta_v}+\tfrac1{\delta_1-v^2}\big)|X_c||X_{c-1}|`$.
 
 The case $`r_{c-1}<-\delta_0`$ with $`r_c>0`$ does not occur ($`r_c>0`$
 gives $`r_{c-1}>r_c`$). So in Case N1 (5.2) holds with $`s_1`$.
@@ -1061,7 +1240,7 @@ $`y`$ is future timelike, $`A>0`$ and $`r_{c-1}>r_c>\delta_0`$, impossible.
 So $`r_c<-\delta_0`$, $`A>0`$, $`\beta>0`$, $`\alpha'<0`$. Far bracket:
 $`V^2_-\le\mu_-J_{c-1}`$, so $`\ge-F|X_c||X_{c-1}|`$. For $`j=c+2`$:
 $`-R_cJ^{(c+2)}_{c-1}\ge0`$ and
-$`R_{c-1}J_c^{(c+2)}\ge-|R_{c-1}|\iota_2\ge-\tfrac{\iota_2}{\delta_v}|X_c||X_{c-1}|`$.
+$`R_{c-1}\,m_{c+2}J_c^{(c+2)}\ge-hu_2|R_{c-1}||R_c|\ge-hu_2|X_c||X_{c-1}|`$ by (F5).
 
 For $`j=c-1,c`$: if $`R_{c-1}\ge0`$ the brackets are $`\ge0`$ (signs). Let
 $`R_{c-1}<0`$. If $`r_{c-1}\ge0`$ then $`E_j\ge0`$ by the signs. If
@@ -1119,19 +1298,27 @@ contradiction. If $`r_c\le0`$ then $`V^2<0`$ and
 $`|r_c|<V^2_-\le\omega_0<\delta_0`$, so $`c`$ is near, and by (F4)
 $`0<R_c\le\mu_-J_c`$; then $`a_c\le-\tfrac\pi2+\arctan\mu_-`$, which
 contradicts $`a_c\ge-e-\arcsin s`$ by (B5). Hence
-$`u_c\le u_{c-1}+\arcsin s`$, and with $`u_{c+1}\ge-e`$:
-$`K_c\le e+\arcsin s`$. $`\blacksquare`$
+$`u_c\le u_{c-1}+\arcsin s`$, and with $`u_{c+1}\ge-e^-_{\rm bl}`$ (F6):
+$`K_c\le e^-_{\rm bl}+\arcsin s`$. Finally
+$`\arg z=\pi+K_c+u_{c+2}\le2\pi+e^+_{\rm bl}+K_c\le2\pi+b_{\rm bl}`$ by (F6) (for
+$`s>0`$; for $`t>0`$ the same for $`-\arg z`$), and the other side is Lemma
+R1. $`\blacksquare`$
 
 **Remarks.**
 
-1. The constant is set by the crude Case N0: $`s\approx8\iota_2/\delta_v`$.
-   For the default constants $`s_0=0.209`$, $`s_1=0.067`$, $`s_2=0.030`$,
-   $`s_3=0.0006`$. The measured minimum of $`Q/(|X_c||X_{c-1}|)`$ in the
-   blend zone is $`-7\times10^{-7}`$ and the measured maximum of $`K_c`$ is
-   $`0.0027`$. A sharper Case N0 would need the closed forms of the frames
-   $`c,c-1`$ at points where both invariants are spacelike and beyond
-   $`\delta_0`$.
-2. (B2) is used only in N1b and N2. It holds for the default constants and
+1. The constant is set by the sub-case N0nn: $`s\approx(1+2h)u_2+(\varsigma_c+\varsigma_n)`$,
+   that is 0.08 for the default constants and 0.12 to 0.13 for the tuned
+   ones; the other entries are at most 0.09. An earlier version used
+   $`|J_i^{(j)}|\le\iota_2`$ for all four frames in Case N0 and $`e`$ for the
+   excursions, which gave $`s\approx8u_2`$ and a blend-zone bound of 0.36
+   to 0.57. What is left in N0nn is one full unit $`u_2`$, from the frame
+   $`c+1`$ acting on $`X_c`$ where $`\beta<0`$; the two half units are
+   frames that do not control an invariant. The measured minimum of
+   $`Q/(|X_c||X_{c-1}|)`$ in the blend zone is $`-1.6\times10^{-6}`$, the
+   measured maximum of $`K_c`$ is 0.0027, and $`m_{i+2}|J_i^{(i+2)}|/|R_i|`$
+   never exceeds $`0.13\,hu_2`$: the unit $`u_2`$, which comes from
+   $`|V_j|\le\lambda_0|n_j|`$, is itself far from sharp.
+2. (B2) is used only in N0pp, N0nn, N1b and N2. It holds for the default constants and
    with equality for `tuned_contour`.
 
 ## 6. The whole contour
@@ -1145,24 +1332,25 @@ GATE_6_CONTOUR section 9 and
 - (B1) $`R\ge\tau_0`$, $`R>\sqrt5\Delta`$; (B2) $`\kappa\le\nu`$;
   (B3) $`b_0\le\tfrac12`$, $`\Lambda_c\ge2`$, $`\Lambda_n\ge2`$,
   $`4\delta_0\le\min_j|D_j|`$; (B4) $`\delta_1>v^2`$; (B5) $`s<1`$,
-  $`e+\arcsin s+\arctan\mu_-<\tfrac\pi2`$;
+  $`e+\arcsin s+\arctan\mu_-<\tfrac\pi2`$; (B6) $`\tau_1<R`$ and
+  $`\sqrt{R^2-\tau_1^2}-\Delta>\tau_1+\Delta`$;
 - the trivial ones: $`e\le\tfrac\pi4`$ (it follows from (D), which has
   $`e<0.2`$), $`4e_{\rm sp}<\pi`$, $`\epsilon_\kappa<1`$,
   $`v_R^2<\delta_0`$, $`\theta\le2`$, $`\nu<1`$, $`4\kappa^2<1`$,
-  $`v^2<\delta_0/2`$, $`v^2<(\tau_0-2\Delta)^2`$.
+  $`v^2<\delta_0/2`$, $`v^2<(\tau_0-2\Delta)^2`$, $`4e'_{\rm sp}<\pi`$.
 
 Then on the contour, off the four edges,
 
 ```math
-|\arg z|\le2\pi+b_{\rm in}\quad(r\le R),\qquad|\arg z|\le2\pi+e+K_{\rm bl}\quad(R<r<2R),\qquad|\arg z|\le2\pi\quad(r\ge2R),
+|\arg z|\le2\pi+b_{\rm in}\quad(r\le R),\qquad|\arg z|\le2\pi+b_{\rm bl}\quad(R<r<2R),\qquad|\arg z|\le2\pi\quad(r\ge2R),
 ```
 
 with $`b_{\rm in}=e_{\rm fr}+K^{\rm fr}_{\rm in}`$ (Proposition R8) and
-$`K_{\rm bl}`$ as in Proposition R6. In particular
-$`|\arg z|\le2\pi+\max(b_{\rm in},e+K_{\rm bl})`$ everywhere.
+$`b_{\rm bl}=e^+_{\rm bl}+e^-_{\rm bl}+\arcsin s`$ (Proposition R6). In particular
+$`|\arg z|\le2\pi+\max(b_{\rm in},b_{\rm bl})`$ everywhere.
 
 *Proof.* Take $`s>0`$. For $`r\le R`$: Proposition R8. For $`R<r<2R`$:
-Lemma R1 and Proposition R6 at one cusp with a timelike diagonal. For
+Proposition R6 at one cusp with a timelike diagonal. For
 $`r\ge2R`$: Proposition R7. The other one-sided bound,
 $`\arg z\ge-\pi-4e\ge-2\pi`$, is Lemma R1 with $`e\le\tfrac\pi4`$. For $`t>0`$ the signs are exchanged.
 $`\blacksquare`$
@@ -1175,35 +1363,82 @@ $`4\delta_0\le D`$, the non-strict form of (G2), which suffices in the proofs.
 **Values.** `phase_bound.phase_bound(contour)` evaluates every constant and
 condition in floating point. All conditions hold at the squares below.
 
-| Square | $`\lvert s/t\rvert`$ | $`e`$ | $`r\le R`$: $`b_{\rm in}`$ | $`R<r<2R`$: $`e+K_{\rm bl}`$ | $`r\ge2R`$ | $`c_{3d}`$ | $`\min(\Lambda_c,\Lambda_n)`$ | bound $`-2\pi`$ |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| $`(+,-)`$, angle 1.1, default constants | 1.3759 | 0.074 | 0.046 | 0.359 | 0.000 | 0.0029 | 4.76 | 0.359 |
-| $`(-,+)`$, angle 1.1, default constants | 0.7268 | 0.074 | 0.046 | 0.359 | 0.000 | 0.0029 | 4.76 | 0.359 |
-| $`(+,-)`$, angle 0.02, tuned | 1.0001 | 0.089 | 0.084 | 0.532 | 0.000 | 0.0029 | 4.54 | 0.532 |
-| $`(-,+)`$, angle 0.5, tuned | 0.93879 | 0.090 | 0.084 | 0.533 | 0.000 | 0.0031 | 4.60 | 0.533 |
-| $`(+,-)`$, angle 0.7, tuned | 1.1332 | 0.090 | 0.084 | 0.534 | 0.000 | 0.0033 | 4.64 | 0.534 |
-| $`(-,+)`$, angle 1.1, tuned | 0.7268 | 0.090 | 0.084 | 0.537 | 0.000 | 0.0038 | 4.72 | 0.537 |
-| $`(+,-)`$, angle 2.0, tuned | 3.4255 | 0.091 | 0.084 | 0.554 | 0.000 | 0.0060 | 4.91 | 0.554 |
-| $`(+,-)`$, angle 2.5, tuned | 10.058 | 0.082 | 0.088 | 0.567 | 0.000 | 0.0076 | 4.98 | 0.567 |
-| $`(-,+)`$, angle 2.9, tuned | 0.014521 | 0.065 | 0.094 | 0.564 | 0.000 | 0.0088 | 5.01 | 0.564 |
-| $`(+,-)`$, angle 3.087, tuned | 1342.5 | 0.057 | 0.097 | 0.562 | 0.000 | 0.0092 | 5.01 | 0.562 |
+| Square | $`\lvert s/t\rvert`$ | $`u_2`$ | $`s`$ | $`r\le R`$: $`b_{\rm in}`$ | $`R<r<2R`$: $`b_{\rm bl}`$ | $`r\ge2R`$ | $`c_{3d}`$ | $`\min(\Lambda_c,\Lambda_n)`$ | bound $`-2\pi`$ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $`(+,-)`$, angle 1.1, default constants | 1.3759 | 0.026 | 0.082 | 0.046 | 0.117 | 0.000 | 0.0029 | 4.76 | 0.117 |
+| $`(-,+)`$, angle 1.1, default constants | 0.7268 | 0.026 | 0.082 | 0.046 | 0.117 | 0.000 | 0.0029 | 4.76 | 0.117 |
+| $`(+,-)`$, angle 0.02, tuned | 1.0001 | 0.043 | 0.117 | 0.084 | 0.169 | 0.000 | 0.0029 | 4.54 | 0.169 |
+| $`(-,+)`$, angle 0.5, tuned | 0.93879 | 0.043 | 0.117 | 0.084 | 0.169 | 0.000 | 0.0031 | 4.60 | 0.169 |
+| $`(+,-)`$, angle 0.7, tuned | 1.1332 | 0.043 | 0.116 | 0.084 | 0.169 | 0.000 | 0.0033 | 4.64 | 0.169 |
+| $`(-,+)`$, angle 1.1, tuned | 0.7268 | 0.044 | 0.115 | 0.084 | 0.168 | 0.000 | 0.0038 | 4.72 | 0.168 |
+| $`(+,-)`$, angle 2.0, tuned | 3.4255 | 0.045 | 0.115 | 0.084 | 0.169 | 0.000 | 0.0060 | 4.91 | 0.169 |
+| $`(+,-)`$, angle 2.5, tuned | 10.058 | 0.049 | 0.122 | 0.088 | 0.178 | 0.000 | 0.0076 | 4.98 | 0.178 |
+| $`(-,+)`$, angle 2.9, tuned | 0.014521 | 0.052 | 0.129 | 0.094 | 0.186 | 0.000 | 0.0088 | 5.01 | 0.186 |
+| $`(+,-)`$, angle 3.087, tuned | 1342.5 | 0.054 | 0.133 | 0.097 | 0.190 | 0.000 | 0.0092 | 5.01 | 0.190 |
 
 **Scope.**
 
-- The constants are not sharp. The blend zone decides, through the crude
-  Case N0 of Proposition R6. The observed maxima of $`K_c`$ are about
+- The constants are not sharp. The blend zone decides, through the
+  sub-case N0nn of Proposition R6. The observed maxima of $`K_c`$ are about
   $`10^{-6}`$, 0.003 and 0.004 in the three zones, and the phase observed on
-  the contour never exceeds $`2\pi`$ by more than rounding.
+  the contour never exceeds $`2\pi`$.
 - At the ten squares of the table (floating point, constants of
-  `tuned_contour` or the default ones) the bound is between $`2\pi+0.36`$
-  and $`2\pi+0.57`$; section 7 gives at most $`2\pi+0.5701`$ for every
+  `tuned_contour` or the default ones) the bound is between $`2\pi+0.12`$
+  and $`2\pi+0.19`$; section 7 gives at most $`2\pi+0.1908`$ for every
   square with angle in $`[0.02,3.087]`$, with the constants of the box
-  midpoint. An earlier version of case 3d and of (B3) was not uniform: its constant grew when $`|D'|`$ is small and its conditions
-  failed for $`|s/t|>113`$ and $`|s/t|<0.0089`$.
-- Exactly $`2\pi`$ is proved only for $`r\ge2R`$. For $`r<2R`$ a frame that
-  does not control an invariant moves it by an amount of indefinite sign,
-  of relative size up to $`\iota/\delta_0`$, and the method gives
-  $`2\pi+O(\iota/\delta_0)`$ at best.
+  midpoint. Earlier versions had $`2\pi+0.36`$ to $`2\pi+0.57`$ (Case N0
+  with the crude bound on all four frames), and before that a constant
+  that was not uniform in the square.
+- *The exact value for $`r<2R`$ is not proved.* What is known:
+  - Exactly $`2\pi`$ is proved for $`r\ge2R`$ (Proposition R7). For
+    $`r<2R`$ the proved bounds are $`2\pi+b_{\rm in}`$ and
+    $`2\pi+b_{\rm bl}`$.
+  - On the set where the real phase equals $`2\pi`$ and no invariant is
+    in transition, the phase on the contour is, to first order in $`V`$,
+    $`2\pi+V\!\cdot\nabla\log|z|=2\pi+\sum_fw_fL^f`$ with
+    $`L^f=-\sum_i\epsilon_iJ_i^f/r_i`$ ($`\epsilon_i=+1`$ at the two cusps
+    with the timelike diagonal, $`-1`$ at the others), the sum being over
+    the frame fields and the far field with their weights. So
+    $`\arg z\le2\pi`$ is there a linear condition on the field, as the pair
+    criterion is.
+  - Numerically the condition holds, with a margin: on 8 000 to 15 000
+    points of that set per square (three squares, $`r<2R`$), and after
+    local maximisation from the best of them,
+    $`\arg z-2\pi\le-2\nu`$ to three digits, never positive; and the
+    largest phase found in all surveys of sections 8 and 9 is
+    $`2\pi-2\nu`$ for each square. So the exact statement appears to be
+    true, with supremum $`2\pi-2\nu`$ on $`r<2R`$.
+  - It does **not** hold field by field. The frame at a cusp with the
+    timelike diagonal has $`L^f>0`$ at about 1% of the sampled points (up
+    to 0.87 of $`\sum_i|J^f_i/r_i|`$), and so, rarely, has the frame at the
+    other cusp whose invariant is positive. The frame at the cusp
+    $`m'`$ whose invariant is negative is on at every point of the set
+    and has $`L^f<0`$ always (at most $`-0.44\sum_i|J_i^f/r_i|`$); the far
+    field has $`L^f<0`$ always. The sum is negative because the frame of
+    $`m'`$ dominates.
+  - So a proof needs a lower bound on $`-L`$ for the frame of $`m'`$
+    (at least $`2\nu`$ times a positive combination of
+    $`\hat\rho_{m'}/|r_i|`$) and an upper bound on $`L`$ for the other
+    three frames in terms of the same quantities, on the whole set
+    $`\{r_c,r_{c+2},r_m>0>r_{m'}\}`$, including the term
+    $`J_m^{(m')}/r_m`$ of the invariant that the frame of $`m'`$ does not
+    control. I did not find these two bounds. The points where an
+    invariant is in transition would then need the pair criterion in
+    addition.
+- *The limits $`|s/t|\to1,0,\infty`$.* The range of section 7 is not
+  limited by the conditions. In floating point, and on single interval
+  boxes of suitably small width, both the certificate of GATE_6_CONTOUR
+  section 9 and the conditions of this document hold at every angle tried
+  outside the range: down to angle $`10^{-6}`$ ($`|s/t|-1\approx10^{-12}`$)
+  and up to angle $`3.14158`$ ($`|s/t|=2.5\times10^{10}`$, resp. its
+  inverse), with the bound between 0.169 and 0.191. Towards $`|s/t|=1`$
+  nothing degenerates ($`u\to0`$, and no constant has $`u`$ in a
+  denominator). Towards the degenerate squares $`\delta_0`$ and
+  $`\kappa=\nu`$ go to zero; the single boxes that passed had a width
+  proportional to the distance from angle $`\pi`$, so a cover with
+  geometrically shrinking boxes should extend the range by a fixed factor
+  in $`|s/t|`$ per fixed number of boxes. The limits themselves are not reached by any finite
+  cover, and I did not run an extended cover.
 - The contour in $`D`$ dimensions (GATE_6_CONTOUR section 11) is treated
   in section 9.
 - The region $`(-,-)`$ is not treated because nothing is needed there:
@@ -1212,7 +1447,7 @@ condition in floating point. All conditions hold at the squares below.
 ## 7. The conditions in interval arithmetic
 
 `phase_bound_iv.interval_phase_bound(region, angle_lo, angle_hi)` evaluates
-the conditions (R4), (G1), (G2), (B1)–(B5) and the trivial ones, and an upper bound for the constant, with mpmath intervals, for all
+the conditions (R4), (R7), (G1), (G2), (B1)–(B6) and the trivial ones, and an upper bound for the constant, with mpmath intervals, for all
 squares whose angle lies in the interval, with the constants of the
 midpoint square; `cover` runs it on adjacent intervals. It uses the helpers
 of `certificate_iv` and calls `certificate_iv.interval_certificate` on the
@@ -1236,8 +1471,8 @@ How each quantity is enclosed:
   transverse norm and is valid for this family, whose edges have no
   component along one spatial axis. $`\theta`$ and $`\mu`$ are formed from
   $`B`$.
-- $`b_0,\varepsilon,\delta_1,\Lambda_c,\Lambda_n,a_{\min},\mu_\pm,\omega_0,c_{3d},s_0,\dots,s_3`$:
-  interval evaluation of their formulas.
+- $`b_0,\varepsilon,\delta_1,\Lambda_c,\Lambda_n,a_{\min},\mu_\pm,\omega_0,c_{3d},u_2,\mathfrak a,\mathfrak a',\varsigma_c,\varsigma_n,\tau_1,W_1,\rho_1,s_0,\dots,s_3`$,
+  $`e_{\rm fr}`$, $`e_4`$, $`\varepsilon_V`$: interval evaluation of their formulas.
 - $`\arctan x`$ is replaced by $`x`$, and $`\arcsin x`$ by
   $`t-t^3/3+t^5/5`$ with $`t=x/\sqrt{1-x^2}\le1`$ (by $`t`$ if $`t>1`$).
 
@@ -1245,26 +1480,25 @@ The proof uses $`e`$, $`B`$, $`\theta`$, $`\mu`$ only as upper bounds, and
 every constant is monotone in them in the direction that keeps the
 conclusion: larger $`B`$ lowers $`\Lambda_c,\Lambda_n,a_{\min}`$ and raises
 $`\mu_\pm`$, $`\varsigma`$ and the $`s_k`$. The interval version bounds the
-constant of the theorem with $`e`$ in place of $`e_{\rm fr}`$ and
-$`\max(e,3e_{\rm sp})`$ for the outer zone; it does not use Propositions R7 and
-R8, so it is an upper bound of the bound of the theorem.
+three entries of the theorem: $`b_{\rm in}`$ (Proposition R8), $`b_{\rm bl}`$
+(Proposition R6), and for $`r\ge2R`$ the value 0 if (R7) holds on the box
+and $`e+\max(e,3e_{\rm sp})`$ otherwise. `bound_upper` is the largest of
+the three.
 
 | Region | Angle range | Boxes | $`s/t`$ covered | Result | Largest bound $`-2\pi`$ |
 | --- | --- | --- | --- | --- | --- |
-| $`(+,-)`$ | 0.02 to 3.087 | 12 268 | $`-1342`$ to $`-1.0001`$ | all conditions hold on every box | 0.5701 |
-| $`(-,+)`$ | 0.02 to 3.087 | 12 268 | $`-0.9999`$ to $`-0.00074`$ | all hold | 0.5701 |
+| $`(+,-)`$ | 0.02 to 3.087 | 12 268 | $`-1342`$ to $`-1.0001`$ | all conditions and (R7) hold on every box | 0.1908 |
+| $`(-,+)`$ | 0.02 to 3.087 | 12 268 | $`-0.9999`$ to $`-0.00074`$ | all hold | 0.1908 |
 
-On these ranges $`e\le0.093`$, $`K_{\rm in}\le0.234`$, $`K_{\rm bl}\le0.509`$,
-$`s\le0.436`$, $`c_{3d}\le0.0093`$, $`\min(\Lambda_c,\Lambda_n)\ge4.36`$. The
-largest bound is in the box $`[2.23725,2.2375]`$ ($`|s/t|=5.24`$, resp.
-$`0.191`$). The cover was
-run as four consecutive pieces of 3 067 boxes per region.
+On these ranges $`b_{\rm in}\le0.0977`$, $`b_{\rm bl}\le0.1908`$, $`s\le0.134`$,
+$`e\le0.093`$, $`c_{3d}\le0.0093`$, $`\min(\Lambda_c,\Lambda_n)\ge4.36`$. The
+largest bound is in the last box, $`[3.08675,3.087]`$; on the first three
+quarters of the range it is at most 0.176. The cover was run as four
+consecutive pieces of 3 067 boxes per region (24 536 boxes in all).
 
-(R7) is evaluated with intervals on every box as well, and holds on all of
-them; it is reported separately because the interval bound does not use
-it. Not covered by the interval version: the constant $`b_{\rm in}`$ of
-Proposition R8 (evaluated in floating point by `phase_bound`); the limits
-$`|s/t|\to1`$, $`0`$, $`\infty`$, which no finite cover reaches.
+Not covered by the interval version: the limits $`|s/t|\to1`$, $`0`$,
+$`\infty`$, which no finite cover reaches (see the scope item in section
+6).
 
 ## 8. Numerical checks
 
@@ -1285,7 +1519,9 @@ $`(-,+)`$ at 1.1.
 | Proposition R5′: field is $`V_c`$, $`K_c\le`$ bound | 15 700 | 0; maximum equals the bound to five digits |
 | Proposition R4: all statements of the proof | 32 000 | 0 |
 | Proposition R7: $`n_i\!\cdot w_i\ge0`$, (a), (b), the two orderings, $`\lvert\arg z\rvert\le2\pi`$; squares at angles 1.1, 1.1, 2.5 | 29 000 | 0; largest $`\lvert\arg z\rvert/\pi`$: 1.991 |
-| Proposition R6: (F1), (F2), (F4), the signs of $`E_c,E_{c-1}`$, (5.2) by case; also at angle 2.9 | 7 100 to 9 200 | 0 |
+| Proposition R6: (F1), (F2), (F4), the signs of $`E_c,E_{c-1}`$, (5.2) by case (earlier constants); also at angle 2.9 | 7 100 to 9 200 | 0 |
+| Proposition R6 with the present constants, squares at angles 1.1 (default), 1.1, 2.5, 3.05, 0.05 (tuned): (F5); (F6) with its two sub-claims; (5.2) by case N0pp, N0mix, N0nn, N1, N2, N3; (5.3) for $`E_c`$ and $`E_{c-1}`$; coordinate bounds; $`K_c\le K_{\rm bl}`$; $`\lvert\arg z\rvert\le2\pi+b_{\rm bl}`$ | 9 300 to 9 700 point–cusp pairs, of which N0: 6 400 to 7 100 | 0; smallest $`Q/(\lvert X_c\rvert\lvert X_{\rm nb}\rvert)`$: $`-1.6\times10^{-6}`$; $`E_c`$, $`E_{c-1}`$ use at most $`2.5\times10^{-5}`$ of their bounds; (F5) at most 0.13 of its bound; (F6) at most 0.13 |
+| First-order form of $`\arg z\le2\pi`$ on the set where the real phase is $`2\pi`$, $`r<2R`$ (float64; squares at 1.1 default, 1.1 and 2.5 tuned) | 8 200 to 14 700 | the sum over the fields is negative at every point, at most $`-2\nu`$; single frame fields violate it at about 1% of the points (see section 6) |
 | $`K_c`$ and $`\lvert\arg z\rvert`$ over all zones | 53 000 | largest $`K_c`$: $`5\times10^{-6}`$, 0.0027, 0.0039; largest $`\lvert\arg z\rvert/\pi`$: 1.9999999976 |
 
 Proposition R8 was checked at 90 digits by the second review on twelve
@@ -1382,10 +1618,10 @@ from them. Then on the $`D`$-dimensional contour, off the four edges (which
 lie in $`\zeta=0`$),
 
 ```math
-|\arg z|\le2\pi+b_{\rm in}\quad(r\le R),\qquad|\arg z|\le2\pi+e+K_{\rm bl}\quad(R<r<2R),\qquad|\arg z|\le2\pi\quad(r\ge2R),
+|\arg z|\le2\pi+b_{\rm in}\quad(r\le R),\qquad|\arg z|\le2\pi+b_{\rm bl}\quad(R<r<2R),\qquad|\arg z|\le2\pi\quad(r\ge2R),
 ```
 
-with the same $`b_{\rm in}=e_{\rm fr}+K^{\rm fr}_{\rm in}`$ and $`K_{\rm bl}`$ as
+with the same $`b_{\rm in}=e_{\rm fr}+K^{\rm fr}_{\rm in}`$ and $`b_{\rm bl}`$ as
 in Propositions R8 and R6. Propositions R4, R5, R5′, R6, R7 and R8 hold
 as stated, with $`r`$ the $`D`$-dimensional radius; in particular, for
 $`r\le R`$, $`u_i\in[-e_{\rm fr},\pi+e_{\rm fr}]`$ for all four $`i`$.
@@ -1507,11 +1743,14 @@ and $`r`$ the $`D`$-dimensional radius.
 | (F3), per frame | holds with $`\hat\rho`$ and the same $`B_c`$, $`B_n`$ | triangle inequality and 9.2 (b) |
 | (F4), Lemma V | unchanged | $`\lvert V_{\rm in}\rvert^2\le3\mu J_i^{\rm in}`$ by 9.2 (c), $`J_i^W\ge2\kappa'M`$ by (F2), $`0\le W^2\le K^2`$ |
 | (5.1), (5.2), crude and signed bounds, (E+) | unchanged, closed forms with $`\hat\rho,\hat\rho'`$ | Lemma R2(3), Lemma R3 |
-| N0 | unchanged | |
+| (F5) | unchanged | the weight $`m_{i+2}=\chi(\lvert r_i\rvert/\delta_0-1)`$ with the $`D`$-dimensional $`r_i`$; $`\lvert J_i^{(i+2)}\rvert\le\iota_2`$ and $`\lvert R_i\rvert\ge\lvert r_i\rvert-v^2`$ with norms in $`\mathbb R^{4+k}`$ (*added with the sharpened Case N0; audited by the author of sections 1 to 8, not by the pass that wrote this section*) |
+| (F6) | holds; same $`\tau_1,W_1,\rho_1`$ | $`w_i`$ has no $`\zeta`$-component, so $`n_i\!\cdot w_i`$ is the four-dimensional product and $`\lvert\vec\xi\rvert\le\tau+\tau_0`$ still holds in $`J^+(c_-)`$; $`-r_i\ge\rho_1`$ uses $`\sqrt{\lvert\vec n_i\rvert^2+m^2}\ge\sqrt{R^2-\tau_1^2}-\Delta`$, the triangle inequality in $`\mathbb R^{3+k}`$; (F1), (F2), (F5) (*added, as above*) |
+| N0pp, N0mix | hold | (F1), (F5), the signs of Lemma 5, (E+) with $`\hat\rho<\alpha\beta D`$ (*added, as above*) |
+| N0nn, (5.3) | hold with $`\hat\rho=\alpha\beta D+\lvert r_c\rvert`$, $`\hat\rho'=\alpha'\beta'D'+\lvert r_{c-1}\rvert`$ and the same $`\mathfrak a,\mathfrak a',\varsigma_c,\varsigma_n`$ | algebra on Lemma R3; the coordinate bounds use only the four-dimensional part of $`n_j`$, whose norm is at most $`2R+\Delta`$ (*added, as above*) |
 | N1a, N1b | unchanged | $`y`$ future timelike gives $`\alpha,\beta>0`$ and $`\hat\rho<\alpha\beta D`$; Lemma R5.1 with $`\hat\rho`$ |
 | N1c | holds with $`\hat\rho\le\delta_0+b_0^2D`$ and $`\hat\rho'\le\delta_0(1+\varepsilon)+2b_0^2\lvert D'\rvert`$; $`\Lambda_c`$, $`\Lambda_n`$ as in four dimensions | (F2), (F3) in the frames of $`c`$ and $`c-1`$ |
 | N2, N3 | hold with $`\hat\rho,\hat\rho'\le\delta_0`$ | (F2), (F3), (E+) |
-| Step 4 | unchanged | |
+| Step 4 | unchanged; the last lines use (F6) | |
 | Theorem, zone by zone; list of conditions | unchanged; every constant is the number computed for $`k=0`$ | R8, R1 with R6, R7; the other side $`\arg z\ge-\pi-4e`$ is R1 |
 
 Answers to the questions a reader will ask:
@@ -1541,11 +1780,11 @@ matrix of the four-dimensional transverse basis) is an upper bound of the
 four-dimensional norms, hence of the $`D`$-dimensional ones, which are
 equal to them. So the cover of section 7 holds for the $`D`$-dimensional
 contour without recomputation: for every square with angle in
-$`[0.02,3.087]`$, $`|\arg z|\le2\pi+0.5701`$ on the contour in
+$`[0.02,3.087]`$, $`|\arg z|\le2\pi+0.1908`$ on the contour in
 $`\mathbb R^{1,3+k}`$ built with the constants of the midpoint of its box,
-and (R7) holds on every box. As in four dimensions the interval version
-does not cover $`b_{\rm in}`$. I did not rerun the cover; nothing in it
-depends on $`k`$.
+and (R7) holds on every box. The interval version now bounds the three
+zone entries $`b_{\rm in}`$, $`b_{\rm bl}`$ and 0. The cover was not rerun
+in $`D`$ dimensions; nothing in it depends on $`k`$.
 
 ### 9.5 All $`k`$ at once, and non-integer dimension
 
@@ -1562,6 +1801,21 @@ integral over $`m`$ or about the face $`m=0`$ in Stokes' theorem; those are
 the subject of GATE_6_CONTOUR section 11.
 
 ### 9.6 Numerical checks
+
+*Note added with the sharpened Case N0.* The checks of this subsection
+were run against the constants of the previous version of section 5:
+$`s_0=8\iota_2/\delta_v+\dots`$, $`K_{\rm bl}=\max(e+\arcsin s,3e'_{\rm sp})`$ and
+the blend-zone bound $`2\pi+e+K_{\rm bl}`$ (0.36 to 0.57). They have not
+been rerun. Where the tables below name $`s_0,\dots,s_3`$, $`K_{\rm bl}`$ or
+the blend-zone bound, the earlier, larger constants are meant, except in
+the last column of the first table, which lists the present
+$`b_{\rm in}`$ and $`b_{\rm bl}`$. The recorded extremes are below the
+present constants as well: the largest $`-Q/(|X_c||X_{\rm nb}|)`$ is
+$`1.7\times10^{-6}`$ against a smallest present $`s_k`$ of
+$`4\times10^{-5}`$, the largest $`K_c`$ in the blend zone is 0.0027 against
+$`K_{\rm bl}\ge0.10`$, and no phase exceeds $`2\pi`$. The new facts (F5),
+(F6) and the inequalities (5.3) were tested by their author in four dimensions only; the review tested them for $`k=1`$ on five squares, without violation, so the remark stands for the author's own campaign
+(section 8).
 
 The $`(4+k)`$-dimensional field was implemented again in 130-digit decimal
 arithmetic with exactly null edges (Python `decimal`; an mpmath evaluation
@@ -1599,20 +1853,20 @@ $`\kappa=\nu=3.6\times10^{-12}`$, $`B_n=30.9`$), and $`(+,-)`$ at angle 0.05
 ($`|s/t|`$ close to 1, $`\delta_0=0.26`$). All conditions of the theorem,
 including (R7), hold at the seven squares used.
 
-| Square | $`k`$ | Points | inner / blend / outer | Largest $`K_c`$: inner, blend, outer | Largest $`\lvert\arg z\rvert/\pi`$: inner, blend, outer | $`b_{\rm in}`$; $`e+K_{\rm bl}`$ |
+| Square | $`k`$ | Points | inner / blend / outer | Largest $`K_c`$: inner, blend, outer | Largest $`\lvert\arg z\rvert/\pi`$: inner, blend, outer | $`b_{\rm in}`$; $`b_{\rm bl}`$ |
 | --- | --- | --- | --- | --- | --- | --- |
-| $`(+,-)`$, 1.1, default | 1 | 195 774 | 86 987 / 67 804 / 40 983 | $`1.5\times10^{-6}`$, 0.0027, 0.0038 | 1.9999999045, 1.9999944, 1.9822 | 0.046; 0.359 |
-| $`(-,+)`$, 1.1, default | 1 | 152 944 | 77 405 / 39 018 / 36 521 | $`1.4\times10^{-6}`$, 0.0027, 0.0038 | 1.9999999045, 1.9999942, 1.9818 | 0.046; 0.359 |
-| $`(+,-)`$, 0.7, tuned | 1 | 148 437 | 75 095 / 38 481 / 34 861 | $`1.4\times10^{-6}`$, 0.0027, 0.0039 | 1.9999996151, 1.9999405, 1.9769 | 0.084; 0.534 |
-| $`(-,+)`$, 0.5, tuned | 1 | 82 424 | 35 705 / 31 966 / 14 753 | $`1.7\times10^{-6}`$, 0.0027, 0.0039 | 1.9999995339, 1.9999276, 1.9752 | 0.084; 0.533 |
-| $`(-,+)`$, 2.9, tuned | 1 | 198 800 | 96 027 / 69 383 / 33 390 | $`1.2\times10^{-5}`$, 0.00076, 0.0011 | 1.9999999999, 1.9999995, 1.9965 | 0.094; 0.564 |
-| $`(+,-)`$, 0.05, tuned | 1 | 196 750 | 87 409 / 68 037 / 41 304 | $`2.0\times10^{-6}`$, 0.0027, 0.0038 | 1.9999993570, 1.9998923, 1.9709 | 0.084; 0.532 |
-| $`(+,-)`$, 3.05, tuned | 1 | 197 579 | 94 596 / 68 379 / 34 604 | $`1.1\times10^{-5}`$, 0.00029, 0.00041 | $`2-2.3\times10^{-12}`$, 1.9999999, 1.9985 | 0.097; 0.562 |
-| $`(+,-)`$, 1.1, default | 2 | 37 871 | 22 959 / 8 802 / 6 110 | $`1.1\times10^{-6}`$, 0.0027, 0.0039 | 1.9999999045, 1.9999945, 1.9747 | 0.046; 0.359 |
-| $`(-,+)`$, 2.9, tuned | 2 | 80 539 | 59 540 / 12 278 / 8 721 | $`1.2\times10^{-5}`$, 0.00076, 0.0011 | 1.9999999999, 1.9999994, 1.9964 | 0.094; 0.564 |
-| $`(+,-)`$, 3.05, tuned | 2 | 38 062 | 10 327 / 22 122 / 5 613 | $`4\times10^{-10}`$, 0.00028, 0.00029 | $`2-2.3\times10^{-12}`$, 1.9999999, 1.9985 | 0.097; 0.562 |
-| $`(+,-)`$, 0.05, tuned | 3 | 37 692 | 22 668 / 8 887 / 6 137 | $`2.0\times10^{-6}`$, 0.0027, 0.0038 | 1.9999993570, 1.9998902, 1.9704 | 0.084; 0.532 |
-| $`(-,+)`$, 1.1, default | 3 | 39 224 | 10 920 / 7 403 / 20 901 | $`4.6\times10^{-7}`$, 0.0027, 0.0039 | 1.9999998993, 1.9999940, 1.9801 | 0.046; 0.359 |
+| $`(+,-)`$, 1.1, default | 1 | 195 774 | 86 987 / 67 804 / 40 983 | $`1.5\times10^{-6}`$, 0.0027, 0.0038 | 1.9999999045, 1.9999944, 1.9822 | 0.046; 0.117 |
+| $`(-,+)`$, 1.1, default | 1 | 152 944 | 77 405 / 39 018 / 36 521 | $`1.4\times10^{-6}`$, 0.0027, 0.0038 | 1.9999999045, 1.9999942, 1.9818 | 0.046; 0.117 |
+| $`(+,-)`$, 0.7, tuned | 1 | 148 437 | 75 095 / 38 481 / 34 861 | $`1.4\times10^{-6}`$, 0.0027, 0.0039 | 1.9999996151, 1.9999405, 1.9769 | 0.084; 0.169 |
+| $`(-,+)`$, 0.5, tuned | 1 | 82 424 | 35 705 / 31 966 / 14 753 | $`1.7\times10^{-6}`$, 0.0027, 0.0039 | 1.9999995339, 1.9999276, 1.9752 | 0.084; 0.169 |
+| $`(-,+)`$, 2.9, tuned | 1 | 198 800 | 96 027 / 69 383 / 33 390 | $`1.2\times10^{-5}`$, 0.00076, 0.0011 | 1.9999999999, 1.9999995, 1.9965 | 0.094; 0.186 |
+| $`(+,-)`$, 0.05, tuned | 1 | 196 750 | 87 409 / 68 037 / 41 304 | $`2.0\times10^{-6}`$, 0.0027, 0.0038 | 1.9999993570, 1.9998923, 1.9709 | 0.084; 0.169 |
+| $`(+,-)`$, 3.05, tuned | 1 | 197 579 | 94 596 / 68 379 / 34 604 | $`1.1\times10^{-5}`$, 0.00029, 0.00041 | $`2-2.3\times10^{-12}`$, 1.9999999, 1.9985 | 0.097; 0.189 |
+| $`(+,-)`$, 1.1, default | 2 | 37 871 | 22 959 / 8 802 / 6 110 | $`1.1\times10^{-6}`$, 0.0027, 0.0039 | 1.9999999045, 1.9999945, 1.9747 | 0.046; 0.117 |
+| $`(-,+)`$, 2.9, tuned | 2 | 80 539 | 59 540 / 12 278 / 8 721 | $`1.2\times10^{-5}`$, 0.00076, 0.0011 | 1.9999999999, 1.9999994, 1.9964 | 0.094; 0.186 |
+| $`(+,-)`$, 3.05, tuned | 2 | 38 062 | 10 327 / 22 122 / 5 613 | $`4\times10^{-10}`$, 0.00028, 0.00029 | $`2-2.3\times10^{-12}`$, 1.9999999, 1.9985 | 0.097; 0.189 |
+| $`(+,-)`$, 0.05, tuned | 3 | 37 692 | 22 668 / 8 887 / 6 137 | $`2.0\times10^{-6}`$, 0.0027, 0.0038 | 1.9999993570, 1.9998902, 1.9704 | 0.084; 0.169 |
+| $`(-,+)`$, 1.1, default | 3 | 39 224 | 10 920 / 7 403 / 20 901 | $`4.6\times10^{-7}`$, 0.0027, 0.0039 | 1.9999998993, 1.9999940, 1.9801 | 0.046; 0.117 |
 
 In all, 1 406 096 points (679 638 inner, 442 560 blend, 283 898 outer);
 5 231 of them lie within $`10^{-40}`$ of an edge and are excluded from the
@@ -1659,7 +1913,7 @@ the outer zone it is $`2\pi-0.0046`$.
 | N2: the listed inequalities; $`E_c,E_{c-1}\ge0`$; the two hypotheses of (E+) when $`r_{c-1}<0`$ | 18 619; 12 283 | standard combination only |
 | N2: $`1+\alpha<0`$ implies $`\beta\ge\Lambda_c-b_0`$; $`\beta'<0`$ implies $`\lvert\alpha'\rvert\ge\Lambda_n-b_0`$ | 181; 5 764 | standard combination only |
 | N3, $`\beta\ge0`$ and $`\beta<0`$ | 6 101; 5 098 | standard combination only |
-| Theorem D: $`\lvert\arg z\rvert\le2\pi+b_{\rm in}`$; $`2\pi+e+K_{\rm bl}`$; $`2\pi`$ | 674 407; 442 560; 283 898 | by zone; smallest margin in the outer zone 0.0046 |
+| Theorem D: $`\lvert\arg z\rvert\le2\pi+b_{\rm in}`$; $`2\pi+e+K_{\rm bl}`$ (earlier constant); $`2\pi`$ | 674 407; 442 560; 283 898 | by zone; smallest margin in the outer zone 0.0046 |
 | The other side: $`\pm\arg z\ge-\pi-4e`$ | 1 400 865 | |
 
 Remarks on the tests.
@@ -1711,11 +1965,14 @@ The programs for these checks are not part of the repository.
   combinations only (F1), (F2), (F4), (5.2) by case and the conclusions were
   tested. The branch "$`1+\alpha<0`$" of N2 was reached at only 181 points.
 - The interval cover of section 7 was not rerun; 9.4 is an argument that
-  it applies, not a computation. As in four dimensions it does not cover
-  $`b_{\rm in}`$, and the limits $`|s/t|\to1,0,\infty`$ and the region
+  it applies, not a computation. As in four dimensions the limits $`|s/t|\to1,0,\infty`$ and the region
   $`(-,-)`$ are not treated.
 - The numerical checks use $`k=1,2,3`$ and seven squares. Non-integer
   dimension is covered only through the reduction of 9.5, which is
   pointwise; nothing here concerns the integrals.
+- The sharpened Case N0, (F5), (F6) and (5.3) were added to section 5
+  after this section was written. Their rows in 9.3 were added by the
+  author of sections 1 to 8; they were not tested numerically in $`D`$
+  dimensions (see the note in 9.6).
 - This section audits the proof of sections 1 to 6 for its dependence on
   the dimension. It is not a further review of that proof.

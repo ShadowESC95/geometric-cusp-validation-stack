@@ -519,6 +519,170 @@ def interval_cover(region: str = "--", low: float = 1.0, high: float = 1.2, boxe
     return result
 
 
+def phase_bound_report(region: str = "+-", angle: float = 1.1, low: float | None = None,
+                       high: float | None = None, boxes: int = 40) -> dict:
+    """The bound on |arg z| on the contour with a timelike diagonal (GATE_6_PHASE).
+
+    For one square: every constant and condition, in floating point. With
+    `low` and `high` (angles): the same in interval arithmetic over that range.
+    """
+    if region not in ("+-", "-+"):
+        raise ValueError("the phase bound is for a timelike diagonal: region +- or -+ "
+                         "(in the region -- the bound 2 pi + 4e follows from the certificate)")
+    if (low is None) != (high is None):
+        raise ValueError("give both --low and --high, or neither")
+    if low is not None:
+        from . import phase_bound_iv as pbi
+
+        if not 0 < low < high < pi:
+            raise ValueError("need 0 < low < high < pi")
+        if not 1 <= boxes <= 20000:
+            raise ValueError("boxes must lie between 1 and 20000")
+        return _plain(pbi.cover(region, low, high, boxes))
+    from . import phase_bound as pb
+
+    _, contour = _contour(region, angle)
+    out = pb.phase_bound(contour)
+    conditions = {key: value for key, value in out.items()
+                  if isinstance(value, (bool, np.bool_)) and key != "all_conditions"}
+    constants = {key: float(value) for key, value in out.items()
+                 if isinstance(value, (float, np.floating)) and not isinstance(value, (bool, np.bool_))}
+    return {"region": region, "angle": angle, "s": float(contour.s), "t": float(contour.t),
+            "bound_minus_2pi": float(out["bound"]),
+            "by_zone": {key: float(out[key]) for key in ("bound_inner", "bound_blend", "bound_outer")
+                        if key in out},
+            "all_conditions": bool(out["all_conditions"]),
+            "failed": [key for key, value in conditions.items() if not value],
+            "conditions": {key: bool(value) for key, value in conditions.items()},
+            "constants": constants}
+
+
+def _plain(value):
+    """Nested containers of numpy and mpmath numbers -> JSON types."""
+    if isinstance(value, dict):
+        return {str(k): _plain(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_plain(v) for v in value]
+    if isinstance(value, (bool, np.bool_)):
+        return bool(value)
+    if isinstance(value, (int, np.integer)):
+        return int(value)
+    if isinstance(value, (float, np.floating)):
+        return float(value)
+    if isinstance(value, str) or value is None:
+        return value
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def box_three_ways(p: float = .2, eta: float = .01, ratio: float = 2.5, timelike: bool = False) -> dict:
+    """eps^2 s t times the regulated integral of z^p, three ways.
+
+    The Feynman-parameter quadrature, the Mellin-Barnes form, and the form
+    continued through eta = 0. All three are valid for small eta > 0 and tend
+    to 4 sin(pi p)/(pi p).
+    """
+    from . import lorentzian_edges as le
+
+    if not eta > 0:
+        raise ValueError("the parameter and Mellin-Barnes forms need eta > 0; "
+                         "the continued form alone is defined at eta <= 0 (lorentzian_edges.box_continued)")
+    if not abs(p) + eta < .5:
+        raise ValueError("need |p| + eta < 1/2 for the continued form")
+    if not ratio > 0:
+        raise ValueError("ratio is |s/t| and must be positive")
+    theta = pi if timelike else 0.0
+    if timelike:
+        parameter = complex(le.parametric_double_pole_rotated(p, eta, ratio, pi, .5))
+    else:
+        parameter = complex(le.parametric_double_pole(p, eta, ratio))
+    barnes = complex(le.regulated_double_pole_complex(p, eta, ratio, theta))
+    continued = complex(le.box_continued(p, eta, ratio, theta))
+    pair = lambda z: [z.real, z.imag]
+    return {"p": p, "eta": eta, "ratio": ratio, "timelike": timelike,
+            "feynman_parameters": pair(parameter), "mellin_barnes": pair(barnes),
+            "continued": pair(continued), "limit_eta_to_0": 4 * sinc(p),
+            "largest_difference": max(abs(parameter - barnes), abs(parameter - continued),
+                                      abs(barnes - continued))}
+
+
+def convergence_condition(powers=(1.3, .7, 1.3, .7), eta: float = .1, region: str = "--") -> dict:
+    """Does the integral of prod |x_0i^2 - i eps|^(-a_i) over R^D converge (eps > 0)?
+
+    CUSP_LOCAL_MODEL Lemmas 13.1' and 13.1'': for a_i in (0, 2) it converges
+    exactly when S - max pi_ij > 3 + 2 eta. Cusps 1 and 3 are joined by the
+    diagonal s, cusps 2 and 4 by t; the region gives their signs.
+    """
+    a = [float(x) for x in powers]
+    if len(a) != 4 or not all(0 < x < 2 for x in a):
+        raise ValueError("give four powers, each in (0, 2)")
+    if not 0 < eta < .5:
+        raise ValueError("need 0 < eta < 1/2")
+    if region not in REGIONS:
+        raise ValueError("region must be one of "+", ".join(REGIONS))
+    timelike = {(0, 2): region[0] == "+", (1, 3): region[1] == "+"}
+    terms, worst = {}, 0.0
+    for i in range(4):
+        for j in range(4):
+            if i == j:
+                continue
+            if (j - i) % 4 == 2:
+                gamma = float("inf") if timelike[tuple(sorted((i, j)))] else 1.0
+            else:
+                gamma = 1 + eta
+            if a[i] >= 1:
+                value = a[i] - 1 + max(a[j] - gamma, 0.0)
+            else:
+                value = max(a[i] + a[j] - 1 - gamma, 0.0)
+            terms[f"pi_{i+1}{j+1}"] = value
+            worst = max(worst, value)
+    total = sum(a)
+    return {"powers": a, "eta": eta, "region": region, "S": total, "max_pi": worst,
+            "margin": total - worst - 3 - 2 * eta, "converges": bool(total - worst > 3 + 2 * eta),
+            "pi": terms}
+
+
+def exact_expansion_at_minus_one(directory: str | None = None) -> dict:
+    """Holomorphy at z = -1 of the published weights, in exact arithmetic.
+
+    Without a directory: the two-loop function, which is in the repository.
+    With the ancillary directory of arXiv:1911.10174: the three-loop functions
+    too (THREE_LOOP_WEIGHT).
+    """
+    import os
+
+    from . import hpl, hpl_exact as hx
+
+    texts = {"F2": hpl.F2_HKM}
+    if directory:
+        for name, file in (("F3_planar", "HKM_F3_P_HPL.txt"), ("F3_NP1", "HKM_F3_NP1_HPL.txt"),
+                           ("F3_NP2", "HKM_F3_NP2_HPL.txt")):
+            path = os.path.join(directory, file)
+            if not os.path.isfile(path):
+                raise ValueError(f"{file} not found in {directory}")
+            with open(path) as handle:
+                texts[name] = handle.read()
+    out = {}
+    for name, text in texts.items():
+        coefficients = hx.parse_exact(text)
+        rows = {}
+        for sign, lip in ((+1, "upper"), (-1, "lower")):
+            report = hx.holomorphy_report(coefficients, sign)
+            rows[lip] = {"conditions": report["conditions"],
+                         "nonzero_logarithmic_coefficients": len(report["logarithmic"]),
+                         "holomorphic": not report["logarithmic"],
+                         "value": repr(report["value"]), "value_numeric": complex(report["value"]).real,
+                         "slope": repr(report["slope"])}
+        out[name] = rows
+    if directory:
+        upper = {name: hx.holomorphy_report(hx.parse_exact(texts[name]), +1) for name in ("F3_NP1", "F3_NP2")}
+        total = upper["F3_NP1"]["slope"] + upper["F3_NP2"]["value"]
+        out["F3_nonplanar_at_minus_one"] = {"value": repr(total), "value_numeric": complex(total).real}
+    return out
+
+
 # ---------------------------------------------------------------- CD weight
 
 def cd_weight(z: complex, points: int = 3000) -> complex:
@@ -677,6 +841,27 @@ def main(argv=None) -> None:
     ivc.add_argument("--high", type=float, default=1.2)
     ivc.add_argument("--boxes", type=int, default=200)
 
+    phs = sub.add_parser("phase", help="bound on |arg z| on the contour with a timelike diagonal")
+    phs.add_argument("--region", choices=("+-", "-+"), default="+-")
+    phs.add_argument("--angle", type=float, default=1.1)
+    phs.add_argument("--low", type=float, default=None, help="with --high: interval arithmetic over a range of angles; boxes must be narrow, about 0.00025 each")
+    phs.add_argument("--high", type=float, default=None)
+    phs.add_argument("--boxes", type=int, default=40)
+
+    box = sub.add_parser("box", help="the regulated integral of z^p three ways, valid for small eta")
+    box.add_argument("--exponent", type=float, default=.2)
+    box.add_argument("--eta", type=float, default=.01)
+    box.add_argument("--ratio", type=float, default=2.5, help="|s/t|")
+    box.add_argument("--timelike", action="store_true")
+
+    cvg = sub.add_parser("converge", help="absolute convergence over R^D at positive displacement")
+    cvg.add_argument("--powers", type=float, nargs=4, default=[1.3, .7, 1.3, .7])
+    cvg.add_argument("--eta", type=float, default=.1)
+    cvg.add_argument("--region", choices=tuple(REGIONS), default="--")
+
+    hol = sub.add_parser("holomorphy", help="exact expansion of the published weights at z = -1")
+    hol.add_argument("--anc", default=None, help="ancillary directory of arXiv:1911.10174 (three-loop files)")
+
     cd = sub.add_parser("cd", help="integrate the CD weight at a complex z")
     cd.add_argument("z", type=complex, help="for example 0.35+0.8j")
 
@@ -692,7 +877,8 @@ def main(argv=None) -> None:
         except ImportError as error:
             parser.error(f"the desktop window needs Tk and Matplotlib ({error}); install your "
                          "platform's Tk package for Python, or use the functional, edge, "
-                         "two-loop, contour, certificate, threshold, cusp, edge-piece, slab, interval, cd and rim subcommands")
+                         "two-loop, contour, certificate, threshold, cusp, edge-piece, slab, interval, phase, box, "
+                         "converge, holomorphy, cd and rim subcommands")
         run()
         return
     try:
@@ -720,6 +906,14 @@ def main(argv=None) -> None:
             result = slab_scan(Weight(tuple(args.logs) or (0.,), args.amplitude, args.exponent), args.region)
         elif args.command == "interval":
             result = interval_cover(args.region, args.low, args.high, args.boxes)
+        elif args.command == "phase":
+            result = phase_bound_report(args.region, args.angle, args.low, args.high, args.boxes)
+        elif args.command == "box":
+            result = box_three_ways(args.exponent, args.eta, args.ratio, args.timelike)
+        elif args.command == "converge":
+            result = convergence_condition(args.powers, args.eta, args.region)
+        elif args.command == "holomorphy":
+            result = exact_expansion_at_minus_one(args.anc)
         elif args.command == "cd":
             result = solve_cd(args.z)
         else:

@@ -1464,16 +1464,20 @@ timelike diagonal (Lemma Q). Still open:
   uses. A bound close to $`2\pi`$ is now proved in
   [GATE_6_PHASE.md](GATE_6_PHASE.md), zone by zone: exactly $`2\pi`$
   for $`r\ge2R`$; $`2\pi+0.05`$ to $`2\pi+0.1`$ for $`r\le R`$; and
-  $`2\pi+0.36`$ (default constants) to $`2\pi+0.57`$ in the blend zone,
+  $`2\pi+0.12`$ (default constants) to $`2\pi+0.19`$ in the blend zone,
   which sets the overall bound. It holds under further explicit
   inequalities between the constants, which are verified in interval
   arithmetic on the same cover as the certificate, with the bound at
-  most $`2\pi+0.5701`$ throughout (`geocusp.phase_bound`,
-  `geocusp.phase_bound_iv`). The exact value $`2\pi`$ for $`r<2R`$
-  remains unproved: a frame that does not control an invariant moves it
-  by an amount of indefinite sign, so the method gives
-  $`2\pi+O(\iota/\delta_0)`$ there at best, and the blend-zone constant
-  comes from a crude case. The observed phase never exceeds $`2\pi`$.
+  most $`2\pi+0.1908`$ throughout (`geocusp.phase_bound`,
+  `geocusp.phase_bound_iv`), and it holds for the contour in $`D`$
+  dimensions. The exact value $`2\pi`$ for $`r<2R`$ remains unproved.
+  It appears to be true with a margin: where the phase is close to
+  $`2\pi`$ the largest value found is $`2\pi-2\nu`$. But it is not true
+  field by field (the frame at a cusp with a timelike diagonal pushes
+  the wrong way at about one point in a hundred, and is outweighed by
+  another frame), so the argument used here, which is linear in the
+  field, cannot give it, and the proved constants are limited by the
+  crude bound $`|V_j|\le\lambda_0|n_j|`$.
   Two things learned there correct
   earlier statements here. The route proposed before Lemma Q, a bound
   $`|\operatorname{Im}x_{0c}^2|\le c\,|\operatorname{Re}x_{0c}^2|`$

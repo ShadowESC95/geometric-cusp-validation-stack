@@ -455,12 +455,14 @@ class SolverApp:
         buttons.grid(row=6, column=0, columnspan=3, sticky="w", pady=(10, 0))
         for column, (text, command) in enumerate((("Certificate", self.contour_certificate),
                                                   ("Survey (slow)", self.contour_survey),
-                                                  ("Convergence", self.contour_threshold))):
+                                                  ("Convergence", self.contour_threshold),
+                                                  ("Phase bound", self.contour_phase))):
             ttk.Button(buttons, text=text, command=command).grid(row=0, column=column, padx=(0, 6))
         ttk.Label(left, text="Certificate: the inequalities the proof needs, evaluated in floating "
                              "point. Survey: the same properties measured on stress samples, with "
                              "the range of arg z. Convergence: the integral of |z^p| near the edges "
-                             "is finite only for |Re p| < η.",
+                             "is finite only for |Re p| < η. Phase bound: the proved bound on |arg z| "
+                             "with a timelike diagonal, zone by zone, and its conditions.",
                   style="Cap.TLabel", wraplength=380, justify="left").grid(
             row=7, column=0, columnspan=3, sticky="w", pady=(10, 0))
         self.k_table = Table(right, ("Quantity", "Meaning", "Value"), (230, 400, 170), 18)
@@ -495,6 +497,25 @@ class SolverApp:
                   "The arithmetic is floating point, not interval arithmetic."
                   if r["all"] else "Conditions fail: " + ", ".join(r["failed"])),
             foreground=GOOD if r["all"] else BAD)
+
+    def contour_phase(self):
+        r = self.contour_run("Evaluating the phase bound ...", lambda: solver.phase_bound_report(
+            self.k_region.get(), self.k["angle"].get()))
+        if r is None:
+            return
+        self.results["phase"] = r
+        rows = [(key, "proved bound on |arg z| minus 2π", f"{value:.4f}", "")
+                for key, value in r["by_zone"].items()]
+        rows += [(key, "condition", "holds" if value else "FAILS", "ok" if value else "bad")
+                 for key, value in r["conditions"].items()]
+        rows += [(key, "constant", f"{value:.6g}", "") for key, value in r["constants"].items()]
+        self.k_table.fill(rows)
+        self.k_verdict.configure(
+            text=(f"|arg z| ≤ 2π + {r['bound_minus_2pi']:.3f} on the contour for s = {r['s']:.3f}, "
+                  f"t = {r['t']:.3f}; all conditions hold. Floating point; the interval version is "
+                  "the phase command with --low and --high."
+                  if r["all_conditions"] else "Conditions fail: " + ", ".join(r["failed"])),
+            foreground=GOOD if r["all_conditions"] else BAD)
 
     def contour_survey(self):
         r = self.contour_run("Sampling the contour ...", lambda: solver.contour_survey(

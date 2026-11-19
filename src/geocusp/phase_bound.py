@@ -4,7 +4,7 @@ See docs/GATE_6_PHASE.md.  With one diagonal timelike, on the contour of
 docs/GATE_6_CONTOUR.md,
 
     |arg z| <= 2 pi + b_in         for r <= R        (Proposition R8),
-    |arg z| <= 2 pi + e + K_bl     for R < r < 2R    (Proposition R6),
+    |arg z| <= 2 pi + b_bl         for R < r < 2R    (Proposition R6)        ,
     |arg z| <= 2 pi                for r >= 2R       (Proposition R7),
 
 provided the conditions of GATE_6_CONTOUR section 9 and the conditions (R4), (R7), (G1),
@@ -22,7 +22,10 @@ import numpy as np
 
 from . import feynman_contour as fc
 
-__all__ = ["phase_bound", "k_values", "timelike_cusps"]
+__all__ = ["phase_bound", "k_values", "timelike_cusps", "PAIRING"]
+
+# chi(t) <= PAIRING * (1 + t) for the cubic smoothstep chi: (F5) of GATE_6_PHASE section 5
+PAIRING = 0.52
 
 
 def timelike_cusps(contour: fc.Contour) -> list[int]:
@@ -121,30 +124,54 @@ def phase_bound(contour: fc.Contour) -> dict:
     out["B2"] = bool(kap <= nu)
     out["B3"] = bool(b0 <= 0.5 and Lam_c >= 2 and Lam_n >= 2 and 4 * d0 <= Dmin)
     out["B4"] = bool(d1 > v2)
-    ok = out["B3"] and out["B4"] and dv > 0 and a_min > 0
-    if ok:
-        vs = (2 * nu + kap * b0**2 / (a_min * (1 + a_min))) + (2 * nu + kap * b0**2) / a_min
-        F = 2 * K * P * mu_m / dv
-        s0 = 8 * iota2 / dv + 2 * K * P * omega0 / dv**2
-        s1 = max((iota2 + 2 * mu_p * pi0) / dv + F,
-                 (1 + mu_p) * d0 / dv * vs + 2 * mu_m * pi0 / dv + iota2 * (1 / dv + 1 / (d1 - v2)) + F)
-        s2 = (iota2 + 2 * mu_p * pi0) / dv + F
-        s3 = mu_m + (1 + mu_p) ** 2 * vs
-    else:
-        vs = F = s0 = s1 = s2 = s3 = np.inf
-    s = max(s0, s1, s2, s3)
     gap = (tau0 - 2 * Delta) ** 2
     out["R6_trivial"] = bool(v2 < d0 / 2 and v2 < gap)
+    # (B6): where n_i.w_i < 0 in the blend zone the invariants are far on the spacelike side
+    tau1 = 2 * Delta * tau0 / (tau0 - 2 * Delta) if tau0 > 2 * Delta else np.inf
+    W1 = Delta * (tau0 + Delta) + Delta * (tau1 + tau0 + Delta)
+    root = sqrt(R * R - tau1 * tau1) - Delta if tau1 < R else -np.inf
+    rho1 = root * root - (tau1 + Delta) ** 2 if root > tau1 + Delta else -np.inf
+    out["B6"] = bool(rho1 > 0)
+    ok = out["B3"] and out["B4"] and out["B6"] and out["R6_trivial"] and dv > 0 and a_min > 0
+    if ok:
+        unit = iota2 / dv                              # |J_i^(j)| / |Re X_i| for an invariant beyond delta_0
+        half = PAIRING * unit                          # the same for the frame i+2 ((F5) of GATE_6_PHASE section 5)
+        a_c = 2 * P * reach / D                        # coordinates in the frame of c, r < 2R
+        a_n = 2 * P * reach / abs(Dp)                  # coordinates in the frames of its neighbours
+        vs_c = 2 * nu + 2 * D / d0 * (kap * a_c**2 + nu * a_c**2 + kap * a_c * max(a_c + 1, 2.0))
+        vs_n = 2 * abs(Dp) / d0 * (kap * a_n**2 + nu * (a_n**2 + a_n) + kap * a_n * (a_n + 1))
+        far0 = 2 * K * P * omega0 / dv**2
+        vterm = 2 * v2 * pi0 / dv**2
+        s0_pp = 3 * half + vterm + far0
+        s0_mix = 2 * half + far0
+        s0_nn = unit + 2 * half + (vs_c + vs_n) * (d0 / dv) ** 2 + vterm + far0
+        s0 = max(s0_pp, s0_mix, s0_nn)
+        vs = (2 * nu + kap * b0**2 / (a_min * (1 + a_min))) + (2 * nu + kap * b0**2) / a_min
+        F = 2 * K * P * mu_m / dv
+        chi_eps = eps * eps * (3 - 2 * eps)            # weight of the frame c+1 in case N1c
+        s1 = max(half + 2 * mu_p * pi0 / dv + F,
+                 (1 + mu_p) * d0 / dv * vs + 2 * mu_m * pi0 / dv + chi_eps * iota2 * (1 / dv + 1 / (d1 - v2)) + F)
+        s2 = half + 2 * mu_p * pi0 / dv + F
+        s3 = mu_m + (1 + mu_p) ** 2 * vs
+        e_bl_hi = atan(half)                                                  # u_i <= pi + e_bl_hi
+        e_bl_lo = atan(half + 2 * kf * (1 + W1 / rho1) / (1 - v2 / d0))       # u_i >= -e_bl_lo
+    else:
+        unit = half = a_c = a_n = vs_c = vs_n = s0_pp = s0_mix = s0_nn = np.inf
+        vs = F = s0 = s1 = s2 = s3 = e_bl_hi = e_bl_lo = np.inf
+    s = max(s0, s1, s2, s3)
     e_sp2 = (atan((4 * iota2 / gap + 2 * kf * (1 + sqrt(2) * q)) / (1 - v2 / gap)) if v2 < gap else np.inf)
-    out["B5"] = bool(s < 1 and e + asin(s) + atan(mu_m) < np.pi / 2)
-    K_bl = max(e + asin(s), 3 * e_sp2) if s < 1 else np.inf
-    out.update(varsigma=vs, F=F, s0=s0, s1=s1, s2=s2, s3=s3, s=s, e_sp_blend=e_sp2, K_bl=K_bl)
+    out["B5"] = bool(s < 1 and e + asin(s) + atan(mu_m) < np.pi / 2 and 4 * e_sp2 < np.pi)
+    K_bl = max(e_bl_lo + asin(s), 3 * e_sp2) if s < 1 else np.inf
+    b_bl = e_bl_hi + e_bl_lo + asin(s) if s < 1 else np.inf
+    out.update(varsigma=vs, F=F, s0=s0, s0_pp=s0_pp, s0_mix=s0_mix, s0_nn=s0_nn, s1=s1, s2=s2, s3=s3, s=s,
+               unit=unit, a_c=a_c, a_n=a_n, varsigma_c=vs_c, varsigma_n=vs_n, tau1=tau1, W1=W1, rho1=rho1,
+               e_bl_hi=e_bl_hi, e_bl_lo=e_bl_lo, e_sp_blend=e_sp2, K_bl=K_bl, b_bl=b_bl)
 
     conditions = ["certificate", "R4_centres", "R4_trivial", "G1", "G2", "R5_trivial",
-                  "B1", "B2", "B3", "B4", "B5", "R6_trivial"]
+                  "B1", "B2", "B3", "B4", "B5", "B6", "R6_trivial"]
     out["all_conditions"] = all(out[k] for k in conditions)
     out["bound_inner"] = float(min(e, e_fr) + min(K_in, out["K_in_sharp"]))
-    out["bound_blend"] = float(e + K_bl)
+    out["bound_blend"] = float(b_bl)
     out["bound_outer"] = 0.0 if out["R7_outer_exact"] else float(e + out["K_out"])
     out["bound"] = max(out["bound_inner"], out["bound_blend"], out["bound_outer"])
     return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in out.items()}

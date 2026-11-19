@@ -702,8 +702,8 @@ $`m_0=S^{-1-p}B(1+p,1-p-\eta)`$. Relative difference from
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Spacelike, before | $`2\times10^{-10}`$ | $`10^{-8}`$ | $`2\times10^{-7}`$ | $`8\times10^{-7}`$ | 0.96 | 0.99 | 1.00 ($`10^{-4}`$) |
 | Timelike, before | $`7\times10^{-10}`$ | $`2\times10^{-5}`$ | 0.60 | 0.90 | 0.99 | 1.00 | 1.00 ($`10^{-4}`$) |
-| Spacelike, now | $`6\times10^{-14}`$ | $`4\times10^{-12}`$ | | $`9\times10^{-15}`$ | | $`3\times10^{-15}`$ | $`10^{-15}`$ |
-| Timelike, now | $`10^{-10}`$ | $`10^{-11}`$ | | $`2\times10^{-14}`$ | | $`2\times10^{-15}`$ | $`10^{-15}`$ |
+| Spacelike, now | $`2\times10^{-12}`$ | $`4\times10^{-12}`$ | $`2\times10^{-13}`$ | $`8\times10^{-15}`$ | | $`3\times10^{-15}`$ | $`10^{-15}`$ |
+| Timelike, now | $`10^{-10}`$ | $`10^{-11}`$ | $`4\times10^{-13}`$ | $`2\times10^{-14}`$ | | $`2\times10^{-15}`$ | $`10^{-15}`$ |
 
 The agreement at small $`\eta`$ is that good because the leading terms
 are then the closed-form tails; the numerical part enters at relative
@@ -712,6 +712,40 @@ the continued form now agree down to $`\eta\to0`$, where all tend to
 $`4\sin\pi p/(\pi p)`$. None of the earlier results near $`\eta=0`$
 depended on the two quadratures; the tests that used them ran at
 $`\eta\ge0.25`$.
+
+An independent review checked the reduction, the window, the asymptotic
+forms, $`m_0`$, $`m_1`$ and the normalisation by hand, and compared with
+its own Mellin–Barnes evaluation and with a brute-force nested
+quadrature that uses none of the closed forms ($`7\times10^{-12}`$ between
+those two). It reproduced the table, and found that the first rewrite
+still failed at the ends of the range of $`p`$: for $`p`$ within 0.02 of
+$`-1`$ it returned a wrong value (relative error up to $`4\times10^{-3}`$)
+with only a library warning, for $`1-p-\eta\le0.1`$ it did not finish,
+and a rotation in the wrong direction gave a wrong value silently. The
+cause was the same as before, ranges of length $`1/(1+p)`$ and
+$`1/(1-p-\eta)`$. These are now closed forms too (below
+$`|Sw|=e^{-80}`$, and above $`|Sw|=e^{40}`$ in the two regimes of $`h`$),
+the integrand is evaluated in logarithmic form, and the function checks
+its arguments and its own error estimates, raising an error instead of
+returning a doubtful number. Against the Mellin–Barnes form:
+
+| $`(p,\eta)`$, spacelike unless noted | Relative difference |
+| --- | --- |
+| $`(-0.99,0.05)`$, $`(-0.98,0.1)`$ | $`5\times10^{-15}`$, $`8\times10^{-14}`$ |
+| $`(-0.995,0.3)`$ timelike, $`\vert s/t\vert=0.4`$ | $`10^{-13}`$ |
+| $`(0.9,0.05)`$, and timelike | $`2\times10^{-13}`$, $`4\times10^{-13}`$ |
+| $`(0.99,0.005)`$ | $`10^{-15}`$ |
+| $`(0.5,0.49)`$, $`(0,0.9)`$, $`(0,0.99)`$ | $`2\times10^{-10}`$, $`8\times10^{-10}`$, $`2\times10^{-10}`$ |
+| $`(0.6,10^{-8})`$; $`(0.2,10^{-10})`$ timelike | $`7\times10^{-16}`$; $`7\times10^{-11}`$ |
+| $`(0.95,0.04)`$ timelike, $`\vert s/t\vert=10^3`$, rotation 1.2 | $`2\times10^{-14}`$ |
+
+Refused: $`\eta<10^{-12}`$; a rotation that is negative or brings the
+ray within 0.1 of the zero of $`1+Sw`$ (in particular no rotation at all
+with a timelike diagonal). The error is absolute at about $`10^{-10}`$ of
+the modulus, so a component much smaller than the modulus has fewer
+correct digits. The rewrite after the review has not itself been
+reviewed again; it is checked by the comparisons in this table and by
+the tests.
 
 A consequence is that the coefficient of the single pole is also a linear
 functional of the weight, obtained from
@@ -778,7 +812,7 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.5701`$ over the certified range of squares, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.1908`$ over the certified range of squares, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |

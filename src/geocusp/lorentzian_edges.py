@@ -535,33 +535,68 @@ def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
         h(q) = 2 int_0^oo dy (1 + 2 sqrt(q) cosh y)^(-2 eta),
 
     with w on the ray arg w = -gamma. This is the Feynman-parameter integral
-    of `parametric_double_pole` after q = X w. It is arranged so that it is
-    accurate for every eta > 0, including eta -> 0, where the double pole
-    comes from tails of length 1/eta in the logarithmic variables:
+    of `parametric_double_pole` after q = X w. Every range that would grow
+    like 1/eta, 1/(1 + Re p) or 1/(1 - Re p - eta) is done in closed form, so
+    the numerical ranges have fixed length:
 
     * h: the integrand is 1 for y below log(1/sqrt q) - 40 and a pure
       exponential beyond log(1/sqrt q) + 45, so only a window of fixed width
       is integrated numerically; outside |log q| <= window the asymptotic
       forms h = -log q - 2 psi(2 eta) - 2 gamma_E and
       h = Gamma(eta)^2/(2 Gamma(2 eta)) q^(-eta) are exact to rounding;
+    * w: below |S w| = e^-window the factor (1 + S w)^(eta-2) is 1 and h has
+      its small-q form; above |S w| = e^40 that factor is a pure power, and h
+      has its small-q form up to X w = e^-window and its large-q form beyond
+      X w = e^window. These three pieces are exponentials times a linear
+      function of log w;
     * x: with x = exp(-a), beyond a = A0 the inner integral is a m0 + m1 with
       m0 = S^(-1-p) B(1+p, 1-p-eta) and
       m1 = m0 (log S - psi(1+p) + psi(1-p-eta) - 2 psi(2 eta) - 2 gamma_E),
       and int_A0^oo e^(-eta a)(a m0 + m1) da is done in closed form.
+
+    Requirements, checked: 1e-12 <= eta, |Re p| < 1, Re p + eta < 1,
+    0 <= arg S <= pi, and a rotation 0 <= gamma < pi that keeps the ray at
+    least 0.1 rad from the zero of 1 + S w (gamma >= arg S - pi + 0.1). A
+    quadrature whose own error estimate is too large raises ArithmeticError
+    rather than returning a number. The error is absolute at about 1e-10 of the modulus
+    or better, so a component much smaller than the modulus (the imaginary
+    part at tiny eta with a timelike diagonal) has fewer correct digits.
     """
-    from scipy.integrate import quad
+    import warnings
+
+    from scipy.integrate import IntegrationWarning, quad
     from scipy.interpolate import CubicSpline
     from scipy.special import digamma, gamma as gamma_fn
 
     p, S = complex(p), complex(S)
     sigma = p.real
-    if not (eta > 0 and abs(sigma) < 1 and sigma + eta < 1):
-        raise ValueError("need eta > 0, |Re p| < 1 and Re p + eta < 1")
+    theta = float(np.angle(S))
+    if not (eta >= 1e-12 and abs(sigma) < 1 and sigma + eta < 1):
+        raise ValueError("need eta >= 1e-12, |Re p| < 1 and Re p + eta < 1")
+    if abs(S) == 0 or theta < 0:
+        raise ValueError("need S nonzero with 0 <= arg S <= pi")
+    if not (0 <= gamma < np.pi and gamma >= theta - np.pi + 0.1):
+        raise ValueError("need 0 <= gamma < pi, and gamma >= arg S - pi + 0.1 so that the ray "
+                         "stays away from the zero of 1 + S w")
+    if abs(S.imag) == 0 and S.real > 0:
+        gamma = 0.0                                          # real integrand: no rotation needed
 
-    def cquad(f, lo, hi, epsrel=1e-11, points=None):
-        kw = dict(epsabs=0, epsrel=epsrel, limit=400, points=points)
-        return (quad(lambda t: complex(f(t)).real, lo, hi, **kw)[0]
-                + 1j * quad(lambda t: complex(f(t)).imag, lo, hi, **kw)[0])
+    def cquad(f, lo, hi, epsrel=1e-11, points=None, floor=0.0):
+        # floor: an absolute tolerance from the size of the whole quantity this piece belongs to.
+        # The estimated error is judged here; a piece that misses 1e-8 of its own size and
+        # 1e4 times the floor is reported, not returned.
+        if not hi > lo:
+            return 0.0
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", IntegrationWarning)
+            scale = quad(lambda t: abs(f(t)), lo, hi, epsabs=0, epsrel=1e-2, limit=200, points=points)[0]
+            kw = dict(epsabs=max(1e-13 * scale, floor), epsrel=epsrel, limit=400, points=points)
+            re, re_err = quad(lambda t: complex(f(t)).real, lo, hi, **kw)[:2]
+            im, im_err = quad(lambda t: complex(f(t)).imag, lo, hi, **kw)[:2]
+        if not np.isfinite(re + im) or re_err + im_err > max(1e-8 * scale, 1e4 * floor):
+            raise ArithmeticError("the parameter quadrature did not converge "
+                                  f"(estimated error {re_err + im_err:.1e} on a piece of size {scale:.1e})")
+        return re + 1j * im
 
     rot, half = np.exp(-1j * gamma), np.exp(-0.5j * gamma)
     c0 = -2 * digamma(2 * eta) - 2 * np.euler_gamma
@@ -577,6 +612,23 @@ def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
         tail = (c / 2) ** (-2 * eta) * np.exp(-2 * eta * y2) / (2 * eta)
         return 2 * (y1 + middle + tail)
 
+    k_low, k_mid, k_high = 1 + p, 1 - p - eta, 1 - p         # decay rates of the three closed pieces
+    log_s = np.log(abs(S))
+    a0 = window + 45.0 + 40.0 / (1 - sigma - eta) + max(-log_s, 0.0)
+    m0 = S ** (-1 - p) * gamma_fn(1 + p) * gamma_fn(1 - p - eta) / gamma_fn(2 - eta)
+    m1 = m0 * (np.log(S) - digamma(1 + p) + digamma(1 - p - eta) + c0)
+    tail = np.exp(-eta * a0) * ((a0 / eta + 1 / eta**2) * m0 + m1 / eta)
+    v_low = -window - max(log_s, 0.0)                        # below: |S w| <= e^-window and X w <= e^-window
+    v_power = 40.0 - min(log_s, 0.0)                         # above: |S w| >= e^40
+    power = S ** (eta - 2) * rot ** (p + eta - 1)
+
+    def linear_exp(rate, const, lo, hi):
+        """int_lo^hi e^(rate v) (const - v) dv, rate != 0; lo = -inf or hi = +inf allowed."""
+        prim = lambda v: np.exp(rate * v) * ((const - v) / rate + 1 / rate**2)
+        upper = prim(hi) if np.isfinite(hi) else 0.0
+        lower = prim(lo) if np.isfinite(lo) else 0.0
+        return upper - lower
+
     grid = np.linspace(-window, window, int(20 * window) + 1)
     values = np.array([h_window(g) for g in grid])
     spline_re, spline_im = CubicSpline(grid, values.real), CubicSpline(grid, values.imag)
@@ -588,28 +640,42 @@ def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
             return large * np.exp(-eta * log_r) * rot ** (-eta)
         return spline_re(log_r) + 1j * spline_im(log_r)
 
-    log_s = np.log(abs(S))
-    lo, hi = -40.0 / (1 + sigma) - max(log_s, 0.0), 40.0 / (1 - sigma - eta) + max(-log_s, 0.0)
-
     def inner(log_x):
-        def integrand(v):
-            w = np.exp(v) * rot
-            return w ** (1 + p) * (1 + S * w) ** (eta - 2) * h(v + log_x)
-        marks = sorted(m for m in {-log_s, -log_x, -log_x - window, -log_x + window} if lo < m < hi)
-        edges = [lo] + marks + [hi]
-        return sum(cquad(integrand, u, v) for u, v in zip(edges[:-1], edges[1:]))
+        small = -log_x + c0 + 1j * gamma            # h = small - v for X w <= e^-window
+        floor = 1e-13 * (abs(log_x) * abs(m0) + abs(m1))
 
-    a0 = window + 40.0 / (1 - sigma - eta) + 5
+        def integrand(v):
+            log_w = v - 1j * gamma
+            if v + log_s > 30.0:                     # 1 + S w = S w (1 + 1/(S w)), no overflow
+                log_factor = np.log(S) + log_w + np.log1p(np.exp(-log_w) / S)
+            else:
+                log_factor = np.log1p(S * np.exp(log_w))
+            return np.exp((1 + p) * log_w + (eta - 2) * log_factor) * h(v + log_x)
+
+        total = rot ** (1 + p) * linear_exp(k_low, small, -np.inf, v_low)
+        v_small, v_large = -log_x - window, -log_x + window   # ends of the spline in v
+        stop = max(v_power, v_large)
+        marks = sorted(m for m in {-log_s, v_small, v_large, v_power} if v_low < m < stop)
+        edges = [v_low] + marks + [stop]
+        for lo, hi in zip(edges[:-1], edges[1:]):
+            if lo >= v_power and hi <= v_small:      # pure power times the small-q form
+                total += power * linear_exp(-k_mid, small, lo, hi)
+            else:
+                total += cquad(integrand, lo, hi, floor=floor)
+        # beyond: pure power times the large-q form, h = large (X w)^(-eta)
+        total += power * large * rot ** (-eta) * np.exp(-eta * log_x - k_high * stop) / k_high
+        return total
 
     def outer(a):
-        x = np.exp(-a)
-        return (1 - x) ** (eta - 1) * x ** eta * inner(np.log(x * (1 - x)))
+        log_one_minus_x = np.log1p(-np.exp(-a))              # x = e^-a may underflow; its logarithm does not
+        return np.exp((eta - 1) * log_one_minus_x - eta * a) * inner(-a + log_one_minus_x)
 
-    edges = [np.log(2.0)] + [m for m in (5.0, 40.0, window) if m < a0] + [a0]
-    direct = sum(cquad(outer, u, v, epsrel=1e-9) for u, v in zip(edges[:-1], edges[1:]))
-    m0 = S ** (-1 - p) * gamma_fn(1 + p) * gamma_fn(1 - p - eta) / gamma_fn(2 - eta)
-    m1 = m0 * (np.log(S) - digamma(1 + p) + digamma(1 - p - eta) + c0)
-    tail = np.exp(-eta * a0) * ((a0 / eta + 1 / eta**2) * m0 + m1 / eta)
+    edges = [np.log(2.0), 5.0, 40.0, window, window + 45.0]
+    while edges[-1] * 2 < a0:
+        edges.append(edges[-1] * 2)
+    edges = [e for e in edges if e < a0] + [a0]
+    direct = sum(cquad(outer, u, v, epsrel=1e-9, floor=1e-12 * abs(tail))
+                 for u, v in zip(edges[:-1], edges[1:]))
     return (eta**2 * S ** (1 + p) * gamma_fn(2 - eta)
             / (gamma_fn(1 + p) ** 2 * gamma_fn(1 - p) ** 2) * 2 * (direct + tail))
 
@@ -632,8 +698,8 @@ def parametric_double_pole(p, eta, ratio=1):
     one-dimensional integrals. Agrees with `regulated_double_pole`, which is
     the Mellin-Barnes form of the same quantity, and with `box_continued`.
 
-    Valid for every eta > 0 with eta < 1 - p, small eta included: see
-    `_parametric_box`. An earlier version used fixed ranges in the
+    Valid for 1e-12 <= eta < 1 - p and |p| < 1, small eta included: see
+    `_parametric_box` for the method and the accuracy. An earlier version used fixed ranges in the
     logarithmic variables and returned a wrong number, without warning, for
     eta below about 0.01 (0.165 for 3.754 at eta = 0.003, p = 0.2).
     """
@@ -676,8 +742,9 @@ def parametric_double_pole_rotated(p, eta, modulus=1, theta=np.pi, gamma=0.5):
     converges absolutely; by Cauchy's theorem it equals the boundary value
     from theta < pi. The y integral defines h(q) for complex q.
 
-    Valid for every eta > 0 with eta < 1 - p, small eta included: see
-    `_parametric_box`. An earlier version cut the y integral at 60 and
+    Valid for 1e-12 <= eta < 1 - p and |p| < 1, small eta included, with
+    0 <= gamma < pi and gamma >= theta - pi + 0.1: see `_parametric_box`.
+    An earlier version cut the y integral at 60 and
     returned a wrong number, without warning, for eta below about 0.1.
     """
     return complex(_parametric_box(float(p), float(eta), modulus * np.exp(1j * theta), gamma))

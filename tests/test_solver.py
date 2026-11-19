@@ -193,6 +193,13 @@ def test_desktop_window_computes_and_redraws():
         app.update_rim()
         assert app.results["rim"]["regime"] == "outside"
         root.update()
+        app.k_region.set("+-")
+        app.contour_phase()
+        assert app.results["phase"]["all_conditions"] and app.results["phase"]["bound_minus_2pi"] < 0.6
+        app.k_region.set("--")
+        app.contour_phase()                            # refused: reported, not raised
+        assert "Solver error" in app.k_verdict.cget("text")
+        root.update()
     finally:
         root.destroy()
 
@@ -294,3 +301,46 @@ def test_cusp_term_keeps_its_accuracy_near_the_convergence_boundary(p):
 def test_cusp_term_refuses_a_divergent_or_marginal_power(p):
     with pytest.raises(ValueError):
         solver.cusp_term(solver.Weight((0.,), 1., p), .1)
+
+
+def test_phase_bound_command():
+    out = solver.phase_bound_report("+-", 1.1)
+    assert out["all_conditions"] and not out["failed"]
+    assert 0 < out["bound_minus_2pi"] < np.pi - 0.3
+    assert out["bound_minus_2pi"] == max(out["by_zone"].values())
+    cover = solver.phase_bound_report("-+", 1.1, 2.2, 2.2025, 10)
+    assert cover["all"] and cover["failed_count"] == 0 and 0 < cover["bound_upper"] < 0.6
+    for bad in (dict(region="--"), dict(region="+-", low=1.0), dict(region="+-", low=2.0, high=1.0)):
+        with pytest.raises(ValueError):
+            solver.phase_bound_report(**bad)
+
+
+def test_box_three_ways_command_at_small_eta():
+    for timelike in (False, True):
+        out = solver.box_three_ways(0.2, 1e-3, 2.5, timelike)
+        assert out["largest_difference"] < 1e-9
+        assert abs(out["feynman_parameters"][0] - out["limit_eta_to_0"]) < 0.01
+    for bad in (dict(eta=0.0), dict(p=0.4, eta=0.2), dict(ratio=-1.0)):
+        with pytest.raises(ValueError):
+            solver.box_three_ways(**bad)
+
+
+def test_convergence_condition_command():
+    # powers z^p: exponents 1 + sigma on cusps 1, 3 and 1 - sigma on 2, 4; eta = 0.1
+    spacelike = lambda sigma, region="--": solver.convergence_condition(
+        (1 + sigma, 1 - sigma, 1 + sigma, 1 - sigma), 0.1, region)["converges"]
+    assert spacelike(0.39) and not spacelike(0.41) and spacelike(-0.39) and not spacelike(-0.41)
+    # t timelike: the pair (2, 4) with 1 + |sigma| does not meet at infinity, range up to 1 - 2 eta
+    assert spacelike(-0.79, "-+") and not spacelike(-0.81, "-+") and not spacelike(0.41, "-+")
+    assert spacelike(0.79, "+-") and not spacelike(0.81, "+-") and not spacelike(-0.41, "+-")
+    with pytest.raises(ValueError):
+        solver.convergence_condition((1, 1, 1, 2.5), 0.1)
+
+
+def test_holomorphy_command_on_the_two_loop_weight():
+    out = solver.exact_expansion_at_minus_one()
+    for lip in ("upper", "lower"):
+        assert out["F2"][lip]["holomorphic"] and out["F2"][lip]["conditions"] == 3
+        assert out["F2"][lip]["value_numeric"] == pytest.approx(11 * np.pi**4 / 2880)
+    with pytest.raises(ValueError):
+        solver.exact_expansion_at_minus_one("/nonexistent-directory")

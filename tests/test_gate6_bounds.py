@@ -321,29 +321,64 @@ def test_continued_box_grows_no_faster_than_the_bound():
         assert max(scaled) < 5 and min(scaled) > 0.1
 
 
-@pytest.mark.parametrize("eta", [0.25, 0.03, 1e-3, 1e-6])
-def test_parameter_quadratures_are_valid_down_to_eta_zero(eta):
+@pytest.mark.parametrize("p,eta,timelike", [
+    (0.2, 0.25, False), (0.2, 0.25, True), (0.2, 0.03, False), (-0.3, 1e-3, False),
+    (-0.3, 1e-3, True), (0.2, 1e-6, False), (0.2, 1e-6, True)])
+def test_parameter_quadratures_are_valid_down_to_eta_zero(p, eta, timelike):
     """The two direct parameter quadratures against the continued form, which is
     analytic through eta = 0. With fixed ranges they used to fail silently
     below eta ~ 0.01 (spacelike) and ~ 0.1 (timelike): the double pole comes
     from tails of length 1/eta, now integrated in closed form."""
-    for p in (0.2, -0.3):
-        if eta >= 0.5 - abs(p):
-            continue
-        direct = le.parametric_double_pole(p, eta, 2.5)
-        assert direct == pytest.approx(complex(le.box_continued(p, eta, 2.5, 0)).real, rel=1e-8)
-        rotated = le.parametric_double_pole_rotated(p, eta, 2.5, np.pi, 0.5)
-        assert abs(rotated - complex(le.box_continued(p, eta, 2.5, np.pi))) < 1e-8 * abs(rotated)
-        if eta <= 1e-6:
-            limit = 4 * np.sin(p * np.pi) / (p * np.pi)
-            assert abs(direct - limit) < 1e-4 and abs(rotated - limit) < 1e-4
+    if timelike:
+        value = le.parametric_double_pole_rotated(p, eta, 2.5, np.pi, 0.5)
+        continued = complex(le.box_continued(p, eta, 2.5, np.pi))
+    else:
+        value = le.parametric_double_pole(p, eta, 2.5)
+        continued = complex(le.box_continued(p, eta, 2.5, 0))
+    assert abs(value - continued) < 1e-8 * abs(continued)
+    if eta <= 1e-6:
+        assert abs(value - 4 * np.sin(p * np.pi) / (p * np.pi)) < 1e-4
+
+
+@pytest.mark.parametrize("p,eta,modulus,timelike", [
+    (-0.96, 0.05, 2.5, False),      # 1 + p small: a range of length 1/(1+p), closed form
+    (0.9, 0.05, 2.5, False),        # 1 - p - eta small: a range of length 1/(1-p-eta)
+    (0.9, 0.05, 2.5, True),
+    (0.0, 0.9, 1.0, False),         # eta outside the range of the continued form
+])
+def test_parameter_quadratures_at_the_ends_of_their_range(p, eta, modulus, timelike):
+    """Against the Mellin-Barnes form (valid here: 1 + p > eta/2). A first rewrite
+    returned a wrong value near p = -1 and did not finish near p + eta = 1."""
+    theta = np.pi if timelike else 0.0
+    barnes = complex(le.regulated_double_pole_complex(p, eta, modulus, theta))
+    if timelike:
+        value = le.parametric_double_pole_rotated(p, eta, modulus, np.pi, 0.5)
+    else:
+        value = le.parametric_double_pole(p, eta, modulus)
+    assert abs(value - barnes) < 5e-9 * abs(barnes)
+
+
+def test_parameter_quadratures_refuse_what_they_cannot_do():
+    timelike = 2.5 * np.exp(1j * np.pi)
+    for gamma in (-0.5, 0.0, 0.05, 3.2):                 # wrong way, on the zero, too close, too far
+        with pytest.raises(ValueError):
+            le._parametric_box(0.2, 0.1, timelike, gamma)
+    for eta in (1e-160, 1e-13, 0.0, 0.9):                # overflow, below the floor, zero, p + eta >= 1
+        with pytest.raises(ValueError):
+            le._parametric_box(0.2, eta, 2.5)
+    with pytest.raises(ValueError):
+        le._parametric_box(0.2, 0.1, 2.5 * np.exp(-0.3j))  # arg S < 0
+    # a real positive S needs no rotation and ignores one
+    assert abs(le._parametric_box(0.2, 0.1, 2.5, 0.5) - le._parametric_box(0.2, 0.1, 2.5, 0.0)) < 1e-12
 
 
 def test_parameter_quadratures_do_not_depend_on_the_rotation_or_the_window():
     a = le.parametric_double_pole_rotated(0.2, 0.01, 2.5, np.pi, 0.5)
     b = le.parametric_double_pole_rotated(0.2, 0.01, 2.5, np.pi, 0.9)
-    c = le._parametric_box(0.2, 0.01, 2.5 * np.exp(1j * np.pi), 0.5, window=60.0)
-    assert abs(a - b) < 1e-8 and abs(a - c) < 1e-8
+    assert abs(a - b) < 1e-8
+    c = le._parametric_box(0.2, 0.01, 2.5, 0.0)
+    d = le._parametric_box(0.2, 0.01, 2.5, 0.0, window=60.0)
+    assert abs(c - d) < 1e-8
     for eta in (0.0, -0.1):
         with pytest.raises(ValueError):
             le.parametric_double_pole(0.2, eta, 2.5)

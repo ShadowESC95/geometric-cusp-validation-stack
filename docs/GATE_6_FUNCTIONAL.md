@@ -118,7 +118,16 @@ Mellin–Barnes double pole, and the Lorentzian edge chain of
 [GATE_6_CLOSURE.md](GATE_6_CLOSURE.md). It also handles the two-loop weight
 $`\bar F^{(2)}`$, surveys the integration contour of
 [GATE_6_CONTOUR.md](GATE_6_CONTOUR.md), integrates the CD weight at a complex
-$`z`$, and reports the roots and meridian periods on a rim slice. It runs
+$`z`$, and reports the roots and meridian periods on a rim slice. Four
+further commands report results proved elsewhere in these documents:
+`phase`, the bound on $`|\arg z|`$ on the contour with a timelike diagonal
+and its conditions, for one square or in interval arithmetic over a range
+(GATE_6_PHASE); `box`, the regulated integral of $`z^p`$ from Feynman
+parameters, from the Mellin–Barnes form and from the form continued
+through $`\eta=0`$, all valid for small $`\eta`$; `converge`, the
+criterion of CUSP_LOCAL_MODEL Lemma 13.1′ for absolute convergence over
+$`\mathbb R^D`$ at positive displacement; and `holomorphy`, the exact
+expansion of the published weights at $`z=-1`$ (THREE_LOOP_WEIGHT). It runs
 locally in one process with no server and no network access.
 
 ```bash
@@ -134,6 +143,11 @@ PYTHONPATH=src python -m geocusp.solver cusp --logs 9.8696044 0 1 --eta 0.05
 PYTHONPATH=src python -m geocusp.solver edge-piece --exponent 0.3 --eta 0.1 --ratio 2.5
 PYTHONPATH=src python -m geocusp.solver slab --region=-+
 PYTHONPATH=src python -m geocusp.solver interval --region=+- --low 0.02 --high 0.04 --boxes 80
+PYTHONPATH=src python -m geocusp.solver phase --region=+- --angle 1.1
+PYTHONPATH=src python -m geocusp.solver phase --region=-+ --low 2.2 --high 2.21 --boxes 40
+PYTHONPATH=src python -m geocusp.solver box --exponent 0.2 --eta 1e-4 --ratio 2.5 --timelike
+PYTHONPATH=src python -m geocusp.solver converge --powers 1.3 0.7 1.3 0.7 --eta 0.1 --region=-+
+PYTHONPATH=src python -m geocusp.solver holomorphy --anc /path/to/anc
 PYTHONPATH=src python -m geocusp.solver cd 0.35+0.8j
 PYTHONPATH=src python -m geocusp.solver rim --t 1 --lam 470 --s 0.27
 ```

@@ -18,13 +18,16 @@ It has two main results.
   collinear scale and the path between the lips.
 
 Together they explain the known contour rule and give two proofs of it for
-the three benchmark weights. One is in position space, for spacelike
-diagonals, for the Feynman integral defined as the limit of the real
-integral with $`-i\varepsilon`$. The other covers all three kinematic
-regions and is conditional on a computer-verified certificate. The conditions are listed under
+the three benchmark weights. One is in position space, for the Feynman
+integral defined as the limit of the real integral with
+$`-i\varepsilon`$: first for spacelike diagonals, and since extended to
+a timelike diagonal. The other covers all three kinematic regions and is
+conditional on a computer-verified certificate. Both apply as well to
+the published three-loop weight, whose analytic hypotheses are proved
+here by an exact computation. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **464 tests** and **63 worked example groups**, all passing
+- **477 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -75,6 +78,9 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
 | Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction. The hypotheses of the theorem are proved for this weight: holomorphy at $`z=-1`$ is an exact identity in $`\mathbb Q[i\pi,\zeta_3,\zeta_5]`$, computed in rational arithmetic (`geocusp.hpl_exact`), and the growth bound follows |
 | A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no global contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, both signs, in both timelike regions, the integral with the displacement removed last (taken as an iterated integral at positive displacement, where every step converges absolutely) is the sum of the two continued pieces. The iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. By superposition the double pole is $`4M[F]`$ for the three benchmark weights, without the contour. Four independent reviews, no error found in the final form. The iterated integral is the unordered integral over $`\mathbb R^D`$ wherever that converges absolutely, which is proved for $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ in the region $`s<0<t`$ and the mirror interval in the other (CUSP_LOCAL_MODEL Lemma 13.1, a complete estimate that replaces the earlier power counting). A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
+| Phase of the cross-ratio on the contour, timelike diagonal | Proved: $`\vert\arg z\vert\le2\pi+0.1908`$ over the certified range of squares, and exactly $`2\pi`$ outside the ball of radius $`2R`$, under explicit conditions on the constants checked in interval arithmetic (GATE_6_PHASE); also for the contour in $`D`$ dimensions. Four rounds of automated review, the last two covering the sharpened blend zone and the $`D`$-dimensional section; no error in the final form. The value $`2\pi`$ observed everywhere is not proved inside that ball |
+| The box from Feynman parameters, from the Mellin–Barnes form and continued through $`\eta=0`$ | Agree to $`10^{-9}`$ or better for $`\eta`$ from 0.99 down to $`10^{-10}`$, spacelike and timelike, and for $`p`$ up to the ends of its range. The parameter quadratures were wrong below $`\eta\approx0.01`$ until every long range was done in closed form; an independent review then found further failures at the ends of the range of $`p`$, repaired the same way |
+| Absolute convergence over $`\mathbb R^D`$ at positive displacement | Proved, with the exact range of powers: a criterion for arbitrary exponents that is necessary and sufficient (CUSP_LOCAL_MODEL Lemmas 13.1′, 13.1″) |
 | Each edge piece as a single integral of a $`{}_2F_1`$ | Exact: agrees with the cube integral and the box to $`10^{-15}`$ |
 | Review by a specialist | **Not done** |
 
@@ -94,7 +100,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 464 tests, about twenty minutes
+make test        # 477 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -112,6 +118,11 @@ PYTHONPATH=src python -m geocusp.solver cusp                  # the regulated cu
 PYTHONPATH=src python -m geocusp.solver edge-piece --exponent 0.3 --ratio 2.5   # an edge piece against the box
 PYTHONPATH=src python -m geocusp.solver slab --region=-+      # support and keyholes along a null direction
 PYTHONPATH=src python -m geocusp.solver interval --low 1.0 --high 1.2            # certificate in interval arithmetic
+PYTHONPATH=src python -m geocusp.solver phase --region=+-     # proved bound on |arg z|, timelike diagonal
+PYTHONPATH=src python -m geocusp.solver phase --region=-+ --low 2.2 --high 2.21  # the same in interval arithmetic
+PYTHONPATH=src python -m geocusp.solver box --eta 1e-4        # the box three ways, valid for small eta
+PYTHONPATH=src python -m geocusp.solver converge --powers 1.3 0.7 1.3 0.7 --eta 0.1   # convergence over R^D
+PYTHONPATH=src python -m geocusp.solver holomorphy            # exact expansion of the weights at z = -1
 PYTHONPATH=src python -m examples.lorentzian_all_cusps        # one example group
 ```
 
@@ -231,7 +242,7 @@ What it does not do:
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
   contour is measured, not proved. The bound the argument needs, below
   $`3\pi`$, is proved, and so is a closer one
-  ([GATE_6_PHASE](docs/GATE_6_PHASE.md)): at most $`2\pi+0.5701`$ over
+  ([GATE_6_PHASE](docs/GATE_6_PHASE.md)): at most $`2\pi+0.1908`$ over
   the certified range of squares, in interval arithmetic, and exactly
   $`2\pi`$ outside the ball of radius $`2R`$.
 
@@ -349,9 +360,13 @@ src/geocusp/      implementation
   benchmark.py, contours.py             weights and the contour rule
   lorentzian_cusp.py, lorentzian_edges.py   the edge chain, all cusps and regions
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
+  certificate_iv.py                     the certificate in interval arithmetic
+  phase_bound.py, phase_bound_iv.py     the phase of the cross-ratio on the contour, timelike diagonal
+  cusp_local.py                         position space: edge pieces, keyholes, timelike kinematics
+  hpl.py, hpl_exact.py                  harmonic polylogarithms; exact expansion at z = -1
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            464 tests
+tests/            477 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)
