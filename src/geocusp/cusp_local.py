@@ -104,7 +104,7 @@ def smearing_density(x, eta):
     return mp.exp(-(1 - eta) * x) * (-mp.expm1(-x)) ** (eta - 1) / (mp.gamma(eta) * mp.gamma(1 - eta))
 
 
-def regulated_circle_formula(f, eta, nodes: int = 400):
+def regulated_circle_formula(f, eta, nodes: int = 400, lowest_power=None):
     """eta^2 x (cusp-local model) for a general weight F(z) = f(log z):
 
         c_eta / (2 pi) * int_{-pi}^{pi} d phi (1 + e^{-i phi})^(2 eta)
@@ -113,7 +113,11 @@ def regulated_circle_formula(f, eta, nodes: int = 400):
     Only the principal sheet |Im L| <= pi and |z| <= 1 enter. For f = exp(p L)
     this is `triangle_closed_form(p, eta)` exactly. `f` must accept numpy
     arrays of complex numbers. Gauss-Legendre quadrature; x = y^(1/eta) near
-    0 removes the x^(eta-1) endpoint singularity.
+    0 removes the x^(eta-1) endpoint singularity. `lowest_power` is the most
+    negative power p of z in the weight (0 if there is none); the integral
+    converges for 1 - eta + lowest_power > 0 and the tail in x is mapped
+    with that decay rate, so the accuracy holds up to the boundary. Without
+    it the tail is cut at x = 60, which is accurate away from the boundary.
     """
     import numpy as np
     from scipy.special import gamma
@@ -125,8 +129,15 @@ def regulated_circle_formula(f, eta, nodes: int = 400):
     x_near = y ** (1 / eta)
     ratio = np.where(x_near > 1e-12, -np.expm1(-x_near) / np.maximum(x_near, 1e-300), 1.0)
     w_near = wy / eta * np.exp(-(1 - eta) * x_near) * ratio ** (eta - 1)
-    x_far = 1 + 0.5 * (t + 1) * 59                       # x in (1, 60)
-    w_far = 0.5 * 59 * wt * np.exp(-(1 - eta) * x_far) * (-np.expm1(-x_far)) ** (eta - 1)
+    if lowest_power is None:
+        x_far = 1 + 0.5 * (t + 1) * 59                   # x in (1, 60)
+        w_far = 0.5 * 59 * wt * np.exp(-(1 - eta) * x_far) * (-np.expm1(-x_far)) ** (eta - 1)
+    else:
+        rate = 1 - eta + min(float(lowest_power), 0.0)
+        if rate <= 0:
+            raise ValueError("the cusp term converges only for p > eta - 1")
+        x_far = 1 - np.log(y) / rate                     # y = exp(-rate (x - 1)) in (0, 1)
+        w_far = wy / (rate * y) * np.exp(-(1 - eta) * x_far) * (-np.expm1(-x_far)) ** (eta - 1)
     x = np.concatenate([x_near, x_far])
     wx = np.concatenate([w_near, w_far]) / (gamma(eta) * gamma(1 - eta))
     values = f(1j * phi[:, None] - x[None, :])
@@ -203,7 +214,7 @@ def discontinuity_integral(f, beta, rho, reach: float = 300.0):
     return (re + 1j * im) / (1 - beta)
 
 
-def lorentzian_product_formula(f, eta, nodes: int = 160):
+def lorentzian_product_formula(f, eta, nodes: int = 160, lowest_power: float = 0.0, highest_power: float = 0.0):
     """eta^2 x (cusp-local model), normalised as `triangle_closed_form`, from
     the Lorentzian derivation:
 
@@ -212,7 +223,10 @@ def lorentzian_product_formula(f, eta, nodes: int = 160):
           int_{-pi}^{pi} d phi (1 + e^{-i phi})^eta f(i phi - log(1-beta) - log(1+y)).
 
     beta is the position along the edge, y the collinear scale, phi the path
-    between the lips. `f` must accept numpy arrays.
+    between the lips. `f` must accept numpy arrays. `lowest_power` and
+    `highest_power` are the extreme powers p of z in the weight (0 if none):
+    the y integral converges for p > eta - 1 and the beta integral for
+    p < 1 + eta, and the nodes are placed for those end behaviours.
     """
     import numpy as np
     from scipy.special import gamma
@@ -220,13 +234,20 @@ def lorentzian_product_formula(f, eta, nodes: int = 160):
     eta = float(eta)
     t, wt = np.polynomial.legendre.leggauss(nodes)
     u, wu = 0.5 * (t + 1), 0.5 * wt                           # nodes on (0, 1)
-    beta = u ** (1 / eta)                                     # d beta beta^(eta-1) = du/eta
-    w_beta = wu / eta * (1 - beta) ** eta
-    a = -np.log1p(-beta)
+    low, high = min(float(lowest_power), 0.0), max(float(highest_power), 0.0)
+    rate, q = 1 - eta + low, 1 + eta - high
+    if rate <= 0 or q <= 0:
+        raise ValueError("the cusp term converges only for eta - 1 < p < 1 + eta")
+    beta_a = 0.5 * u ** (1 / eta)                             # beta in (0, 1/2)
+    w_a = 0.5 ** eta * wu / eta * (1 - beta_a) ** eta
+    gap = 0.5 * u ** (1 / q)                                  # 1 - beta in (0, 1/2)
+    w_b = wu * 0.5 / q * u ** (1 / q - 1) * (1 - gap) ** (eta - 1) * gap ** eta
+    w_beta = np.concatenate([w_a, w_b])
+    a = np.concatenate([-np.log1p(-beta_a), -np.log(gap)])
     y_small = u ** (1 / eta)                                  # y in (0, 1)
     w_small = wu / eta / (1 + y_small)
-    v = u ** (1 / (1 - eta))                                  # y = 1/v in (1, oo)
-    w_large = wu / (1 - eta) / (1 + v)
+    v = u ** (1 / rate)                                       # y = 1/v in (1, oo)
+    w_large = wu / rate * v ** (1 - rate - eta) / (1 + v)
     b = np.concatenate([np.log1p(y_small), np.log1p(1 / v)])
     w_y = np.concatenate([w_small, w_large])
     phi, w_phi = np.pi * t, np.pi * wt * (1 + np.exp(-1j * np.pi * t)) ** eta

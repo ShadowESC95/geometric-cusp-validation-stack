@@ -72,12 +72,16 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     exist there, because two opposite light cones meet.
 12. With the displacement removed last, which is the Feynman integral,
     the same formula holds for both signs,
-    $`|\operatorname{Re}p|<\tfrac12-\eta`$, in both timelike regions
+    $`|\operatorname{Re}p|<1-\eta`$, in both timelike regions
     (Theorem 14.T). The exchanges of integrals are justified by keeping
     the displacement positive, where everything converges absolutely,
     and a bound uniform in the displacement (Lemmas 14.E and 14.F). By
     superposition this gives the double pole $`4M[F]`$ for the three
-    benchmark weights with a timelike diagonal without the contour.
+    benchmark weights with a timelike diagonal without the contour. The
+    proof works with the iterated integral at positive displacement,
+    where every step converges absolutely; that this is the integral
+    over $`\mathbb R^D`$ for $`|\operatorname{Re}p|<\tfrac12-\eta`$ rests
+    on power counting.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -1578,7 +1582,11 @@ $`\theta_i\in[0,\pi/2)`$, at most $`e^{\pi|\tau|}`$. Hence
 ```
 
 with $`\mathcal M`$ the majorant of the continuation lemma, which does not
-depend on $`\varepsilon`$ and is integrable. $`K_\varepsilon\to K_0`$
+depend on $`\varepsilon`$ and is integrable. It depends on $`p`$ through
+$`\sigma`$ and through the prefactor $`|2\sin\pi p/p|`$ and the
+coefficients $`|1\pm p|`$ only, so
+$`\int\mathcal M\le C(1+|\tau|)|\sin\pi p/p|\le Ce^{\pi|\tau|}`$ on a line
+$`\operatorname{Re}p=\sigma`$. $`K_\varepsilon\to K_0`$
 pointwise for $`\rho>0`$, $`y\ne y_*`$. By dominated convergence
 $`A_\varepsilon\to A`$, and likewise $`B_\varepsilon\to B`$. (This last
 step holds on the whole strip $`|\sigma|<1-\eta`$; the restriction to
@@ -2479,44 +2487,111 @@ $`\varrho=T/(T-1)`$, and its integrand has an integrable majorant. With
 $`\varepsilon>0`$ each base acquires a positive imaginary part, as in the
 proof of Theorem 13.2, and the same majorant applies.
 
+**Lemma 14.G (the second keyhole is integrable at positive
+displacement).** Let $`\varepsilon>0`$, $`-1<\sigma<1`$ and
+$`0<\phi<\pi/2`$. Then
+
+```math
+\int_0^Td\beta\int d^{2+2\eta}y\;\big|K_4^\varepsilon(\beta,y)\big|\le C_{\varepsilon,\phi}\,(1+|\tau_p|)\,e^{(2\pi+2\phi)|\tau_p|},
+```
+
+with a constant locally uniform in $`\sigma`$. In particular
+$`P_{41}^\varepsilon=st\int d\beta\int d^{2+2\eta}y\,K_4^\varepsilon`$ is
+holomorphic in $`p`$ on $`-1<\sigma<1`$.
+
+*Proof.* With $`h=D_1^{-1-p}D_2^{\,p-1}D_3^{-1-p}`$, an integration by parts
+on the keyhole, as in the continuation lemma, gives for
+$`\operatorname{Re}p>-1`$, $`p\ne0`$,
+
+```math
+K_4^\varepsilon=\frac{2i\sin\pi p}{p}\,T^{-p}(T-\beta)^{p-1}\int_0^\infty\tau^{p}\,h'(\tau)\,d\tau ,
+```
+
+and $`h'`$ is a sum of three terms, each $`h`$ with one exponent lowered
+by one and a factor $`(1+p)\beta`$, $`(1-p)\beta`$ or $`-(1+p)(1-\beta)`$.
+Rotate the $`\tau`$ ray clockwise by $`\phi`$, as in Consequence 1. On
+the rotated ray $`\arg D_1\in[0,\pi-\phi]`$,
+$`\arg D_1\le\arg D_2\le\pi`$ and $`\arg D_3\in(-\phi,\pi-\phi]`$, so the
+phases of the three powers and of $`\tau^p`$ contribute at most
+$`e^{(\pi+2\phi)|\tau_p|}`$, and $`|\sin\pi p/p|`$ at most
+$`Ce^{\pi|\tau_p|}/(1+|\tau_p|)`$; the factors $`1\pm p`$ give
+$`(1+|\tau_p|)`$. For the moduli put
+
+```math
+b_1=\frac{A\,(|y-y_0|^2+\varepsilon)}{\beta},\qquad b_3=\frac{A'\,(|y-y_1|^2+\varepsilon)}{|1-\beta|}.
+```
+
+The zeros of $`D_1`$ and $`D_3`$ have moduli at least $`b_1/\sqrt2`$ and
+$`b_3/\sqrt2`$. The zero of $`D_2`$ has modulus at least $`A\varepsilon/\beta`$
+and at least $`(A|y-y_0|^2-\beta)/\beta`$, hence at least $`k_\varepsilon b_1`$
+with $`k_\varepsilon=\min\big(\tfrac14,\,T\varepsilon/(T^2/2+T\varepsilon)\big)`$,
+because $`\beta(T-\beta)\le T^2/4`$. So
+
+```math
+|K_4^\varepsilon|\le C\,(T-\beta)^{\sigma-1}\beta^{-2}|1-\beta|^{-1-\sigma}\,\big(R_1+R_2\big)\times(\text{the factors in }\tau_p),
+```
+
+```math
+R_1=\int_0^\infty\frac{r^\sigma\,dr}{(b_1+r)^{3}(b_3+r)^{1+\sigma}},\qquad R_2=\int_0^\infty\frac{r^\sigma\,dr}{(b_1+r)^{2}(b_3+r)^{2+\sigma}} .
+```
+
+Each has two elementary bounds:
+$`R_1\le Cb_1^{\sigma-2}b_3^{-1-\sigma}`$ and
+$`R_1\le Cb_1^{-3}(1+\log^+(b_1/b_3))`$;
+$`R_2\le Cb_1^{\sigma-1}b_3^{-2-\sigma}`$ and $`R_2\le Cb_1^{-2}b_3^{-1}`$.
+For $`\beta\le\tfrac12`$ use the second of each: the powers of $`\beta`$
+cancel to $`\beta\,(1+|\log\beta|)`$ and 1, and what is left is
+$`(|y-y_0|^2+\varepsilon)^{-3}`$ times a logarithm, and
+$`(|y-y_0|^2+\varepsilon)^{-2}(|y-y_1|^2+\varepsilon)^{-1}`$, both integrable
+over $`\mathbb R^{2+2\eta}`$ since they decay like $`|y|^{-6}`$. For
+$`\beta\ge\tfrac12`$ use the first of each: the powers of $`|1-\beta|`$
+cancel, $`A`$ and $`A'`$ contribute $`(T-\beta)^{3}`$ against
+$`(T-\beta)^{\sigma-1}`$, and the functions of $`y`$ are
+$`(|y-y_0|^2+\varepsilon)^{\sigma-2}(|y-y_1|^2+\varepsilon)^{-1-\sigma}`$ and
+$`(|y-y_0|^2+\varepsilon)^{\sigma-1}(|y-y_1|^2+\varepsilon)^{-2-\sigma}`$, again
+$`|y|^{-6}`$ at infinity. $`\blacksquare`$
+
+The constant grows as $`\varepsilon\to0`$; the lemma is used only at
+fixed $`\varepsilon`$.
+
 **Theorem 14.T (a timelike diagonal, the displacement removed last).**
-Let $`s<0<-s<t`$, $`T=t/|s|`$, and let $`I_\varepsilon`$ be the integral of
-section 13 over real $`x_0`$. For $`|\operatorname{Re}p|<\tfrac12-\eta`$,
+Let $`s<0<-s<t`$, $`T=t/|s|`$, and for $`\varepsilon>0`$ let
+
+```math
+2\,I_\varepsilon[F]=st\int d\beta\int d^{2+2\eta}y\int_{\mathbb R}d\alpha\;\frac{F(z_\varepsilon)}{\prod_i(x_{0i}^2-i\varepsilon)},
+```
+
+the integrals taken in that order. For $`F=z^p`$ with
+$`|\operatorname{Re}p|<1-\eta`$ each of them converges absolutely, and
 
 ```math
 \lim_{\varepsilon\to0}2\,I_\varepsilon[z^p]=A(p;T_r)+T_r^{\eta}A\big(-p;\tfrac1{T_r}\big)\Big|_{T_r=Te^{i\pi}}
 =-2\pi^2i\,\frac4{\eta^2}\,\frac{\sin\pi p}{\pi p}+O\Big(\frac1\eta\Big).
 ```
 
-Both signs of $`\operatorname{Re}p`$ are covered. No contour deformation
-in $`x_0`$, no Mellin–Barnes form and no continuation in $`T`$ is used.
+Both signs of $`\operatorname{Re}p`$ are covered. No global contour in
+$`x_0`$ (only the $`\alpha`$ line is closed, at fixed $`\beta`$ and $`y`$),
+no Mellin–Barnes form and no continuation in $`T`$ is used. Where the
+integral over $`\mathbb R^D`$ converges absolutely, $`I_\varepsilon`$ is
+that integral, by Fubini, and the limit is the Feynman integral in the
+usual sense; see the remark after the proof. Outside that range the
+iterated integral is the analytic continuation in $`p`$ of the Feynman
+integral, not the Feynman integral itself.
 
-*Proof.* (1) For $`\varepsilon>0`$ the integral converges absolutely for
-$`|\sigma|<\tfrac12-\eta`$. This is Lemma 13.1. For $`\sigma>0`$ the two
-invariants with the power $`1+\sigma`$ are $`x_{01}^2`$ and $`x_{03}^2`$,
-whose cones meet in a non-compact surface as before. For $`\sigma<0`$
-they are $`x_{02}^2`$ and $`x_{04}^2`$, whose cones meet in the compact
-sphere $`S`$, where the local integral is $`C\varepsilon^{-2|\sigma|}`$; a
-single small invariant with that power leaves $`r^{2\eta-2+|\sigma|}`$,
-which converges for $`|\sigma|<1-2\eta`$, a weaker condition. This step
-is power counting in the manner of Lemma 13.1, which was written for
-spacelike diagonals, and not a complete estimate; the review of this
-section redid the counting for this region (on the surface where the
-cones of $`x_1`$ and $`x_3`$ meet, $`|x_{04}^2|\ge(2T-1-2\sqrt{T(T-1)})|\beta|`$,
-and no three cones meet at infinity) and found the same ranges.
+*Proof.* (1) At fixed $`(\beta,y)`$ the integrand decays like
+$`|\alpha|^{-4}`$ and has no zero on the real line, so the $`\alpha`$
+integral converges absolutely, and by Step 1 at $`\varepsilon>0`$ it equals
+$`K_3^\varepsilon\,[0<\beta<1]+K_4^\varepsilon\,[0<\beta<T]`$.
 
-(2) By Fubini the $`\alpha`$ integral may be done first, and by Step 1
-at $`\varepsilon>0`$, $`2I_\varepsilon=P_{23}^\varepsilon+P_{41}^\varepsilon`$, the
-integrals of the two keyholes over $`(\beta,y)`$. Each is absolutely
-convergent: the first by its majorant, the second as a difference.
+(2) Both keyholes are absolutely integrable over $`(\beta,y)`$: the first
+by the majorant of Consequence 2, for $`-1<\sigma<1-\eta`$, the second by
+Lemma 14.G. So $`2I_\varepsilon=P_{23}^\varepsilon+P_{41}^\varepsilon`$, and
+both are holomorphic in $`p`$ for $`|\sigma|<1-\eta`$.
 
 (3) $`P_{23}^\varepsilon\to A(p;\varrho)`$ on the whole strip
-$`-1<\sigma<1-\eta`$, by Consequence 2 and dominated convergence, and it is
-holomorphic in $`p`$ there for each $`\varepsilon`$.
+$`-1<\sigma<1-\eta`$, by Consequence 2 and dominated convergence.
 
-(4) $`P_{41}^\varepsilon`$ is holomorphic in $`p`$ for
-$`|\sigma|<\tfrac12-\eta`$, being $`2I_\varepsilon-P_{23}^\varepsilon`$. For
-$`0<\sigma<\tfrac12-\eta`$, by Lemma 14.E integrated over $`\beta`$,
+(4) For $`0<\sigma<1-\eta`$, by Lemma 14.E integrated over $`\beta`$,
 
 ```math
 P_{41}^\varepsilon=st\cdot\Big(-\frac{2i\sin\pi p}{p}\Big)\pi^{1+\eta}\Gamma(2-\eta)\,T^{-p}\int_0^Td\beta\,(T-\beta)^{p+\eta}J_\varepsilon(\beta),\qquad st=-T .
@@ -2524,8 +2599,8 @@ P_{41}^\varepsilon=st\cdot\Big(-\frac{2i\sin\pi p}{p}\Big)\pi^{1+\eta}\Gamma(2-\
 
 The right side is holomorphic in $`p`$
 for $`|\sigma|<1-\eta`$, because its integrand is, with the majorant
-$`\mathcal D`$ locally uniform in $`p`$. So the two sides agree for
-$`|\sigma|<\tfrac12-\eta`$.
+$`\mathcal D`$ locally uniform in $`p`$. The left side is holomorphic
+there by Lemma 14.G. So the two sides agree for $`|\sigma|<1-\eta`$.
 
 (5) By dominated convergence with $`\mathcal D`$ the right side tends to
 its value at $`\varepsilon=0`$, which is $`st\,P_{41}`$ of Step 2 in terms
@@ -2533,6 +2608,24 @@ of $`\mathcal P`$. Steps 3 to 5 are identities between convergent
 integrals, valid for $`|\sigma|<1-\eta`$, and give
 $`T_r^\eta A(-p;1/T_r)`$. The double pole is the theorem of section 11.5.
 $`\blacksquare`$
+
+*Remark (the integral over $`\mathbb R^D`$).* By power counting in the
+manner of Lemma 13.1 the integral over real $`x_0`$ converges absolutely
+at $`\varepsilon>0`$ for $`|\sigma|<\tfrac12-\eta`$, and then it equals
+the iterated integral above. For $`\sigma>0`$ the two invariants with the
+power $`1+\sigma`$ are $`x_{01}^2`$ and $`x_{03}^2`$, whose cones meet in a
+non-compact surface as for spacelike diagonals. For $`\sigma<0`$ they are
+$`x_{02}^2`$ and $`x_{04}^2`$, whose cones meet in the compact sphere
+$`S`$, where the local integral is $`C\varepsilon^{-2|\sigma|}`$; a single
+small invariant with that power leaves $`r^{2\eta-2+|\sigma|}`$, which
+converges for $`|\sigma|<1-2\eta`$, a weaker condition. This is power
+counting and not a complete estimate; the review of this section redid
+it for this region (on the surface where the cones of $`x_1`$ and
+$`x_3`$ meet, $`|x_{04}^2|\ge(2T-1-2\sqrt{T(T-1)})|\beta|`$, and no three
+cones meet at infinity) and found the same ranges. A first version of
+the theorem used this convergence in its proof; the theorem as stated
+now does not, and only the identification of the iterated integral with
+the unordered one depends on it.
 
 The limit in (5) is slow: at $`(T,\eta,\beta)=(2.2,0.3,0.4)`$ the closed
 form at displacement $`\varepsilon`$ differs from its limit by an amount
@@ -2573,12 +2666,22 @@ $`\alpha`$, $`\beta`$ and $`x_{04}^2-x_{01}^2`$, and saw the minimum
 $`-2\pi`$ numerically; then any $`W>2\pi`$ would do. The weaker range
 proved here is enough for the three weights.)
 
-*Superposition at fixed $`\varepsilon`$.* By Lemma 3 of GATE_6_BOUNDS,
-Lemma 13.1 and $`|z_\varepsilon^p|\le|z_\varepsilon|^{\pm\sigma}e^{5\pi|\tau_p|/2}`$,
-$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$ on lines
-$`\operatorname{Re}p=\mp\sigma`$ with
-$`\sigma<\min(1/m,\tfrac12-\eta)`$, where $`|c_\pm|\le Ce^{-(W-\delta')|\tau_p|}`$
-and $`W-\delta'>5\pi/2`$.
+*Superposition at fixed $`\varepsilon`$.* Take the lines
+$`\operatorname{Re}p=\mp\sigma`$ of Lemma 3 of GATE_6_BOUNDS with
+$`\sigma<\min(1/m,1-\eta)`$, where $`|c_\pm|\le Ce^{-(W-\delta')|\tau_p|}`$
+and $`W-\delta'>5\pi/2`$. At fixed $`(\beta,y)`$,
+$`|z_\varepsilon^p|\le|z_\varepsilon|^{\pm\sigma}e^{5\pi|\tau_p|/2}`$ on the
+real $`\alpha`$ line, so the integrals over $`\alpha`$ and $`p`$ may be
+exchanged, and the $`\alpha`$ integral of $`F`$ is
+$`\sum_\pm\int c_\pm(p)\,(K_3^\varepsilon+K_4^\varepsilon)\,dp`$. The integral
+of $`|K_3^\varepsilon|+|K_4^\varepsilon|`$ over $`(\beta,y)`$ is at most
+$`C_\varepsilon(1+|\tau_p|)e^{(2\pi+2\phi)|\tau_p|}`$, by the majorant of
+Consequence 2 and by Lemma 14.G (choose $`\phi`$ with
+$`2\pi+2\phi<W-\delta'`$), so the integrals over $`(\beta,y)`$ and
+$`p`$ may be exchanged as well: the iterated integral $`I_\varepsilon[F]`$
+exists and
+$`I_\varepsilon[F]=\sum_\pm\int c_\pm(p)\,I_\varepsilon[z^p]\,dp`$. This does
+not use Lemma 13.1.
 
 *Bounds uniform in $`\varepsilon`$.*
 
@@ -2603,9 +2706,13 @@ $`p`$ integral, and by the paragraph "General weights, by superposition"
 \lim_{\varepsilon\to0}2\,I_\varepsilon[F]=E_1[F]+E_2[F]=-2\pi^2i\,\frac{4\,M[F]}{\eta^2}+O\Big(\frac1\eta\Big).
 ```
 
-So for the three benchmark weights with a timelike diagonal the Feynman
-integral is the sum of the two edge functionals and its double pole is
-$`4M[F]`$, derived in position space without the contour. A first
+So for the three benchmark weights with a timelike diagonal the integral
+with the displacement removed last is the sum of the two edge
+functionals and its double pole is $`4M[F]`$, derived in position space
+without the contour. Here $`I_\varepsilon[F]`$ is the iterated integral;
+it is the integral over $`\mathbb R^D`$ to the extent that the power
+counting of the remark is accepted (the lines of Lemma 3 can be taken
+with $`\sigma<\tfrac12-\eta`$, inside its range). A first
 version of this paragraph had the rates $`3\pi`$ and $`3\pi+2\theta`$ and
 therefore excluded $`\bar F^{(2)}`$; Lemma 14.F′ and the exclusion of the
 corner were added afterwards and refereed separately. That review
@@ -2616,20 +2723,50 @@ sufficiency for $`W=3\pi-\delta`$. With its own code the product bound
 gave the same numbers as above for $`\sigma=\pm0.3,\pm0.75`$ and $`v`$
 from $`\pm10^{-8}`$ to $`\pm10^{6}`$, and the constant of the first
 keyhole showed no leftover $`e^{-i\pi p}`$ at $`p=-0.3\pm5i`$ and
-$`-0.2\pm9i`$. It names two dependencies that remain: the power counting
-of step (1) of Theorem 14.T, and the uniformity in $`\varepsilon`$ of the
-constant in the bound for the first keyhole, which is taken from
-Theorem 13.2. It did not check Lemma 3 of GATE_6_BOUNDS, Theorem 13.2
-itself, or the final identification with $`E_1+E_2`$.
+$`-0.2\pm9i`$. It named two dependencies: the power counting then used
+in Theorem 14.T, and the uniformity in $`\varepsilon`$ of the constant in
+the bound for the first keyhole, taken from Theorem 13.2; and it had not
+checked Lemma 3 of GATE_6_BOUNDS, Theorem 13.2 or the identification
+with $`E_1+E_2`$. A third review took up exactly those. It confirmed
+Lemma 3 and Lemma 3′ (reconstructing $`\bar F^{(2)}`$ from its
+coefficients $`c_\pm`$ at points up to $`\operatorname{Im}L=\pm5\pi/2`$ to
+$`10^{-10}`$ or better), Theorem 13.2 with the continuation lemma (the
+majorant does not depend on $`\varepsilon`$; its dependence on $`p`$ is as
+now stated there), and the identification: $`\int c\,\sin\pi p/(\pi p)`$
+is $`M[F]`$, the remainder is integrable against $`c_\pm`$ uniformly in
+$`\eta`$, and for $`F=\log^2z+\pi^2`$ at two timelike points
+$`\eta^2(E_1+E_2)/(-2i\pi^2)`$ tends to $`4M[F]`$ with a remainder linear
+in $`\eta`$. The functionals $`E_j`$ are defined on the lines of section
+12 and used here on lines with a different $`\sigma`$; they agree by
+Cauchy's theorem and the decay of $`c_\pm`$. The power counting no longer
+enters the proof of Theorem 14.T (Lemma 14.G replaces it). Lemma 14.G, the
+restatement of the theorem and the superposition at fixed
+$`\varepsilon`$ were written after these reviews and refereed in a
+fourth. It confirmed the integration by parts, the rotation, the lower
+bounds on the zeros, the four elementary bounds and both zones, and that
+steps (1), (2) and (4) use neither Lemma 13.1 nor convergence over
+$`\mathbb R^D`$. With its own code the keyhole in the rotated form agreed
+with the one on the real line to $`10^{-10}`$ (complex $`p`$ included),
+the integral of $`|K_4^\varepsilon|`$ over $`y`$ stayed bounded as
+$`\beta\to0`$ and $`\beta\to1`$ for $`\sigma=\pm0.3,\pm0.9,\pm0.97`$ and
+vanished like $`(T-\beta)^{2+\sigma}`$ at $`\beta\to T`$, and the measured
+rate in $`\operatorname{Im}p`$ was below $`2\pi`$ (the lemma's rate
+$`2\pi+2\phi`$ is not sharp). Its one reservation is about scope and is
+now in the statement of the theorem: the iterated integral is the
+Feynman integral only where the integral over $`\mathbb R^D`$ converges
+absolutely, which rests on power counting. It did not check steps (3)
+and (5), that power counting, or the paragraph on the other region.
 
 **The other timelike region.** Let $`s>0>t`$ with $`|t|<s`$; put
 $`s=1`$, $`t=-\tau_0`$, $`0<\tau_0<1`$. The cyclic relabelling
 $`x_i\to x_{i+1}`$ exchanges $`s`$ and $`t`$ and sends $`z\to1/z`$, term by
-term in the Feynman logarithms, and $`I_\varepsilon`$ is an integral over
-all of $`\mathbb R^D`$, so $`I_\varepsilon[z^p;s,t]=I_\varepsilon[z^{-p};t,s]`$.
+term in the Feynman logarithms. Read $`I_\varepsilon`$ either as the
+integral over $`\mathbb R^D`$ where that converges absolutely (see the
+remark above) or as the iterated integral in the coordinates adapted to
+the relabelled edge; then $`I_\varepsilon[z^p;s,t]=I_\varepsilon[z^{-p};t,s]`$.
 Rescaling $`x\to\sqrt{\tau_0}\,x`$ gives a factor $`\tau_0^{\eta}`$ and the
 square $`(-1,1/\tau_0)`$, which is the region of Theorem 14.T. So for
-$`|\operatorname{Re}p|<\tfrac12-\eta`$
+$`|\operatorname{Re}p|<1-\eta`$
 
 ```math
 \lim_{\varepsilon\to0}2\,I_\varepsilon[z^p]=\tau_0^{\eta}\Big[A(-p;T_r)+T_r^{\eta}A\big(p;\tfrac1{T_r}\big)\Big]_{T_r=e^{i\pi}/\tau_0}
@@ -2647,10 +2784,13 @@ region of spacelike diagonals.
 
 **What this covers.**
 
-- For $`z^p`$ with $`|\operatorname{Re}p|<\tfrac12-\eta`$ and a timelike
-  diagonal, in either region: the Feynman integral, with the
-  displacement removed last, is the sum of the two continued pieces and
-  its double pole is four units (Theorem 14.T).
+- For $`z^p`$ with $`|\operatorname{Re}p|<1-\eta`$ and a timelike
+  diagonal, in either region: the integral with the displacement
+  removed last, taken in the order $`\alpha`$, $`y`$, $`\beta`$ at positive
+  displacement, is the sum of the two continued pieces and its double
+  pole is four units (Theorem 14.T). For
+  $`|\operatorname{Re}p|<\tfrac12-\eta`$ this is the integral over
+  $`\mathbb R^D`$, by power counting.
 - For $`z^p`$ with $`0<\operatorname{Re}p<1-\eta`$ in the region
   $`s<0<t`$ (and $`-(1-\eta)<\operatorname{Re}p<0`$ in the other): the
   same for the iterated integral with the displacement removed first,
@@ -2676,8 +2816,8 @@ $`p=-0.3`$, that the closed form integrated over $`\beta`$ is the second
 continued piece on the side $`t-i0`$ to $`3\times10^{-4}`$ (its
 quadrature), the other side being off by a quantity of order one. Its
 corrections were to the wording of Consequence 1 and of the bounds, and
-are included. It names one gap, the power counting in step (1) of
-Theorem 14.T. It did not check Lemma 3 of GATE_6_BOUNDS, a direct
+are included. It named one gap, the power counting then used in step
+(1) of Theorem 14.T, which the theorem as now stated no longer needs. It did not check Lemma 3 of GATE_6_BOUNDS, a direct
 evaluation of $`I_\varepsilon`$ in $`D`$ dimensions at negative $`p`$, or
 the rate $`\varepsilon^\eta`$.
 

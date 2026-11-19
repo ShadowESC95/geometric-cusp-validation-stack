@@ -279,3 +279,18 @@ def test_position_space_subcommands_print_json(capsys):
     assert '"two_pieces_equal_box": true' in capsys.readouterr().out
     solver.main(["interval", "--low", "1.0", "--high", "1.02", "--boxes", "10"])
     assert '"all": true' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("p", [-0.85, -0.7, 0.9, 0.97])
+def test_cusp_term_keeps_its_accuracy_near_the_convergence_boundary(p):
+    r = solver.cusp_term(solver.Weight((0.,), 1., p), .1)
+    closed = r["closed_form"][0]
+    assert abs(r["path_between_lips"][0] - closed) < 1e-5
+    assert abs(r["lorentzian_product"][0] - closed) < 5e-5
+    assert r["formulas_agree"]
+
+
+@pytest.mark.parametrize("p", [-0.9, -0.95, -0.885])
+def test_cusp_term_refuses_a_divergent_or_marginal_power(p):
+    with pytest.raises(ValueError):
+        solver.cusp_term(solver.Weight((0.,), 1., p), .1)

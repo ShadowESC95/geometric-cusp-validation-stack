@@ -420,9 +420,17 @@ def cusp_term(weight: Weight, eta: float = .05) -> dict:
 
     if not 0 < eta < .45:
         raise ValueError("eta must lie strictly between 0 and 0.45")
+    power = weight.exponent if weight.amplitude else 0.
+    if power <= eta-1:
+        raise ValueError("the cusp term converges only for p > eta - 1; "
+                         f"here p = {power:g} and eta - 1 = {eta-1:g}")
+    if power-(eta-1) < .02:
+        raise ValueError("p is within 0.02 of the convergence boundary eta - 1, where the "
+                         "quadrature overflows in double precision; for a pure power use "
+                         "cusp_local.triangle_closed_form")
     f = _numpy_weight(weight)
-    circle = cl.regulated_circle_formula(f, eta)
-    product = cl.lorentzian_product_formula(f, eta)
+    circle = cl.regulated_circle_formula(f, eta, lowest_power=power)
+    product = cl.lorentzian_product_formula(f, eta, lowest_power=power, highest_power=power)
     mean = closed_mean(weight)
     result = {"weight": weight.describe(), "eta": eta, "circle_mean": mean,
               "path_between_lips": [circle.real, circle.imag],
