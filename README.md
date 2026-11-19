@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **443 tests** and **63 worked example groups**, all passing
+- **452 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -94,7 +94,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 443 tests, about twenty minutes
+make test        # 452 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -229,8 +229,10 @@ What it does not do:
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
 - With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
-  contour is measured, not proved. The weaker bound the argument needs,
-  below $`3\pi`$, is proved.
+  contour is measured, not proved. The bound the argument needs, below
+  $`3\pi`$, is proved, and so is a closer one, $`2\pi+0.36`$ for the
+  default constants ([GATE_6_PHASE](docs/GATE_6_PHASE.md)), in floating
+  point at individual squares and not uniformly in the square.
 
 Earlier statements found to be wrong and corrected in the documents: the
 exchange of integrals was claimed on lines where the integral does not
@@ -327,6 +329,7 @@ command line as shown in [Quick start](#quick-start).
 | [CUSP_LOCAL_MODEL](docs/CUSP_LOCAL_MODEL.md) | The cusp-local triangle, and the double pole as a sum over cusps without Mellin–Barnes |
 | [GATE_6_FUNCTIONAL](docs/GATE_6_FUNCTIONAL.md) | The functionals on the Mellin family, and the solver |
 | [FROM_GEOMETRY](docs/FROM_GEOMETRY.md) | The two-loop form from its inequalities; the membership test for the sampler |
+| [GATE_6_PHASE](docs/GATE_6_PHASE.md) | The phase of the cross-ratio on the contour with a timelike diagonal: a bound close to $`2\pi`$, with its conditions |
 | [THREE_LOOP_WEIGHT](docs/THREE_LOOP_WEIGHT.md) | The published three-loop function: its circle mean against the four-loop coefficient, and whether the theorem applies to it |
 | [GATE_6_PROOF](docs/GATE_6_PROOF.md) | The earlier regulated-cap approach and its obstruction |
 | [MATHEMATICAL_MODEL](docs/MATHEMATICAL_MODEL.md) | Charts, forms and integrands used by the code |
@@ -347,7 +350,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            443 tests
+tests/            452 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

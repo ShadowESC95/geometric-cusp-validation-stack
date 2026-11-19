@@ -1458,37 +1458,29 @@ Proposition 8, the outer zone in Lemma 10(c), the excision of the cusp
 points in Lemma 11, the blend zone in Lemma 12, and the phase bound with a
 timelike diagonal (Lemma Q). Still open:
 
-- **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
+- **The phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
   is proved at real points (Lemma P) and observed on the contour. On the
-  contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
-  A further attempt (automated, not reviewed, and not relied on anywhere)
-  got part of the way. Put $`u_i=\pi+\arg x_{0i}^2`$ on the contour and,
-  at a cusp $`c`$ with a timelike diagonal,
-  $`K_c=u_c-u_{c-1}-u_{c+1}`$; then
-  $`|\arg z|\le2\pi+e+K_c`$, and $`K_c\le0`$ at real points is Lemma P.
-  The comparison $`u_c\le u_{c\mp1}`$ is linear in the field: it is the
-  sign of $`V\!\cdot N_\mp`$ for the null vector
-  $`N_\mp=x_{0,c\mp1}^2\,(x_0-x_c)-x_{0c}^2\,(x_0-x_{c\mp1})`$, so it can
-  be checked field by field, as admissibility is. For the far field this
-  gives $`K_c\le\max(e,3e_{\rm sp})`$ with $`e_{\rm sp}\approx0.013`$ for
-  $`r\ge2R`$, by an exact sign argument. For $`r\le R`$ a case analysis
-  with the closed form of the frame fields gives $`K_c\le0.25`$ to
-  $`0.32`$ under two further inequalities between the constants
-  ($`4\delta_0<D`$ and $`4\delta_0|u|<D|D'|`$ for the two diagonals
-  $`D,D'`$ and $`u=-D-D'`$). The blend zone $`R<r<2R`$ is not covered:
-  there the far field moves the invariants over bands much wider than
-  $`\delta_0`$, and the frames that do not control an invariant are
-  active inside its transition. In 50-digit arithmetic aimed at the
-  tangency lines the largest $`K_c`$ found is $`5\times10^{-6}`$ (inner),
-  $`0.0027`$ (blend) and $`0.0039`$ (outer). Two things were learned that
-  correct earlier statements here: the bound
+  contour $`3\pi-0.3`$ is proved (Lemma Q), which is all the argument
+  uses. A bound close to $`2\pi`$ is now proved in
+  [GATE_6_PHASE.md](GATE_6_PHASE.md):
+  $`|\arg z|\le2\pi+e+\max(K_{\rm in},K_{\rm bl},e,3e_{\rm sp})`$,
+  which is $`2\pi+0.36`$ for the default constants and $`2\pi+0.54`$ for
+  most tuned squares, under further explicit inequalities between the
+  constants (`geocusp.phase_bound`). It is not uniform in the square
+  ($`2\pi+1.58`$ at one extreme square), is evaluated in floating point
+  at individual squares, and does not treat the contour in $`D`$
+  dimensions. The exact value $`2\pi`$ remains unproved; the constants
+  are far from the observed excess, which is at most $`0.004`$ in
+  $`K_c`$ and none in $`|\arg z|`$. Two things learned there correct
+  earlier statements here. The route proposed before Lemma Q, a bound
   $`|\operatorname{Im}x_{0c}^2|\le c\,|\operatorname{Re}x_{0c}^2|`$
-  proposed above as the route is false (the ratio reaches $`10^{22}`$
-  beyond a cusp, harmlessly, because the neighbour's invariant turns by
-  the same angle), and in float64 the survey cannot resolve points within
-  $`10^{-15}`$ of a tangency line. The excursion bounds in the tables of
-  this document were also out of date and now show the values the
-  certificate returns, 0.108 and 0.074. Nothing else changes: the
+  beyond a cusp, is false: the ratio reaches $`10^{22}`$, harmlessly,
+  because the neighbour's invariant turns by the same angle; what holds
+  is a comparison of arguments, which is linear in the field. And in
+  float64 the survey cannot resolve points within $`10^{-15}`$ of a null
+  line through two adjacent cusps. The excursion bounds in the tables of
+  this document were out of date and now show the values the certificate
+  returns, 0.108 and 0.074. Nothing else changes: the
 conditions that involve $`e`$, namely (D) itself ($`e<0.2`$) and (Q1),
 are evaluated by the certificate, in floating point and in interval
 arithmetic, from the value it computes and not from the tables, and

@@ -750,7 +750,7 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals, $`3\pi-0.3`$ otherwise (Lemma Q). Measured: $`2\pi`$ in all regions |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and $`2\pi+0.36`$ to $`2\pi+0.54`$ at the squares evaluated under further conditions on the constants (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
