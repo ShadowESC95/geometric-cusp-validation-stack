@@ -30,4 +30,10 @@
 
 15. T. Bargheer, C. Bercini, A. Fernandes, V. Goncalves, J. Mann, arXiv:2406.04294. Relates the cusp anomalous dimension to the discontinuity of F across the negative axis; an independent expression for the two-loop function.
 
+16. E. Remiddi, J. A. M. Vermaseren, *Harmonic polylogarithms*, Int. J. Mod. Phys. A15 (2000) 725, arXiv:hep-ph/9905237. Shuffle algebra, extraction of trailing zeros, expansions at 0 and under x -> 1/x.
+
+17. K. Ihara, M. Kaneko, D. Zagier, *Derivation and double shuffle relations for multiple zeta values*, Compositio Math. 142 (2006) 307. The regularised double shuffle relations solved in `geocusp.hpl_exact`.
+
+18. K.-T. Chen, *Iterated path integrals*, Bull. Amer. Math. Soc. 83 (1977) 831; F. Brown, *Iterated integrals in quantum field theory*, in Geometric and Topological Methods for Quantum Field Theory, Cambridge University Press, 2013. Composition of paths and tangential base points.
+
 The software adapters in this repository are capability mappings, not claims that each package is a direct proof tool for the amplituhedron itself.

@@ -466,3 +466,43 @@ def test_the_corner_of_the_strip_is_not_reached_with_a_timelike_diagonal():
     u1, u3, u4 = w - b, w + a, T * (1 + a - b) + w + c * y[0]
     assert not ((w < 0) & (u4 < 0) & (u1 > 0) & (u3 > 0)).any()
     assert ((w < 0) & (u1 > 0) & (u3 > 0)).any()        # the other three signs do occur together
+
+
+def test_null_coordinates_of_the_convergence_lemma():
+    """Lemma 13.1': X_i = (u - l_i)(v - m_i) - p_i^2, and no three of the l_i
+    coincide for any direction, for a spacelike and a timelike square."""
+    rng = np.random.default_rng(5)
+    mink = lambda p, q: p[0] * q[0] - p[1:] @ q[1:]
+    theta = 1.0
+    # four null vectors that sum to zero, in (time, plane); the order of the edges sets the signs
+    edges = np.array([[1, 1, 0], [1, -1, 0], [-1, -np.cos(theta), -np.sin(theta)],
+                      [-1, np.cos(theta), np.sin(theta)]], dtype=float)
+    signs = []
+    for order in [(0, 1, 2, 3), (0, 2, 1, 3)]:
+        e = edges[list(order)]
+        cusps = np.array([np.zeros(3), e[0], e[0] + e[1], e[0] + e[1] + e[2]])
+        assert all(abs(mink(cusps[(i + 1) % 4] - cusps[i], cusps[(i + 1) % 4] - cusps[i])) < 1e-12 for i in range(4))
+        signs.append((np.sign(mink(cusps[2] - cusps[0], cusps[2] - cusps[0])),
+                      np.sign(mink(cusps[3] - cusps[1], cusps[3] - cusps[1]))))
+        # the identity, with extra dimensions entering through |omega_par| < 1
+        for _ in range(20):
+            par = rng.uniform(-1, 1, 2)
+            par *= rng.uniform(0, 1) / max(np.linalg.norm(par), 1e-9)
+            tt, rho = rng.uniform(-3, 9), rng.uniform(0, 9)
+            u, v = tt - rho, tt + rho
+            for xi in cusps:
+                direct = (tt - xi[0]) ** 2 - (rho ** 2 - 2 * rho * par @ xi[1:] + xi[1:] @ xi[1:])
+                l, m = xi[0] - par @ xi[1:], xi[0] + par @ xi[1:]
+                p2 = xi[1:] @ xi[1:] - (par @ xi[1:]) ** 2
+                assert abs(direct - ((u - l) * (v - m) - p2)) < 1e-10
+        # separation: max over each triple of |l_i - l_j| is bounded below on the disc
+        grid = np.linspace(-1, 1, 201)
+        gx, gy = np.meshgrid(grid, grid)
+        inside = gx ** 2 + gy ** 2 <= 1
+        ell = np.array([xi[0] - gx * xi[1] - gy * xi[2] for xi in cusps])
+        worst = np.inf
+        for trio in [(0, 1, 2), (1, 2, 3), (2, 3, 0), (3, 0, 1)]:
+            spread = np.max([np.abs(ell[i] - ell[j]) for i in trio for j in trio], axis=0)
+            worst = min(worst, spread[inside].min())
+        assert worst > 0.05
+    assert signs == [(1, -1), (-1, -1)]

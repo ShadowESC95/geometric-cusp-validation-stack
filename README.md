@@ -24,7 +24,7 @@ integral with $`-i\varepsilon`$. The other covers all three kinematic
 regions and is conditional on a computer-verified certificate. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **434 tests** and **63 worked example groups**, all passing
+- **443 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -73,8 +73,8 @@ regions and is conditional on a computer-verified certificate. The conditions ar
 | The edge jump equals the residue of the collinear pole | Written proof; independently checked; numerically exact |
 | The two edge pieces add up to the box function; meromorphy in $`\eta`$ for $`z^p`$ | Follows from the contour link; independently checked; identity confirmed numerically to 12 digits |
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
-| Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction; the hypotheses of the theorem are verified numerically for this weight, not proved |
-| A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no global contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, both signs, in both timelike regions, the integral with the displacement removed last (taken as an iterated integral at positive displacement, where every step converges absolutely) is the sum of the two continued pieces. The iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. By superposition the double pole is $`4M[F]`$ for the three benchmark weights, without the contour. Four independent reviews, no error found in the final form. Open: that the iterated integral equals the unordered integral over $`\mathbb R^D`$ (for $`|\operatorname{Re}p|<\tfrac12-\eta`$) rests on power counting, not a complete estimate. A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
+| Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction. The hypotheses of the theorem are proved for this weight: holomorphy at $`z=-1`$ is an exact identity in $`\mathbb Q[i\pi,\zeta_3,\zeta_5]`$, computed in rational arithmetic (`geocusp.hpl_exact`), and the growth bound follows |
+| A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no global contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, both signs, in both timelike regions, the integral with the displacement removed last (taken as an iterated integral at positive displacement, where every step converges absolutely) is the sum of the two continued pieces. The iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. By superposition the double pole is $`4M[F]`$ for the three benchmark weights, without the contour. Four independent reviews, no error found in the final form. The iterated integral is the unordered integral over $`\mathbb R^D`$ wherever that converges absolutely, which is proved for $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ in the region $`s<0<t`$ and the mirror interval in the other (CUSP_LOCAL_MODEL Lemma 13.1, a complete estimate that replaces the earlier power counting). A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
 | Each edge piece as a single integral of a $`{}_2F_1`$ | Exact: agrees with the cube integral and the box to $`10^{-15}`$ |
 | Review by a specialist | **Not done** |
 
@@ -94,7 +94,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 434 tests, about twenty minutes
+make test        # 443 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -347,7 +347,7 @@ src/geocusp/      implementation
   feynman_contour.py, schwinger.py      the contour, its certificate, the regulated integral
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            434 tests
+tests/            443 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

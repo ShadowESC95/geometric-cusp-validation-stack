@@ -186,7 +186,8 @@ $`\kappa'=2\times10^{-3}`$. Section 9 states the precise conditions.
 **Proposition 6.** For the field of section 4:
 
 1. near the cone of $`x_i`$, $`\operatorname{Im}x_{0i}^2\le0`$ on the
-   contour, with equality only on the edges;
+   contour, and the invariant itself vanishes only on the edges (the
+   imaginary part alone also vanishes on the flat triangles);
 2. the argument of each invariant stays within a small angle $`e`$ of
    $`[-\pi,0]`$, so on the contour $`|\arg z|\le2\pi+4e`$ for spacelike
    diagonals and $`|\arg z|\le3\pi-0.3`$ when one diagonal is timelike
@@ -347,7 +348,7 @@ segments), next to the bounds proved in section 9:
 | --- | --- | --- | --- | --- |
 | Near-cone pairs tested | 19 520 | 19 369 | 19 441 | |
 | Largest $`\operatorname{Im}x_{0i}^2`$ near a cone | $`-2\times10^{-17}`$ | $`-2\times10^{-17}`$ | $`-7\times10^{-17}`$ | $`\le0`$ |
-| Largest excursion of $`\arg x_{0i}^2`$ beyond $`[-\pi,0]`$ | 0.0039 | 0.0039 | 0.0039 | 0.085, 0.050, 0.050 |
+| Largest excursion of $`\arg x_{0i}^2`$ beyond $`[-\pi,0]`$ | 0.0039 | 0.0039 | 0.0039 | 0.108, 0.074, 0.074 |
 | Smallest $`\min_i\vert x_{0i}^2\vert /\min(1,\mathrm{dist}_{\rm edges}^2)`$ | $`3\times10^{-7}`$ | $`1\times10^{-7}`$ | $`2\times10^{-7}`$ | $`>0`$ |
 | Smallest ratio in item 4, units of $`\nu`$ | 4 258 | 6 920 | 2 364 | $`\ge\tfrac12`$ |
 | Largest $`\Vert \partial V\Vert `$ | 0.018 | 0.018 | 0.018 | 0.38, 0.18, 0.18 |
@@ -612,7 +613,7 @@ give $`|\tau|\ge\tfrac12|\xi|`$ whenever $`|n^2|<\omega r`$, $`r\ge2R`$.
 | (C0) $`\tau_0\ge3\Delta`$, with $`\Delta`$ | 0.988 | 1.034 |
 | (C1) margin (must be positive) | 5.55 | 5.19 |
 | (C2), (C3), wedge margin | hold | hold |
-| (D) excursion bound, rad | 0.085 | 0.050 |
+| (D) excursion bound, rad | 0.108 | 0.074 |
 | (E) bound on $`\Vert \partial V\Vert `$ | 0.378 | 0.183 |
 | (G) $`\theta`$ | $`1.9\times10^{-5}`$ | $`7\times10^{-6}`$ |
 | (S) $`b_0`$; margin of the far invariant over $`2\delta_0`$ | 0.092; 0.043 | 0.034; 0.041 |
@@ -1460,6 +1461,34 @@ timelike diagonal (Lemma Q). Still open:
 - **The sharp phase bound with a timelike diagonal.** $`|\arg z|\le2\pi`$
   is proved at real points (Lemma P) and observed on the contour. On the
   contour $`3\pi-0.3`$ is proved (Lemma Q). That is all the argument uses.
+  A further attempt (automated, not reviewed, and not relied on anywhere)
+  got part of the way. Put $`u_i=\pi+\arg x_{0i}^2`$ on the contour and,
+  at a cusp $`c`$ with a timelike diagonal,
+  $`K_c=u_c-u_{c-1}-u_{c+1}`$; then
+  $`|\arg z|\le2\pi+e+K_c`$, and $`K_c\le0`$ at real points is Lemma P.
+  The comparison $`u_c\le u_{c\mp1}`$ is linear in the field: it is the
+  sign of $`V\!\cdot N_\mp`$ for the null vector
+  $`N_\mp=x_{0,c\mp1}^2\,(x_0-x_c)-x_{0c}^2\,(x_0-x_{c\mp1})`$, so it can
+  be checked field by field, as admissibility is. For the far field this
+  gives $`K_c\le\max(e,3e_{\rm sp})`$ with $`e_{\rm sp}\approx0.013`$ for
+  $`r\ge2R`$, by an exact sign argument. For $`r\le R`$ a case analysis
+  with the closed form of the frame fields gives $`K_c\le0.25`$ to
+  $`0.32`$ under two further inequalities between the constants
+  ($`4\delta_0<D`$ and $`4\delta_0|u|<D|D'|`$ for the two diagonals
+  $`D,D'`$ and $`u=-D-D'`$). The blend zone $`R<r<2R`$ is not covered:
+  there the far field moves the invariants over bands much wider than
+  $`\delta_0`$, and the frames that do not control an invariant are
+  active inside its transition. In 50-digit arithmetic aimed at the
+  tangency lines the largest $`K_c`$ found is $`5\times10^{-6}`$ (inner),
+  $`0.0027`$ (blend) and $`0.0039`$ (outer). Two things were learned that
+  correct earlier statements here: the bound
+  $`|\operatorname{Im}x_{0c}^2|\le c\,|\operatorname{Re}x_{0c}^2|`$
+  proposed above as the route is false (the ratio reaches $`10^{22}`$
+  beyond a cusp, harmlessly, because the neighbour's invariant turns by
+  the same angle), and in float64 the survey cannot resolve points within
+  $`10^{-15}`$ of a tangency line. The excursion bounds in the tables of
+  this document were also out of date and now show the values the
+  certificate returns, 0.108 and 0.074.
 - **The certificate** is verified in interval arithmetic on the ranges of
   section 9 and in floating point outside them. The field itself is
   evaluated in floating point in the surveys: within about $`10^{-9}`$ of an edge the float64 field loses the sign of

@@ -416,6 +416,12 @@ The set $`|\operatorname{Re}L|\le1`$, $`|\operatorname{Im}L|\le3\pi-\delta`$
 is compact and $`\bar F^{(2)}(e^L)`$ is holomorphic on a neighbourhood of
 it (section 2), so it is bounded there. $`\blacksquare`$
 
+The same two statements, holomorphy on $`|\operatorname{Im}L|<3\pi`$ and
+polynomial growth (with $`k=6`$), are proved for the published
+three-loop weight in [THREE_LOOP_WEIGHT.md](THREE_LOOP_WEIGHT.md), by an
+exact expansion at $`z=-1`$ that also gives a second proof of section 2
+for $`\bar F^{(2)}`$.
+
 The test `test_two_loop_weight_is_polynomially_bounded_on_the_cover` finds
 $`|\bar F^{(2)}|/(1+|L|)^4\le130`$ for $`|\operatorname{Im}L|\le2.9\pi`$,
 $`|\operatorname{Re}L|\le40`$.
@@ -541,7 +547,7 @@ with weight $`F`$ is $`4M[F]`$.
 
 | Region | Bound on $`\Phi`$ proved | $`\Phi`$ measured |
 | --- | --- | --- |
-| $`(-,-)`$ | $`2\pi+4e`$, $`e\le0.085`$ | $`2\pi`$ |
+| $`(-,-)`$ | $`2\pi+4e`$, $`e\le0.108`$ | $`2\pi`$ |
 | $`(+,-)`$, $`(-,+)`$ | $`3\pi-0.3`$ (Lemma Q) | $`2\pi`$ |
 
 - $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$: any $`W`$ is allowed.
@@ -750,8 +756,9 @@ section 2.
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
 | Uniform bound $`e^{\pi\vert {\rm Im}\,p\vert }`$ times a power, on the regulated integral (Lemma 4) | Proved for both signs of $`s/t`$ |
 | Growth of $`\bar F^{(2)}`$ on its cover (Lemma 3′) | Proved |
+| The published three-loop weight, planar and non-planar: holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ with growth $`(1+\vert L\vert )^6`$ | Proved (THREE_LOOP_WEIGHT: exact expansion at $`z=-1`$ in rational arithmetic) |
 | Extension to $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ (Lemma 3, steps A to D) | Proved at every square where the certificate passes: verified in interval arithmetic over the ranges of $`s/t`$ given in section 5 |
-| The edge statement implies the double pole | Proved for the cusp-local model, from the Lorentzian domain (CUSP_LOCAL_MODEL section 8). For the full integral the reduction to four cusp-local models is proved for the parametric integral. In position space the integrand reduces exactly to two edge pieces, each equal to its two end terms up to a single pole (CUSP_LOCAL_MODEL sections 9 to 11): this gives the double pole $`4M[F]`$ for $`z^p`$ and for the three benchmark weights with spacelike diagonals, as an iterated integral and as the limit $`\varepsilon\to0`$ of the real integral (CUSP_LOCAL_MODEL sections 12 and 13). With a timelike diagonal both edge pieces are derived in position space for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, with the displacement removed last (as an iterated integral; its identification with the unordered integral rests on power counting), and by superposition for the three benchmark weights (CUSP_LOCAL_MODEL sections 11.5 and 14) |
+| The edge statement implies the double pole | Proved for the cusp-local model, from the Lorentzian domain (CUSP_LOCAL_MODEL section 8). For the full integral the reduction to four cusp-local models is proved for the parametric integral. In position space the integrand reduces exactly to two edge pieces, each equal to its two end terms up to a single pole (CUSP_LOCAL_MODEL sections 9 to 11): this gives the double pole $`4M[F]`$ for $`z^p`$ and for the three benchmark weights with spacelike diagonals, as an iterated integral and as the limit $`\varepsilon\to0`$ of the real integral (CUSP_LOCAL_MODEL sections 12 and 13). With a timelike diagonal both edge pieces are derived in position space for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, with the displacement removed last (as an iterated integral, equal to the unordered integral where that converges absolutely, CUSP_LOCAL_MODEL Lemma 13.1), and by superposition for the three benchmark weights (CUSP_LOCAL_MODEL sections 11.5 and 14) |
 | Only the edges pinch the contour (Proposition 5) | Algebra exact; displacement constructed |
 | Global absolutely convergent contour (Proposition 6) | Constructed for every square in all three regions; proved with explicit constants; absolute integrability proved for polynomially bounded weights and for $`z^p`$ with $`\vert {\rm Re}\,p\vert <\eta`$ |
 | Regulated integral of $`z^p`$ on the contour equals the Mellin–Barnes form | Proved for $`\vert {\rm Re}\,p\vert <\eta`$, where the certificate passes (GATE_6_CONTOUR sections 11 and 12) |

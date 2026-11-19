@@ -79,9 +79,10 @@ $`\eta-1<\operatorname{Re}p<1+\eta`$):
     superposition this gives the double pole $`4M[F]`$ for the three
     benchmark weights with a timelike diagonal without the contour. The
     proof works with the iterated integral at positive displacement,
-    where every step converges absolutely; that this is the integral
-    over $`\mathbb R^D`$ for $`|\operatorname{Re}p|<\tfrac12-\eta`$ rests
-    on power counting.
+    where every step converges absolutely; it is the integral over
+    $`\mathbb R^D`$ wherever that converges absolutely, which Lemma 13.1
+    proves for $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ in the
+    region $`s<0<t`$ and for the mirror interval in the other.
 
 With a timelike diagonal the second edge piece is not a positive integral
 in the cube variables, but each edge piece is also a one-dimensional
@@ -1321,7 +1322,10 @@ st\int\frac{F(z)}{x_{01}^2x_{02}^2x_{03}^2x_{04}^2}=-2\pi^2i\,\frac{4\,M[F]}{\et
 
 The hypothesis holds for $`\bar F^{(0)}`$ and $`\bar F^{(1)}`$ with any
 $`W`$ and for $`\bar F^{(2)}`$ with $`W=3\pi-\delta`$ (GATE_6_BOUNDS,
-Lemma 3′).
+Lemma 3′). It also holds, with $`W=3\pi-\delta`$ and $`k=6`$, for the
+planar and the non-planar part of the published three-loop weight
+(THREE_LOOP_WEIGHT, corollary), so what is said below for the three
+benchmark weights applies to it too.
 
 *Proof.* By GATE_6_BOUNDS Lemma 3, for $`0<\sigma<1/m`$,
 $`f(L)=\int_{\operatorname{Re}p=-\sigma}c_+(p)e^{pL}dp+\int_{\operatorname{Re}p=\sigma}c_-(p)e^{pL}dp`$
@@ -1521,28 +1525,179 @@ coordinates of section 9, $`d^Dx_0=\tfrac12\,d\alpha\,d\beta\,d^{2+2\eta}y`$
 (for $`|s|=1`$), and the displacement amounts to $`\rho\to\rho+i\varepsilon`$
 in all four invariants, the measure being unchanged.
 
-**Lemma 13.1 (absolute convergence).** For $`\varepsilon>0`$ the integral
-$`I_\varepsilon[F]`$ converges absolutely, for $`F`$ polynomially bounded
-in $`\log z`$ and for $`F=z^p`$ with $`|\operatorname{Re}p|<\tfrac12-\eta`$.
+**Lemma 13.1 (absolute convergence).** Let $`\varepsilon>0`$ and
+$`0<\eta<\tfrac12`$, with diagonals of either sign. The integral
+$`I_\varepsilon[F]`$ over $`\mathbb R^D`$ converges absolutely
 
-*Proof.* No invariant vanishes. At infinity, away from the cones, the
-integrand is $`O(r^{-8})`$ against $`r^{3+2\eta}dr`$. Near one cone use
-$`x_{01}^2`$ as a coordinate: $`d^Dx_0\propto dx_{01}^2\,r^{D-3}dr\,d\Omega`$,
-the other three invariants are of order $`r`$, and
-$`\int dx_{01}^2/|x_{01}^2-i\varepsilon|`$ over $`|x_{01}^2|\lesssim r`$ is a
-logarithm, so the radial integrand is $`r^{2\eta-2}`$ up to logarithms.
-Each further invariant that is small trades a factor $`1/r`$ of the
-measure for a logarithm, with the same power. For $`z^p`$ the powers are
-$`1\pm\sigma`$ and the worst region is where the two invariants with the
-power $`1+|\sigma|`$ are small together. Their cones meet in a non-compact
-surface; there $`d\alpha\,d\rho=dx_{01}^2\,dx_{03}^2`$ at fixed $`\beta`$, the
-two small invariants integrate to $`C\varepsilon^{-2|\sigma|}`$, and what
-is left is $`\int d\beta\,\beta^{2\eta-2+2|\sigma|}`$, which converges exactly
-when $`|\sigma|<\tfrac12-\eta`$. $`\blacksquare`$
+- for $`F=f(\log z)`$ with $`|f(L)|\le A(1+|L|)^k`$ on the range of
+  $`\operatorname{Im}L`$ that occurs, which is contained in
+  $`|\operatorname{Im}L|\le3\pi`$ (for a weight with branch points this
+  is a condition on the continued function, not on the principal
+  sheet);
+- for $`F=z^p`$ with $`|\operatorname{Re}p|<\tfrac12-\eta`$;
+- when one diagonal is timelike, for $`F=z^p`$ on the larger interval
+  $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ if $`s<0<t`$, and
+  $`-(\tfrac12-\eta)<\operatorname{Re}p<1-2\eta`$ if $`t<0<s`$.
 
-An earlier version of this lemma claimed the range
-$`|\operatorname{Re}p|<1-2\eta`$. That was wrong: the integral diverges for
-$`|\sigma|\ge\tfrac12-\eta`$. The error was found on review.
+It follows from an estimate for arbitrary powers. Write
+$`X_i=x_{0i}^2`$, let $`a_i\in(0,2)`$, $`S=\sum_ia_i`$, and for $`i\ne j`$
+let $`\gamma_{ij}=1+\eta`$ if $`x_i,x_j`$ are adjacent, $`\gamma_{ij}=1`$ if
+they are opposite with a spacelike diagonal, and $`\gamma_{ij}=\infty`$ if
+they are opposite with a timelike diagonal (so that
+$`(a-\gamma_{ij})_+=0`$). Put
+
+```math
+\pi_{ij}=\begin{cases}(a_i-1)+(a_j-\gamma_{ij})_+,&a_i\ge1,\\[2pt](a_i+a_j-1-\gamma_{ij})_+,&a_i<1,\end{cases}
+\qquad(x)_+=\max(x,0).
+```
+
+**Lemma 13.1′.** If $`S-\max_{i\ne j}\pi_{ij}>3+2\eta`$ then
+$`\int_{\mathbb R^D}\prod_i|X_i-i\varepsilon|^{-a_i}\,d^Dx_0<\infty`$.
+
+*Proof.* The integrand is continuous and at most $`\varepsilon^{-S}`$, so
+only infinity matters, and by the reflection $`x\to-x`$ (which gives a
+quadrilateral of the same kind) only the half $`t\ge0`$.
+
+*Coordinates.* After a translation and a Lorentz transformation the
+cusps lie in a three-dimensional subspace, time and a plane: the
+differences of the cusps contain two null vectors with non-zero
+product, hence a timelike vector, and span at most three dimensions. Write $`x_0=(t,\varrho\,\omega)`$ with $`\varrho\ge0`$ and
+$`\omega`$ on the unit sphere of the $`D-1`$ space dimensions, and
+$`u=t-\varrho`$, $`v=t+\varrho`$, so that $`t\ge0`$ is $`|u|\le v`$ and
+$`d^Dx_0=\tfrac12\big(\tfrac{v-u}2\big)^{D-2}du\,dv\,d\omega`$. The
+invariants depend on $`\omega`$ only through its component
+$`\omega_\parallel`$ in the plane, a point of the closed unit disc, on
+which $`d\omega`$ induces the finite measure
+$`d\mu=c\,(1-|\omega_\parallel|^2)^{\eta-1/2}d^2\omega_\parallel`$. (This
+is the meaning of the integral in non-integer dimension: the
+$`1+2\eta`$ directions orthogonal to the cusps enter radially.) With
+$`x_i=(t_i,\vec x_i)`$ and $`n(\omega)=(1,\omega)`$,
+
+```math
+X_i=(u-\ell_i)(v-m_i)-p_i^2,\qquad
+\ell_i=t_i-\omega\!\cdot\!\vec x_i=n\!\cdot\!x_i,\quad m_i=t_i+\omega\!\cdot\!\vec x_i,\quad p_i^2=|\vec x_i|^2-(\omega\!\cdot\!\vec x_i)^2,
+```
+
+which is an identity. Let $`K`$ bound $`|\ell_i|,|m_i|,p_i`$. For
+$`v\ge2K`$ put $`\tilde\ell_i=\ell_i+p_i^2/(v-m_i)`$; then
+$`|X_i|=(v-m_i)|u-\tilde\ell_i|\ge\tfrac v2|u-\tilde\ell_i|`$, and since
+$`|X_i-i\varepsilon|\ge\tfrac12(|X_i|+\varepsilon)`$,
+
+```math
+\prod_i|X_i-i\varepsilon|^{-a_i}\le\Big(\frac4v\Big)^{S}\prod_i\big(|u-\tilde\ell_i|+\delta\big)^{-a_i},\qquad\delta=\frac{2\varepsilon}v .
+```
+
+The part $`t\ge0`$, $`v\le V_0`$ is bounded. So it is enough to show
+
+```math
+\int_{V_0}^\infty dv\,v^{D-2-S}\int d\mu(\omega)\,G(\omega,v)<\infty,\qquad
+G=\int_{-v}^{v}du\prod_i\big(|u-\tilde\ell_i|+\delta\big)^{-a_i}.
+\tag{$*$}
+```
+
+*Separation of the points.* Let $`d_{ij}(\omega)=|n\!\cdot\!(x_i-x_j)|`$.
+(a) No three of the $`\ell_i(\omega)`$ coincide. Three cusps contain two
+adjacent pairs, say $`(i,j)`$ and $`(j,k)`$. If $`n\cdot(x_i-x_j)=0`$
+with $`x_i-x_j`$ null, then $`\omega_\parallel`$ is the unit vector along
+$`\vec x_i-\vec x_j`$ and $`n`$ is proportional to $`x_i-x_j`$; then
+$`n\cdot(x_j-x_k)`$ is proportional to $`(x_i-x_j)\cdot(x_j-x_k)`$, which
+is $`\mp\tfrac12`$ a diagonal invariant and is not zero. By compactness
+there is $`c_0>0`$ with $`\max(d_{ij},d_{jk},d_{ik})\ge4c_0`$ for every
+triple and every $`\omega`$. Since $`|\tilde\ell_i-\ell_i|\le2K^2/v`$,
+for $`v\ge V_0`$ each $`\tilde\ell_i`$ has at most one other within
+$`c_0`$. (b) For $`x\ge0`$,
+
+```math
+\mu\{d_{ij}\le x\}\le C\,x^{\gamma_{ij}}\quad(\gamma_{ij}<\infty),\qquad d_{ij}\ge c>0\quad(\gamma_{ij}=\infty).
+```
+
+Let $`x_i-x_j=(d^0,\vec d)`$ and let $`a`$ be the coordinate of
+$`\omega_\parallel`$ along $`\vec d`$; the measure of a slice at fixed
+$`a`$ is $`c'(1-a^2)^{\eta}`$. If the pair is opposite with a spacelike
+diagonal, $`|\vec d|>|d^0|`$ and the set is a strip
+$`|a-a_0|\le x/|\vec d|`$: measure at most $`Cx`$. If the pair is
+adjacent, $`|\vec d|=|d^0|`$ and the set is $`1-a\le x/|d^0|`$ (or
+$`1+a`$): measure at most $`C\int_{1-x'}^1(1-a^2)^\eta da\le Cx^{1+\eta}`$.
+If the pair is opposite with a timelike diagonal,
+$`d_{ij}\ge|d^0|-|\vec d|>0`$. (c) With
+$`\tilde d_{ij}=|\tilde\ell_i-\tilde\ell_j|`$,
+$`\tilde d_{ij}+\delta\ge c_\varepsilon(d_{ij}+\delta)`$: if
+$`d_{ij}\ge8K^2/v`$ then $`\tilde d_{ij}\ge\tfrac12d_{ij}`$; otherwise
+$`d_{ij}+\delta\le(8K^2+2\varepsilon)/v`$ and $`\delta=2\varepsilon/v`$ is
+a fixed fraction of it.
+
+*The integral over $`u`$.* Split $`[-v,v]`$ according to which
+$`\tilde\ell_i`$ is nearest to $`u`$, and put $`r=|u-\tilde\ell_i|`$. For
+any other point, $`|u-\tilde\ell_j|\ge\tfrac13(r+\tilde d_{ij})`$. Let
+$`j`$ be the point nearest to $`\tilde\ell_i`$; the remaining two are at
+distance at least $`c_0`$ from it. So on that piece the integrand is at
+most $`C(r+\delta)^{-a_i}(r+\tilde d_{ij}+\delta)^{-a_j}(r+c_0)^{-(S-a_i-a_j)}`$.
+The part $`r\ge c_0`$ contributes at most $`C\int_{c_0}^\infty r^{-S}dr`$,
+a constant ($`S>1`$). On $`r\le c_0`$ the last factor is bounded, and:
+
+- if $`a_i>1`$,
+  $`\int_0^{c_0}(r+\delta)^{-a_i}(r+\tilde d+\delta)^{-a_j}dr\le\dfrac{\delta^{1-a_i}}{a_i-1}(\tilde d+\delta)^{-a_j}`$;
+- if $`a_i<1`$, splitting at $`r=\tilde d+\delta`$, the same integral is
+  at most $`C\big(1+(\tilde d+\delta)^{1-a_i-a_j}\big)`$ when
+  $`a_i+a_j\ne1`$;
+- if $`a_i=1`$, or $`a_i+a_j=1`$, raise $`a_i`$ by a small $`\kappa>0`$
+  first: $`(r+\delta)^{-a_i}\le(c_0+1)^\kappa(r+\delta)^{-a_i-\kappa}`$ on
+  this range.
+
+Hence, with (c),
+
+```math
+G\le C\Big[1+\sum_{a_i\ge1}\delta^{1-a_i}\sum_{j\ne i}(d_{ij}+\delta)^{-a_j}+\sum_{a_i<1}\sum_{j\ne i}(d_{ij}+\delta)^{-(a_i+a_j-1)_+}\Big],
+```
+
+where for $`a_i=1`$ the exponent $`1-a_i`$ is read as $`-\kappa`$.
+
+*The integral over $`\omega`$.* By (b), for $`b>0`$,
+$`\int(d_{ij}+\delta)^{-b}d\mu\le C+Cb\int_0^{2K}(x+\delta)^{-b-1}x^{\gamma_{ij}}dx\le C\big(1+\delta^{-(b-\gamma_{ij})_+-\kappa}\big)`$,
+the $`\kappa`$ being needed only if $`b=\gamma_{ij}`$. So
+$`\int G\,d\mu\le C(1+\max_{i\ne j}\delta^{-\pi_{ij}-2\kappa})`$.
+
+*The integral over $`v`$.* With $`\delta=2\varepsilon/v`$ and
+$`D-2=2+2\eta`$, $`(*)`$ is at most
+$`C_\varepsilon\int_{V_0}^\infty v^{2+2\eta-S}(1+v^{\max\pi_{ij}+2\kappa})dv`$,
+finite when $`S-\max\pi_{ij}>3+2\eta`$ and $`\kappa`$ is small.
+$`\blacksquare`$
+
+*Proof of Lemma 13.1.* *Powers.* $`|z_\varepsilon^p|`$ is
+$`e^{-\tau\arg z_\varepsilon}\le e^{3\pi|\tau|}`$ times the moduli to the
+powers $`\pm\sigma`$, so the exponents are $`a_1=a_3=1+\sigma`$,
+$`a_2=a_4=1-\sigma`$, $`S=4`$, and the condition is
+$`\max\pi_{ij}<1-2\eta`$. Take $`\sigma>0`$. For $`i\in\{1,3\}`$: an
+adjacent $`j`$ has $`a_j=1-\sigma<\gamma_{ij}`$, so $`\pi_{ij}=\sigma`$;
+the opposite one has $`a_j=1+\sigma`$ and gives $`\pi_{13}=2\sigma`$ if
+$`s<0`$, and nothing beyond $`\sigma`$ if $`s>0`$. For $`i\in\{2,4\}`$,
+$`a_i<1`$ and $`a_i+a_j-1-\gamma_{ij}`$ is $`-\eta`$ or $`-2\sigma`$:
+$`\pi_{ij}=0`$. So the condition is $`2\sigma<1-2\eta`$ if $`s<0`$ and
+$`\sigma<1-2\eta`$ if $`s>0`$. For $`\sigma<0`$ exchange the roles of
+$`(1,3)`$ and $`(2,4)`$, and of $`s`$ and $`t`$. For $`\sigma=0`$,
+$`\pi_{ij}=\kappa`$.
+
+*Polynomially bounded weights.* $`|\log z_\varepsilon|\le\sum_i\big|\log|X_i-i\varepsilon|\big|+C`$
+and $`|\log A|^k\le C_\kappa(A^\kappa+A^{-\kappa})`$, so the integrand is
+at most a constant times a sum of products with one exponent
+$`1\pm\kappa`$ and the others 1, for which
+$`S\ge4-\kappa`$ and $`\max\pi_{ij}\le3\kappa`$. $`\blacksquare`$
+
+Only the upper bound is proved here. The condition appears to be
+sharp: an independent review integrated the true integrand numerically
+and found the density in $`v`$ growing like $`v^{2+2\eta-S+\max\pi_{ij}}`$
+in eleven cases, over four decades, so that for the powers with
+spacelike diagonals the integral diverges for
+$`|\sigma|\ge\tfrac12-\eta`$, where the cones of the two opposite cusps
+with the power $`1+|\sigma|`$ meet along a non-compact surface. With a timelike diagonal those two cones do not meet at
+infinity, which is the reason for the larger interval. An earlier
+version of this lemma argued by power counting, and before that claimed
+the range $`|\operatorname{Re}p|<1-2\eta`$ for spacelike diagonals, which
+was wrong; the error was found on review. The same review checked
+every step of the proof above by hand and found no error; it confirmed
+the identity, the measure on the disc and the three sublevel estimates
+numerically, and asked for the wording now used for the coordinates,
+for timelike pairs and for the first case of the lemma.
 
 **Theorem 13.2 (the displacement last).** For $`F`$ as in section 12,
 
@@ -2574,7 +2729,9 @@ $`x_0`$ (only the $`\alpha`$ line is closed, at fixed $`\beta`$ and $`y`$),
 no Mellin–Barnes form and no continuation in $`T`$ is used. Where the
 integral over $`\mathbb R^D`$ converges absolutely, $`I_\varepsilon`$ is
 that integral, by Fubini, and the limit is the Feynman integral in the
-usual sense; see the remark after the proof. Outside that range the
+usual sense. By Lemma 13.1 that is the case for
+$`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ (in the region
+$`s<0<t`$ treated here). Outside that range the
 iterated integral is the analytic continuation in $`p`$ of the Feynman
 integral, not the Feynman integral itself.
 
@@ -2609,23 +2766,17 @@ integrals, valid for $`|\sigma|<1-\eta`$, and give
 $`T_r^\eta A(-p;1/T_r)`$. The double pole is the theorem of section 11.5.
 $`\blacksquare`$
 
-*Remark (the integral over $`\mathbb R^D`$).* By power counting in the
-manner of Lemma 13.1 the integral over real $`x_0`$ converges absolutely
-at $`\varepsilon>0`$ for $`|\sigma|<\tfrac12-\eta`$, and then it equals
-the iterated integral above. For $`\sigma>0`$ the two invariants with the
-power $`1+\sigma`$ are $`x_{01}^2`$ and $`x_{03}^2`$, whose cones meet in a
+*Remark (the integral over $`\mathbb R^D`$).* By Lemma 13.1 the
+integral over real $`x_0`$ converges absolutely at $`\varepsilon>0`$ for
+$`-(1-2\eta)<\sigma<\tfrac12-\eta`$, and then it equals the iterated
+integral above. For $`\sigma>0`$ the two invariants with the power
+$`1+\sigma`$ are $`x_{01}^2`$ and $`x_{03}^2`$, whose cones meet in a
 non-compact surface as for spacelike diagonals. For $`\sigma<0`$ they are
-$`x_{02}^2`$ and $`x_{04}^2`$, whose cones meet in the compact sphere
-$`S`$, where the local integral is $`C\varepsilon^{-2|\sigma|}`$; a single
-small invariant with that power leaves $`r^{2\eta-2+|\sigma|}`$, which
-converges for $`|\sigma|<1-2\eta`$, a weaker condition. This is power
-counting and not a complete estimate; the review of this section redid
-it for this region (on the surface where the cones of $`x_1`$ and
-$`x_3`$ meet, $`|x_{04}^2|\ge(2T-1-2\sqrt{T(T-1)})|\beta|`$, and no three
-cones meet at infinity) and found the same ranges. A first version of
-the theorem used this convergence in its proof; the theorem as stated
-now does not, and only the identification of the iterated integral with
-the unordered one depends on it.
+$`x_{02}^2`$ and $`x_{04}^2`$, whose cones meet only in the compact sphere
+$`S`$, so that the limit comes from a single cone at infinity. A first
+version of the theorem used this convergence in its proof, and it was
+then known by power counting only; the theorem as stated does not use
+it, and the convergence is now proved (Lemma 13.1′).
 
 The limit in (5) is slow: at $`(T,\eta,\beta)=(2.2,0.3,0.4)`$ the closed
 form at displacement $`\varepsilon`$ differs from its limit by an amount
@@ -2754,8 +2905,10 @@ rate in $`\operatorname{Im}p`$ was below $`2\pi`$ (the lemma's rate
 $`2\pi+2\phi`$ is not sharp). Its one reservation is about scope and is
 now in the statement of the theorem: the iterated integral is the
 Feynman integral only where the integral over $`\mathbb R^D`$ converges
-absolutely, which rests on power counting. It did not check steps (3)
-and (5), that power counting, or the paragraph on the other region.
+absolutely, which then rested on power counting. It did not check
+steps (3) and (5), that power counting, or the paragraph on the other
+region. The power counting has since been replaced by the estimate of
+Lemma 13.1′.
 
 **The other timelike region.** Let $`s>0>t`$ with $`|t|<s`$; put
 $`s=1`$, $`t=-\tau_0`$, $`0<\tau_0<1`$. The cyclic relabelling
@@ -2789,8 +2942,9 @@ region of spacelike diagonals.
   removed last, taken in the order $`\alpha`$, $`y`$, $`\beta`$ at positive
   displacement, is the sum of the two continued pieces and its double
   pole is four units (Theorem 14.T). For
-  $`|\operatorname{Re}p|<\tfrac12-\eta`$ this is the integral over
-  $`\mathbb R^D`$, by power counting.
+  $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ (region $`s<0<t`$;
+  the mirror interval in the other) this is the integral over
+  $`\mathbb R^D`$, by Lemma 13.1.
 - For $`z^p`$ with $`0<\operatorname{Re}p<1-\eta`$ in the region
   $`s<0<t`$ (and $`-(1-\eta)<\operatorname{Re}p<0`$ in the other): the
   same for the iterated integral with the displacement removed first,
