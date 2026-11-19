@@ -1683,13 +1683,43 @@ at most a constant times a sum of products with one exponent
 $`1\pm\kappa`$ and the others 1, for which
 $`S\ge4-\kappa`$ and $`\max\pi_{ij}\le3\kappa`$. $`\blacksquare`$
 
-Only the upper bound is proved here. The condition appears to be
-sharp: an independent review integrated the true integrand numerically
-and found the density in $`v`$ growing like $`v^{2+2\eta-S+\max\pi_{ij}}`$
-in eleven cases, over four decades, so that for the powers with
-spacelike diagonals the integral diverges for
-$`|\sigma|\ge\tfrac12-\eta`$, where the cones of the two opposite cusps
-with the power $`1+|\sigma|`$ meet along a non-compact surface. With a timelike diagonal those two cones do not meet at
+**Sharpness for the powers.** If the diagonal $`s`$ is spacelike and
+$`\sigma\ge\tfrac12-\eta`$ the integral of $`|z_\varepsilon^p|/\prod|X_i-i\varepsilon|`$
+diverges (and likewise for $`t`$ spacelike and $`\sigma\le-(\tfrac12-\eta)`$).
+So the range $`|\sigma|<\tfrac12-\eta`$ for spacelike diagonals, and
+the end $`\tfrac12-\eta`$ of the interval for $`s<0<t`$, cannot be
+improved.
+
+*Proof.* In the coordinates above, $`|X_i|\le2v|u-\tilde\ell_i|`$ for
+$`|u|\le v`$, so $`|X_i-i\varepsilon|\le2v(|u-\tilde\ell_i|+\delta)`$,
+and the factor $`e^{-\tau\arg z}`$ is bounded below. Let
+$`h(\omega)=\tilde\ell_1-\tilde\ell_3`$. It differs from
+$`n\cdot(x_1-x_3)`$ by $`O(1/v)`$ and is Lipschitz in
+$`\omega_\parallel`$ with a constant $`\Lambda`$ independent of $`v`$.
+Since $`x_1-x_3`$ is spacelike, $`n\cdot(x_1-x_3)`$ takes values
+$`\pm c`$ at two interior points of the disc, so for large $`v`$ there
+are two balls $`B_\pm`$ in the interior on which $`\pm h\ge c/2`$. Every
+segment from $`B_-`$ to $`B_+`$ parallel to the line of centres contains
+a zero of $`h`$ and hence an interval of length $`\delta/\Lambda`$ on
+which $`|h|\le\delta`$; the density of $`\mu`$ is bounded below on the
+convex hull of the balls, so $`\mu\{|h|\le\delta\}\ge c'\delta`$. For
+such $`\omega`$ and $`|u-\tilde\ell_1|\le\delta`$ the two factors with
+$`i=1,3`$ are at least $`(6v\delta)^{-(1+\sigma)}`$ each, the other two
+at least $`(Cv)^{-(1-\sigma)}`$, and the measure is at least
+$`cv^{D-2}du\,d\mu\,dv`$. The integral is therefore at least
+
+```math
+c\int^\infty dv\,v^{D-2}\,v^{-4}\,\delta^{-2-2\sigma}\cdot\delta\cdot\delta
+=c_\varepsilon\int^\infty v^{2\eta-2+2\sigma}\,dv=\infty\qquad(\sigma\ge\tfrac12-\eta).\qquad\blacksquare
+```
+
+For general exponents only the upper bound is proved. An independent
+review integrated the true integrand numerically and found the density
+in $`v`$ growing like $`v^{2+2\eta-S+\max\pi_{ij}}`$ in eleven cases,
+over four decades, which suggests that the general condition is sharp
+too. For the powers the divergence arises where the cones of the two
+opposite cusps with the power $`1+|\sigma|`$ meet along a non-compact
+surface. With a timelike diagonal those two cones do not meet at
 infinity, which is the reason for the larger interval. An earlier
 version of this lemma argued by power counting, and before that claimed
 the range $`|\operatorname{Re}p|<1-2\eta`$ for spacelike diagonals, which

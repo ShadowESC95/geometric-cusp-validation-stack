@@ -151,7 +151,10 @@ of $`1/(1+x)`$, and the non-planar part has the value
 
 the same on both lips. The finiteness is not an accident: the paper
 imposes it at $`x=-1`$ as the boundary condition that fixes the
-integration constants of its master integrals. As a check of the whole
+integration constants of its master integrals (its discussion of the
+differential equations: "impose the finiteness condition at $`x=-1`$").
+What is shown here is more than finiteness: there is no logarithm at
+all, so no branch point. As a check of the whole
 expansion and not only of the vanishing coefficients, the series
 $`\sum_ud_uI_u(y)`$ summed at $`|y|=0.3`$ agrees with the independent
 numerical continuation of `geocusp.hpl` to about $`2\times10^{-13}`$ for
@@ -204,7 +207,16 @@ monodromy below $`10^{-38}`$, values and slopes equal to the exact ones to
 $`10^{-22}`$, and the module's series equal to its continuation to
 $`10^{-39}`$. It found one wrong sign in the table above, corrected, and
 asked for the qualification "computer-assisted". It did not check that
-the files are the published functions.
+the files are the published functions. On that point: the files used
+are the ancillary files of the arXiv submission itself, downloaded
+twice with identical contents, and the circle means computed from them
+reproduce the published cusp anomalous dimension through four loops
+(table above), which a wrong coefficient would not. The theorems
+applied to the weight are stated for the class of Lemma 3 of
+GATE_6_BOUNDS (steps A to D and Theorem M there with $`W>\Phi`$;
+CUSP_LOCAL_MODEL section 12 with $`W>2\pi`$, section 13 with
+$`W>2\pi+4e`$, section 14 with $`W>5\pi/2`$), and use nothing else about
+the weight; $`W=3\pi-\delta`$ satisfies each.
 
 What remains numerical: that the strip cannot be made wider. After one
 turn around the origin the loop around $`x=-1`$ changes both parts by an

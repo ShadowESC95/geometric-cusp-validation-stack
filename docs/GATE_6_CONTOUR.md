@@ -1488,7 +1488,12 @@ timelike diagonal (Lemma Q). Still open:
   the same angle), and in float64 the survey cannot resolve points within
   $`10^{-15}`$ of a tangency line. The excursion bounds in the tables of
   this document were also out of date and now show the values the
-  certificate returns, 0.108 and 0.074.
+  certificate returns, 0.108 and 0.074. Nothing else changes: the
+conditions that involve $`e`$, namely (D) itself ($`e<0.2`$) and (Q1),
+are evaluated by the certificate, in floating point and in interval
+arithmetic, from the value it computes and not from the tables, and
+$`\tan(c_0+3e)=0.575`$ is within the bounds quoted in sections 5 and 9;
+the strip condition $`2\pi+4e<W`$ holds with room to spare.
 - **The certificate** is verified in interval arithmetic on the ranges of
   section 9 and in floating point outside them. The field itself is
   evaluated in floating point in the surveys: within about $`10^{-9}`$ of an edge the float64 field loses the sign of
