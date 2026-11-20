@@ -561,8 +561,12 @@ $`2.5\times10^{-15}\le s/t\le4\times10^{14}`$ in the region $`(-,-)`$,
 $`1\le|s/t|\le4\times10^{14}`$ in $`(+,-)`$ and
 $`2.5\times10^{-15}\le|s/t|\le1`$ in $`(-,+)`$ (GATE_6_CONTOUR section 9;
 the ranges were $`0.00076`$ to $`1341`$ and $`1.0001`$ to $`1342`$ before a
-graded cover extended them). The degenerate limits themselves are not
-reached.
+graded cover extended them), and by GATE_6_PHASE section 7.1, with
+constants scaled with the square, for every square: every $`s/t>0`$ in
+$`(-,-)`$ and every square with a timelike diagonal. So the conclusion holds
+at every light-like square. It is a statement at each fixed square; the
+constants of the contour, and with them the quantitative estimates on the
+contour, degenerate as the square does.
 
 **What "double pole" means.** The statement proved is the limit of
 $`\epsilon^2st\,I_\eta[F]`$ as $`\eta\to0`$. For spacelike diagonals there is
@@ -818,7 +822,7 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.194`$ for $`1\le\vert s/t\vert\le4\times10^{14}`$ and the mirror range, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured on the contours surveyed: $`2\pi`$. Not a property of the construction: admissible constants exist with an excess of order $`10^{-7}`$ |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.1908`$ for every square, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured on the contours surveyed: $`2\pi`$. Not a property of the construction: admissible constants exist with an excess of order $`10^{-7}`$ |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |

@@ -578,8 +578,11 @@ $`|n^2|\ge\tfrac34|\xi|(|\xi|-4\Delta)`$, and the ratio decreases in
 $`|\xi|`$, so it is largest at $`|\xi|=2R/\sqrt5`$. *Conditions:*
 $`\kappa'^2\le\tfrac12`$ (so that $`2\kappa'/(1-\kappa'^2)\le4\kappa'`$
 in the first case), $`\kappa'^2(2C_b-1)\le\tfrac12`$, and
-$`\kappa'^2\big(\tfrac{\sqrt5}2\xi_0+2\Delta+\tau_0\big)^2\le\tfrac38\xi_0(\xi_0-4\Delta)`$
-with $`\xi_0=2R/\sqrt5`$. They hold by many orders of magnitude
+$`\kappa'^2\big(\tfrac{\sqrt5}2\xi_c+2\Delta+\tau_0\big)^2\le\tfrac38\xi_c(\xi_c-4\Delta)`$
+with $`\xi_c=2R/\sqrt5`$ (the ratio decreases in $`|\xi|`$ because
+$`\tfrac{d}{d\xi}\log`$ of it is
+$`\tfrac{2a}{a\xi+b}-\tfrac1\xi-\tfrac1{\xi-4\Delta}<\tfrac2\xi-\tfrac2\xi=0`$ with
+$`a=\tfrac{\sqrt5}2`$, $`b=2\Delta+\tau_0`$). They hold by many orders of magnitude
 ($`|V^2|/|n^2|\le7\times10^{-6}`$ where the far field moves an argument
 out) and are now part of the certificate (`D_far_real_part`). This
 paragraph was added after a review that re-derived (D) zone by zone, the
@@ -719,18 +722,29 @@ in the region $`(-,-)`$ and for $`1\le|s/t|\le4\times10^{14}`$, and the
 mirror range, with a timelike diagonal. At $`|s/t|=1`$ the square is a
 parallelogram in a plane; a review went through every use of
 $`u=-s-t`$ and of the span of the cusps and found the construction
-regular there. Towards $`\pi`$ the cover continues to pass down to a
-distance of about $`10^{-8}`$ and then fails in (H1), where the
-float64 constants of `tuned_contour` lose their meaning
-($`|D'|\approx10^{-16}`$); the degenerate limit itself is not reached.
-The constants have a clean scaling limit there ($`\delta_0\propto|D'|`$,
-$`\kappa=\nu\propto\delta_0|D'|`$, $`\kappa'\propto\pi-{\rm angle}`$,
-margins not shrinking), so the limit could be settled by one interval
-evaluation in scaled variables, which has not been written. Near the
-end of the range the statement is about the contour with those
-constants; the float64 implementation of the field is not an accurate
-realisation of it there. The numbers in the next paragraph refer to the
-original ranges.
+regular there. Towards the degenerate squares the graded cover stops
+near a distance of $`10^{-8}`$, in (H1), because (H1) is checked there
+unscaled against a float64 gap.
+
+The rest is settled in GATE_6_PHASE section 7.1 (`geocusp.scaled_limit`).
+With $`d`$ the distance of the angle from a degenerate end and the
+constants prescribed as functions of $`d`$,
+$`\delta_0=\tfrac3{64}|D'|`$, $`\kappa=\nu=2^{-20}\delta_0|D'|`$,
+$`\kappa'=2^{-9}|D'|^{1/2}`$, $`R=\tau_0=9`$, every condition of this
+section, written in scaled variables in which the powers of $`d`$ are
+divided out, is verified in interval arithmetic for all $`0<d\le0.1`$, at
+both ends of $`(-,-)`$ and at the degenerate end of each timelike region.
+Together with the uniform covers, every light-like square has a contour
+that satisfies all the conditions: every $`s/t>0`$ in $`(-,-)`$, and every
+square with a timelike diagonal, $`|s/t|=1`$ included. An independent
+review found this proved as written. What does not survive the limit is
+the size of the constants: $`\delta_0\propto d^2`$, $`\kappa=\nu\propto d^4`$
+and $`\kappa'\propto d`$, so the quantitative bounds that scale with them
+(Lemma 6, the strips of Lemma 7, Lemma 9) degenerate, and nothing here
+bounds the integral uniformly as the square degenerates. Near the end of
+the range the float64 implementation of the field is not an accurate
+realisation of the contour; the statements concern the mathematical
+contour. The numbers in the next paragraph refer to the original ranges.
 
 On these ranges $`e\le0.093`$ and $`\mu_Q\le0.0201`$, with
 $`\tan(c_0+3e)\le0.66`$, so $`\mu_Q\tan(c_0+3e)\le0.014`$. For (H1) the value
@@ -752,8 +766,9 @@ direction is
 $`v=(a_1b_3-a_3b_1,\ a_0b_3-a_3b_0,\ 0,\ a_1b_0-a_0b_1)`$ for edges $`a,b`$,
 with $`-v^2=(a\!\cdot b)^2`$; hence $`B^2\le1+|v|^2/(a\!\cdot b)^2`$. Closer
 to the degenerate squares the four-cone gap of (H1) closes and finer boxes
-are needed; the limit itself, $`s/t\to0`$ or $`\infty`$, is not reached by
-any finite cover. What interval arithmetic certifies is the list of
+are needed; no finite cover with fixed constants reaches the degenerate
+squares, which is why GATE_6_PHASE section 7.1 scales the constants with
+the square. What interval arithmetic certifies is the list of
 inequalities; that those inequalities imply the properties of the contour
 is the content of the proofs above.
 

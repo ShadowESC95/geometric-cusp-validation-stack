@@ -14,9 +14,12 @@ $`R<r<2R`$ and $`r\ge2R`$, under explicit inequalities between the constants
 of the contour (section 6). The right side is $`2\pi+0.12`$ for the default
 constants and between $`2\pi+0.17`$ and $`2\pi+0.19`$ at ten tuned squares
 evaluated in floating point; for $`r\ge2R`$ the bound is $`2\pi`$ exactly. In
-interval arithmetic: for every square with angle in $`[0,\pi-10^{-7}]`$ the
-conditions hold for the contour with the constants of the midpoint of its
-box, and the zone-by-zone bound is at most $`2\pi+0.1938`$ (section 7).
+interval arithmetic: for every square with a timelike diagonal there is a
+contour of the construction satisfying all the conditions, with the
+zone-by-zone bound at most $`2\pi+0.1908`$ (section 7: covers with the
+constants of each box midpoint up to the angle 3.087, and a family of
+constants scaled with the square from there to the degenerate end,
+section 7.1).
 For $`r<2R`$ the bound cannot be improved to $`2\pi`$ under these
 conditions: there are admissible constants for which the phase exceeds
 $`2\pi`$, by an amount of order $`\nu`$ (section 6).
@@ -60,8 +63,18 @@ numbers were wrong. The counterexample and the corrections are in section
 6. An earlier round re-derived directly the eight statements taken from
 GATE_6_CONTOUR (list below): all hold; two written arguments there were
 completed. Section 9 (the contour in $`D`$ dimensions) is by a separate
-pass: 9.1 to 9.7 were rerun against the present constants and 9.8 is new;
-9.8 has had no second review.
+pass: 9.1 to 9.7 were rerun against the present constants and 9.8 proves
+in $`D`$ dimensions the conditions taken from GATE_6_CONTOUR; a further
+review found 9.8 correct and 9.3, 9.6, 9.7 consistent, with corrections
+of wording. Section 7.1 (the degenerate squares, with constants scaled
+with the square) was reviewed separately: proved as written, conditional
+on the theorems; its corrections are made.
+
+The statements taken from GATE_6_CONTOUR (list below) are no longer used
+on trust: a review re-derived all eight in four dimensions, and 9.8
+proves them in $`D`$ dimensions. The heading below is kept because this
+document does not repeat those proofs.
+
 Nothing here has been reviewed by a specialist.
 
 **What is taken from GATE_6_CONTOUR without re-derivation:** (D)
@@ -75,13 +88,18 @@ The contour in $`D`$ dimensions is treated in section 9, by an audit of
 the proof for its dependence on the dimension; that section has had no
 second review.
 
-**Not covered:** the limits $`|s/t|\to0,\infty`$ themselves (the certified
-range ends at distance $`10^{-7}`$ from the degenerate angle,
-$`|s/t|=4\times10^{14}`$ resp. $`2.5\times10^{-15}`$; $`|s/t|=1`$ is included,
-see section 7); the region
+**Range.** Every square with a timelike diagonal is covered, $`|s/t|=1`$
+included (section 7, and 7.1 for the squares near the degenerate ones),
+with the bound at most $`2\pi+0.1908`$ for a suitable contour at each
+square.
+
+**Not covered:** the degenerate squares themselves ($`|s/t|=0,\infty`$,
+which are not squares); a bound on the integral uniform as the square
+degenerates (the constants of the contour vanish there); the region
 $`(-,-)`$, where $`2\pi+4e`$ is already proved.
 
-Code: `src/geocusp/phase_bound.py`, `src/geocusp/phase_bound_iv.py`.
+Code: `src/geocusp/phase_bound.py`, `src/geocusp/phase_bound_iv.py`,
+`src/geocusp/scaled_limit.py`.
 Tests: `tests/test_phase_bound.py`.
 
 ## 0. Notation and conventions
@@ -1406,9 +1424,9 @@ condition in floating point. All conditions hold at the squares below.
   other admissible constants it does not (see below).
 - At the ten squares of the table (floating point, constants of
   `tuned_contour` or the default ones) the bound is between $`2\pi+0.12`$
-  and $`2\pi+0.19`$; section 7 gives at most $`2\pi+0.1938`$ for every
-  square with angle in $`[0,\pi-10^{-7}]`$, with the constants of the box
-  midpoint. Earlier versions had $`2\pi+0.36`$ to $`2\pi+0.57`$ (Case N0
+  and $`2\pi+0.19`$; section 7 gives at most $`2\pi+0.1908`$ for every
+  square with a timelike diagonal, with a suitable contour at each
+  square. Earlier versions had $`2\pi+0.36`$ to $`2\pi+0.57`$ (Case N0
   with the crude bound on all four frames), and before that a constant
   that was not uniform in the square.
 - *The exact value.* For $`r\ge2R`$, $`|\arg z|\le2\pi`$ exactly
@@ -1482,17 +1500,14 @@ condition in floating point. All conditions hold at the squares below.
     point, and for $`d<10^{-7}`$ ($`|D'|<10^{-14}`$) their rounding errors
     show in the interval bound; at $`d=1.1\times10^{-8}`$ the certificate of
     GATE_6_CONTOUR itself (H1) fails for that reason.
-  - The limit $`d\to0`$ is not proved. It would follow from one interval
-    evaluation over $`d\in[0,d_0]`$ of the conditions written in the scaled
-    variables $`\delta_0/|D'|`$, $`\kappa/(\delta_0|D'|)`$, $`\kappa'/d`$,
-    $`B_n^2|D'|`$, $`|D'|/d^2`$, with the constants prescribed as functions
-    of $`d`$ by these ratios instead of fixed at a box midpoint: in those
-    variables each condition of GATE_6_CONTOUR section 9 and of section 6
-    is a continuous function of $`d`$ on $`[0,d_0]`$ with a strict
-    inequality at $`d=0`$. That needs the roughly forty conditions of
-    `certificate_iv` and `phase_bound_iv` rewritten in scaled form (as they
-    stand they are $`0/0`$ at $`d=0`$), and the four-cone gap of (H1)
-    computed in scaled form. I have not done it.
+  - The degenerate end is settled in section 7.1: with constants
+    prescribed as functions of $`d`$ ($`\delta_0=\tfrac3{64}|D'|`$,
+    $`\kappa=\nu=2^{-20}\delta_0|D'|`$, $`\kappa'=2^{-9}|D'|^{1/2}`$,
+    $`R=\tau_0=9`$), every condition, written in scaled variables, is
+    verified in interval arithmetic for all $`0<d\le0.1`$, with the bound
+    at most $`2\pi+0.18826`$, and $`2\pi+0.18745`$ for $`d\le10^{-6}`$. The
+    float64 constants of `tuned_contour` were not the reason the graded
+    cover stopped; the way (H1) is checked unscaled was (section 7.1).
 - The contour in $`D`$ dimensions (GATE_6_CONTOUR section 11) is treated
   in section 9.
 - The region $`(-,-)`$ is not treated because nothing is needed there:
@@ -1665,10 +1680,11 @@ With the cover above: for every square with angle in
 $`[0,\pi-10^{-7}]`$, in both regions with a timelike diagonal (15 644 boxes
 per region), the conditions of the theorem hold for the contour with the
 constants of the box midpoint, and the bound is at most $`2\pi+0.1938`$
-(0.1920 for distances from $`\pi`$ of at least $`10^{-6}`$; the last decade
-shows the rounding of the float64 constants). The graded cover continues to
-pass down to distance $`1.14\times10^{-8}`$ ($`|s/t|=3\times10^{16}`$), with
-a bound that degrades to 0.33, and then fails in (H1) of `certificate_iv`.
+(0.1920 for distances from $`\pi`$ of at least $`10^{-6}`$). The graded cover
+continues to pass down to distance $`1.14\times10^{-8}`$
+($`|s/t|=3\times10^{16}`$), with a bound that degrades to 0.33, and then
+fails in (H1) of `certificate_iv`, for the reason given at the end of 7.1.
+Section 7.1 replaces it near the end with a better family of constants.
 
 *Caveat near the angle $`\pi`$.* The interval statement concerns the
 mathematical contour with the constants of the box midpoint, and is
@@ -1684,8 +1700,325 @@ $`s/t`$ from $`2.5\times10^{-15}`$ to $`4.0\times10^{14}`$. It also continues
 to distance $`1.1\times10^{-8}`$ at both ends and then fails in (H1). I did
 not change `certificate_iv`.
 
-Not covered by the interval version: the limits $`|s/t|\to0`$,
-$`\infty`$ themselves (see the scope item in section 6).
+Section 7.1 covers the rest of the range, up to the degenerate squares.
+
+### 7.1 The degenerate squares in scaled variables
+
+This closes the gap left by the covers near the degenerate end. Code:
+`src/geocusp/scaled_limit.py`; tests: `tests/test_scaled_limit.py`.
+
+**Statement.** Let $`d`$ be the distance of the angle from a degenerate end:
+$`d=\pi-\text{angle}`$ in $`(+,-)`$, $`(-,+)`$ and $`(-,-)`$, and
+$`d=\text{angle}`$ at the other end of $`(-,-)`$. In each of these four
+cases, and for every square with $`0<d\le0.1`$, the contour with the
+constants below satisfies every condition checked by
+`certificate_iv.interval_certificate` (GATE_6_CONTOUR section 9). With a
+timelike diagonal it also satisfies every condition checked by
+`phase_bound_iv.interval_phase_bound`, together with (R7), which is what
+`graded_cover` requires. On that range the bound of the theorem of section 6 is
+
+```math
+|\arg z|\le2\pi+0.18826\quad(0<d\le0.1),\qquad |\arg z|\le2\pi+0.18745\quad(0<d\le10^{-6}).
+```
+
+The range $`d\le0.1`$ overlaps the uniform covers of section 7 and
+GATE_6_CONTOUR section 9, which run up to the angle 3.087
+($`d\ge0.0546`$) and, in $`(-,-)`$, start at the angle 0.055. Together with
+them, and with the 80-box cover of the angles $`[0,0.02]`$ in section 7
+(which the uniform covers do not reach), every square with a timelike
+diagonal and angle in $`[0,\pi)`$, and every square of $`(-,-)`$ with angle
+in $`(0,\pi)`$, has a contour that satisfies all the conditions. The graded
+cover towards $`\pi`$ is then no longer needed. Taking, for each square, the
+contour of the uniform cover or of this family, the bound of the theorem
+is at most $`2\pi+0.1908`$ for every square with a timelike diagonal: 0.1692
+on $`[0,0.02]`$, 0.1908 on $`[0.02,3.087]`$, 0.18826 for $`d\le0.1`$.
+
+**The family.** Use the normalisation of `light_like_square`, and put
+$`\sigma=\sin(d/2)`$. The small diagonal is then exactly
+$`|D'|=4\sigma^2`$: it is $`|t|`$ in $`(+,-)`$ and at the end $`\pi`$ of
+$`(-,-)`$, and $`|s|`$ in $`(-,+)`$ and at the end 0 of $`(-,-)`$. The
+constants are
+
+```math
+\delta_0=\tfrac3{64}\,|D'|,\qquad \kappa=\nu=2^{-20}\,\delta_0|D'|,\qquad
+\kappa'=2^{-9}\,|D'|^{1/2},\qquad R=\tau_0=9 .
+```
+
+(H1) is verified at $`\epsilon=\tfrac18|D'|`$ and (I) at $`\omega=\tfrac14`$.
+Both are free choices, as in section 9. The numbers are dyadic, so
+$`\kappa=\nu`$ is an exact interval and (B2) is decided exactly. This is
+not the family of `tuned_contour`, which is not needed: the theorems hold
+for any constants that satisfy the conditions. Evaluated at
+$`d=10^{-4}`$, `tuned_contour` has $`\delta_0/|D'|=0.05359`$,
+$`\kappa/(\delta_0|D'|)=9.61\times10^{-7}`$, $`\kappa'/d=2.343\times10^{-3}`$
+and $`R=\tau_0=8.944`$, and the phase-bound constants are $`e=0.05430`$,
+$`c_{3d}=0.0093`$, $`b_{\rm in}=0.0981`$ and $`b_{\rm bl}=0.1910`$. This is
+consistent with the limits quoted in section 6.
+
+**Scaled variables.** Each quantity $`Q`$ of the two interval modules is
+written
+
+```math
+Q=m(\sigma)\,\sigma^{k},
+```
+
+where $`k`$ is an explicit exponent (a multiple of $`\tfrac12`$) and $`m`$
+is an explicit expression with no division by $`\sigma`$, continuous on
+$`[0,\sigma_0]`$. The code carries an interval enclosure of $`m`$ over a
+box of $`\sigma`$, together with $`k`$:
+
+- A product adds the exponents.
+- A sum or a maximum is formed at the smaller exponent:
+  $`m_1\sigma^{k_1}+m_2\sigma^{k_2}=(m_1+m_2\sigma^{k_2-k_1})\sigma^{k_1}`$
+  with $`\sigma^{k_2-k_1}\in[\sigma_{\rm lo}^{k_2-k_1},\sigma_{\rm hi}^{k_2-k_1}]`$.
+- A minimum of positive terms with different exponents is formed at the
+  largest exponent. The other terms then carry a factor
+  $`\sigma^{-n}\ge\sigma_{\rm hi}^{-n}`$, whose upper end is infinite at
+  $`\sigma=0`$.
+- Every comparison is made at the common exponent $`\min(k_1,k_2)`$, that
+  is after dividing both sides by $`\sigma^k>0`$, between the upper end of
+  one interval and the lower end of the other.
+
+A box may therefore contain $`\sigma=0`$, and a pass is a statement about
+every $`\sigma>0`$ in it. The functions `scaled_certificate` and
+`scaled_phase_bound` are line-by-line transcriptions of
+`interval_certificate` and `interval_phase_bound`, with the same variable
+names and the same branches.
+
+*Geometry.* $`\Delta`$, $`P`$, the timelike $`D=2x\!\cdot y=4`$ (pairs
+$`\{a,b\}`$, $`\{m,q\}`$) and their transverse bounds are computed from the
+edge vectors in intervals, with $`\sin(\text{angle})=2\sigma\cos(d/2)`$ and
+$`\cos(\text{angle})=\mp(1-2\sigma^2)`$. Two closed forms replace interval
+evaluation, because evaluating them from the edge vectors loses the order in
+$`\sigma`$ through the cancellation in $`1\pm\cos(\text{angle})`$. Take a
+pair of edges other than $`\{a,b\}`$, $`\{m,q\}`$. Then $`2x\!\cdot y=-2f`$
+with $`f=1\pm\cos(\text{angle})`$, which is $`2\sigma^2`$ or
+$`2\cos^2(d/2)`$. The vector $`v`$ of `_transverse_bound_planar` has
+$`|v|^2=2\sin^2(\text{angle})+f^2=2f(2-f)+f^2=4f-f^2`$, so its bound is
+
+```math
+B^2\le1+\frac{|v|^2}{(x\!\cdot y)^2}=\frac4f .
+```
+
+For the frames of $`D'`$ this gives $`B_n=\sqrt2\,\sigma^{-1}`$, so
+$`B_n^2|D'|=8`$ exactly. Both identities are checked symbolically and against
+the interval code.
+
+*Exponents.* The exponents $`k`$ of the derived quantities, in
+$`(+,-)`$:
+
+| $`k`$ | quantities |
+| --- | --- |
+| $`-2`$ | $`A_1`$, $`A_2`$, $`G`$, $`w=\lvert u\rvert/\lvert D'\rvert`$, $`\mathfrak a'`$ |
+| $`-1`$ | $`B`$, $`B_n`$ |
+| 0 | $`\Delta`$, $`P`$, $`D`$, $`\lvert u\rvert`$, $`M`$, $`e`$, the bound of (E), $`b_0`$, $`\Lambda_c`$, $`\Lambda_n`$, $`c_{3d}`$, $`\mathfrak a`$, $`\varsigma_n`$, $`s_0,s_1,s_2`$, $`b_{\rm in}`$, $`b_{\rm bl}`$ |
+| $`\tfrac12`$ | $`F`$ |
+| 1 | $`\kappa'`$, $`v`$, $`K`$, $`\mu_Q`$, $`\mu_+`$, $`e_{\rm sp}`$, the outer and blend parts of (E) |
+| $`\tfrac32`$ | $`\mu_-`$, $`s_3`$ |
+| 2 | $`\delta_0`$, $`\delta_1`$, $`\lambda_0`$, $`\theta`$, $`\mu`$, $`v^2`$, $`a_1`$, $`\iota`$, $`\iota_2`$, $`\pi_0`$, $`\varsigma_c`$, the far lower bound of (S1), $`\delta_0-v^2`$ |
+| 3 | $`\omega_0`$ |
+| 4 | $`\kappa=\nu`$, $`v_R^2`$, $`\varsigma`$ |
+| 6 | $`\rho_1`$ of (S) |
+
+*(H1).* Write $`\epsilon=e|D'|`$. In a frame whose own diagonal is the large
+one ($`D=4`$), the contradiction of (H1), divided by $`|D'|`$, reads
+
+```math
+\frac{4e|D'|}{D}+e+2\sqrt{\frac{|u|}{D}\Big(e+\frac{4e^2|D'|}{D}\Big)}\;<\;1-e .
+```
+
+This is continuous at $`d=0`$. There $`|u|/D=1`$ and it becomes
+$`2e+2\sqrt e<1`$, that is $`e<e_*=1-\tfrac{\sqrt3}2=0.133975`$. This is why
+`tuned_contour` has $`\delta_0/|D'|\to e_*/2.5=0.05359`$. `scaled_gap` is
+the scaled form of `four_cone_gap`: a bisection in $`e`$ at fixed exponent.
+It gives $`e_*=0.133975`$ at $`d=0`$ in all four cases, 0.1338 at
+$`d=0.1`$ in $`(+,-)`$, and 0.1334 at $`d=0.1`$ in $`(-,-)`$. At
+$`e=\tfrac18`$ the two sides of the inequality above are 0.832 and 0.875.
+The code divides by $`\sigma^2`$ rather than by $`|D'|=4\sigma^2`$, which
+gives the 3.328 and 3.5 of the table. In the frames whose own diagonal is
+$`D'`$, both sides are of order 1 and the contradiction fails in the limit
+(5.46 against 4), but (H1) needs only one frame. The condition $`2\delta_0<\epsilon`$ is
+$`\tfrac3{32}<\tfrac18`$.
+
+**Conditions.** The table below is for $`(+,-)`$ on the single box
+$`0\le d\le10^{-6}`$, that is $`\sigma\in[0,\sin(5\times10^{-7})]`$. It
+gives the exponents of the two sides, the power of $`\sigma`$ divided out,
+and the scaled sides (upper end on the left, lower end on the right).
+Where the left side has the higher exponent its scaled value vanishes in
+the limit; in the other rows both sides are of the same order.
+
+<details><summary>All 63 labelled comparisons, grouped</summary>
+
+| Condition | $`k`$ left, right | divided by | left | right |
+| --- | --- | --- | --- | --- |
+| (H1) contradiction, frames with $`D=4`$ | 2, 2 | $`\sigma^2`$ | 3.328 | 3.5 |
+| (H1) contradiction, frames with $`D=\lvert D'\rvert`$ (not needed) | 0, 0 | 1 | 5.464 | 4 |
+| (H1) $`2\delta_0<\epsilon`$ | 2, 2 | $`\sigma^2`$ | 0.375 | 0.5 |
+| (C0) $`3\Delta\le\tau_0`$ | 0, 0 | 1 | 3.354 | 9 |
+| (C1) $`\Delta<R/\sqrt{17}`$ | 0, 0 | 1 | 1.118 | 2.183 |
+| (C1) margin $`>0`$ | 0, 0 | 1 | 0 | 7.202 |
+| (C2) | 0, 0 | 1 | 5.000 | 9 |
+| (C3) $`\Delta<\xi_{\min}`$; worst $`<-\delta_0`$ | 0, 0; 0, 2 | 1 | 1.118; $`-47.07`$ | 8.731; $`-4.7\times10^{-14}`$ |
+| (C4) | 0, 0 | 1 | 4.472 | 8.050 |
+| (D) $`v^2<\delta_0/2`$ | 2, 2 | $`\sigma^2`$ | 0.01206 | 0.09375 |
+| (D) $`e<0.2`$ | 0, 0 | 1 | 0.05365 | 0.2 |
+| (D) far real part, three inequalities | 2, 0 | 1 | $`\le1.6\times10^{-15}`$ | $`\ge0.5`$ |
+| (E) $`\Vert\partial V\Vert<1`$ | 0, 0 | 1 | 0.3012 | 1 |
+| (F) $`\theta\le1`$ | 2, 0 | 1 | $`4.6\times10^{-17}`$ | 1 |
+| (S0) $`b_0<\tfrac12`$ | 0, 0 | 1 | 0.1875 | 0.5 |
+| (S2) | 2, 2 | $`\sigma^2`$ | 0.02344 | 0.1875 |
+| (S1) far invariant $`\ge2\delta_0`$ | 2, 2 | $`\sigma^2`$ | 0.375 | 0.7031 |
+| (S3) | 0, 0 | 1 | 1.118 | 9 |
+| (I0) $`c_u>0`$, $`2\omega\le c_u`$ | 0, 0 | 1 | 0; 0.5 | 1.089 |
+| (I1) two inequalities | 2, 0 | 1 | $`\le1.9\times10^{-15}`$ | $`\ge0.0625`$ |
+| (I2) two inequalities | 0, 0 | 1 | 8.715; 0.3125 | 16.10; 18 |
+| (Q1) $`\gamma<\pi/2`$; $`\mu_Q\sin\gamma<\cos\gamma`$ | 0, 0; 1, 0 | 1 | 0.4609; $`7.0\times10^{-9}`$ | 1.571; 0.8956 |
+| (Q3), (Q4) | 2 or 1, 0 | 1 | $`\le2.0\times10^{-8}`$ | $`\ge1.065`$ |
+| (R4) $`3\Delta\le\tau_0`$; $`\sqrt2\tau_0<2R`$ | 0, 0 | 1 | 3.354; 12.73 | 9; 18 |
+| (R4) $`\epsilon_\kappa<1`$; $`e\le\pi/4`$; $`4e_{\rm sp}<\pi`$ | 2, 0; 0, 0; 1, 0 | 1 | $`2.8\times10^{-17}`$; 0.05365; $`4.9\times10^{-8}`$ | 1; 0.7854; 3.142 |
+| (R7) | 0, 0 | 1 | 20.12 | 30.44 |
+| (G1) $`4\delta_0\lvert u\rvert<D\lvert D'\rvert`$ | 2, 2 | $`\sigma^2`$ | 3 | 16 |
+| (G2) $`4\delta_0<D`$ | 2, 0 | 1 | $`1.9\times10^{-13}`$ | 4 |
+| (R5) $`v_R^2<\delta_0`$ | 4, 2 | $`\sigma^2`$ | $`6.8\times10^{-20}`$ | 0.1875 |
+| (R5) $`\theta\le2`$, $`\nu<1`$, $`4\kappa^2<1`$ | 2, 4, 8; 0 | 1 | $`\le4.6\times10^{-17}`$ | $`\ge1`$ |
+| (B1) $`\tau_0\le R`$; $`\sqrt5\Delta<R`$ | 0, 0 | 1 | 9; 2.5 | 9; 9 |
+| (B2) $`\kappa\le\nu`$ | 4, 4 | $`\sigma^4`$ | $`7.153\times10^{-7}`$ | $`7.153\times10^{-7}`$ |
+| (B3) $`b_0\le\tfrac12`$; $`\Lambda_c\ge2`$; $`\Lambda_n\ge2`$ | 0, 0 | 1 | 0.01189; 2; 2 | 0.5; 5.550; 5.087 |
+| (B3) $`4\delta_0\le\min\lvert D\rvert`$ | 2, 2 | $`\sigma^2`$ | 0.75 | 4 |
+| (B4) $`v^2<\delta_1`$ | 2, 2 | $`\sigma^2`$ | 0.01206 | 0.1399 |
+| (R6) $`v^2<\delta_0/2`$; $`v^2<(\tau_0-2\Delta)^2`$ | 2, 2; 2, 0 | $`\sigma^2`$; 1 | 0.01206; $`3.0\times10^{-15}`$ | 0.09375; 45.75 |
+| (B6) three inequalities | 0, 0 | 1 | 2.975; 4.093; 0 | 9; 7.376; 37.65 |
+| (B5) $`s<1`$; $`e+\arcsin s+\mu_-<\pi/2`$; $`4e'_{\rm sp}<\pi`$ | 0, 0; 0, 0; 1, 0 | 1 | 0.1313; 0.1853; $`4.9\times10^{-8}`$ | 1; 1.571; 3.142 |
+
+</details>
+
+**Results.**
+
+| Case | $`d`$ | Boxes in $`\sigma`$ | Result | $`e`$ | (E) | $`\mu_Q`$ | $`b_{\rm in}`$ | bound $`-2\pi`$ ($`=b_{\rm bl}`$) | $`\min(\Lambda_c,\Lambda_n)`$ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $`(+,-)`$, $`(-,+)`$ | $`(0,10^{-6}]`$ | 1 | all hold | 0.05365 | 0.3012 | $`1.6\times10^{-8}`$ | 0.09842 | 0.18745 | 5.087 |
+| $`(+,-)`$, $`(-,+)`$ | $`(0,0.1]`$ | 100 | all hold | 0.05815 | 0.3055 | 0.0016 | 0.09844 | 0.18826 | 5.087 |
+| $`(-,-)`$, both ends | $`(0,10^{-6}]`$ | 1 | all hold | 0.05365 | 0.3012 | $`1.6\times10^{-8}`$ | | | |
+| $`(-,-)`$, both ends | $`(0,0.1]`$ | 100 | all hold | 0.05814 | 0.3055 | 0.0016 | | | |
+
+Upper ends are rounded up and $`\min(\Lambda_c,\Lambda_n)`$ down.
+
+At $`d=0`$ itself the scaled bound is $`b_{\rm bl}=0.187448`$, with $`b_{\rm in}=0.098414`$,
+$`s=0.1313`$ and $`c_{3d}=0.00937`$. The regions $`(+,-)`$ and $`(-,+)`$ are
+mirror images. In `certificate_iv._square` the edges of $`(-,+)`$ are
+$`[q,a,b,m]`$, a cyclic shift of $`[a,b,m,q]`$, so the square is the same up
+to translation and relabelling, and every quantity in both modules is
+symmetric under relabelling. Both regions were evaluated anyway; they agree
+to $`10^{-13}`$ on the box $`d\le10^{-6}`$, and on the 100-box cover the two
+bounds are 0.1882549 and 0.1882560. The two ends of $`(-,-)`$ are congruent, by $`x_3\mapsto-x_3`$ composed
+with $`x\mapsto-x`$ and a relabelling, and both were evaluated (same
+numbers). With the family fixed, the conditions
+continue to hold up to $`d=0.5`$ in $`(+,-)`$ and up to $`d=0.35`$ in
+$`(-,-)`$. Beyond that (H1) fails at $`e=\tfrac18`$ once $`e_*(d)`$ drops
+below $`\tfrac18`$ (near $`d=0.77`$ and $`d=0.40`$). The family is meant for
+the ends only.
+
+**Checks** (`test_scaled_limit.py`: 29 tests, about 10 s).
+
+- *The closed forms.* Checked symbolically with sympy for all six pairs of
+  edges, and against `2*_mdot` and `_transverse_bound_planar` on the interval
+  square at $`d=0.3,10^{-2},10^{-5}`$ (overlap, and agreement to
+  $`10^{-25}`$ at 50 digits).
+- *The rewriting against the unscaled code.* The repository's
+  `interval_certificate` and `interval_phase_bound` are run, unmodified, on
+  the one-point box of the angle, at $`d=0.3,10^{-3},10^{-6}`$, in each of
+  the four cases. For the run, `tuned_contour` and `certificate` are replaced
+  in memory so that the constants are the family's intervals and the
+  repository's $`\epsilon`$ and $`\omega`$ enclose the family's. Their local
+  variables are captured with `sys.setprofile`, and every one of the 65
+  (certificate) or 166 (both) named intermediates is compared with the
+  scaled value $`m\sigma^k`$. At 50 digits they agree to below $`10^{-30}`$
+  relative. Every interval-valued local of the repository functions has a
+  counterpart except `angle`. Three differences are expected. The arcsin
+  bounds are points at an upper end in both codes, so they need not
+  overlap, although they agree to $`10^{-30}`$. The repository's (B2) fails
+  in this mode only because one non-degenerate interval is compared with
+  itself. And `all_conditions` fails with it.
+- *A real contour.* The same comparison was made with a `Contour` whose
+  constants are the family's, rounded to float64. The repository's own
+  checks pass at $`d=0.3,10^{-2},10^{-4},10^{-6}`$, and all intermediates
+  agree to $`3\times10^{-16}`$.
+- *The bookkeeping.* On the box $`\sigma\in[0,0.05]`$, the scaled interval of
+  every named quantity contains its scaled value at points of the box.
+- *Not vacuous.* Changing one constant makes the expected condition fail:
+  $`\kappa=\nu`$ times 3.5 fails (E) alone, $`e=0.14`$ fails (H1), $`\delta_0=0.07|D'|`$ fails
+  $`2\delta_0<\epsilon`$, $`\omega=0.6`$ fails (I0), and
+  $`\tau_0=3`$ fails (C0).
+
+**What is rigorous and what is not.**
+
+- *Rigorous.* The interval evaluation uses outward rounding (mpmath `iv`,
+  30 digits), and every comparison is between an upper and a lower end. The
+  only binary numbers involved are the family's dyadic constants and the
+  constants that the repository code itself uses (0.3, 0.52, 0.2, 0.375,
+  ...), all converted exactly. The $`\sigma`$-box is an interval enclosure
+  of $`\sin(d/2)`$. No floating-point constants of `tuned_contour` enter.
+- *The two closed forms* are elementary identities, proved above and
+  checked with sympy. They are not interval-evaluated.
+- *The transcription* is a copy of the repository functions, and its
+  agreement with them is tested, not proved. It is line by line with the
+  same names, and agrees at twelve squares to $`10^{-30}`$. A reader should
+  diff the two pairs of functions.
+- *Not re-examined.* That the conditions imply the properties of the
+  contour is the content of GATE_6_CONTOUR and of sections 1 to 6. The
+  uniform covers that the range $`d\le0.1`$ is joined to are taken as
+  reported.
+
+**Not covered.**
+
+- $`d=0`$ itself, which is not a square. The statement is for every
+  $`d>0`$ in the range, uniformly.
+- What is uniform is the list of inequalities and the phase constant. The
+  constants themselves vanish ($`\delta_0\propto d^2`$,
+  $`\kappa=\nu\propto d^4`$, $`\kappa'\propto d`$), and with them the
+  quantitative lower bounds that scale with them: Lemma 6, the strips of
+  Lemma 7, and Lemma 9. Nothing here bounds the integral uniformly as
+  $`d\to0`$.
+- The float64 implementation of the field is still not an accurate
+  realisation of the contour near the end (section 7). The statement
+  concerns the mathematical contour.
+- $`D`$ dimensions. By section 9.4 the conditions are the same numbers. The
+  scaled evaluation was not repeated separately for them.
+- *Why the graded cover stopped at $`d=1.1\times10^{-8}`$.* With the
+  family's constants, `graded_cover` (ratio 0.004) stops at the same box,
+  $`d\in[1.1328,1.1373]\times10^{-8}`$, in (H1), so the cause is not the
+  constants of `tuned_contour`. The repository checks (H1) unscaled, at
+  $`\epsilon=0.99`$ times the float64 four-cone gap. On a box of that width
+  the interval check passes for $`\epsilon`$ up to 0.99139 times the exact
+  midpoint gap, so the float64 gap may be at most 0.14% too large. On the
+  failing box it is 0.51% too large ($`1.73472\times10^{-17}`$ against
+  $`1.72602\times10^{-17}`$ at 50 digits). The main reason is that the small
+  diagonal in two of the frames is quantised in float64 ($`-2.22\times10^{-16}`$
+  against the exact $`-1.288\times10^{-16}`$), so that frame's value exceeds
+  the correct one of the large frame and is taken as the maximum; the step
+  of the bisection is secondary. With a 50-digit gap the graded cover
+  passes on to $`d=1.054\times10^{-8}`$, where $`1+\cos(\text{angle})`$ is
+  exactly 0 in float64 and the float certificate fails. In scaled form
+  (H1) has the margin 3.328 against 3.5.
+
+**Review.** An independent review checked every operation of the scaled
+arithmetic as an enclosure, diffed the transcriptions against
+`interval_certificate` and `interval_phase_bound` (only the intended
+differences: $`\epsilon`$, $`\omega`$, the two closed forms, the scaling),
+re-derived the closed forms from the edge vectors, looked for conditions
+that the theorems use but the certificate does not check (two smallness
+steps in Lemmas 7 and 9 of GATE_6_CONTOUR, both implied by listed
+conditions), and ran the unmodified repository functions at 60 digits with
+the family's constants at ten values of $`d`$ from 0.1 to $`10^{-12}`$ in all
+four cases: all pass, with bounds equal to the scaled ones to the last
+digit. Verdict: proved as written, conditional on the theorems, which it
+did not re-derive. The corrections it asked for (the numbers in the last
+paragraph, the cover of $`[0,0.02]`$, rounding) are made.
+
+```bash
+PYTHONPATH=src python -m geocusp.scaled_limit --extend 0.1 --boxes 100
+PYTHONPATH=src pytest -q tests/test_scaled_limit.py
+```
 
 ## 8. Numerical checks
 
@@ -1755,9 +2088,14 @@ inspection), are proved in 9.8. The facts (F5), (F6), condition (B6) and
 the sharpened Case N0 with (5.3) were added to section 5 after the first
 version of this section; their rows in 9.3 have been audited by the pass
 that wrote this section, and 9.6 was run again against the present
-constants. A referee read the first version of 9.1 to 9.7; the present
-9.3, 9.6, 9.7 and 9.8 have not been reviewed. Nothing here has been
-reviewed by a specialist.
+constants. A referee read the first version of 9.1 to 9.7. A second
+review checked 9.8 line by line, with its own 60-digit $`D`$-dimensional
+field on four contours and two stress contours for $`k=1,2`$ (571 000
+points, no violation), and checked the present 9.3, 9.6 and 9.7 for
+consistency with sections 1 to 7; it found no mathematical error and
+asked for corrections of wording, now made. The 130-digit campaign of
+9.6 has not been rerun by a reviewer. Nothing here has been reviewed by a
+specialist.
 
 ### 9.1 Setting and statement
 
@@ -1956,8 +2294,9 @@ Answers to the questions a reader will ask:
   $`2\nu m^2`$ for the three invariants of the frame and $`V_j^2`$ by
   $`-\nu^2m^2`$, i.e. $`\rho\to\rho+m^2`$ in both, and in nothing else.
 - The far field acts on the extra coordinates as $`-\kappa'\Theta_\pm\zeta`$:
-  it is the $`(4+k)`$-vector $`-\kappa'\Theta_\pm(\hat x-c_\mp)`$. This is
-  what makes $`\hat x-c_-`$ causal in $`J^+(c_-)`$, $`V^2\ge0`$ in R4 and R7,
+  it is the $`(4+k)`$-vector $`-\kappa'\Theta_\pm(\hat x-c_\mp)`$. So $`V`$ is
+  proportional to $`\hat x-c_-`$, which is causal in $`J^+(c_-)`$ by
+  definition; this gives $`V^2\ge0`$ in R4 and R7,
   $`W^2\ge0`$ in R6, and $`J_i=2\kappa'\vartheta(r_i+n_i\!\cdot w_i)`$ with the
   $`D`$-dimensional $`r_i`$ in R7. With the extra components dropped that
   identity fails (9.6).
@@ -2196,8 +2535,8 @@ The programs for these checks are not part of the repository.
   dimension is covered only through the reduction of 9.5, which is
   pointwise; nothing here concerns the integrals.
 - Of the conditions of GATE_6_CONTOUR section 9, 9.8 proves those that
-  sections 1 to 6 use: (H1), (A), (C0) to (C3), (D), Proposition 6(3), with
-  Lemma 5; Lemma 6 and $`|V_{\rm in}|^2\le3\mu I_{\rm in}`$ are in 9.2 (c). The
+  sections 1 to 6 use: (H1), (A), (C0) to (C2), (D), Proposition 6(3), with
+  Lemma 5, and also (C3), which is not used; Lemma 6 and $`|V_{\rm in}|^2\le3\mu I_{\rm in}`$ are in 9.2 (c). The
   remaining ones, (E), (F), (S), (I) and (Q), are not used here and still
   rest on Proposition 7 of that document.
 - This section audits the proof of sections 1 to 6 for its dependence on
@@ -2209,23 +2548,39 @@ Section 9 uses (D), (C1), (C2) and Proposition 6(3) of GATE_6_CONTOUR for
 the contour in $`\mathbb R^{1,3+k}`$. Proposition 7 of that document asserts
 them by inspection of the four-dimensional derivations. This subsection
 proves them from the definitions, for every $`k\ge0`$, with the constants
-that `feynman_contour.certificate` computes. The proofs also need (H1), (A)
-and (C3), which are included. The case $`k=0`$ is the four-dimensional
+that `feynman_contour.certificate` computes. The proofs also need (H1) and
+(A), which are included; (C3) is proved as well, for completeness, but no
+proof here or in sections 1 to 6 uses it ((C2) already excludes the wedge
+near a cone). The case $`k=0`$ is the four-dimensional
 statement; nothing below uses $`k`$.
 
 **Result.** All of them hold in $`\mathbb R^{1,3+k}`$ as stated, and every
 constant is literally the four-dimensional number (table at the end).
-Nothing fails. Two steps of the four-dimensional text of (D) are not
-written there and are supplied here; they do not depend on the dimension:
-how the frame term and the far term combine (the text says "the sum"),
-and the real part in the zone $`r\ge2R`$ when $`n\!\cdot u<0`$ or
-$`0<\Theta<1`$, where $`V^2`$ shifts it (Lemma F, last claim). The second
-uses $`\tan e_{\rm far}\le1`$, which follows from the condition $`e<0.2`$
-that the certificate checks under (D) but that the text of (D) does not
-list.
+Nothing fails. Two steps of the four-dimensional text of (D) are
+treated here in more detail; neither depends on the dimension. First, how
+the frame term and the far term combine: the proof below gives the convex
+combination $`(1-g)\tan e_{\rm frames}+g\tan e_{\rm far}`$. The sum used in
+the four-dimensional text is also valid, since the imaginary part is at
+most $`(\tan e_{\rm frames}+\tan e_{\rm far})|\operatorname{Re}X_i|`$ and
+$`\arctan`$ is subadditive on $`[0,\infty)`$; the convex combination is
+only sharper. Second, the real part in the zone $`r\ge2R`$ when
+$`n\!\cdot u<0`$ or $`0<\Theta<1`$, where $`V^2`$ shifts it (Lemma F, last
+claim). Here this uses $`\tan e_{\rm far}\le1`$, which follows from the
+condition $`e<0.2`$ that the certificate checks under (D) (it is also named
+in GATE_6_CONTOUR section 13). GATE_6_CONTOUR section 9 now closes the same
+step by another route, the paragraph beginning "In the pure outer zone"
+with the certificate condition `D_far_real_part`. Both routes prove the
+same inequality, $`|\operatorname{Re}X_i|\ge\tfrac12|r_i|`$ wherever the far
+term is positive and $`r\ge2R`$, and give the same $`e`$: on the route
+here $`e<0.2`$ implies the first two inequalities of `D_far_real_part`,
+and the third is not needed because the exact $`V_{\rm out}^2`$ is used;
+on the other route $`e<0.2`$ is not needed for this step. A review
+confirmed both routes and that the second also holds verbatim in
+$`\mathbb R^{1,3+k}`$.
 
 **Status.** Derived by the automated pass that wrote section 9 and tested
-as described at the end. Not reviewed by a second pass or by a specialist.
+as described at the end. Reviewed once (see the status of 9.1); not by a
+specialist.
 
 #### Setting
 
@@ -2270,8 +2625,14 @@ M=(\tau_0-2\Delta)\Big(\frac R{\sqrt{17}}-\Delta\Big)-\delta_0-\Delta\sqrt{\delt
 c_b=1+\frac{2\Delta}{3(R/\sqrt{17}-\Delta)},\qquad c_c=1+\Big(\frac{\sqrt5}2+\frac\Delta{\xi_c}\Big)\frac{\tau_0+\Delta}{\tfrac34(\xi_c-4\Delta)},
 ```
 ```math
-\tan e_{\rm fr}=\frac{\iota_2}{\delta_0-v^2},\qquad\tan e_{\rm far}=4\kappa'\max(1,c_b,c_c),\qquad e=e_{\rm fr}+e_{\rm far},
+\tan e_{\rm frames}=\frac{\iota_2}{\delta_0-v^2},\qquad\tan e_{\rm far}=4\kappa'\max(1,c_b,c_c),\qquad e=e_{\rm frames}+e_{\rm far},
 ```
+
+($`e_{\rm frames}`$ and $`e_{\rm far}`$ are the certificate's
+`excursion_frames` and `excursion_far`. The first is not the constant
+$`e_{\rm fr}`$ of section 4 and Proposition R8, which uses
+$`\iota=2\lambda_0(R+\Delta)^2`$ for $`r\le R`$ in place of $`\iota_2`$ and is
+smaller by about a factor of four.)
 
 and $`\epsilon_*`$ of (H1). Conditions used, each one a line of the
 certificate: (H1) $`2\delta_0<\epsilon_*`$; (C0) $`\tau_0\ge3\Delta`$; (C1)
@@ -2448,7 +2809,13 @@ $`R/\sqrt5\ge\Delta\tau_0/(\tau_0-3\Delta)`$: there
 $`(\tau-\Delta)(\tau_0-\Delta)\le n^0u^-_0<\Delta|\hat n|\le\Delta(2\tau+\Delta)`$,
 i.e. $`\tau<\Delta\tau_0/(\tau_0-3\Delta)`$, while $`\tau\ge R/\sqrt5`$. This
 holds for the default constants and for `tuned_contour` ($`\tau_0=8\Delta`$,
-$`R\ge8\Delta`$). The proof does not use it.
+$`R\ge8\Delta`$). A review showed more: the sub-case is empty for every
+contour that satisfies (C0) and (C1). There $`b<0`$ forces
+$`\tau(\tau_0+t_i-2|\vec x_i|)<t_i(\tau_0+t_i)-|\vec x_i|^2`$, and the largest
+such $`\tau`$ over $`t_i^2+|\vec x_i|^2\le\Delta^2`$ with $`\tau_0\ge3\Delta`$
+is $`1.102\Delta`$ (computed numerically), whereas $`\vartheta=1`$, $`r>R`$
+and (C1) give $`\tau>R/\sqrt5>\sqrt{17/5}\,\Delta=1.844\Delta`$. This is why
+the sub-case was never reached. The proof does not use it.
 
 #### (D)
 
@@ -2456,7 +2823,7 @@ $`R\ge8\Delta`$). The proof does not use it.
 if $`\operatorname{Im}X_i>0`$ then $`|r_i|>\delta_0`$, $`\operatorname{Re}X_i\ne0`$ and
 
 ```math
-\operatorname{Im}X_i\ \le\ \big[(1-g)\tan e_{\rm fr}+g\tan e_{\rm far}\big]\,|\operatorname{Re}X_i|\ \le\ \tan e\;|\operatorname{Re}X_i| .
+\operatorname{Im}X_i\ \le\ \big[(1-g)\tan e_{\rm frames}+g\tan e_{\rm far}\big]\,|\operatorname{Re}X_i|\ \le\ \tan e\;|\operatorname{Re}X_i| .
 ```
 
 Consequently, wherever $`X_i\ne0`$, its argument on the Feynman branch
@@ -2478,7 +2845,7 @@ This is the first claim.
 *$`|r_i|>\delta_0`$, first term.* It is present only for $`r<2R`$, where it
 is at most $`(1-g)\iota_2`$ by (N), and
 $`|\operatorname{Re}X_i|\ge|r_i|-v^2>\delta_0-v^2`$. So it is at most
-$`(1-g)\tan e_{\rm fr}|\operatorname{Re}X_i|`$.
+$`(1-g)\tan e_{\rm frames}|\operatorname{Re}X_i|`$.
 
 *$`|r_i|>\delta_0`$, second term.* Let $`g>0`$ and
 $`2V_{\rm out}\!\cdot n_i>0`$. Then one of $`\Theta_\pm`$ is positive and
@@ -2493,7 +2860,7 @@ $`g\cdot4\kappa'c|\operatorname{Re}X_i|\le g\tan e_{\rm far}|\operatorname{Re}X_
 
 Adding the two terms gives the inequality, with
 $`\operatorname{Re}X_i\ne0`$ in each case; and
-$`(1-g)\tan e_{\rm fr}+g\tan e_{\rm far}\le\max(\tan e_{\rm fr},\tan e_{\rm far})\le\tan e`$.
+$`(1-g)\tan e_{\rm frames}+g\tan e_{\rm far}\le\max(\tan e_{\rm frames},\tan e_{\rm far})\le\tan e`$.
 
 *The argument.* If $`\operatorname{Im}X_i\le0`$ the argument is in
 $`[-\pi,0]`$. If $`\operatorname{Im}X_i>0`$ and $`\operatorname{Re}X_i>0`$ it
@@ -2549,7 +2916,7 @@ $`\blacksquare`$
 | (C1) | yes | $`M`$: the same number | $`u^\mp`$ has no $`\zeta`$-component; $`\lvert\vec n\rvert\le\lvert\hat n\rvert`$; $`V_{\rm out}\!\cdot n=-\kappa'(n^2+u\!\cdot n)`$ needs the component $`-\kappa'\Theta\zeta`$ |
 | (C2) | yes | $`\xi_0`$: the same number | $`\hat\xi`$ and $`\hat n`$ in $`\mathbb R^{3+k}`$; $`\Theta`$ uses $`\lvert\hat\xi\rvert`$ |
 | (C3) | yes | $`\xi_m`$: the same number | the same |
-| (D) | yes | $`e_{\rm fr},e_{\rm far},e`$, $`c_b,c_c`$, $`v`$, $`\iota_2`$: the same numbers | through (C1), (C2), Lemma F and the norms |
+| (D) | yes | $`e_{\rm frames},e_{\rm far},e`$, $`c_b,c_c`$, $`v`$, $`\iota_2`$: the same numbers | through (C1), (C2), Lemma F and the norms |
 | Proposition 6(3) | yes | none of its own | $`\hat\rho_j=0`$ forces $`\zeta=0`$ |
 
 #### Numerical tests
@@ -2557,13 +2924,14 @@ $`\blacksquare`$
 The statements were tested with the 130-digit implementation of 9.6, in
 two runs, at every point where their hypotheses hold and for all four
 $`i`$. Run 1: the 875 475 points of 9.6 (seven squares with a timelike
-diagonal, $`k=1,2,3`$). Run 2: 565 122 further points on ten contours
-chosen for this subsection: the region $`(-,-)`$ with default constants
-($`k=1`$ and $`k=3`$) and tuned at angles 0.3 ($`k=2`$) and 2.8 ($`k=1`$);
-and, in each of the three regions, the default square with
-$`\tau_0=3.2`$ instead of 8 (close to the limit $`3\Delta=3.10`$ of (C0)),
-which is the only way the sub-case $`n\!\cdot u<0`$ of Lemma F was reached.
-The certificate passes at all seventeen contours. Points of run 2:
+diagonal, $`k=1,2,3`$). Run 2: 565 122 further points on six further
+contours, in seven runs: the region $`(-,-)`$ with default constants
+($`k=1`$ and $`k=3`$, one contour) and tuned at angles 0.3 ($`k=2`$) and 2.8
+($`k=1`$); and, in each of the three regions, the default square with
+$`\tau_0=3.2`$ instead of 8 (close to the limit $`3\Delta`$ of (C0), which
+is about 3.10 with a timelike diagonal and 2.96 in $`(-,-)`$), which is the
+only way the sub-case $`n\!\cdot u<0`$ of Lemma F was reached. The
+certificate passes at all thirteen contours. Points of run 2:
 generic; on the null lines; on the $`D`$-dimensional cones at all
 distances; at $`r=R,2R`$ and at $`|r_i|=\delta_0,2\delta_0`$ to within
 $`10^{-25}`$; in the wedge $`0.15\le|\tau|/|\hat\xi|\le0.6`$, including
@@ -2583,7 +2951,7 @@ space direction along $`\pm(x_i-c)`$.
 | Lemma F (1), (2), $`\lvert\operatorname{Re}X_i\rvert\ge\tfrac12\lvert a\rvert`$, where $`a+b\le0`$ | 1 228 643 | 0 | largest $`2V_{\rm out}\!\cdot n/(4\kappa'c\lvert\operatorname{Re}X_i\rvert)`$: 0.50 |
 | of these: $`b\ge0`$; $`b<0`$ and $`\vartheta<1`$ (with its three inequalities); $`b<0`$ and $`\vartheta=1`$ | 1 227 838; 805; 0 | 0 | the last sub-case was never reached (see the remark after Lemma F) |
 | Lemma F (3) for $`r\ge2R`$ | 458 734 | 0 | |
-| (D), where $`\operatorname{Im}X_i>0`$: $`\lvert r_i\rvert>\delta_0`$; (9.2); the bound with $`(1-g)\tan e_{\rm fr}+g\tan e_{\rm far}`$ | 1 318 658 (135 387 inner, 724 537 blend, 458 734 outer) | 0 | largest ratio to that bound: 0.16; largest $`\operatorname{Im}X_i/(\tan e\,\lvert\operatorname{Re}X_i\rvert)`$: 0.077 |
+| (D), where $`\operatorname{Im}X_i>0`$: $`\lvert r_i\rvert>\delta_0`$; (9.2); the bound with $`(1-g)\tan e_{\rm frames}+g\tan e_{\rm far}`$ | 1 318 658 (135 387 inner, 724 537 blend, 458 734 outer) | 0 | largest ratio to that bound: 0.16; largest $`\operatorname{Im}X_i/(\tan e\,\lvert\operatorname{Re}X_i\rvert)`$: 0.077 |
 | (D): argument in $`[-\pi-e,e]`$ | 5 749 520 | 0 | |
 | 6(3): $`X_i\ne0`$ off the edges (distance above $`10^{-40}`$) | 1 440 597 points | 0 | |
 | 6(3), steps: $`\lvert\operatorname{Re}X_i\rvert\ge\delta_0-v^2`$ for $`\lvert r_i\rvert>\delta_0`$, $`r<2R`$; $`\operatorname{Im}X_i\le-\sum m_j(\dots)`$ for $`\lvert r_i\rvert\le\delta_0`$, $`r\le R`$ | 3 692 819; 459 163 | 0 | |
