@@ -430,6 +430,10 @@ def certificate(contour: Contour) -> dict:
     out["excursion_far"] = float(np.arctan(4 * kf * max(1.0, case_b, case_c)))
     out["excursion_bound"] = out["excursion_frames"] + out["excursion_far"]
     out["D_excursion_small"] = bool(v_inner**2 < d0 / 2 and out["excursion_bound"] < 0.2)
+    # pure outer zone: |Re| >= |n^2|/2 in each of the three cases, which the factor 4 kf assumes
+    out["D_far_real_part"] = bool(
+        kf**2 <= 0.5 and kf**2 * (2 * case_b - 1) <= 0.5
+        and kf**2 * (np.sqrt(5) / 2 * xi + 2 * Delta + tau0) ** 2 <= 0.375 * xi * (xi - 4 * Delta))
 
     # E: the map is a local diffeomorphism, ||dV|| < 1
     j_inner = 4 * (3 * reach**2 * lam0 / d0 + lam0)        # sum_j |dm_j||V_j| + m_j |dV_j|

@@ -554,13 +554,16 @@ def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
       m1 = m0 (log S - psi(1+p) + psi(1-p-eta) - 2 psi(2 eta) - 2 gamma_E),
       and int_A0^oo e^(-eta a)(a m0 + m1) da is done in closed form.
 
-    Requirements, checked: 1e-12 <= eta, |Re p| < 1, Re p + eta < 1,
+    Requirements, checked: 1e-12 <= eta, |Re p| < 1, Re p + eta <= 1 - 1e-5,
     0 <= arg S <= pi, and a rotation 0 <= gamma < pi that keeps the ray at
     least 0.1 rad from the zero of 1 + S w (gamma >= arg S - pi + 0.1). A
     quadrature whose own error estimate is too large raises ArithmeticError
-    rather than returning a number. The error is absolute at about 1e-10 of the modulus
-    or better, so a component much smaller than the modulus (the imaginary
-    part at tiny eta with a timelike diagonal) has fewer correct digits.
+    rather than returning a number. The rotation is used only when arg S > pi - 0.1.
+    The error is absolute, at most about 1e-8 of the modulus and about 1e-10
+    or better for eta <= 0.25, so a component much smaller than the modulus
+    (the imaginary part at tiny eta with a timelike diagonal) has fewer
+    correct digits. Calls with 1 - Re p - eta below 0.01 or eta above 0.8
+    on the rotated ray take minutes.
     """
     import warnings
 
@@ -571,15 +574,15 @@ def _parametric_box(p, eta, S, gamma=0.0, window=80.0):
     p, S = complex(p), complex(S)
     sigma = p.real
     theta = float(np.angle(S))
-    if not (eta >= 1e-12 and abs(sigma) < 1 and sigma + eta < 1):
-        raise ValueError("need eta >= 1e-12, |Re p| < 1 and Re p + eta < 1")
+    if not (eta >= 1e-12 and abs(sigma) < 1 and 1 - sigma - eta >= 1e-5):
+        raise ValueError("need eta >= 1e-12, |Re p| < 1 and Re p + eta <= 1 - 1e-5")
     if abs(S) == 0 or theta < 0:
         raise ValueError("need S nonzero with 0 <= arg S <= pi")
     if not (0 <= gamma < np.pi and gamma >= theta - np.pi + 0.1):
         raise ValueError("need 0 <= gamma < pi, and gamma >= arg S - pi + 0.1 so that the ray "
                          "stays away from the zero of 1 + S w")
-    if abs(S.imag) == 0 and S.real > 0:
-        gamma = 0.0                                          # real integrand: no rotation needed
+    if theta <= np.pi - 0.1:
+        gamma = 0.0                                          # no rotation is needed; one only costs time
 
     def cquad(f, lo, hi, epsrel=1e-11, points=None, floor=0.0):
         # floor: an absolute tolerance from the size of the whole quantity this piece belongs to.

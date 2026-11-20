@@ -27,7 +27,7 @@ the published three-loop weight, whose analytic hypotheses are proved
 here by an exact computation. The conditions are listed under
 [Scope and limits](#scope-and-limits).
 
-- **477 tests** and **63 worked example groups**, all passing
+- **480 tests** and **63 worked example groups**, all passing
 - Core dependencies: NumPy, SciPy, SymPy, mpmath
 - MIT licensed
 
@@ -61,7 +61,7 @@ here by an exact computation. The conditions are listed under
 | Two-loop weight is regular at $`z=-1`$ | Proved |
 | Explicit integration contour, all kinematic regions | Constructed; conditions verified in interval arithmetic over a range of squares |
 | Regulated integral of $`z^p`$ equals the Mellin–Barnes form | Written proof, for $`\vert\operatorname{Re}p\vert`$ below the regulator |
-| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes; the certificate is verified in interval arithmetic for $`0.00076\le s/t\le1341`$ and the corresponding ranges with a timelike diagonal |
+| Double pole equals $`4M[F]`$ for the weights $`\bar F^{(0)},\bar F^{(1)},\bar F^{(2)}`$ | Written proof, at every square where the certificate passes; the certificate is verified in interval arithmetic for $`2.5\times10^{-15}\le s/t\le4\times10^{14}`$, and for $`1\le\vert s/t\vert\le4\times10^{14}`$ and the mirror range with a timelike diagonal |
 | Cusp-local model: a light-like triangle, double pole $`\sin\pi p/(\pi p)`$ | Exact closed form |
 | Double pole is the sum of the four cusp-local models, without Mellin–Barnes | Written proof (parametric integral). All three regions; independently checked |
 | Exact formula for the cusp-local model of a general weight: $`F`$ on the path between the lips of $`z=-1`$, smeared over width $`\eta`$ | Written proof for the model defined through its parametric form; independently checked |
@@ -78,7 +78,7 @@ here by an exact computation. The conditions are listed under
 | Meromorphy in $`\eta`$ near 0 for the three benchmark weights, all regions: a pole of order at most two | Written proof (Theorem M of GATE_6_BOUNDS), same conditions as the contour result; the continuation formula is confirmed numerically to $`10^{-21}`$ |
 | Three-loop weight from the literature: circle mean against the known four-loop coefficient, planar and non-planar | Agrees to $`10^{-13}`$ and $`10^{-10}`$. A check on a known value, not a prediction. The hypotheses of the theorem are proved for this weight: holomorphy at $`z=-1`$ is an exact identity in $`\mathbb Q[i\pi,\zeta_3,\zeta_5]`$, computed in rational arithmetic (`geocusp.hpl_exact`), and the growth bound follows |
 | A timelike diagonal in position space | Exact slab and keyhole structure; each edge piece is a one-dimensional integral whose continuation converges absolutely with a proved $`O(1/\eta)`$ remainder, and the two add up to the continued box to $`10^{-16}`$. Derived in timelike kinematics, with no global contour in $`x_0`$ and no Mellin–Barnes: for $`z^p`$, $`|\operatorname{Re}p|<1-\eta`$, both signs, in both timelike regions, the integral with the displacement removed last (taken as an iterated integral at positive displacement, where every step converges absolutely) is the sum of the two continued pieces. The iterated integral with the displacement removed first exists only for one sign of $`\operatorname{Re}p`$ in each region (two opposite light cones meet) and equals the same sum there. By superposition the double pole is $`4M[F]`$ for the three benchmark weights, without the contour. Four independent reviews, no error found in the final form. The iterated integral is the unordered integral over $`\mathbb R^D`$ wherever that converges absolutely, which is proved for $`-(1-2\eta)<\operatorname{Re}p<\tfrac12-\eta`$ in the region $`s<0<t`$ and the mirror interval in the other (CUSP_LOCAL_MODEL Lemma 13.1, a complete estimate that replaces the earlier power counting). A direct computation organised differently reproduces the total to $`10^{-6}`$–$`10^{-8}`$ at eight points |
-| Phase of the cross-ratio on the contour, timelike diagonal | Proved: $`\vert\arg z\vert\le2\pi+0.1908`$ over the certified range of squares, and exactly $`2\pi`$ outside the ball of radius $`2R`$, under explicit conditions on the constants checked in interval arithmetic (GATE_6_PHASE); also for the contour in $`D`$ dimensions. Four rounds of automated review, the last two covering the sharpened blend zone and the $`D`$-dimensional section; no error in the final form. The value $`2\pi`$ observed everywhere is not proved inside that ball |
+| Phase of the cross-ratio on the contour, timelike diagonal | Proved: $`\vert\arg z\vert\le2\pi+0.194`$ for every square with $`1\le\vert s/t\vert\le4\times10^{14}`$ (and the mirror range), and exactly $`2\pi`$ outside the ball of radius $`2R`$, under explicit conditions on the constants checked in interval arithmetic (GATE_6_PHASE); also for the contour in $`D`$ dimensions. Six rounds of automated review. The exact value $`2\pi`$ inside that ball is false in general: a review found admissible constants with an excess of order $`10^{-7}`$ |
 | The box from Feynman parameters, from the Mellin–Barnes form and continued through $`\eta=0`$ | Agree to $`10^{-9}`$ or better for $`\eta`$ from 0.99 down to $`10^{-10}`$, spacelike and timelike, and for $`p`$ up to the ends of its range. The parameter quadratures were wrong below $`\eta\approx0.01`$ until every long range was done in closed form; an independent review then found further failures at the ends of the range of $`p`$, repaired the same way |
 | Absolute convergence over $`\mathbb R^D`$ at positive displacement | Proved, with the exact range of powers: a criterion for arbitrary exponents that is necessary and sufficient (CUSP_LOCAL_MODEL Lemmas 13.1′, 13.1″) |
 | Each edge piece as a single integral of a $`{}_2F_1`$ | Exact: agrees with the cube integral and the box to $`10^{-15}`$ |
@@ -100,7 +100,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[test]'
 
-make test        # 477 tests, about twenty minutes
+make test        # 480 tests, about twenty minutes
 make examples    # 63 example groups, about three minutes
 ```
 
@@ -239,12 +239,14 @@ What it does not do:
   integral reduces to the four cusp terms.
 - The three-loop value from the edge chain equals the circle mean by
   Cauchy's theorem, so it is not an independent check.
-- With a timelike diagonal, the sharp bound $`|\arg z|\le2\pi`$ on the
-  contour is measured, not proved. The bound the argument needs, below
-  $`3\pi`$, is proved, and so is a closer one
-  ([GATE_6_PHASE](docs/GATE_6_PHASE.md)): at most $`2\pi+0.1908`$ over
-  the certified range of squares, in interval arithmetic, and exactly
-  $`2\pi`$ outside the ball of radius $`2R`$.
+- With a timelike diagonal, the bound $`|\arg z|\le2\pi`$ on the
+  contour holds on the contours surveyed but is not a property of the
+  construction: a review found admissible constants for which the phase
+  exceeds $`2\pi`$ by about $`10^{-7}`$ inside the ball of radius $`2R`$.
+  What is proved is the bound the argument needs, below $`3\pi`$, and a
+  much closer one ([GATE_6_PHASE](docs/GATE_6_PHASE.md)): at most
+  $`2\pi+0.194`$ for all squares with $`1\le|s/t|\le4\times10^{14}`$, in
+  interval arithmetic, and exactly $`2\pi`$ outside that ball.
 
 Earlier statements found to be wrong and corrected in the documents: the
 exchange of integrals was claimed on lines where the integral does not
@@ -366,7 +368,7 @@ src/geocusp/      implementation
   hpl.py, hpl_exact.py                  harmonic polylogarithms; exact expansion at z = -1
   solver.py, solver_gui.py              command line and desktop window
 examples/         63 worked example groups (python -m examples.run_suite)
-tests/            477 tests
+tests/            480 tests
 docs/             derivations and status
 scripts/          runners for the wider campaign
 external/         adapter templates for other packages (untested)

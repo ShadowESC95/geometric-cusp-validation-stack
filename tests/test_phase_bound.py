@@ -174,3 +174,34 @@ def test_interval_bound_dominates_the_floating_point_bound():
 def test_interval_version_rejects_the_region_without_a_timelike_diagonal():
     with pytest.raises(ValueError):
         pbi.interval_phase_bound("--", 1.0, 1.1)
+
+
+def test_boxes_containing_the_angle_zero_pass():
+    """|s/t| = 1 (u = 0) is a regular point of the conditions."""
+    for region in ("+-", "-+"):
+        result = pbi.cover(region, 0.0, 0.002, 4)
+        assert result["all"] and result["R7_outer_exact"]
+        assert result["bound_upper"] < 0.17
+        lo, hi = result["ratio_s_over_t"]
+        assert lo <= -1.0 <= hi
+
+
+def test_graded_cover_towards_the_degenerate_square():
+    result = pbi.graded_cover("+-", 3.1405, np.pi, ratio=0.004, stop=1e-3)
+    assert result["first_failure"] is None and result["boxes"] > 15
+    assert result["distance_left"] <= 1e-3 and result["bound_upper"] < 0.195
+    assert result["ratio_s_over_t"][0] < -3.9e6
+    only = pbi.graded_cover("--", 0.0012, 0.0, ratio=0.004, stop=1e-3, certificate_only=True)
+    assert only["first_failure"] is None and only["boxes"] > 15 and only["bound_upper"] is None
+
+
+def test_the_phase_can_exceed_two_pi_inside_the_ball_for_admissible_constants():
+    """The bound 2 pi + b_in cannot be replaced by 2 pi for r < 2R (GATE_6_PHASE section 6)."""
+    C = fc.Contour(region="+-", delta0=0.01, kappa=8e-9, nu=6e-8)
+    out = pb.phase_bound(C)
+    assert out["all_conditions"]
+    val = pb.k_values(C, np.array([0.04233112, -0.09263057, -6.5e-7, 0.05679225]))
+    excess = val["arg_z"] - 2 * np.pi
+    assert val["zone"] == 0
+    assert 1e-7 < excess < out["bound_inner"]
+    assert excess == pytest.approx(5.9 * C.nu, rel=0.02)

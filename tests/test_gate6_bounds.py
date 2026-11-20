@@ -363,7 +363,7 @@ def test_parameter_quadratures_refuse_what_they_cannot_do():
     for gamma in (-0.5, 0.0, 0.05, 3.2):                 # wrong way, on the zero, too close, too far
         with pytest.raises(ValueError):
             le._parametric_box(0.2, 0.1, timelike, gamma)
-    for eta in (1e-160, 1e-13, 0.0, 0.9):                # overflow, below the floor, zero, p + eta >= 1
+    for eta in (1e-160, 1e-13, 0.0, 0.9, 0.799995):      # overflow, below the floor, zero, p + eta too close to 1
         with pytest.raises(ValueError):
             le._parametric_box(0.2, eta, 2.5)
     with pytest.raises(ValueError):

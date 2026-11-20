@@ -80,7 +80,7 @@ def interval_phase_bound(region: str, angle_lo: float, angle_hi: float, with_cer
     D = iv.mpf([min(Dsigned[j].a for j in tl), max(Dsigned[j].b for j in tl)])           # > 0
     Dp = iv.mpf([min(-Dsigned[j].b for j in sl), max(-Dsigned[j].a for j in sl)])        # |D'| > 0
     Dmin, Dmax = _min([D, Dp]), _max([D, Dp])
-    u_abs = D - Dp                                                                       # |u| = D - |D'|
+    u_abs = _abs(D - Dp)                                                                 # |u| = |D - |D'||; u = 0 at |s/t| = 1
     kap, nu, kf = _I(C.kappa), _I(C.nu), _I(C.kappa_far)
     d0, R, tau0 = _I(C.delta0), _I(C.radius), _I(C.tau0)
     r2, r5, r17 = iv.sqrt(2), iv.sqrt(5), iv.sqrt(17)
@@ -98,7 +98,7 @@ def interval_phase_bound(region: str, angle_lo: float, angle_hi: float, with_cer
     v2 = (v_in + K) ** 2
     xi = R * 2 / r5
     if not (lt(Delta, R / r17) and lt(4 * Delta, xi) and lt(v2, d0) and lt(0, M) and lt(2 * Delta, tau0)
-            and lt(Delta, R) and lt(0, u_abs)):
+            and lt(Delta, R)):
         raise ArithmeticError("a denominator of section 9 is not certainly positive")
     case_b = 1 + 2 * Delta / (3 * (R / r17 - Delta))
     case_c = 1 + (r5 / 2 + Delta / xi) * (tau0 + Delta) / (0.75 * (xi - 4 * Delta))
@@ -241,3 +241,50 @@ def cover(region: str, angle_lo: float, angle_hi: float, boxes: int, with_certif
            "R7_outer_exact": not failed and r7_failed == 0, "R7_failed_count": int(r7_failed)}
     out.update(parts)
     return out
+
+
+def _graded_boxes(start: float, end: float, ratio: float, stop: float, max_boxes: int):
+    """Adjacent intervals from `start` towards `end`, each of width `ratio` times its distance
+    from `end`, until that distance is below `stop`."""
+    sign = 1.0 if end > start else -1.0
+    a, n = float(start), 0
+    while abs(end - a) > stop and n < max_boxes:
+        b = a + sign * ratio * abs(end - a)
+        yield (a, b) if sign > 0 else (b, a)
+        a, n = b, n + 1
+
+
+def graded_cover(region: str, start: float, end: float, ratio: float = 0.004, stop: float = 1e-6,
+                 max_boxes: int = 100000, certificate_only: bool = False) -> dict:
+    """Cover from the angle `start` towards the degenerate angle `end` (0 or pi) with boxes whose
+    width is `ratio` times the distance from `end`.  Stops at the first box that fails, or when
+    the distance is below `stop`.  The interval reached is certified: every box in it passed.
+
+    With `certificate_only` only `certificate_iv.interval_certificate` is evaluated (this also
+    works in the region (-,-)); otherwise `interval_phase_bound`, which includes it.
+    """
+    boxes, worst, reached, failure, ratios = 0, 0.0, float(start), None, []
+    for lo, hi in _graded_boxes(start, end, ratio, stop, max_boxes):
+        try:
+            if certificate_only:
+                r = ci.interval_certificate(region, lo, hi)
+                ok, bad = bool(r["all"]), [k for k, v in r.items() if v is False]
+            else:
+                r = interval_phase_bound(region, lo, hi)
+                ok = bool(r["all_conditions"] and r["R7_outer_exact"])
+                bad = [k for k in CONDITIONS + ["R7_outer_exact"] if not r[k]]
+        except (ArithmeticError, ZeroDivisionError, ValueError, OverflowError) as error:
+            failure = (lo, hi, [str(error)])
+            break
+        if not ok:
+            failure = (lo, hi, bad)
+            break
+        boxes += 1
+        reached = hi if end > start else lo
+        ratios += r["ratio_s_over_t"]
+        if not certificate_only:
+            worst = max(worst, r["bound_upper"])
+    return {"region": region, "start": float(start), "end": float(end), "ratio": ratio, "boxes": boxes,
+            "reached": reached, "distance_left": abs(end - reached), "first_failure": failure,
+            "ratio_s_over_t": [min(ratios), max(ratios)] if ratios else None,
+            "bound_upper": worst if not certificate_only else None}

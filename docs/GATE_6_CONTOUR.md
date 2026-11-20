@@ -202,7 +202,16 @@ $`\kappa'=2\times10^{-3}`$. Section 9 states the precise conditions.
 *Argument.* (1) and (3): by Lemma 5 and section 3 every field that is
 switched on near a cone is admissible for it; by section 4 at least one
 frame field has weight 1 there, and its bound vanishes only on its triangle,
-which meets the cone only on the edges. (2): by (D) of section 9 each
+which meets the cone only on the edges. That covers points near a
+cone. Away from the cones, for $`r<2R`$ and $`|x_{0i}^2|>\delta_0`$ the
+real part has modulus at least $`\delta_0-v^2>0`$. For $`r\ge2R`$ a zero
+of the displaced invariant requires $`\vartheta(n^2+n\!\cdot u)=0`$: if
+$`\vartheta=0`$ the point is real and in the spacelike wedge, where no
+cone is within $`\delta_0`$ by (C3); otherwise $`n\!\cdot u=-n^2`$, and
+$`n^2=V^2`$ gives
+$`n^2=\kappa'^2\vartheta^2u^2/(1+\kappa'^2\vartheta^2)\le\kappa'^2(\tau_0+\Delta)^2<\delta_0`$,
+so the point is near the cone, where the imaginary part is at least
+$`2\kappa'M>0`$ in modulus by (C1), a contradiction. (2): by (D) of section 9 each
 argument lies in $`[-\pi-e,e]`$; $`\arg z`$ is the sum of two of them minus
 the other two, plus $`\pi(\tau_s-\tau_t)`$ from the diagonals.
 (4): if $`\rho\ge|\alpha\beta D|/2`$ the imaginary part is at least
@@ -557,6 +566,29 @@ both zones; with it $`e\le0.11`$ for the contours evaluated. The total
 excursion bound is the sum of the frame term and the largest of the three
 far terms.
 
+In the pure outer zone the factor two needs its own justification in the
+second and third cases, where the text above bounds only the imaginary
+part: one needs $`|\operatorname{Re}x_{0i}^2|\ge|n^2|/2`$ on the contour.
+In the second case the real part is
+$`-|n^2|(1-\kappa'^2\vartheta^2)+\kappa'^2\vartheta^2(2|n\!\cdot u|-u^2)`$
+with $`\vartheta=\Theta`$, so its modulus is at least
+$`|n^2|(1-\kappa'^2(2C_b-1))`$, $`C_b`$ being the constant of that case.
+In the third, $`|V^2|\le\kappa'^2(|n|+\tau_0+\Delta)^2`$ against
+$`|n^2|\ge\tfrac34|\xi|(|\xi|-4\Delta)`$, and the ratio decreases in
+$`|\xi|`$, so it is largest at $`|\xi|=2R/\sqrt5`$. *Conditions:*
+$`\kappa'^2\le\tfrac12`$ (so that $`2\kappa'/(1-\kappa'^2)\le4\kappa'`$
+in the first case), $`\kappa'^2(2C_b-1)\le\tfrac12`$, and
+$`\kappa'^2\big(\tfrac{\sqrt5}2\xi_0+2\Delta+\tau_0\big)^2\le\tfrac38\xi_0(\xi_0-4\Delta)`$
+with $`\xi_0=2R/\sqrt5`$. They hold by many orders of magnitude
+($`|V^2|/|n^2|\le7\times10^{-6}`$ where the far field moves an argument
+out) and are now part of the certificate (`D_far_real_part`). This
+paragraph was added after a review that re-derived (D) zone by zone, the
+other seven statements that GATE_6_PHASE takes from this document
+(Lemma 5, Lemma 6, (H1), (C1), (C2), Proposition 6(3) and
+$`|V_{\rm in}|^2\le3\mu I_{\rm in}`$), and tested each with its own
+90-digit field on seven squares; it found all eight to hold, six as
+written.
+
 **(E) Local diffeomorphism.**
 $`|\nabla m_j|\le\tfrac{3}{2\delta_0}\cdot2|x_0-x_{j+2}|\le3(2R+\Delta)/\delta_0`$,
 so
@@ -667,6 +699,38 @@ serves in Lemma 9, and $`\omega`$ is taken 2% below the fixed point.
 | $`(-,-)`$ | 0.055 to 3.087 | 12 128 | 0.00076 to 1341 | all conditions hold on every box |
 | $`(+,-)`$ | 0.02 to 3.087 | 12 268 | $`-1342`$ to $`-1.0001`$ | all hold |
 | $`(-,+)`$ | 0.02 to 3.087 | 12 268 | $`-0.9999`$ to $`-0.00074`$ | all hold |
+
+The cover has since been extended towards the degenerate squares with
+boxes whose width is proportional to the distance from the end of the
+range (`phase_bound_iv.graded_cover`, which calls the same interval
+certificate), and through $`|s/t|=1`$:
+
+| Region | Angle range added | Boxes | $`s/t`$ added | Result |
+| --- | --- | --- | --- | --- |
+| $`(-,-)`$ | $`10^{-7}`$ to 0.055 | 3 298 | $`2.5\times10^{-15}`$ to 0.00076 | all hold |
+| $`(-,-)`$ | 3.087 to $`\pi-10^{-7}`$ | 3 296 | 1341 to $`4.0\times10^{14}`$ | all hold |
+| $`(+,-)`$ | 0 to 0.02 | 80 | $`-1.0001`$ to $`-1`$ | all hold |
+| $`(+,-)`$ | 3.087 to $`\pi-10^{-7}`$ | 3 296 | $`-4.0\times10^{14}`$ to $`-1342`$ | all hold |
+| $`(-,+)`$ | 0 to 0.02 | 80 | $`-1`$ to $`-0.9999`$ | all hold |
+| $`(-,+)`$ | 3.087 to $`\pi-10^{-7}`$ | 3 296 | $`-0.00074`$ to $`-2.5\times10^{-15}`$ | all hold |
+
+So the certificate is verified for $`2.5\times10^{-15}\le s/t\le4\times10^{14}`$
+in the region $`(-,-)`$ and for $`1\le|s/t|\le4\times10^{14}`$, and the
+mirror range, with a timelike diagonal. At $`|s/t|=1`$ the square is a
+parallelogram in a plane; a review went through every use of
+$`u=-s-t`$ and of the span of the cusps and found the construction
+regular there. Towards $`\pi`$ the cover continues to pass down to a
+distance of about $`10^{-8}`$ and then fails in (H1), where the
+float64 constants of `tuned_contour` lose their meaning
+($`|D'|\approx10^{-16}`$); the degenerate limit itself is not reached.
+The constants have a clean scaling limit there ($`\delta_0\propto|D'|`$,
+$`\kappa=\nu\propto\delta_0|D'|`$, $`\kappa'\propto\pi-{\rm angle}`$,
+margins not shrinking), so the limit could be settled by one interval
+evaluation in scaled variables, which has not been written. Near the
+end of the range the statement is about the contour with those
+constants; the float64 implementation of the field is not an accurate
+realisation of it there. The numbers in the next paragraph refer to the
+original ranges.
 
 On these ranges $`e\le0.093`$ and $`\mu_Q\le0.0201`$, with
 $`\tan(c_0+3e)\le0.66`$, so $`\mu_Q\tan(c_0+3e)\le0.014`$. For (H1) the value
@@ -1470,14 +1534,21 @@ timelike diagonal (Lemma Q). Still open:
   arithmetic on the same cover as the certificate, with the bound at
   most $`2\pi+0.1908`$ throughout (`geocusp.phase_bound`,
   `geocusp.phase_bound_iv`), and it holds for the contour in $`D`$
-  dimensions. The exact value $`2\pi`$ for $`r<2R`$ remains unproved.
-  It appears to be true with a margin: where the phase is close to
-  $`2\pi`$ the largest value found is $`2\pi-2\nu`$. But it is not true
-  field by field (the frame at a cusp with a timelike diagonal pushes
-  the wrong way at about one point in a hundred, and is outweighed by
-  another frame), so the argument used here, which is linear in the
-  field, cannot give it, and the proved constants are limited by the
-  crude bound $`|V_j|\le\lambda_0|n_j|`$.
+  dimensions. The exact value $`2\pi`$ for $`r<2R`$ is not a property
+  of the construction: it is false for some contours that satisfy every
+  condition. With the default constants and $`\delta_0,\kappa,\nu`$
+  multiplied by 0.4 the certificate and all conditions of GATE_6_PHASE
+  hold, and at a real point of the inner zone
+  $`\arg z=2\pi+3.5\times10^{-7}`$, about $`6\nu`$ (found by a review,
+  reproduced with this repository's field). The excess is of order
+  $`\nu\sqrt{|u||D'|/(D\delta_0)}`$, from two frames each acting on an
+  invariant the other controls, and grows as $`\delta_0`$ decreases. For
+  the default constants as they are the largest phase found is
+  $`2\pi-0.33\nu`$, and for the tuned family it stayed below $`2\pi`$ at
+  the squares tried; that is numerical. So the surveys reported in
+  section 5, which found $`|\arg z|\le2\pi`$ on the contours evaluated,
+  stand as observations about those contours; what can be proved is
+  $`2\pi`$ plus a small explicit constant, as in GATE_6_PHASE.
   Two things learned there correct
   earlier statements here. The route proposed before Lemma Q, a bound
   $`|\operatorname{Im}x_{0c}^2|\le c\,|\operatorname{Re}x_{0c}^2|`$

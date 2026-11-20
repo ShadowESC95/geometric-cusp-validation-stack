@@ -190,6 +190,9 @@ def interval_certificate(region: str, angle_lo: float, angle_hi: float) -> dict:
     # arctan(x) <= x
     e_bound = frame_term / (d0 - v_inner**2) + 4 * kf * _max([iv.mpf(1), case_b, case_c])
     out["D_excursion_small"] = lt(v_inner**2, d0 / 2) and lt(e_bound, 0.2)
+    out["D_far_real_part"] = (lt(kf**2, 0.5) and lt(kf**2 * (2 * case_b - 1), 0.5)
+                              and lt(kf**2 * (r5 / 2 * xi + 2 * Delta + tau0) ** 2,
+                                     0.375 * xi * (xi - 4 * Delta)))
 
     j_inner = 4 * (3 * reach**2 * lam0 / d0 + lam0)
     j_outer = kf * (1 + 7.5 * (1 + (tau0 + Delta) / R))

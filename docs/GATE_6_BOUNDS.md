@@ -557,11 +557,12 @@ with weight $`F`$ is $`4M[F]`$.
 So the conclusion holds for all three weights at every square for which the
 certificate of GATE_6_CONTOUR passes. The certificate is verified in
 interval arithmetic for every square with
-$`0.00076\le s/t\le1341`$ in the region $`(-,-)`$,
-$`1.0001\le|s/t|\le1342`$ in $`(+,-)`$ and $`0.00074\le|s/t|\le0.9999`$ in
-$`(-,+)`$ (GATE_6_CONTOUR section 9). Outside these ranges, towards the
-degenerate squares, it is evaluated at sample squares in floating point
-only.
+$`2.5\times10^{-15}\le s/t\le4\times10^{14}`$ in the region $`(-,-)`$,
+$`1\le|s/t|\le4\times10^{14}`$ in $`(+,-)`$ and
+$`2.5\times10^{-15}\le|s/t|\le1`$ in $`(-,+)`$ (GATE_6_CONTOUR section 9;
+the ranges were $`0.00076`$ to $`1341`$ and $`1.0001`$ to $`1342`$ before a
+graded cover extended them). The degenerate limits themselves are not
+reached.
 
 **What "double pole" means.** The statement proved is the limit of
 $`\epsilon^2st\,I_\eta[F]`$ as $`\eta\to0`$. For spacelike diagonals there is
@@ -735,17 +736,22 @@ returning a doubtful number. Against the Mellin–Barnes form:
 | $`(-0.995,0.3)`$ timelike, $`\vert s/t\vert=0.4`$ | $`10^{-13}`$ |
 | $`(0.9,0.05)`$, and timelike | $`2\times10^{-13}`$, $`4\times10^{-13}`$ |
 | $`(0.99,0.005)`$ | $`10^{-15}`$ |
-| $`(0.5,0.49)`$, $`(0,0.9)`$, $`(0,0.99)`$ | $`2\times10^{-10}`$, $`8\times10^{-10}`$, $`2\times10^{-10}`$ |
-| $`(0.6,10^{-8})`$; $`(0.2,10^{-10})`$ timelike | $`7\times10^{-16}`$; $`7\times10^{-11}`$ |
+| $`(0.5,0.49)`$, $`(0,0.9)`$, $`(0,0.99)`$ | $`2\times10^{-10}`$, $`8\times10^{-10}`$, $`5\times10^{-10}`$ |
+| $`(0.6,10^{-8})`$; $`(0.2,10^{-10})`$ timelike | $`7\times10^{-16}`$; $`4\times10^{-16}`$ in the modulus (the imaginary part, $`6\times10^{-10}`$, to $`10^{-7}`$ of itself) |
 | $`(0.95,0.04)`$ timelike, $`\vert s/t\vert=10^3`$, rotation 1.2 | $`2\times10^{-14}`$ |
 
-Refused: $`\eta<10^{-12}`$; a rotation that is negative or brings the
-ray within 0.1 of the zero of $`1+Sw`$ (in particular no rotation at all
-with a timelike diagonal). The error is absolute at about $`10^{-10}`$ of
-the modulus, so a component much smaller than the modulus has fewer
-correct digits. The rewrite after the review has not itself been
-reviewed again; it is checked by the comparisons in this table and by
-the tests.
+Refused: $`\eta<10^{-12}`$; $`1-p-\eta<10^{-5}`$; a rotation that is
+negative or brings the ray within 0.1 of the zero of $`1+Sw`$ (in
+particular no rotation at all with a timelike diagonal). The error is
+absolute, so a component much smaller than the modulus has fewer correct
+digits. The same review then went through this second version: the
+closed forms and the acceptance rule by hand, and about 160 cases
+against its own reference ($`\eta`$ from $`10^{-12}`$ to 0.99, $`p`$ to
+within $`10^{-6}`$ of $`\pm1`$, $`1-p-\eta`$ down to $`10^{-5}`$,
+$`|s/t|`$ from $`10^{-12}`$ to $`10^{12}`$, all angles and rotations). No
+wrong value; the largest error is $`8\times10^{-9}`$, and at most
+$`10^{-10}`$ for $`\eta\le0.25`$. It is slow (minutes) on the rotated ray
+when $`1-p-\eta\le0.01`$ or $`\eta\ge0.8`$.
 
 A consequence is that the coefficient of the single pole is also a linear
 functional of the weight, obtained from
@@ -812,7 +818,7 @@ section 2.
 | $`\bar F^{(2)}`$ regular at $`z=-1`$, holomorphic for $`\vert {\rm Im}L\vert <3\pi`$ | Proved (inversion relations and Landen's identity) |
 | Edge chain with $`\bar F^{(2)}`$ gives $`-11\pi^4/15`$ | Computed to $`10^{-8}`$ |
 | $`\vert \arg z\vert \le2\pi`$ at real points | Proved in all regions (GATE_6_CONTOUR, Lemma P) |
-| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.1908`$ over the certified range of squares, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured: $`2\pi`$ in all regions |
+| $`\vert \arg z\vert `$ on the contour | Proved: $`2\pi+4e`$ for spacelike diagonals; with a timelike diagonal $`3\pi-0.3`$ (Lemma Q), and at most $`2\pi+0.194`$ for $`1\le\vert s/t\vert\le4\times10^{14}`$ and the mirror range, exactly $`2\pi`$ for $`r\ge2R`$, under further conditions on the constants verified in interval arithmetic (GATE_6_PHASE). Measured on the contours surveyed: $`2\pi`$. Not a property of the construction: admissible constants exist with an excess of order $`10^{-7}`$ |
 | Hard cutoff equals $`\log^2\times M[F]`$ | **False** for growing weights (section 4) |
 | Local dimensional density $`\to2\pi i\,M[z^p]`$ | Closed form, checked numerically |
 | $`L[z^p]=M[z^p]`$ for the whole integral | Mellin–Barnes (GATE_6_FUNCTIONAL) |
